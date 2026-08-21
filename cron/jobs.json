@@ -1513,11 +1513,11 @@
       "monitor_state": null,
       "context_from": null,
       "schedule": {
-        "kind": "interval",
-        "minutes": 60,
-        "display": "every 60m"
+        "kind": "cron",
+        "expr": "0 10 * * *",
+        "display": "0 10 * * *"
       },
-      "schedule_display": "every 60m",
+      "schedule_display": "0 10 * * *",
       "repeat": {
         "times": null,
         "completed": 8
