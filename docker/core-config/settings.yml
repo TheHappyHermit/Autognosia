@@ -74,6 +74,16 @@ server:
   port: 8080
   bind_address: "0.0.0.0"
   limiter: false
+  secret_key: "CHANGE_ME_IN_PRODUCTION"
+  image_name: "searxng"
+  method: "GET"
+  unique_ip: false
+  max_request_timeout: 10
+  public_instance: false
+  trusted_proxies: []
+  query_in_referrer: false
+  enable_result_container: false
+  hash_secret: ""
 
 # Redis/Valkey cache connection
 redis:

@@ -175,9 +175,11 @@ services:
       TEST_API_KEY: ${FC_API_KEY:-}
 
       # Search (via existing SearXNG instance)
-      SEARXNG_ENDPOINT: ${SEARXNG_ENDPOINT:-http://172.22.0.2:8080}
-      SEARXNG_ENGINES: ${SEARXNG_ENGINES:-google,bing,stackoverflow}
-      SEARXNG_CATEGORIES: ${SEARXNG_CATEGORIES:-}
+      # Uses FC_SEARXNG_ENDPOINT from .env.web-stack (defaults to http://searxng-core:8080)
+      SEARXNG_ENDPOINT: ${FC_SEARXNG_ENDPOINT:-http://searxng-core:8080}
+      SEARXNG_ENGINES: ${SEARXNG_ENGINES:-google,bing,stackoverflow,duckduckgo,wikipedia,github,stackoverflow,youtube}
+      SEARXNG_CATEGORIES: ${FC_SEARXNG_CATEGORIES:-}
+      SEARXNG_NETWORK: ${FC_SEARXNG_NETWORK:-autognosia-searxng_searxng-net}
 
       # External scraping
       PLAYWRIGHT_MICROSERVICE_URL: http://playwright-service:3000/scrape
