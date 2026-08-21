@@ -1,0 +1,51 @@
+# Autognosia Paths Configuration
+#
+# All paths use `~/.autognosia` as the root.
+# On Windows, `~` resolves to `C:\Users\<username>\`.
+# On Linux/macOS, `~` resolves to `/home/<username>/` or `/Users/<username>/`.
+#
+# Hermes auto-detects the OS and expands `~` correctly.
+# If you need to override the root, set the AUTOGNOSIA_HOME environment variable:
+#   export AUTOGNOSIA_HOME=/custom/path   # Linux/macOS
+#   set AUTOGNOSIA_HOME=C:\custom\path    # Windows
+
+# Root directory for all Autognosia data
+autognosia_home: ~/.autognosia
+
+# Wiki (Cold Memory)
+wiki_path: ~/.autognosia/active-wiki
+wiki_projects: ~/.autognosia/active-wiki/projects
+wiki_reference: ~/.autognosia/active-wiki/reference
+wiki_system: ~/.autognosia/active-wiki/system
+wiki_personal: ~/.autognosia/active-wiki/personal
+wiki_meta: ~/.autognosia/active-wiki/.meta
+
+# Oracle Vault
+oracle_path: ~/.autognosia/oracle
+
+# Graphify Graphs
+graphify_main_out: ~/.autognosia/graphify-main-out
+graphify_oracle_out: ~/.autognosia/graphify-oracle-out
+graphify_config: ~/.autognosia/graphify-config.env
+
+# Personal Organizer (Deterministic State)
+personal_organizer_data: ~/.autognosia/personal-organizer/data
+organizer_db: ~/.autognosia/personal-organizer/data/organizer.db
+
+# Views (generated markdown from databases)
+views_dir: ~/.autognosia/personal-organizer/data/views
+
+# Backup Paths
+backup_root: ~/.autognosia/backups
+daily_backups: ~/.autognosia/backups/daily
+weekly_backups: ~/.autognosia/backups/weekly
+monthly_backups: ~/.autognosia/backups/monthly
+
+# Research Exchange
+research_exchange: ~/.autognosia/exchange/research
+oracle_exchange: ~/.autognosia/exchange/oracle
+
+# Automation Paths
+scripts_dir: ~/.autognosia/scripts
+logs_dir: ~/.autognosia/logs
+integrity_reports: ~/.autognosia/personal-organizer/data/integrity-reports

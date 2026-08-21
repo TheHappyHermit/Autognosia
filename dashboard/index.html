@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autognosia // Command Deck</title>
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="deck-container">
+    
+    <!-- ── TOP HEADER / HUD NAVIGATION ───────────────────────────────────── -->
+    <header class="hud-header">
+      <div class="hud-brand">
+        <div class="hud-logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="hud-title-group">
+          <span class="hud-system-title">Autognosia</span>
+          <span class="hud-system-subtitle">EXECUTIVE COMMAND DECK // v2.5</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Ribbon -->
+      <div class="hud-metrics-ribbon">
+        <div class="metric-chip">
+          <span class="metric-dot dot-green"></span>
+          <span class="metric-label">TASKS</span>
+          <span class="metric-val" id="stat-active-tasks">--</span>
+        </div>
+        <div class="metric-chip">
+          <span class="metric-dot dot-amber"></span>
+          <span class="metric-label">CRITICAL</span>
+          <span class="metric-val" id="stat-critical-tasks">--</span>
+        </div>
+        <div class="metric-chip">
+          <span class="metric-dot dot-purple"></span>
+          <span class="metric-label">REMINDERS</span>
+          <span class="metric-val" id="stat-reminders">--</span>
+        </div>
+        <div class="metric-chip">
+          <span class="metric-dot dot-cyan"></span>
+          <span class="metric-label">SCHEDULE</span>
+          <span class="metric-val" id="stat-today-events">--</span>
+        </div>
+        <div class="metric-chip">
+          <span class="metric-dot dot-purple"></span>
+          <span class="metric-label">INBOX</span>
+          <span class="metric-val" id="stat-unread-emails">--</span>
+        </div>
+        <div class="metric-chip">
+          <span class="metric-dot dot-blue"></span>
+          <span class="metric-label">INTENTIONS</span>
+          <span class="metric-val" id="stat-intentions">--</span>
+        </div>
+      </div>
+
+      <!-- Actions & Controls -->
+      <div class="hud-controls">
+        <div class="clock-display" id="hud-clock">00:00:00 UTC</div>
+        
+        <div class="refresh-selector">
+          <span class="refresh-icon">⟳</span>
+          <select id="auto-refresh-rate">
+            <option value="15000">15s</option>
+            <option value="30000" selected>30s</option>
+            <option value="60000">60s</option>
+            <option value="0">Manual</option>
+          </select>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="btn-telemetry" title="View System Telemetry">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+          Telemetry
+        </button>
+
+        <button class="btn btn-primary btn-sm" id="btn-toggle-chat" title="Talk with Hermes Assistant">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Chat with Hermes
+        </button>
+
+        <button class="btn btn-secondary btn-sm" id="btn-quick-create">
+          <span>+</span> New Item
+        </button>
+      </div>
+    </header>
+
+    <!-- ── EXECUTIVE DAILY BRIEFING BAR ─────────────────────────────────── -->
+    <section class="briefing-bar">
+      <div class="briefing-header">
+        <div class="briefing-tag">DAILY EXECUTIVE SYNTHESIS</div>
+        <div class="briefing-date" id="briefing-date">Loading date...</div>
+      </div>
+      <div class="briefing-content">
+        <div class="briefing-summary" id="briefing-summary">
+          Loading morning cognitive synthesis...
+        </div>
+        <div class="briefing-priorities">
+          <span class="priority-title">TOP FOCUS:</span>
+          <ul id="briefing-priorities-list">
+            <li>Loading priority items...</li>
+          </ul>
+        </div>
+        <div class="briefing-prompt">
+          <span class="prompt-icon">💡</span>
+          <div class="prompt-text">
+            <span class="prompt-label">PROMPT-ME QUESTION:</span>
+            <span id="briefing-prompt-text">Analyzing active operations...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 3-COLUMN MAIN WORKSPACE ──────────────────────────────────────── -->
+    <main class="workspace-grid">
+      
+      <!-- ── COLUMN 1: SCHEDULE & MULTI-VIEW CALENDAR ───────────────────── -->
+      <section class="panel panel-calendar">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <h2>Schedule & Calendar</h2>
+          </div>
+          
+          <div class="calendar-view-toggles">
+            <button class="view-tab active" data-view="day">Day</button>
+            <button class="view-tab" data-view="week">Week</button>
+            <button class="view-tab" data-view="month">Month</button>
+          </div>
+        </div>
+
+        <div class="calendar-nav-bar">
+          <div class="calendar-nav-controls">
+            <button class="btn btn-icon" id="cal-prev">&lt;</button>
+            <button class="btn btn-sm" id="cal-today">Today</button>
+            <button class="btn btn-icon" id="cal-next">&gt;</button>
+            <span class="cal-current-label" id="cal-heading">Today</span>
+          </div>
+          <div class="cal-filters">
+            <span class="filter-chip active" data-cal-filter="all">All</span>
+            <span class="filter-chip" data-cal-filter="meeting">Meetings</span>
+            <span class="filter-chip" data-cal-filter="task">Deadlines</span>
+            <span class="filter-chip" data-cal-filter="subscription">Renewals</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Calendar Container -->
+        <div class="calendar-stage" id="calendar-stage">
+          <!-- Populated dynamically via app.js (Day/Week/Month) -->
+        </div>
+      </section>
+
+      <!-- ── COLUMN 2: PERSONAL ORGANIZER TASK & PROJECT DECK ───────────── -->
+      <section class="panel panel-organizer">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            <h2>Personal Organizer</h2>
+          </div>
+          
+          <div class="organizer-tab-toggles">
+            <button class="tab-btn active" data-org-tab="tasks">Action Pipeline</button>
+            <button class="tab-btn" data-org-tab="reminders">Reminders</button>
+            <button class="tab-btn" data-org-tab="projects">Projects</button>
+            <button class="tab-btn" data-org-tab="waiting">Waiting / Blocked</button>
+          </div>
+        </div>
+
+        <!-- Tab 1: Task Pipeline Container -->
+        <div class="org-tab-pane active" id="pane-tasks">
+          <div class="task-quick-add-bar">
+            <input type="text" id="quick-task-input" placeholder="Quick add task... (e.g. 'Review paper draft tomorrow high')" />
+            <button class="btn btn-primary btn-sm" id="btn-quick-task-add">Add</button>
+          </div>
+
+          <div class="task-filter-subbar">
+            <span class="task-filter-pill active" data-task-filter="all">All Active</span>
+            <span class="task-filter-pill" data-task-filter="critical">Critical</span>
+            <span class="task-filter-pill" data-task-filter="next">Next</span>
+            <span class="task-filter-pill" data-task-filter="in_progress">In Progress</span>
+            <span class="task-filter-pill" data-task-filter="completed">Completed</span>
+          </div>
+
+          <div class="task-list-stream" id="task-list-container">
+            <!-- Dynamically injected task cards -->
+          </div>
+        </div>
+
+        <!-- Tab 2: Timed Reminders Container -->
+        <div class="org-tab-pane" id="pane-reminders">
+          <div class="task-quick-add-bar">
+            <input type="text" id="quick-reminder-input" placeholder="Quick reminder... (e.g. 'Check server logs in 15 mins')" />
+            <button class="btn btn-primary btn-sm" id="btn-quick-rem-add">Set</button>
+          </div>
+
+          <div class="task-filter-subbar">
+            <span class="rem-filter-pill active" data-rem-filter="pending">Pending</span>
+            <span class="rem-filter-pill" data-rem-filter="snoozed">Snoozed</span>
+            <span class="rem-filter-pill" data-rem-filter="sent">Sent / Dispatched</span>
+            <span class="rem-filter-pill" data-rem-filter="all">All</span>
+          </div>
+
+          <div class="reminders-stream" id="reminders-list-container">
+            <!-- Dynamically injected reminder cards -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Projects Container -->
+        <div class="org-tab-pane" id="pane-projects">
+          <div class="projects-grid" id="projects-list-container">
+            <!-- Dynamically injected project cards -->
+          </div>
+        </div>
+
+        <!-- Tab 4: Waiting / Blocked Container -->
+        <div class="org-tab-pane" id="pane-waiting">
+          <div class="waiting-stream" id="waiting-list-container">
+            <!-- Dynamically injected waiting/blocked tasks -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ── COLUMN 3: COMMUNICATIONS & SECOND BRAIN ────────────────────── -->
+      <section class="panel panel-intelligence">
+        
+        <!-- Communications & Email Triage Radar -->
+        <div class="sub-panel email-radar">
+          <div class="panel-header sub-header">
+            <div class="panel-title-group">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <h3>Communications & Email Radar</h3>
+            </div>
+            <span class="badge badge-amber" id="email-unread-badge">0 Pending</span>
+          </div>
+
+          <div class="email-stream" id="email-stream-container">
+            <!-- Dynamically populated email triage cards -->
+          </div>
+        </div>
+
+        <!-- Prospective Intentions Stream -->
+        <div class="sub-panel intentions-radar">
+          <div class="panel-header sub-header">
+            <div class="panel-title-group">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <h3>Prospective Intentions</h3>
+            </div>
+            <button class="btn btn-icon-sm" id="btn-add-intention" title="Add Future Intention">+</button>
+          </div>
+
+          <div class="intentions-stream" id="intentions-stream-container">
+            <!-- Dynamically populated intention cards -->
+          </div>
+        </div>
+
+        <!-- Second Brain Knowledge Quick-Find -->
+        <div class="sub-panel second-brain-radar">
+          <div class="panel-header sub-header">
+            <div class="panel-title-group">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              <h3>Second Brain Quick-Find</h3>
+            </div>
+            <span class="badge badge-cyan">Active Wiki + Oracle</span>
+          </div>
+
+          <div class="wiki-search-box">
+            <input type="text" id="wiki-search-input" placeholder="Search knowledge vault... (Press '/' to focus)" />
+          </div>
+
+          <div class="wiki-results-stream" id="wiki-results-container">
+            <div class="empty-hint">Type above to search across all Markdown wiki & oracle documents.</div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ── HERMES AI CHAT DRAWER ───────────────────────────────────────── -->
+    <div class="chat-drawer" id="chat-drawer">
+      <div class="chat-header">
+        <div class="chat-title-group">
+          <div class="chat-avatar">🤖</div>
+          <div>
+            <div class="chat-name">HERMES COGNITIVE COPILOT</div>
+            <div class="chat-status"><span class="pulse-dot"></span> Online & Listening</div>
+          </div>
+        </div>
+        <button class="btn btn-icon" id="btn-close-chat">&times;</button>
+      </div>
+
+      <!-- Quick Prompt Suggestion Chips -->
+      <div class="chat-suggestions">
+        <button class="sugg-chip" data-prompt="What are my top tasks?">📋 My Tasks</button>
+        <button class="sugg-chip" data-prompt="What is on my schedule today?">📅 Today's Agenda</button>
+        <button class="sugg-chip" data-prompt="Search oracle for recent research">🔍 Search Oracle</button>
+        <button class="sugg-chip" data-prompt="Show system status">⚡ System Telemetry</button>
+      </div>
+
+      <!-- Message History Thread -->
+      <div class="chat-messages" id="chat-messages-container">
+        <div class="chat-msg bot">
+          <div class="msg-author">Autognosia Copilot</div>
+          <div class="msg-bubble">
+            Greetings! I am your Autognosia Copilot. You can talk to me directly here to create tasks, check your calendar, search the second brain vault, set prospective intentions, or give any standard Hermes commands without leaving your dashboard.
+          </div>
+          <div class="msg-time">Just now</div>
+        </div>
+      </div>
+
+      <!-- Chat Input Box -->
+      <div class="chat-input-bar">
+        <textarea id="chat-input" rows="2" placeholder="Tell Hermes to do something... (e.g. 'Add task review paper by Friday high priority')"></textarea>
+        <button class="btn btn-primary" id="btn-send-chat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SLIDE-OVER TELEMETRY DRAWER ─────────────────────────────────── -->
+    <div class="telemetry-drawer" id="telemetry-drawer">
+      <div class="drawer-header">
+        <h3>Autognosia Cognitive Telemetry</h3>
+        <button class="btn btn-icon" id="btn-close-telemetry">&times;</button>
+      </div>
+      <div class="drawer-body" id="telemetry-body">
+        Loading telemetry data...
+      </div>
+    </div>
+
+    <!-- ── DOCUMENT VIEWER MODAL ───────────────────────────────────────── -->
+    <div class="modal-backdrop" id="modal-doc-viewer">
+      <div class="modal-box modal-lg">
+        <div class="modal-header">
+          <h3 id="modal-doc-title">Document Title</h3>
+          <button class="btn btn-icon" id="btn-close-doc">&times;</button>
+        </div>
+        <div class="modal-body markdown-rendered" id="modal-doc-content">
+          Loading document...
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CREATE ITEM MODAL ───────────────────────────────────────────── -->
+    <div class="modal-backdrop" id="modal-create-item">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="create-modal-title">New Entry</h3>
+          <button class="btn btn-icon" id="btn-close-create">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="form-create-item">
+            <div class="form-group">
+              <label>Entry Type</label>
+              <select id="create-type">
+                <option value="task">Task</option>
+                <option value="reminder">Timed Reminder</option>
+                <option value="intention">Prospective Intention (IF/THEN)</option>
+              </select>
+            </div>
+
+            <!-- Task Fields -->
+            <div id="fields-task">
+              <div class="form-group">
+                <label>Task Title</label>
+                <input type="text" id="task-title" placeholder="What needs to be done?" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Priority</label>
+                  <select id="task-priority">
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Due Date</label>
+                  <input type="date" id="task-due-date" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Description / Notes</label>
+                <textarea id="task-desc" rows="2" placeholder="Optional details, links or dependencies..."></textarea>
+              </div>
+            </div>
+
+            <!-- Reminder Fields -->
+            <div id="fields-reminder" style="display:none;">
+              <div class="form-group">
+                <label>Reminder Title</label>
+                <input type="text" id="reminder-title" placeholder="What should Hermes remind you about?" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Time Offset</label>
+                  <select id="reminder-time-preset">
+                    <option value="15">In 15 minutes</option>
+                    <option value="30">In 30 minutes</option>
+                    <option value="60">In 1 hour</option>
+                    <option value="180">In 3 hours</option>
+                    <option value="1440">Tomorrow morning</option>
+                    <option value="custom">Specific Date & Time</option>
+                  </select>
+                </div>
+                <div class="form-group" id="group-reminder-custom-date" style="display:none;">
+                  <label>Date & Time</label>
+                  <input type="datetime-local" id="reminder-custom-dt" />
+                </div>
+                <div class="form-group">
+                  <label>Notification Channel</label>
+                  <select id="reminder-channel">
+                    <option value="all">All (Telegram, Discord, Email, SMS, Desktop)</option>
+                    <option value="telegram">Telegram Bot</option>
+                    <option value="discord">Discord Webhook</option>
+                    <option value="email">Email</option>
+                    <option value="sms">SMS / Phone</option>
+                    <option value="desktop">Local Desktop Only</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Notes / Details</label>
+                <textarea id="reminder-notes" rows="2" placeholder="Optional context or instructions..."></textarea>
+              </div>
+            </div>
+
+            <!-- Intention Fields -->
+            <div id="fields-intention" style="display:none;">
+              <div class="form-group">
+                <label>IF Cue (Condition / Keyword)</label>
+                <input type="text" id="intention-cue" placeholder="e.g. When discussing Mac Studio hardware..." />
+              </div>
+              <div class="form-group">
+                <label>THEN Action (Intended Goal)</label>
+                <input type="text" id="intention-action" placeholder="e.g. Remind to verify M4 Max memory bandwidth" />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="btn-cancel-create">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Entry</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

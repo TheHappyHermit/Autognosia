@@ -1,0 +1,236 @@
+# SECURITY NOTE: All passwords are set via environment variables.
+# Required .env file with: FC_PG_USER, FC_PG_PASS, FC_PG_DB
+# CHANGE DEFAULT PASSWORDS before production use!
+# Firecrawl + CamoFox Web Stack for Autognosia
+#
+# ============================================================================
+# IMAGE REPOSITORIES (pin these — do NOT substitute without verification)
+# ============================================================================
+#
+#   ghcr.io/firecrawl/firecrawl:latest          — Firecrawl API (main)
+#   ghcr.io/firecrawl/playwright-service:latest — Playwright scraping service
+#   ghcr.io/jo-inc/camofox-browser:latest       — CamoFox browser automation
+#   firecrawl/nuq-postgres:latest               — NUQ PostgreSQL queue (CUSTOM BUILD)
+#
+# NOTE: The NUQ PostgreSQL image MUST be built from source — there is no
+# official pre-built image. See docker-compose.web-stack.yml comments or
+# INSTALL.md §12 for the build steps. The custom build fixes the pg_cron
+# extension placement bug (see TROUBLESHOOTING.md → "nuq-postgres crashes
+# with 'pg_cron extension not found'").
+#
+# IMPORTANT: This stack does NOT deploy SearXNG. It discovers and connects
+# to the existing SearXNG instance running on the same host.
+#
+# HOST REQUIREMENTS: 2 CPUs, 8GB+ RAM. Firecrawl uses up to 10GB RAM.
+# ============================================================================
+
+services:
+  # ─── Redis (Firecrawl queue / rate limiting) ───────────────────────────
+  redis:
+    image: redis:7-alpine
+    networks: [firecrawl-internal]
+    command: redis-server --bind 0.0.0.0
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}
+
+  # ─── RabbitMQ (NUQ job queue transport) ────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    networks: [firecrawl-internal]
+    command: rabbitmq-server
+    environment:
+      RABBITMQ_DEFAULT_USER: firecrawl
+      RABBITMQ_DEFAULT_PASS: ${FC_RABBITMQ_PASS}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}
+
+  # ─── NUQ PostgreSQL (custom build — see build instructions below) ──────
+  #
+  # BUILD STEPS (run once):
+  #   cd /tmp
+  #   git clone https://github.com/mendableai/firecrawl.git
+  #   cp /path/to/autognosia/docker/nuq-postgres-init.sh \
+  #       /tmp/firecrawl/apps/nuq-postgres/docker-entrypoint-initdb.d/000-init.sh
+  #   cd /tmp/firecrawl/apps/nuq-postgres
+  #   docker build -t firecrawl/nuq-postgres:latest .
+  #
+  # Why custom? The official NUQ PostgreSQL setup has a bug where:
+  #   - pg_cron extension must be created in the database named by
+  #     cron.database_name in postgresql.conf (default: 'postgres')
+  #   - The NUQ schema (nuq.sql) runs in the 'firecrawl' database
+  #   - This causes "pg_cron extension not found" at startup
+  #
+  # The custom init.sh fixes this by:
+  #   1. Creating pg_cron in the 'postgres' database (as pg_cron requires)
+  #   2. Running nuq.sql in the 'firecrawl' database (as Firecrawl expects)
+  nuq-postgres:
+    image: firecrawl/nuq-postgres:latest
+    networks: [firecrawl-internal]
+    environment:
+      POSTGRES_USER: firecrawl
+      POSTGRES_PASSWORD: ${FC_PG_PASS:-}
+      POSTGRES_DB: firecrawl
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - firecrawl-postgres-data:/var/lib/postgresql/data
+      - ./nuq-postgres-init.sh:/docker-entrypoint-initdb.d/000-init.sh:ro
+      - ./010-nuq.sql:/docker-entrypoint-initdb.d/010-nuq.sql:ro
+    env_file:
+      - path: .env.web-stack
+        required: false
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${FC_PG_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits: {cpus: "0.50", memory: 2G}
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}
+
+  # ─── Playwright Service (headless browser for scraping) ────────────────
+  playwright-service:
+    image: ghcr.io/firecrawl/playwright-service:latest
+    networks: [firecrawl-internal]
+    environment:
+      PORT: "3000"
+      PROXY_SERVER: ""
+      BLOCK_MEDIA: "true"
+      MAX_CONCURRENT_PAGES: ${CRAWL_CONCURRENT_REQUESTS:-10}
+    tmpfs:
+      - /tmp/.cache:noexec,nosuid,size=1g
+    depends_on:
+      redis: {condition: service_healthy}
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}
+
+  # ─── Firecrawl API ─────────────────────────────────────────────────────
+  # Main API that exposes /v0/scrape, /v0/search, /v2/scrape, /v2/search
+  # Binds to 127.0.0.1:3002 for local-only access.
+  firecrawl-api:
+    image: ghcr.io/firecrawl/firecrawl:latest
+    networks:
+      - firecrawl-internal
+      - autognosia-searxng_searxng-net
+    environment:
+      # Queue backends
+      REDIS_URL: redis://redis:6379
+      REDIS_RATE_LIMIT_URL: redis://redis:6379
+      NUQ_BACKEND: pg
+      NUQ_RABBITMQ_URL: amqp://firecrawl:${FC_RABBITMQ_PASS}@rabbitmq:5672
+
+      # Database
+      POSTGRES_USER: firecrawl
+      POSTGRES_PASSWORD: ${FC_PG_PASS:-}
+      POSTGRES_DB: firecrawl
+      POSTGRES_HOST: nuq-postgres
+      POSTGRES_PORT: "5432"
+      USE_DB_AUTHENTICATION: "false"
+
+      # API
+      HOST: "0.0.0.0"
+      PORT: "3002"
+      ENV: production
+      LOGGING_LEVEL: ${LOGGING_LEVEL:-warn}
+
+      # Workers (tune for your CPU count — 2 CPUs host uses 4)
+      NUM_WORKERS_PER_QUEUE: ${NUM_WORKERS_PER_QUEUE:-4}
+      CRAWL_CONCURRENT_REQUESTS: ${CRAWL_CONCURRENT_REQUESTS:-10}
+      MAX_CONCURRENT_JOBS: ${MAX_CONCURRENT_JOBS:-5}
+      BROWSER_POOL_SIZE: ${BROWSER_POOL_SIZE:-5}
+
+      # Authentication
+      BULL_AUTH_KEY: ${FC_API_KEY:-}
+      TEST_API_KEY: ${FC_API_KEY:-}
+
+      # Search (via existing SearXNG instance)
+      SEARXNG_ENDPOINT: ${SEARXNG_ENDPOINT:-http://172.22.0.2:8080}
+      SEARXNG_ENGINES: ${SEARXNG_ENGINES:-google,bing,stackoverflow}
+      SEARXNG_CATEGORIES: ${SEARXNG_CATEGORIES:-}
+
+      # External scraping
+      PLAYWRIGHT_MICROSERVICE_URL: http://playwright-service:3000/scrape
+      PROXY_SERVER: ""
+    env_file:
+      - path: .env.web-stack
+        required: false
+    ports:
+      - "127.0.0.1:3002:3002"
+    volumes: [firecrawl-logs:/app/apps/api/logs]
+    depends_on:
+      redis: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+      nuq-postgres: {condition: service_healthy}
+      playwright-service: {condition: service_started}
+    restart: unless-stopped
+    command: node dist/src/harness.js --start-docker
+    deploy:
+      resources:
+        limits: {cpus: "2.00", memory: 10G}
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "3"}
+
+  # ─── CamoFox (interactive browser automation) ─────────────────────────
+  # Separate from Playwright — provides human-like browser sessions with
+  # stealth anti-detection, tab management, and DOM snapshotting.
+  camofox:
+    image: ghcr.io/jo-inc/camofox-browser:latest
+    container_name: hermes-camofox
+    networks: [firecrawl-internal]
+    ports:
+      - "127.0.0.1:9377:9377"
+    environment:
+      CAMOFOX_HOST: "127.0.0.1"
+      CAMOFOX_PORT: "9377"
+      CAMOFOX_AUTH_MODE: "required"
+      CAMOFOX_API_KEY: ${CAMOFOX_API_KEY:-}
+      CAMOFOX_ALLOW_PRIVATE_NETWORK: "true"
+      NODE_ENV: production
+    env_file:
+      - path: .env.web-stack
+        required: false
+    volumes: [hermes-camofox-data:/home/node/.camofox]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9377/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: {max-size: "5m", max-file: "2"}
+
+# ─── Networks ──────────────────────────────────────────────────────────────
+networks:
+  firecrawl-internal:
+    driver: bridge
+  autognosia-searxng_searxng-net:
+    external: true
+
+# ─── Volumes ───────────────────────────────────────────────────────────────
+volumes:
+  firecrawl-redis-data:
+  firecrawl-rabbitmq-data:
+  firecrawl-postgres-data:
+  firecrawl-logs:
+  hermes-camofox-data:

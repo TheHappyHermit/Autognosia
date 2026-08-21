@@ -1,0 +1,14 @@
+# Personal Organizer — Thin CLI interface to the deterministic SQLite organizer.db
+#
+# MCP access: personal-organizer only
+# Excluded: all others (Personal Organizer is a pure data interface)
+#
+# Deterministic execution without probabilistic hallucinations.
+# All operations are CRUD against organizer.db via the Personal Organizer API.
+
+model:
+  main: default
+
+mcp_servers:
+  personal-organizer:
+    url: "http://127.0.0.1:8001"

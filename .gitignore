@@ -1,0 +1,52 @@
+# Credentials and secrets
+.env
+*.env
+!.env.example
+!.env.*.example
+
+# Runtime data (never commit)
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Backup files
+*.bak
+*.backup
+*~
+hermes-configs/
+backups/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+checkpoints/
