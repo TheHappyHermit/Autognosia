@@ -23,6 +23,19 @@
 #
 # HOST REQUIREMENTS: 2 CPUs, 8GB+ RAM. Firecrawl uses up to 10GB RAM.
 # ============================================================================
+#
+# KNOWN ISSUES:
+# - Always start with: docker compose --env-file docker/.env.web-stack -f docker/docker-compose.web-stack.yml up -d
+#   The env_file directive in each service has `required: false` so missing vars
+#   silently default to empty strings. The --env-file flag is REQUIRED for startup.
+# - If services can't resolve each other (ENOTFOUND), stale duplicate networks may
+#   exist. Fix: docker network rm docker_firecrawl-internal autognosia_firecrawl-internal
+#   then restart.
+# - Stale containers from previous runs will block new containers with the same name.
+#   Fix: docker compose down then docker compose up -d.
+# - The NUQ PostgreSQL image MUST be built from source (see build steps below).
+#   There is no official pre-built image.
+#
 
 services:
   # ─── Redis (Firecrawl queue / rate limiting) ───────────────────────────
@@ -194,7 +207,7 @@ services:
   # stealth anti-detection, tab management, and DOM snapshotting.
   camofox:
     image: ghcr.io/jo-inc/camofox-browser:latest
-    container_name: hermes-camofox
+    container_name: autognosia-camofox
     networks: [firecrawl-internal]
     ports:
       - "127.0.0.1:9377:9377"
@@ -208,7 +221,7 @@ services:
     env_file:
       - path: .env.web-stack
         required: false
-    volumes: [hermes-camofox-data:/home/node/.camofox]
+    volumes: [autognosia-camofox-data:/home/node/.camofox]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9377/health"]
       interval: 15s
@@ -233,4 +246,4 @@ volumes:
   firecrawl-rabbitmq-data:
   firecrawl-postgres-data:
   firecrawl-logs:
-  hermes-camofox-data:
+  autognosia-camofox-data:

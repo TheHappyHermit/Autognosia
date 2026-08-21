@@ -83,20 +83,20 @@ Some sites block automated access or require JavaScript rendering.
 CamoFox container isn't responding on port 9377.
 - **Check:** `docker ps | grep camofox`
 - **Fix:** `docker compose -f docker/docker-compose.web-stack.yml restart camofox`
-- **Check:** `docker logs hermes-camofox --tail=30`
-- **Fix:** If it keeps crashing, check RAM: `docker stats --no-stream hermes-camofox`
+- **Check:** `docker logs autognosia-camofox --tail-30`
+- **Fix:** If it keeps crashing, check RAM: `docker stats --no-stream autognosia-camofox`
 
 ### "tab creation failed" or "no tabId"
 CamoFox isn't accepting connections or API key is wrong.
 - **Fix:** Verify `.env.web-stack` has `CAMOFOX_API_KEY=...` set
-- **Fix:** Verify the API key in the compose file matches: `docker inspect hermes-camofox --format '{{json .Config.Env}}' | grep CAMOFOX`
+- **Fix:** Verify the API key in the compose file matches: `docker inspect autognosia-camofox --format '{{json .Config.Env}}' | grep CAMOFOX`
 - **Test:** `curl http://127.0.0.1:9377/health` should return `{"ok":true,...}`
 - **Fix:** `docker compose -f docker/docker-compose.web-stack.yml down && docker compose -f docker/docker-compose.web-stack.yml up -d`
 
 ### Browser automation times out
 The browser is taking too long to load pages.
 - **Fix:** Increase timeout in your API calls (default is 15s, some pages need 30-60s)
-- **Fix:** Check browser resource usage: `docker stats --no-stream hermes-camofox`
+- **Fix:** Check browser resource usage: `docker stats --no-stream autognosia-camofox`
 - **Fix:** If browser is OOM-killed, increase `mem_limit: 4G` in the camofox service
 
 ---
