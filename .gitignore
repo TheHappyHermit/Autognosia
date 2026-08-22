@@ -63,3 +63,8 @@ cron/ticker_*
 
 # Private-infra skills (reference personal servers/domains)
 **/freshrss-troubleshooting/
+
+# Personal context files & curator backup snapshots (never commit)
+**/memories/USER.md
+**/memories/MEMORY.md
+**/.curator_backups/
