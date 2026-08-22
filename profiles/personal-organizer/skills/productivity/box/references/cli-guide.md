@@ -7,7 +7,7 @@ Run Box commands through Hermes' `terminal` tool. Prefer the documented command 
 Resolve one command runner before any Box operation:
 
 1. Check whether `box` already resolves in the runtime shell (`command -v box` on macOS/Linux or `Get-Command box` in PowerShell). If it does, use that command as-is, regardless of where Hermes or Box CLI was installed.
-2. If it does not resolve, install and verify an isolated CLI under a writable, persistent Hermes runtime directory. Prefer the current Hermes home at `tools/box-cli`; `HERMES_HOME` is optional, and Hermes uses its platform default when it is unset (`~/.hermes` on macOS/Linux and `%LOCALAPPDATA%\hermes` on Windows).
+2. If it does not resolve, install and verify an isolated CLI under a writable, persistent Hermes runtime directory. Prefer the current Hermes home at `tools/box-cli`; `HERMES_HOME` is optional, and Hermes uses its platform default when it is unset (`${HOME}/.hermes` on macOS/Linux and `%LOCALAPPDATA%\hermes` on Windows).
 3. If that directory is not writable, ask for a writable persistent directory in the runtime. Do not assume Hermes's source checkout, a global npm prefix, or a user home is writable. If a nonstandard existing CLI is not on `PATH`, ask for its executable path instead of scanning the machine.
 
 Only use `npm exec --prefix` after Hermes installed and verified that exact local copy. Run each installation block below as one terminal call, record the verified absolute prefix it prints, and use that literal path in later calls. Never depend on a shell variable surviving a separate Hermes terminal call, and never give the user an unverified `npm exec --prefix` command to run.
@@ -94,9 +94,9 @@ box users:get me --json --fields id,name,login
 
 The CLI has one current environment. Confirm before switching it, then verify the actor. Perform ordinary Hermes work as the OAuth identity selected for that environment; do not impersonate another user.
 
-An isolated npm installation isolates the CLI executable, not its authenticated environments. Box CLI stores environments and tokens for the runtime's OS user, using the platform credential store when available and `~/.box` as a fallback. Hermes profiles and concurrent sessions running as the same OS user can therefore share the current Box environment. Warn about this shared state during setup, verify the actor before every task, and explain that changing the current environment can affect other Hermes sessions and ordinary Box CLI use under that OS account.
+An isolated npm installation isolates the CLI executable, not its authenticated environments. Box CLI stores environments and tokens for the runtime's OS user, using the platform credential store when available and `${HOME}/.box` as a fallback. Hermes profiles and concurrent sessions running as the same OS user can therefore share the current Box environment. Warn about this shared state during setup, verify the actor before every task, and explain that changing the current environment can affect other Hermes sessions and ordinary Box CLI use under that OS account.
 
-On Linux, Box CLI secure storage depends on Secret Service/libsecret support. If the CLI reports a plaintext fallback, warn that credentials may be stored in `~/.box/box_environments.json` and token-cache files. Do not read or print those files. Recommend configuring the runtime's supported Secret Service/libsecret package or using a properly isolated runtime user before production use; do not assume a package manager or require another confirmation merely to deliver the warning.
+On Linux, Box CLI secure storage depends on Secret Service/libsecret support. If the CLI reports a plaintext fallback, warn that credentials may be stored in `${HOME}/.box/box_environments.json` and token-cache files. Do not read or print those files. Recommend configuring the runtime's supported Secret Service/libsecret package or using a properly isolated runtime user before production use; do not assume a package manager or require another confirmation merely to deliver the warning.
 
 ## Pagination and search
 

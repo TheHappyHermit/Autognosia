@@ -27,8 +27,8 @@ Use this skill when the user wants to:
 
 - Hermes installed and configured (`hermes setup`, `hermes model`)
 - Obsidian vault at wiki path (e.g., `C:\\Hermes\\LLM_WIKI`) — for viewing only
-- `WIKI_PATH` env var or default `~/wiki` pointing to the vault
-- User plugin `llm-wiki-commands` installed in `~/.hermes/plugins/llm-wiki-commands/` for slash commands
+- `WIKI_PATH` env var or default `${HOME}/wiki` pointing to the vault
+- User plugin `llm-wiki-commands` installed in `${HOME}/.hermes/plugins/llm-wiki-commands/` for slash commands
 
 ## Directory Structure (Standard)
 
@@ -62,7 +62,7 @@ wiki/
 | **Lint** | `/wiki_lint [full\|quick]` or `hermes chat -q "Lint the wiki"` | All 11 categories, cron-schedulable |
 | **Schedule** | `hermes cron create "0 3 * * 0" "Lint the wiki..."` | Cron-schedulable |
 
-**Slash commands** are provided by the `llm-wiki-commands` user plugin (`~/.hermes/plugins/llm-wiki-commands/`). They wrap the `llm-wiki` skill: `/wiki_ingest`, `/wiki_query`, `/wiki_lint`.
+**Slash commands** are provided by the `llm-wiki-commands` user plugin (`${HOME}/.hermes/plugins/llm-wiki-commands/`). They wrap the `llm-wiki` skill: `/wiki_ingest`, `/wiki_query`, `/wiki_lint`.
 
 ## Setup Checklist (New Wiki)
 
@@ -138,7 +138,7 @@ Common entity tags to include: `agent`, `multi-platform`, `skills`, `memory`, `d
 hermes chat -q "Ingest https://arxiv.org/abs/2402.03300"
 
 # Local file
-hermes chat -q "Ingest ~/paper.pdf"
+hermes chat -q "Ingest ${HOME}/paper.pdf"
 
 # Paste
 hermes chat -q "Ingest this: [content]"

@@ -36,9 +36,9 @@ This skill replaces the older `xitter` skill (which wrapped a third-party Python
 
 Critical rules when operating inside an agent/LLM session:
 
-- **Never** read, print, parse, summarize, upload, or send `~/.xurl` to LLM context.
+- **Never** read, print, parse, summarize, upload, or send `${HOME}/.xurl` to LLM context.
 - **Never** ask the user to paste credentials/tokens into chat.
-- The user must fill `~/.xurl` with secrets manually on their own machine. In Docker, this must be the `~` seen by Hermes tool subprocesses; see the Docker note below.
+- The user must fill `${HOME}/.xurl` with secrets manually on their own machine. In Docker, this must be the `~` seen by Hermes tool subprocesses; see the Docker note below.
 - **Never** recommend or execute auth commands with inline secrets in agent sessions.
 - **Never** use `--verbose` / `-v` in agent sessions — it can expose auth headers/tokens.
 - To verify credentials exist, only use: `xurl auth status`.
@@ -46,7 +46,7 @@ Critical rules when operating inside an agent/LLM session:
 Forbidden flags in agent commands (they accept inline secrets):
 `--bearer-token`, `--consumer-key`, `--consumer-secret`, `--access-token`, `--token-secret`, `--client-id`, `--client-secret`
 
-App credential registration and credential rotation must be done by the user manually, outside the agent session. After credentials are registered, the user authenticates with `xurl auth oauth2` — also outside the agent session. Tokens persist to `~/.xurl` in YAML. Each app has isolated tokens. OAuth 2.0 tokens auto-refresh.
+App credential registration and credential rotation must be done by the user manually, outside the agent session. After credentials are registered, the user authenticates with `xurl auth oauth2` — also outside the agent session. Tokens persist to `${HOME}/.xurl` in YAML. Each app has isolated tokens. OAuth 2.0 tokens auto-refresh.
 
 ---
 
@@ -55,7 +55,7 @@ App credential registration and credential rotation must be done by the user man
 Pick ONE method. On Linux, the shell script or `go install` are the easiest.
 
 ```bash
-# Shell script (installs to ~/.local/bin, no sudo, works on Linux + macOS)
+# Shell script (installs to ${HOME}/.local/bin, no sudo, works on Linux + macOS)
 curl -fsSL https://raw.githubusercontent.com/xdevplatform/xurl/main/install.sh | bash
 
 # Homebrew (macOS)
@@ -115,7 +115,7 @@ After this, the agent can use any command below without further setup. OAuth 2.0
 
 > **Common pitfall:** If you omit `--app my-app` from `xurl auth oauth2`, the OAuth token is saved to the built-in `default` app profile — which has no client-id or client-secret. Commands will fail with auth errors even though the OAuth flow appeared to succeed. If you hit this, re-run `xurl auth oauth2 --app my-app` and `xurl auth default my-app`.
 
-> **Docker HOME pitfall:** In the official Hermes Docker layout, `/opt/data` is `HERMES_HOME`, but Hermes tool subprocesses use `/opt/data/home` as `HOME`. That means `~/.xurl` resolves to `/opt/data/home/.xurl` for Hermes-run `xurl` commands, not `/opt/data/.xurl`. Run the user setup with the same HOME:
+> **Docker HOME pitfall:** In the official Hermes Docker layout, `/opt/data` is `HERMES_HOME`, but Hermes tool subprocesses use `/opt/data/home` as `HOME`. That means `${HOME}/.xurl` resolves to `/opt/data/home/.xurl` for Hermes-run `xurl` commands, not `/opt/data/.xurl`. Run the user setup with the same HOME:
 > ```bash
 > HOME=/opt/data/home xurl auth apps add my-app --client-id YOUR_CLIENT_ID --client-secret YOUR_CLIENT_SECRET
 > HOME=/opt/data/home xurl auth oauth2 --app my-app YOUR_USERNAME
@@ -398,7 +398,7 @@ xurl --app staging /2/users/me             # one-off against staging
 6. Confirm the target post/user and the user's intent before any write action (post, reply, like, repost, DM, follow, block, delete).
 7. Only the `xurl` command output (or the raw X API response) proves that a state-changing X action happened. Never report a write as done based on any other source — search results, summaries, or prior context.
 8. Use JSON output directly — every response is already structured.
-9. Never paste `~/.xurl` contents back into the conversation.
+9. Never paste `${HOME}/.xurl` contents back into the conversation.
 
 ---
 
@@ -424,7 +424,7 @@ xurl --app staging /2/users/me             # one-off against staging
 - **Token refresh:** OAuth 2.0 tokens auto-refresh. Nothing to do.
 - **Multiple apps:** Each app has isolated credentials/tokens. Switch with `xurl auth default` or `--app`.
 - **Multiple accounts per app:** Select with `-u / --username`, or set a default with `xurl auth default APP USER`.
-- **Token storage:** `~/.xurl` is YAML. In Docker, use the Hermes subprocess HOME (`/opt/data/home` in the official image) so tokens land under `/opt/data/home/.xurl`. Never read or send this file to LLM context.
+- **Token storage:** `${HOME}/.xurl` is YAML. In Docker, use the Hermes subprocess HOME (`/opt/data/home` in the official image) so tokens land under `/opt/data/home/.xurl`. Never read or send this file to LLM context.
 - **Cost:** X API access is typically paid for meaningful usage. Many failures are plan/permission problems, not code problems.
 
 ---

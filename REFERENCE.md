@@ -134,8 +134,8 @@ Never put secrets in:
 - SYSTEM_MAP
 
 Use:
-- `~/.hermes/.env`
-- `~/.autognosia/secrets/`
+- `${HOME}/.hermes/.env`
+- `${HOME}/.autognosia/secrets/`
 - Docker secrets/.env with 0600
 
 ### Network Isolation

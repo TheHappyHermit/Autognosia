@@ -1,5 +1,5 @@
 {
-  "last_report_path": "~/.hermes/logs/curator/20260815-154116",
+  "last_report_path": "${HOME}/.hermes/logs/curator/20260815-154116",
   "last_run_at": "2026-08-15T15:41:16.642942+00:00",
   "last_run_duration_seconds": 0.78294,
   "last_run_summary": "auto: 1 marked stale, 3 reactivated; llm: skipped (consolidation off)",

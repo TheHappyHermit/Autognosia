@@ -61,12 +61,12 @@ Before reaching for session_search (which is slower and less reliable), check th
 cd /path/to/dir && git log --oneline -5
 
 # 2. Shell backup files
-ls -la ~/.Trash/files/ 2>/dev/null
+ls -la ${HOME}/.Trash/files/ 2>/dev/null
 find /path/to/dir -name "*.bak" -o -name "*.swp" -o -name "*.~" 2>/dev/null
 find . -name ".*.swp" 2>/dev/null   # vim swap files
 
 # 3. Hermes state snapshots (periodic config/db backups)
-find ~/.hermes/state-snapshots/ -name "*.db" 2>/dev/null
+find ${HOME}/.hermes/state-snapshots/ -name "*.db" 2>/dev/null
 # NOTE: state snapshots contain state.json/config, NOT user document files
 ```
 

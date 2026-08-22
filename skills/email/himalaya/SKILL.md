@@ -30,14 +30,14 @@ requires the external `himalaya` CLI.
 ## Prerequisites
 
 1. Himalaya CLI installed (`himalaya --version` to verify)
-2. A configuration file at `~/.config/himalaya/config.toml`
+2. A configuration file at `${HOME}/.config/himalaya/config.toml`
 3. IMAP/SMTP credentials configured (password stored securely)
 
 ### Installation
 
 ```bash
 # Pre-built binary (Linux/macOS — recommended)
-curl -sSL https://raw.githubusercontent.com/pimalaya/himalaya/master/install.sh | PREFIX=~/.local sh
+curl -sSL https://raw.githubusercontent.com/pimalaya/himalaya/master/install.sh | PREFIX=${HOME}/.local sh
 
 # macOS via Homebrew
 brew install himalaya
@@ -54,7 +54,7 @@ Run the interactive wizard to set up an account:
 himalaya account configure
 ```
 
-Or create `~/.config/himalaya/config.toml` manually:
+Or create `${HOME}/.config/himalaya/config.toml` manually:
 
 ```toml
 [accounts.personal]
@@ -270,7 +270,7 @@ himalaya attachment download 42
 Save to specific directory:
 
 ```bash
-himalaya attachment download 42 --downloads-dir ~/Downloads
+himalaya attachment download 42 --downloads-dir ${HOME}/Downloads
 ```
 
 ## Output Formats

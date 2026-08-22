@@ -25,12 +25,12 @@ The `cronjob` tool does not accept a `model` parameter on create or update. When
 
 ```python
 import json, pathlib
-jobs = json.loads(pathlib.Path("~/.hermes/cron/jobs.json").expanduser().read_text())
+jobs = json.loads(pathlib.Path("${HOME}/.hermes/cron/jobs.json").expanduser().read_text())
 for job in jobs:
     if job.get("prompt"):  # agent-based jobs only
         job["model"] = "qwen/qwen3.6-27b"
         job["enabled_toolsets"] = ["web", "terminal", "file", "delegation"]
-pathlib.Path("~/.hermes/cron/jobs.json").expanduser().write_text(json.dumps(jobs, indent=2))
+pathlib.Path("${HOME}/.hermes/cron/jobs.json").expanduser().write_text(json.dumps(jobs, indent=2))
 ```
 
 Always set `enabled_toolsets` alongside `model` to reduce token overhead.
@@ -39,7 +39,7 @@ Always set `enabled_toolsets` alongside `model` to reduce token overhead.
 
 ```python
 import json, pathlib
-jobs = json.loads(pathlib.Path("~/.hermes/cron/jobs.json").expanduser().read_text())
+jobs = json.loads(pathlib.Path("${HOME}/.hermes/cron/jobs.json").expanduser().read_text())
 for j in jobs:
     if j.get("prompt"):
         print(f"  {j['name']}: model={j.get('model', 'NULL')}")
@@ -57,20 +57,20 @@ Jobs created under an old config can be blocked by a config drift check. Fix: de
 
 ## Backup Verification
 
-Daily backup cron writes to `~/backups/`. Check:
+Daily backup cron writes to `${HOME}/backups/`. Check:
 
 ```bash
-ls -lt ~/backups/ | head -5
+ls -lt ${HOME}/backups/ | head -5
 ```
 
 Both `holographic_*.db` and `organizer_*.db` should appear.
 
 ## Emergency Backup Pruning
 
-State.db emergency backups at `~/.hermes/state.db.pre-update-emergency-*.bak` (~34 MB each). Keep only the latest:
+State.db emergency backups at `${HOME}/.hermes/state.db.pre-update-emergency-*.bak` (~34 MB each). Keep only the latest:
 
 ```bash
-ls -t ~/.hermes/state.db.pre-update-emergency-*.bak | tail -n +2 | xargs rm
+ls -t ${HOME}/.hermes/state.db.pre-update-emergency-*.bak | tail -n +2 | xargs rm
 ```
 
 ## Memory Vacuum Safety
@@ -83,7 +83,7 @@ Session vacuum/prune only affects `state.db` (conversation history, 90-day reten
 2. Wrong model? Check jobs.json for null model and pin explicitly
 3. Config drift error? Delete and recreate the job
 4. Tool timeout? Split large payloads into smaller calls
-5. Backup missing? Check `~/backups/`
+5. Backup missing? Check `${HOME}/backups/`
 6. Script-only job silent? Empty stdout means no delivery
 
 ## Pitfall: Cron Prompt References Missing Skill
@@ -102,7 +102,7 @@ Each day's cron run generates different script names because the agent is guessi
 **Diagnosis:**
 1. `cronjob list` → check a job's `skills` field (should be empty only when the prompt doesn't reference skills)
 2. Read the cron prompt — does it say "Use the X skill"?
-3. Check `/tmp/` and `~/.hermes/` for stale `*.py` files with recent timestamps that match the cron schedule
+3. Check `/tmp/` and `${HOME}/.hermes/` for stale `*.py` files with recent timestamps that match the cron schedule
 4. Search cron output for patterns like "temporary scripts I created and deleted", "Cleanup pending approval", "ad-hoc data-gathering scripts"
 
 **Fix options (pick one):**
@@ -111,4 +111,4 @@ Each day's cron run generates different script names because the agent is guessi
 - **C. Create the skill:** If the skill doesn't exist, create `organizer-state/SKILL.md` (or whatever skill is referenced) with clear step-by-step instructions the cron agent can follow.
 - **D. Pause the job:** If the job is producing noise without value, pause it with `cronjob pause <id>`.
 
-**Prevention:** Before creating a cron job, verify that any skills it references actually exist in `~/.hermes/skills/`. A cron with `skills: []` but a prompt referencing a skill is a recipe for daily temp file creation.
+**Prevention:** Before creating a cron job, verify that any skills it references actually exist in `${HOME}/.hermes/skills/`. A cron with `skills: []` but a prompt referencing a skill is a recipe for daily temp file creation.

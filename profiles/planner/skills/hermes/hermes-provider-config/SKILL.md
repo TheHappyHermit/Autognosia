@@ -112,7 +112,7 @@ If a configured provider doesn't appear in `/model`:
 
 2. Check gateway logs for errors:
    ```bash
-   grep -i "error\|fail\|context" ~/.hermes/logs/gateway.log | tail -30
+   grep -i "error\|fail\|context" ${HOME}/.hermes/logs/gateway.log | tail -30
    ```
 
 3. Verify the Telegram adapter has `send_model_picker` method

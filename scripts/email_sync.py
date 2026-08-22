@@ -2,7 +2,7 @@
 """
 Email & Communications Triage Bridge for Autognosia.
 Loads triaged email packages from:
-- ~/.autognosia/exchange/email/ (incoming JSON/Webhook payloads)
+- ${HOME}/.autognosia/exchange/email/ (incoming JSON/Webhook payloads)
 - Local inbox cache
 Extracts high-priority messages, action items, detected deadlines, and sender context.
 """

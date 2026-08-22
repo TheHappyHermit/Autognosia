@@ -30,7 +30,7 @@ The `paperclip` user's password in PostgreSQL doesn't match what's in the `.env`
 
 To find the actual password, use `xxd` to read raw bytes (tools may redact it):
 ```
-xxd ~/paperclip/.env | grep -A1 "DATABASE_URL"
+xxd ${HOME}/paperclip/.env | grep -A1 "DATABASE_URL"
 ```
 
 Reset the database password to match `.env`:
@@ -57,7 +57,7 @@ Compare applied vs expected:
 docker exec -e PGPASSWORD='<pw>' default-postgres-1 psql -U paperclip -d paperclip \
   -c "SELECT count(*) FROM drizzle.__drizzle_migrations;"
 ```
-vs total entries in `~/paperclip/packages/db/src/migrations/meta/_journal.json`.
+vs total entries in `${HOME}/paperclip/packages/db/src/migrations/meta/_journal.json`.
 
 If the database schema is current but journal is behind, mark all migrations as applied by inserting each journal entry into `__drizzle_migrations`.
 
@@ -69,10 +69,10 @@ Look for: `"status": "ok"`, `"pendingMigrations": []`
 
 ## Key Locations
 - Service: `/etc/systemd/system/paperclip.service`
-- Working dir: `~/paperclip`
-- Env files: `~/paperclip/.env` and `~/.paperclip/instances/default/.env`
+- Working dir: `${HOME}/paperclip`
+- Env files: `${HOME}/paperclip/.env` and `${HOME}/.paperclip/instances/default/.env`
 - Database: Docker container `default-postgres-1`, database `paperclip`
-- Instance config: `~/.paperclip/instances/default/config.json`
+- Instance config: `${HOME}/.paperclip/instances/default/config.json`
 
 ## Boot Persistence
 After fixing, verify:

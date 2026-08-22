@@ -102,7 +102,7 @@ Tell the user:
 > 6. Download the JSON file and tell me the file path
 >
 > Important Hermes CLI note: if the file path starts with `/`, do NOT send only the bare path as its own message in the CLI, because it can be mistaken for a slash command. Send it in a sentence instead, like:
-> `The JSON file path is: ~/Downloads/client_secret_....json`
+> `The JSON file path is: ${HOME}/Downloads/client_secret_....json`
 
 Once they provide the path:
 
@@ -112,7 +112,7 @@ $GSETUP --client-secret /path/to/client_secret.json
 
 If they paste the raw client ID / client secret values instead of a file path,
 write a valid Desktop OAuth JSON file for them yourself, save it somewhere
-explicit (for example `~/Downloads/hermes-google-client-secret.json`), then run
+explicit (for example `${HOME}/Downloads/hermes-google-client-secret.json`), then run
 `--client-secret` against that file.
 
 ### Step 3: Get authorization URL
@@ -126,7 +126,7 @@ $GSETUP --auth-url --services all --format json
 ```
 
 This returns JSON with an `auth_url` field and also saves the exact URL to
-`~/.hermes/google_oauth_last_url.txt`.
+`${HOME}/.hermes/google_oauth_last_url.txt`.
 
 Agent rules for this step:
 - Extract the `auth_url` field and send that exact URL to the user as a single line.
@@ -160,9 +160,9 @@ Should print `AUTHENTICATED`. Setup is complete — token refreshes automaticall
 
 ### Notes
 
-- Token is stored at `~/.hermes/google_token.json` and auto-refreshes.
-- Pending OAuth session state/verifier are stored temporarily at `~/.hermes/google_oauth_pending.json` until exchange completes.
-- If `gws` is installed, `google_api.py` points it at the same `~/.hermes/google_token.json` credentials file. Users do not need to run a separate `gws auth login` flow.
+- Token is stored at `${HOME}/.hermes/google_token.json` and auto-refreshes.
+- Pending OAuth session state/verifier are stored temporarily at `${HOME}/.hermes/google_oauth_pending.json` until exchange completes.
+- If `gws` is installed, `google_api.py` points it at the same `${HOME}/.hermes/google_token.json` credentials file. Users do not need to run a separate `gws auth login` flow.
 - To revoke: `$GSETUP --revoke`
 
 ## Usage
@@ -232,8 +232,8 @@ $GAPI drive upload /path/to/image.png --name "Logo.png" --parent FOLDER_ID
 # Download (binary files download as-is; Google-native files export to a
 # sensible default — Docs→pdf, Sheets→csv, Slides→pdf, Drawings→png)
 $GAPI drive download FILE_ID
-$GAPI drive download DOC_ID --output ~/doc.pdf
-$GAPI drive download DOC_ID --export-mime text/plain --output ~/doc.txt
+$GAPI drive download DOC_ID --output ${HOME}/doc.pdf
+$GAPI drive download DOC_ID --export-mime text/plain --output ${HOME}/doc.txt
 
 # Create a folder
 $GAPI drive create-folder "Reports"

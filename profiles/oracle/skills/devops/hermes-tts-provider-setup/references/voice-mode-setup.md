@@ -6,10 +6,10 @@
 
 ```bash
 # 1. ElevenLabs API key (for premium TTS)
-echo "ELEVENLABS_API_KEY=your_key" >> ~/.hermes/.env
+echo "ELEVENLABS_API_KEY=your_key" >> ${HOME}/.hermes/.env
 
 # 2. Install local Whisper (for STT)
-cd ~/.hermes/hermes-agent && source venv/bin/activate
+cd ${HOME}/.hermes/hermes-agent && source venv/bin/activate
 pip install faster-whisper -q
 
 # 3. Verify whisper CLI available
@@ -66,7 +66,7 @@ hermes --tui
 ## Voice Mode Config Reference
 
 ```yaml
-# ~/.hermes/config.yaml
+# ${HOME}/.hermes/config.yaml
 tts:
   provider: elevenlabs
   elevenlabs:
@@ -92,7 +92,7 @@ voice:
 
 | Issue | Fix |
 |-------|-----|
-| "ELEVENLABS_API_KEY not set" | Add to `~/.hermes/.env` |
+| "ELEVENLABS_API_KEY not set" | Add to `${HOME}/.hermes/.env` |
 | STT returns empty / fails | `pip install faster-whisper` in Hermes venv |
 | `whisper` command not found | Same — install in the correct venv |
 | Audio plays but no transcription | Check `stt.enabled: true` and `stt.provider: local` |
@@ -100,6 +100,6 @@ voice:
 
 ## Files Modified in This Session
 
-- `~/.hermes/.env` — Added `ELEVENLABS_API_KEY`
-- `~/.hermes/config.yaml` — TTS/STT/voice settings (via `hermes config set`)
-- `~/.hermes/hermes-agent/venv` — Installed `faster-whisper`
+- `${HOME}/.hermes/.env` — Added `ELEVENLABS_API_KEY`
+- `${HOME}/.hermes/config.yaml` — TTS/STT/voice settings (via `hermes config set`)
+- `${HOME}/.hermes/hermes-agent/venv` — Installed `faster-whisper`

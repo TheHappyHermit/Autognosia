@@ -69,7 +69,7 @@ def main() -> int:
     for t in BACKUP_TARGETS:
         t_str = str(t)
         if t_str.startswith(home):
-            relative_targets.append(t_str[len(home)+1:])  # strip ~/
+            relative_targets.append(t_str[len(home)+1:])  # strip ${HOME}/
         else:
             relative_targets.append(t_str)
 

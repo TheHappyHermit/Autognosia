@@ -7,7 +7,7 @@ category: note-taking
 # User Memory System Preference
 
 ## Key Fact
-User prefers the custom SQLite-based memory enhancement system (~/.hermes/memory_enhancement/memories.db) over the officially supported Honcho plugin.
+User prefers the custom SQLite-based memory enhancement system (${HOME}/.hermes/memory_enhancement/memories.db) over the officially supported Honcho plugin.
 
 ## Reasons for Preference
 - Zero-dependency

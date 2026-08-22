@@ -395,7 +395,7 @@ comfy --skip-prompt install --cpu                 # CPU only (slow)
 comfy --skip-prompt install --nvidia --fast-deps  # uv-based dep resolution
 ```
 
-Default location: `~/comfy/ComfyUI` (Linux), `~/Documents/comfy/ComfyUI`
+Default location: `${HOME}/comfy/ComfyUI` (Linux), `${HOME}/Documents/comfy/ComfyUI`
 (macOS/Win). Override with `comfy --workspace /custom/path install`.
 
 #### Launch / verify

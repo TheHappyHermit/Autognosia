@@ -18,7 +18,7 @@ from typing import List, Dict, Any, Optional
 def _ensure_web_deps() -> None:
     """Ensure fastapi/uvicorn are importable in the current interpreter.
 
-    Prefers the dedicated dashboard venv (~/.autognosia/dashboard-venv) and
+    Prefers the dedicated dashboard venv (${HOME}/.autognosia/dashboard-venv) and
     re-execs into it. On PEP 668 "externally-managed-environment" systems
     (Homebrew, most distro Pythons) `pip install` into the system interpreter
     is blocked, so bootstrapping always happens inside an isolated venv.
@@ -511,11 +511,11 @@ def get_telemetry():
     except Exception:
         pass
 
-    # Profile configs — check both repo root and ~/.hermes for profile configs
+    # Profile configs — check both repo root and ${HOME}/.hermes for profile configs
     profiles = ["default", "oracle", "researcher", "planner", "auditor", "personal-organizer"]
     profile_status = {}
     for p in profiles:
-        # Check repo root first (for dev setups), then ~/.hermes (for production)
+        # Check repo root first (for dev setups), then ${HOME}/.hermes (for production)
         prof_dir = REPO_ROOT / "profiles" / p
         hermes_dir = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes"))) / "profiles" / p
         profile_status[p] = "configured" if prof_dir.exists() or hermes_dir.exists() else "missing"

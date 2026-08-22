@@ -244,7 +244,7 @@ plugins:
   disabled: []
 mcp_servers:
   gbrain:
-    command: ~/.autognosia/scripts/gbrain-mcp.sh
+    command: ${HOME}/.autognosia/scripts/gbrain-mcp.sh
     connect_timeout: 30.0
     enabled: true
 

@@ -17,7 +17,7 @@ import urllib.request
 import urllib.error
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
 
 SERVICES = [
     ("honcho-api", "http://127.0.0.1:8000/health"),

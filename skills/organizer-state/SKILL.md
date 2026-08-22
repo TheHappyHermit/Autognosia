@@ -20,12 +20,12 @@ Two organizer databases exist at the same schema level:
 
 | Database | Path | Extra Tables |
 |----------|------|--------------|
-| personal-organizer | `~/.autognosia/personal-organizer/data/organizer.db` | `reminders` |
-| personal-state | `~/.autognosia/personal-state/data/organizer.db` | — |
+| personal-organizer | `${HOME}/.autognosia/personal-organizer/data/organizer.db` | `reminders` |
+| personal-state | `${HOME}/.autognosia/personal-state/data/organizer.db` | — |
 
 Resolve the path as:
 1. `ORGANIZER_DB_PATH` environment variable (if set)
-2. Default: `~/.autognosia/personal-organizer/data/organizer.db`
+2. Default: `${HOME}/.autognosia/personal-organizer/data/organizer.db`
 
 ### Custom Path Override
 
@@ -59,7 +59,7 @@ import os
 from datetime import datetime, timedelta
 
 db_path = os.environ.get("ORGANIZER_DB_PATH",
-                         os.path.expanduser("~/.autognosia/personal-organizer/data/organizer.db"))
+                         os.path.expanduser("${HOME}/.autognosia/personal-organizer/data/organizer.db"))
 conn = sqlite3.connect(db_path)
 
 # Open tasks
@@ -119,8 +119,8 @@ now = datetime.now()
 yesterday = now - timedelta(hours=24)
 
 dbs = [
-    '~/.autognosia/personal-organizer/data/organizer.db',
-    '~/.autognosia/personal-state/data/organizer.db',
+    '${HOME}/.autognosia/personal-organizer/data/organizer.db',
+    '${HOME}/.autognosia/personal-state/data/organizer.db',
 ]
 
 for db_path in dbs:
@@ -183,7 +183,7 @@ for db_path in dbs:
 from pathlib import Path
 from datetime import timedelta
 
-autognosia = Path("~/.autognosia")
+autognosia = Path("${HOME}/.autognosia")
 active_wiki = autognosia / "active-wiki"
 oracle_brain = autognosia / "oracle" / "brain"
 

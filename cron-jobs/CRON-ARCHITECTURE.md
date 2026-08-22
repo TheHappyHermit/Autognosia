@@ -41,7 +41,7 @@ on_failure: "alert"  # alert | ignore | log
 | 01:00 | Config backup | Script | `backup_config.py` | Git backup of config, profiles, skills, cron |
 | 02:00 | Database backup | Script | `backup_databases.py` | Granular SQLite retention backup (14 daily, 8 weekly, 12 monthly) |
 | 02:30 | Integrity check | Script | `integrity_check.py` | Verify DB consistency, foreign keys, and schema |
-| 03:00 | Full system archive | Script | `autognosia_backup.py` | Compressed `.tar.gz` system archive in `~/backups/` (7-day retention) |
+| 03:00 | Full system archive | Script | `autognosia_backup.py` | Compressed `.tar.gz` system archive in `${HOME}/backups/` (7-day retention) |
 | 03:30 | Oracle index rebuild | Script | `rebuild_oracle_index.py` | Rebuild Oracle search index |
 | 03:00 (Sun) | Wiki lint (deep) | Agent | `wiki-maintenance` | Full wiki audit: orphans, broken links, stale pages |
 | 04:00 | Memory consolidation | Agent | Built-in | Three-tier cascade consolidation pass |

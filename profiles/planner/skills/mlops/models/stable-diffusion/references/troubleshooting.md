@@ -394,7 +394,7 @@ huggingface-cli download stable-diffusion-v1-5/stable-diffusion-v1-5
 **Fix**:
 ```bash
 # Clear cache
-rm -rf ~/.cache/huggingface/hub
+rm -rf ${HOME}/.cache/huggingface/hub
 
 # Or set different cache location
 export HF_HOME=/path/to/cache

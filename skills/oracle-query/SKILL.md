@@ -11,7 +11,7 @@ Search the Oracle knowledge vault and return structured specialist analysis.
 
 1. **Parse request** — Extract question, domain, constraints, and required output format.
 
-2. **Search Oracle vault** — The vault is at `~/.autognosia/oracle/brain\domains\`. Installed domains:
+2. **Search Oracle vault** — The vault is at `${HOME}/.autognosia/oracle/brain\domains\`. Installed domains:
    - `radio-rf/` — SDR tools, radio operators, hardware, Seattle radio (46 files)
    - `cybersecurity/` — Kali OS software (1 file)
    - `financial-planning/` — Empty (awaiting content)
@@ -40,7 +40,7 @@ If the specific domain requested is empty or lacks sufficient information, retur
 ```
 Knowledge not yet installed for this domain.
 Installed domains: radio-rf (47 files), cybersecurity (1 file).
-Please add curated Markdown files to ~/.autognosia/oracle/brain\domains\ or ~/.autognosia/incoming\.
+Please add curated Markdown files to ${HOME}/.autognosia/oracle/brain\domains\ or ${HOME}/.autognosia/incoming\.
 ```
 
 Do not invent an answer when the vault lacks information.

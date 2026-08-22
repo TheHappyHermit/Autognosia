@@ -13,14 +13,14 @@
 **Diagnosis:**
 ```bash
 # Check referenced models
-jq '.agents.defaults.models | keys' ~/.openclaw/openclaw.json
-jq '.agents.list[].model.primary' ~/.openclaw/openclaw.json
+jq '.agents.defaults.models | keys' ${HOME}/.openclaw/openclaw.json
+jq '.agents.list[].model.primary' ${HOME}/.openclaw/openclaw.json
 
 # Check registered providers
-jq '.models.providers | keys' ~/.openclaw/openclaw.json
+jq '.models.providers | keys' ${HOME}/.openclaw/openclaw.json
 
 # Check provider model registry
-jq '.models.providers.google.models[].id' ~/.openclaw/openclaw.json
+jq '.models.providers.google.models[].id' ${HOME}/.openclaw/openclaw.json
 ```
 
 **Fix:** Add missing provider with correct `api` type and model registry entries.

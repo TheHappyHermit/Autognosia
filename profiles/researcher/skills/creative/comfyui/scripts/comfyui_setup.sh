@@ -160,7 +160,7 @@ elif command -v pipx >/dev/null 2>&1; then
     log "Installing comfy-cli via pipx…"
     pipx install comfy-cli >>"$LOG_FILE" 2>&1
     COMFY_BIN="comfy"
-    # pipx adds shims to ~/.local/bin which may need to be on PATH
+    # pipx adds shims to ${HOME}/.local/bin which may need to be on PATH
     if ! command -v comfy >/dev/null 2>&1; then
         if [ -x "$HOME/.local/bin/comfy" ]; then
             export PATH="$HOME/.local/bin:$PATH"
@@ -179,8 +179,8 @@ else
         }
     fi
     # Resolve the actual `comfy` script — pip --user puts it in:
-    #   Linux: ~/.local/bin/comfy
-    #   macOS: ~/Library/Python/<ver>/bin/comfy  OR  ~/.local/bin/comfy
+    #   Linux: ${HOME}/.local/bin/comfy
+    #   macOS: ${HOME}/Library/Python/<ver>/bin/comfy  OR  ${HOME}/.local/bin/comfy
     COMFY_BIN=""
     for candidate in "$HOME/.local/bin/comfy" \
                      "$HOME/Library/Python/3.13/bin/comfy" \

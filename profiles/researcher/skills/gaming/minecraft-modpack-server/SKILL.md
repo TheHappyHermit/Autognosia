@@ -32,8 +32,8 @@ Use sensible defaults if the user doesn't care, but always ask before generating
 
 ### 1. Download & Inspect the Pack
 ```bash
-mkdir -p ~/minecraft-server
-cd ~/minecraft-server
+mkdir -p ${HOME}/minecraft-server
+cd ${HOME}/minecraft-server
 wget -O serverpack.zip "<URL>"
 unzip -o serverpack.zip -d server
 ls server/
@@ -50,7 +50,7 @@ Check the script to determine: mod loader type, version, and required Java versi
 ### 3. Install the Mod Loader
 Most server packs include an install script. Use the INSTALL_ONLY env var to install without launching:
 ```bash
-cd ~/minecraft-server/server
+cd ${HOME}/minecraft-server/server
 ATM10_INSTALL_ONLY=true bash startserver.sh
 # Or for generic Forge packs:
 # java -jar forge-*-installer.jar --installServer
@@ -59,7 +59,7 @@ This downloads libraries, patches the server jar, etc.
 
 ### 4. Accept EULA
 ```bash
-echo "eula=true" > ~/minecraft-server/server/eula.txt
+echo "eula=true" > ${HOME}/minecraft-server/server/eula.txt
 ```
 
 ### 5. Configure server.properties
@@ -128,19 +128,19 @@ Check with: `sudo ufw status | grep 25565`
 
 ### 8. Create Launch Script
 ```bash
-cat > ~/start-minecraft.sh << 'EOF'
+cat > ${HOME}/start-minecraft.sh << 'EOF'
 #!/bin/bash
-cd ~/minecraft-server/server
+cd ${HOME}/minecraft-server/server
 java @user_jvm_args.txt @libraries/net/neoforged/neoforge/<VERSION>/unix_args.txt nogui
 EOF
-chmod +x ~/start-minecraft.sh
+chmod +x ${HOME}/start-minecraft.sh
 ```
 Note: For Forge (not NeoForge), the args file path differs. Check `startserver.sh` for the exact path.
 
 ### 9. Set Up Automated Backups
 Create backup script:
 ```bash
-cat > ~/minecraft-server/backup.sh << 'SCRIPT'
+cat > ${HOME}/minecraft-server/backup.sh << 'SCRIPT'
 #!/bin/bash
 SERVER_DIR="$HOME/minecraft-server/server"
 BACKUP_DIR="$HOME/minecraft-server/backups"
@@ -162,7 +162,7 @@ if [ "$BACKUP_COUNT" -gt "$MAX_BACKUPS" ]; then
 fi
 echo "[BACKUP] Done at $(date)"
 SCRIPT
-chmod +x ~/minecraft-server/backup.sh
+chmod +x ${HOME}/minecraft-server/backup.sh
 ```
 
 Add hourly cron:
@@ -182,6 +182,6 @@ Add hourly cron:
 
 ## Verification
 - `pgrep -fa neoforge` or `pgrep -fa minecraft` to check if running
-- Check logs: `tail -f ~/minecraft-server/server/logs/latest.log`
+- Check logs: `tail -f ${HOME}/minecraft-server/server/logs/latest.log`
 - Look for "Done (Xs)!" in the log = server is ready
 - Test connection: player adds server IP in Multiplayer

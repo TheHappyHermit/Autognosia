@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 verify_stack.py — comprehensive health check for Autognosia deployment.
-Run: ~/personal-agent/bin/verify_stack.py
+Run: ${HOME}/personal-agent/bin/verify_stack.py
 """
 
 import json
@@ -49,7 +49,7 @@ def check_hermes():
 def check_profiles():
     """Check all Autognosia profiles exist."""
     profiles = ["default", "oracle", "researcher", "planner", "auditor", "personal-organizer"]
-    # Check ~/.hermes/ first
+    # Check ${HOME}/.hermes/ first
     if (HOME / ".hermes" / "profiles").exists():
         missing = []
         for p in profiles:
@@ -60,7 +60,7 @@ def check_profiles():
                 if not (HOME / ".hermes" / "profiles" / p).exists():
                     missing.append(p)
         if not missing:
-            return True, f"All {len(profiles)} profiles active in ~/.hermes/profiles/"
+            return True, f"All {len(profiles)} profiles active in ${HOME}/.hermes/profiles/"
     # Fallback to repo root
     repo_missing = [p for p in profiles if not (REPO_ROOT / "profiles" / p).exists()]
     if not repo_missing:
@@ -215,8 +215,8 @@ def check_skills():
     if skills_dir.exists():
         missing = [s for s in expected if not (skills_dir / s / "SKILL.md").exists()]
         if not missing:
-            return True, f"All {len(expected)} Autognosia skills installed in ~/.hermes/skills/"
-        return True, f"{len(expected) - len(missing)}/{len(expected)} Autognosia skills installed in ~/.hermes/skills/"
+            return True, f"All {len(expected)} Autognosia skills installed in ${HOME}/.hermes/skills/"
+        return True, f"{len(expected) - len(missing)}/{len(expected)} Autognosia skills installed in ${HOME}/.hermes/skills/"
     if repo_skills.exists():
         return True, f"All {len(expected)} skills ready in repository (install via scripts/install_skills.py)"
     return False, "Autognosia skills directory not found"

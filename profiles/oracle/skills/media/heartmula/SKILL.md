@@ -34,7 +34,7 @@ HeartMuLa is a family of open-source music foundation models (Apache-2.0) that g
 
 ### 1. Clone Repository
 ```bash
-cd ~/  # or desired directory
+cd ${HOME}/  # or desired directory
 git clone https://github.com/HeartMuLa/heartlib.git
 cd heartlib
 ```

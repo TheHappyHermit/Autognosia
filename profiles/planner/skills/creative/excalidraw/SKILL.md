@@ -44,14 +44,14 @@ Wrap your elements array in the standard `.excalidraw` envelope and save with `w
 }
 ```
 
-Save to any path, e.g. `~/diagrams/my_diagram.excalidraw`.
+Save to any path, e.g. `${HOME}/diagrams/my_diagram.excalidraw`.
 
 ### Uploading for a Shareable Link
 
 Run the upload script (located in this skill's `scripts/` directory) via terminal:
 
 ```bash
-python skills/creative/excalidraw/scripts/upload.py ~/diagrams/my_diagram.excalidraw
+python skills/creative/excalidraw/scripts/upload.py ${HOME}/diagrams/my_diagram.excalidraw
 ```
 
 This uploads to excalidraw.com (no account needed) and prints a shareable URL. Requires the `cryptography` pip package (`pip install cryptography`).

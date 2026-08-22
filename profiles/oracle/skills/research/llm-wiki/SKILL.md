@@ -35,9 +35,9 @@ Use this skill when the user:
 
 ## Wiki Location
 
-**Location:** Set via `WIKI_PATH` environment variable (e.g. in `${HERMES_HOME:-~/.hermes}/.env`).
+**Location:** Set via `WIKI_PATH` environment variable (e.g. in `${HERMES_HOME:-${HOME}/.hermes}/.env`).
 
-If unset, defaults to `~/wiki`.
+If unset, defaults to `${HOME}/wiki`.
 
 ```bash
 WIKI="${WIKI_PATH:-$HOME/wiki}"
@@ -98,7 +98,7 @@ at hand before creating anything new.
 
 When the user asks to create or start a wiki:
 
-1. Determine the wiki path (from `$WIKI_PATH` env var, or ask the user; default `~/wiki`)
+1. Determine the wiki path (from `$WIKI_PATH` env var, or ask the user; default `${HOME}/wiki`)
 2. Create the directory structure above
 3. Ask the user what domain the wiki covers — be specific
 4. Write `SCHEMA.md` customized to the domain (see template below)
@@ -436,7 +436,7 @@ ob login --email <email> --password '<password>'
 ob sync-create-remote --name "LLM Wiki"
 
 # Connect the wiki directory to the vault
-cd ~/wiki
+cd ${HOME}/wiki
 ob sync-setup --vault "<vault-id>"
 
 # Initial sync
@@ -448,7 +448,7 @@ ob sync --continuous
 
 **Continuous background sync via systemd:**
 ```ini
-# ~/.config/systemd/user/obsidian-wiki-sync.service
+# ${HOME}/.config/systemd/user/obsidian-wiki-sync.service
 [Unit]
 Description=Obsidian LLM Wiki Sync
 After=network-online.target
@@ -471,7 +471,7 @@ systemctl --user enable --now obsidian-wiki-sync
 sudo loginctl enable-linger $USER
 ```
 
-This lets the agent write to `~/wiki` on a server while you browse the same
+This lets the agent write to `${HOME}/wiki` on a server while you browse the same
 vault in Obsidian on your laptop/phone — changes appear within seconds.
 
 ## Pitfalls

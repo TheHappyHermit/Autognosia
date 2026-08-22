@@ -11,7 +11,7 @@ import json
 from datetime import datetime, timezone
 
 # Cross-platform home directory
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
 
 DB_PATH = os.environ.get("ORGANIZER_DB", os.path.join(AUTOGNOSIA_HOME, "personal-organizer", "data", "organizer.db"))
 REPORTS_DIR = os.environ.get("INTEGRITY_REPORTS", os.path.join(AUTOGNOSIA_HOME, "personal-organizer", "data", "integrity-reports"))

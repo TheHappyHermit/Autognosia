@@ -232,7 +232,7 @@ This indicates the issue may be outside your immediate control and requires esca
 
 ## See Also
 
-- `references/cron-vault-path-permission-failure.md` — Diagnosing and handling permission failures when cron jobs write to vault/synced paths under `~/Documents/...`
+- `references/cron-vault-path-permission-failure.md` — Diagnosing and handling permission failures when cron jobs write to vault/synced paths under `${HOME}/Documents/...`
 - `references/lmstudio-api-key-mismatch.md` — LMStudio + api_key_env mismatch pattern (401 errors from local model config)
 - `references/cron-output-file-format.md` — Cron output file format, what's logged, and how to estimate run duration
 - `references/cron-output-analysis.md` — Patterns for analyzing cron output files to categorize failure modes at scale (grep-based diagnostics)

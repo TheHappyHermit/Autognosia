@@ -11,7 +11,7 @@ import glob
 from datetime import datetime, timezone
 
 # Cross-platform home directory
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
 BACKUP_ROOT = os.environ.get("BACKUP_ROOT", os.path.join(AUTOGNOSIA_HOME, "backups"))
 DAILY_DIR = os.path.join(BACKUP_ROOT, "daily")
 WEEKLY_DIR = os.path.join(BACKUP_ROOT, "weekly")

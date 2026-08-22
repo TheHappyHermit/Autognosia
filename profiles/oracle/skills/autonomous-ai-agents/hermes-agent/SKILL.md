@@ -201,7 +201,7 @@ Plus exfil patterns checking for secret env vars (`$API_KEY`, `${TOKEN}`, etc.) 
 
 **To fix a blocked cron job:**
 
-1. Check the output file at `~/.hermes/cron/output/<job_id>/` — it shows `Status: BLOCKED` with the matching pattern name
+1. Check the output file at `${HOME}/.hermes/cron/output/<job_id>/` — it shows `Status: BLOCKED` with the matching pattern name
 2. Search for the triggering keyword in the skill attached to the job
 3. Rephrase or remove the triggering content
 4. Trigger a re-run: `cronjob action='run' job_id='...'`
@@ -238,7 +238,7 @@ Key facts:
 - A profile does NOT need its own gateway. Profiles share gateways fine — the gateway just routes messages; the profile config determines which model/personality is used.
 - Separate gateways only matter when you want the profile to receive messages on its own messaging channel (e.g., a dedicated Telegram group for the coder agent).
 - For delegation/subagent work: the target profile is loaded from config + SOUL.md in an isolated session. No gateway needed.
-- The dashboard's `/api/profiles` endpoint dynamically scans `~/.hermes/profiles/` on every request — no restart needed when adding profiles.
+- The dashboard's `/api/profiles` endpoint dynamically scans `${HOME}/.hermes/profiles/` on every request — no restart needed when adding profiles.
 
 **When you DO want a separate gateway:**
 - Dedicated messaging channel (independent Telegram/Discord group)
@@ -359,16 +359,16 @@ Type these during an interactive chat session.
 ## Key Paths & Config
 
 ```
-~/.hermes/config.yaml       Main configuration
-~/.hermes/.env              API keys and secrets
-~/.hermes/skills/           Installed skills
-~/.hermes/sessions/         Session transcripts
-~/.hermes/logs/             Gateway and error logs
-~/.hermes/auth.json         OAuth tokens and credential pools
-~/.hermes/hermes-agent/     Source code (if git-installed)
+${HOME}/.hermes/config.yaml       Main configuration
+${HOME}/.hermes/.env              API keys and secrets
+${HOME}/.hermes/skills/           Installed skills
+${HOME}/.hermes/sessions/         Session transcripts
+${HOME}/.hermes/logs/             Gateway and error logs
+${HOME}/.hermes/auth.json         OAuth tokens and credential pools
+${HOME}/.hermes/hermes-agent/     Source code (if git-installed)
 ```
 
-Profiles use `~/.hermes/profiles/<name>/` with the same layout.
+Profiles use `${HOME}/.hermes/profiles/<name>/` with the same layout.
 
 ### Config Sections
 
@@ -554,10 +554,10 @@ Run additional Hermes processes as fully independent subprocesses — separate s
 ### One-Shot Mode
 
 ```
-terminal(command="hermes chat -q 'Research GRPO papers and write summary to ~/research/grpo.md'", timeout=300)
+terminal(command="hermes chat -q 'Research GRPO papers and write summary to ${HOME}/research/grpo.md'", timeout=300)
 
 # Background for long tasks:
-terminal(command="hermes chat -q 'Set up CI/CD for ~/myapp'", background=true)
+terminal(command="hermes chat -q 'Set up CI/CD for ${HOME}/myapp'", background=true)
 ```
 
 ### Interactive PTY Mode (via tmux)
@@ -648,7 +648,7 @@ terminal(command="tmux new-session -d -s resumed 'hermes --resume 20260225_14305
 ### Gateway issues
 Check logs first:
 ```bash
-grep -i "failed to send\|error" ~/.hermes/logs/gateway.log | tail -20
+grep -i "failed to send\|error" ${HOME}/.hermes/logs/gateway.log | tail -20
 ```
 
 ---
@@ -669,9 +669,9 @@ grep -i "failed to send\|error" ~/.hermes/logs/gateway.log | tail -20
 | Memory | `hermes memory status` or [Memory docs](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory) |
 | Env variables | `hermes config env-path` or [Env vars reference](https://hermes-agent.nousresearch.com/docs/reference/environment-variables) |
 | CLI commands | `hermes --help` or [CLI reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands) |
-| Gateway logs | `~/.hermes/logs/gateway.log` |
-| Session files | `~/.hermes/sessions/` or `hermes sessions browse` |
-| Source code | `~/.hermes/hermes-agent/` |
+| Gateway logs | `${HOME}/.hermes/logs/gateway.log` |
+| Session files | `${HOME}/.hermes/sessions/` or `hermes sessions browse` |
+| Source code | `${HOME}/.hermes/hermes-agent/` |
 
 ---
 
@@ -702,7 +702,7 @@ hermes-agent/
 └── website/              # Docusaurus docs site
 ```
 
-Config: `~/.hermes/config.yaml` (settings), `~/.hermes/.env` (API keys).
+Config: `${HOME}/.hermes/config.yaml` (settings), `${HOME}/.hermes/.env` (API keys).
 
 ### Adding a Tool (3 files)
 
@@ -732,7 +732,7 @@ registry.register(
 
 **3. Add to `toolsets.py`** → `_HERMES_CORE_TOOLS` list.
 
-All handlers must return JSON strings. Use `get_hermes_home()` for paths, never hardcode `~/.hermes`.
+All handlers must return JSON strings. Use `get_hermes_home()` for paths, never hardcode `${HOME}/.hermes`.
 
 ### Adding a Slash Command
 
@@ -762,7 +762,7 @@ python -m pytest tests/ -o 'addopts=' -q   # Full suite
 python -m pytest tests/tools/ -q            # Specific area
 ```
 
-- Tests auto-redirect `HERMES_HOME` to temp dirs — never touch real `~/.hermes/`
+- Tests auto-redirect `HERMES_HOME` to temp dirs — never touch real `${HOME}/.hermes/`
 - Run full suite before pushing any change
 - Use `-o 'addopts='` to clear any baked-in pytest flags
 

@@ -368,7 +368,7 @@ ollama run mymodel "Hello!"
 
 ### LM Studio
 
-1. Place GGUF file in `~/.cache/lm-studio/models/`
+1. Place GGUF file in `${HOME}/.cache/lm-studio/models/`
 2. Open LM Studio and select the model
 3. Configure context length and GPU offload
 4. Start inference

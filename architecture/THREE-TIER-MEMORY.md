@@ -95,16 +95,16 @@ When hot memory exceeds ~80% capacity (~1760/2200 characters), consolidation is 
 
 ```bash
 # Build graph from wiki
-graphify extract ~/.autognosia/active-wiki --out ~/.autognosia/graphify-main-out
+graphify extract ${HOME}/.autognosia/active-wiki --out ${HOME}/.autognosia/graphify-main-out
 
 # Query relationships
-graphify query "How does X connect to Y?" --graph ~/.autognosia/graphify-main-out
+graphify query "How does X connect to Y?" --graph ${HOME}/.autognosia/graphify-main-out
 
 # Explain a concept
-graphify explain "concept name" --graph ~/.autognosia/graphify-main-out
+graphify explain "concept name" --graph ${HOME}/.autognosia/graphify-main-out
 
 # Find path between nodes
-graphify path "NodeA" "NodeB" --graph ~/.autognosia/graphify-main-out
+graphify path "NodeA" "NodeB" --graph ${HOME}/.autognosia/graphify-main-out
 ```
 
 ---

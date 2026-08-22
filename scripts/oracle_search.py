@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Oracle Search — literal text search against ~/personal-agent/oracle/brain
+Oracle Search — literal text search against ${HOME}/personal-agent/oracle/brain
 using ripgrep. Read-only.
 """
 
@@ -8,7 +8,7 @@ import sys
 import subprocess
 import os
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
 BRAIN_DIR = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
 
 def search(query: str, case_sensitive: bool = False, title_only: bool = False,

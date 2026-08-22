@@ -121,20 +121,20 @@ cd /tmp/hermes-restore
 git config --local credential.helper '!f() { echo "username=<user>"; echo "password=$(gh auth token)"; }; f'
 
 # 2. Restore skills
-rsync -a /tmp/hermes-restore/skills/ ~/.hermes/skills/
+rsync -a /tmp/hermes-restore/skills/ ${HOME}/.hermes/skills/
 
 # 3. Restore config (REVIEW FIRST - merge don't blindly overwrite)
-# Compare: diff /tmp/hermes-restore/config/config.yaml ~/.hermes/config.yaml
-cp /tmp/hermes-restore/config/config.yaml ~/.hermes/config.yaml
+# Compare: diff /tmp/hermes-restore/config/config.yaml ${HOME}/.hermes/config.yaml
+cp /tmp/hermes-restore/config/config.yaml ${HOME}/.hermes/config.yaml
 
 # 4. Restore SOUL.md
-cp /tmp/hermes-restore/config/SOUL.md ~/.hermes/SOUL.md
+cp /tmp/hermes-restore/config/SOUL.md ${HOME}/.hermes/SOUL.md
 
 # 5. Restore memory system
-cp /tmp/hermes-restore/memory-system/memories.db ~/.hermes/memory_enhancement/ 2>/dev/null || true
+cp /tmp/hermes-restore/memory-system/memories.db ${HOME}/.hermes/memory_enhancement/ 2>/dev/null || true
 
 # 6. Restore scripts
-rsync -a /tmp/hermes-restore/scripts/ ~/.hermes/scripts/ 2>/dev/null || true
+rsync -a /tmp/hermes-restore/scripts/ ${HOME}/.hermes/scripts/ 2>/dev/null || true
 
 # 7. Restart Hermes Agent
 ```
@@ -143,13 +143,13 @@ rsync -a /tmp/hermes-restore/scripts/ ~/.hermes/scripts/ 2>/dev/null || true
 
 ```bash
 # Count skills loaded
-find ~/.hermes/skills -name "SKILL.md" | wc -l
+find ${HOME}/.hermes/skills -name "SKILL.md" | wc -l
 
 # Verify config parses
 python3 -c "import yaml; yaml.safe_load(open('$HOME/.hermes/config.yaml'))" && echo "Config OK"
 
 # Check memory
-ls ~/.hermes/memory_enhancement/memories.db 2>/dev/null && echo "Memory DB present"
+ls ${HOME}/.hermes/memory_enhancement/memories.db 2>/dev/null && echo "Memory DB present"
 ```
 
 ## What to Do After Restore
@@ -175,17 +175,17 @@ ls ~/.hermes/memory_enhancement/memories.db 2>/dev/null && echo "Memory DB prese
 
 ## Extended Backup: OpenClaw & Paperclip
 
-### OpenClaw Customizations (`~/.openclaw/`)
+### OpenClaw Customizations (`${HOME}/.openclaw/`)
 ```bash
 # Target repo: private GitHub repo
 gh repo create <user>/openclaw-customizations --private --clone
 cd /tmp/openclaw-customizations
 
 # 19 plugin skills + 8 agent workspaces
-rsync -a ~/.openclaw/skills/ skills/ --exclude='.clawhub' --exclude='.git' --exclude='*.crate' --exclude='clap-*'
-rsync -a ~/.openclaw/agents/ agents/ --exclude='.env' --exclude='qmd/' --exclude='memory/' --exclude='logs/' --exclude='sessions/' --exclude='.git/' --exclude='.cleaned_memory/' --exclude='.openclaw/' --exclude='.mcp.json'
-cp ~/.openclaw/openclaw.json .
-rsync -a ~/.openclaw/credentials/ agents/credentials/
+rsync -a ${HOME}/.openclaw/skills/ skills/ --exclude='.clawhub' --exclude='.git' --exclude='*.crate' --exclude='clap-*'
+rsync -a ${HOME}/.openclaw/agents/ agents/ --exclude='.env' --exclude='qmd/' --exclude='memory/' --exclude='logs/' --exclude='sessions/' --exclude='.git/' --exclude='.cleaned_memory/' --exclude='.openclaw/' --exclude='.mcp.json'
+cp ${HOME}/.openclaw/openclaw.json .
+rsync -a ${HOME}/.openclaw/credentials/ agents/credentials/
 ```
 
 ### Paperclip Customizations
@@ -194,10 +194,10 @@ rsync -a ~/.openclaw/credentials/ agents/credentials/
 gh repo create <user>/paperclip-customizations --private --clone
 cd /tmp/paperclip-customizations
 mkdir -p skills
-rsync -av ~/paperclip/skills/paperclip-board/ skills/
-rsync -av ~/paperclip/skills/paperclip-converting-plans-to-tasks/ skills/
-rsync -av ~/paperclip/skills/paperclip-create-agent/ skills/
-rsync -av ~/paperclip/skills/para-memory-files/ skills/
+rsync -av ${HOME}/paperclip/skills/paperclip-board/ skills/
+rsync -av ${HOME}/paperclip/skills/paperclip-converting-plans-to-tasks/ skills/
+rsync -av ${HOME}/paperclip/skills/paperclip-create-agent/ skills/
+rsync -av ${HOME}/paperclip/skills/para-memory-files/ skills/
 
 # Option B: Full fork with Hermes adapters (current setup)
 # The feat/externalize-hermes-adapter branch was merged into master in paperclipai/paperclip

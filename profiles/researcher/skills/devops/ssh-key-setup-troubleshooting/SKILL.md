@@ -46,7 +46,7 @@ icacls "$env:USERPROFILE\.ssh\your_server_key" /inheritance:r /grant:r "${env:US
 Host your-server-alias
     HostName your.server.ip.address
     User your_username
-    IdentityFile ~/.ssh/your_server_key
+    IdentityFile ${HOME}/.ssh/your_server_key
     ServerAliveInterval 60
 '@ | Set-Content "$env:USERPROFILE\.ssh\config" -Encoding ASCII
 ```
@@ -61,24 +61,24 @@ ssh -v your-server-alias
 ### macOS/Linux Equivalent Steps:
 ```bash
 # Create .ssh directory
-mkdir -p ~/.ssh
+mkdir -p ${HOME}/.ssh
 
 # Save private key (paste key content)
-cat > ~/.ssh/your_server_key << 'EOF'
+cat > ${HOME}/.ssh/your_server_key << 'EOF'
 -----BEGIN OPENSSH PRIVATE KEY-----
 [YOUR_PRIVATE_KEY_HERE]
 -----END OPENSSH PRIVATE KEY-----
 EOF
 
 # Set permissions (Linux/macOS requires 600)
-chmod 600 ~/.ssh/your_server_key
+chmod 600 ${HOME}/.ssh/your_server_key
 
 # Create SSH config
-cat > ~/.ssh/config << EOF
+cat > ${HOME}/.ssh/config << EOF
 Host your-server-alias
     HostName your.server.ip.address
     User your_username
-    IdentityFile ~/.ssh/your_server_key
+    IdentityFile ${HOME}/.ssh/your_server_key
     ServerAliveInterval 60
 EOF
 
@@ -107,7 +107,7 @@ ssh -v your-server-alias
 - **Solution**:
   - Verify private key permissions (600 on Linux/macOS, restricted to user on Windows)
   - Ensure you're using the correct private key that matches the server's authorized_keys
-  - Check server's `~/.ssh/authorized_keys` contains your public key
+  - Check server's `${HOME}/.ssh/authorized_keys` contains your public key
   - Try verbose mode: `ssh -v` to see which keys are being offered
 
 ### 4. Timeout or no response
@@ -140,7 +140,7 @@ ls -la /usr/share/nginx/html/
 - Never share private keys via chat, email, or insecure channels
 - Private keys should remain on your local machine only
 - Consider using `ssh-agent` for managing multiple keys
-- Regularly audit `~/.ssh/authorized_keys` on servers
+- Regularly audit `${HOME}/.ssh/authorized_keys` on servers
 - Disable password authentication on servers when possible (use key-only auth)
 
 ## Troubleshooting Workflow

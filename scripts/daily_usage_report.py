@@ -14,7 +14,7 @@ import json
 import sys
 from datetime import datetime, timedelta
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
 LOGS_DIR = os.path.join(AUTOGNOSIA_HOME, "logs")
 USAGE_DB = os.environ.get("USAGE_DB", os.path.join(AUTOGNOSIA_HOME, "personal-organizer", "data", "usage.json"))
 

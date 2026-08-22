@@ -458,7 +458,7 @@ def main(argv: list[str] | None = None) -> int:
         if report.get("rosetta"):
             print("Env:       Rosetta (x86_64 Python on Apple Silicon)")
         print(f"RAM:       {report['system_ram_gb']} GB")
-        print(f"Free disk: {report['free_disk_gb']} GB (~/)")
+        print(f"Free disk: {report['free_disk_gb']} GB (${HOME}/)")
         if report["gpu"]:
             g = report["gpu"]
             if g["vendor"] == "apple":

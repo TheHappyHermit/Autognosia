@@ -42,7 +42,7 @@ terminal(command="opencode --version")
 If needed, pin an explicit binary path:
 
 ```
-terminal(command="$HOME/.opencode/bin/opencode run '...'", workdir="~/project", pty=true)
+terminal(command="$HOME/.opencode/bin/opencode run '...'", workdir="${HOME}/project", pty=true)
 ```
 
 ## One-Shot Tasks
@@ -50,25 +50,25 @@ terminal(command="$HOME/.opencode/bin/opencode run '...'", workdir="~/project", 
 Use `opencode run` for bounded, non-interactive tasks:
 
 ```
-terminal(command="opencode run 'Add retry logic to API calls and update tests'", workdir="~/project")
+terminal(command="opencode run 'Add retry logic to API calls and update tests'", workdir="${HOME}/project")
 ```
 
 Attach context files with `-f`:
 
 ```
-terminal(command="opencode run 'Review this config for security issues' -f config.yaml -f .env.example", workdir="~/project")
+terminal(command="opencode run 'Review this config for security issues' -f config.yaml -f .env.example", workdir="${HOME}/project")
 ```
 
 Show model thinking with `--thinking`:
 
 ```
-terminal(command="opencode run 'Debug why tests fail in CI' --thinking", workdir="~/project")
+terminal(command="opencode run 'Debug why tests fail in CI' --thinking", workdir="${HOME}/project")
 ```
 
 Force a specific model:
 
 ```
-terminal(command="opencode run 'Refactor auth module' --model openrouter/anthropic/claude-sonnet-4", workdir="~/project")
+terminal(command="opencode run 'Refactor auth module' --model openrouter/anthropic/claude-sonnet-4", workdir="${HOME}/project")
 ```
 
 ## Interactive Sessions (Background)
@@ -76,7 +76,7 @@ terminal(command="opencode run 'Refactor auth module' --model openrouter/anthrop
 For iterative work requiring multiple exchanges, start the TUI in background:
 
 ```
-terminal(command="opencode", workdir="~/project", background=true, pty=true)
+terminal(command="opencode", workdir="${HOME}/project", background=true, pty=true)
 # Returns session_id
 
 # Send a prompt
@@ -115,8 +115,8 @@ process(action="kill", session_id="<id>")
 After exiting, OpenCode prints a session ID. Resume with:
 
 ```
-terminal(command="opencode -c", workdir="~/project", background=true, pty=true)  # Continue last session
-terminal(command="opencode -s ses_abc123", workdir="~/project", background=true, pty=true)  # Specific session
+terminal(command="opencode -c", workdir="${HOME}/project", background=true, pty=true)  # Continue last session
+terminal(command="opencode -s ses_abc123", workdir="${HOME}/project", background=true, pty=true)  # Specific session
 ```
 
 ## Common Flags
@@ -152,7 +152,7 @@ terminal(command="opencode -s ses_abc123", workdir="~/project", background=true,
 OpenCode has a built-in PR command:
 
 ```
-terminal(command="opencode pr 42", workdir="~/project", pty=true)
+terminal(command="opencode pr 42", workdir="${HOME}/project", pty=true)
 ```
 
 Or review in a temporary clone for isolation:

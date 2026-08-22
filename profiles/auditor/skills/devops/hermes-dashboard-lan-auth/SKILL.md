@@ -17,10 +17,10 @@ restart counter climbs fast) with
 `Refusing to bind dashboard to 0.0.0.0 — the auth gate engages on non-loopback binds, but no auth providers are registered.`
 
 ### Fix (bind 0.0.0.0)
-1. Set creds via the CLI — direct edits to `~/.hermes/config.yaml` are BLOCKED
+1. Set creds via the CLI — direct edits to `${HOME}/.hermes/config.yaml` are BLOCKED
    by a safety guard, so never `write_file`/`patch` it:
    ```bash
-   cd ~/.hermes/hermes-agent
+   cd ${HOME}/.hermes/hermes-agent
    venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.username josh434
    venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.password_hash "<scrypt-hash>"
    venv/bin/python -m hermes_cli.main plugins enable basic   # REQUIRED; not on by default

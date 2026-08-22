@@ -16,9 +16,9 @@ This skill provides a systematic approach to troubleshooting the Hermes newslett
 - The cron job for newsletter delivery is failing
 
 ## Prerequisites
-- Access to the Hermes environment (`~/.hermes/`)
+- Access to the Hermes environment (`${HOME}/.hermes/`)
 - Basic understanding of the newsletter builder script location and purpose
-- Required API keys in `~/.hermes/.env` (FRESHRSS credentials, OPENROUTER_API_KEY, JINA_API_KEY)
+- Required API keys in `${HOME}/.hermes/.env` (FRESHRSS credentials, OPENROUTER_API_KEY, JINA_API_KEY)
 
 ## Step-by-Step Troubleshooting Procedure
 
@@ -36,7 +36,7 @@ curl -sk -o /dev/null -w "%{http_code}" "https://10.1.1.10/" \
 Start with the smallest possible workload to verify basic functionality:
 
 ```bash
-MAX_ARTICLES=5 LOOKBACK_HOURS=1 ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py
+MAX_ARTICLES=5 LOOKBACK_HOURS=1 ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py
 ```
 
 **Expected Outcome**: Should complete within 30 seconds and show processing of articles.
@@ -45,7 +45,7 @@ MAX_ARTICLES=5 LOOKBACK_HOURS=1 ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/
 
 #### Check Environment Variables
 ```bash
-source ~/.hermes/.env
+source ${HOME}/.hermes/.env
 echo "FRESHRSS_URL: $FRESHRSS_URL"
 echo "FRESHRSS_USERNAME: $FRESHRSS_USERNAME"
 echo "FRESHRSS_API_PASSWORD set: [${#FRESHRSS_API_PASSWORD} chars]"
@@ -90,7 +90,7 @@ This indicates the script is working but finding previously processed articles.
 
 ### 5. Gradually Increase Scope
 ```bash
-MAX_ARTICLES=10 LOOKBACK_HOURS=6 ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py
+MAX_ARTICLES=10 LOOKBACK_HOURS=6 ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py
 MAX_ARTICLES=25 LOOKBACK_HOURS=12 ...
 MAX_ARTICLES=25 LOOKBACK_HOURS=24 ...
 ```
@@ -102,7 +102,7 @@ MAX_ARTICLES=25 LOOKBACK_HOURS=24 ...
 
 **Root Cause**: The FreshRSS API returns articles **oldest first** by default. If the `"r": "n"` (newest first) parameter is missing from the `/reader/api/0/stream/contents/*` request, the first 200 items returned will be the oldest unread articles in the system.
 
-**Fix**: In `~/.hermes/scripts/newsletter_builder.py`, ensure the fetch call includes `"r": "n"`:
+**Fix**: In `${HOME}/.hermes/scripts/newsletter_builder.py`, ensure the fetch call includes `"r": "n"`:
 ```python
 params={
     "n": max_articles * 4,
@@ -134,16 +134,16 @@ See `freshrss-integration` skill's `references/newsletter-builder-categorization
 
 **Diagnosis**:
 ```bash
-source ~/.hermes/.env
+source ${HOME}/.hermes/.env
 curl -s https://openrouter.ai/api/v1/auth/key \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   | python3 -m json.tool | grep -E '"limit"|"limit_remaining"|"usage"'
 ```
 
-**Fix**: OpenRouter default keys have a $10 total credit limit. When exhausted, the script falls back to extracted-article text truncation. To restore LLM summaries, either (a) top up the OpenRouter key, or (b) change `model.default` in `~/.hermes/config.yaml` to a free model — the script reads the default model at runtime via `_get_default_model()`, so it follows the config automatically. **Do NOT re-hardcode a model string in the Python** (the old `model="openai/gpt-4o-mini"` line is gone).
+**Fix**: OpenRouter default keys have a $10 total credit limit. When exhausted, the script falls back to extracted-article text truncation. To restore LLM summaries, either (a) top up the OpenRouter key, or (b) change `model.default` in `${HOME}/.hermes/config.yaml` to a free model — the script reads the default model at runtime via `_get_default_model()`, so it follows the config automatically. **Do NOT re-hardcode a model string in the Python** (the old `model="openai/gpt-4o-mini"` line is gone).
 
 #### Model & Provider Routing (current design)
-`newsletter_builder.py` and `newsletter_builder_v2.py` no longer hardcode a model. `summarize_content()` calls `_get_default_model(openrouter_key)`, which reads `model.default` / `model.provider` from `~/.hermes/config.yaml` and routes through `https://openrouter.ai/api/v1` with `OPENROUTER_API_KEY`.
+`newsletter_builder.py` and `newsletter_builder_v2.py` no longer hardcode a model. `summarize_content()` calls `_get_default_model(openrouter_key)`, which reads `model.default` / `model.provider` from `${HOME}/.hermes/config.yaml` and routes through `https://openrouter.ai/api/v1` with `OPENROUTER_API_KEY`.
 
 **Why OpenRouter, not Nous:** the agent itself authenticates to Nous via OAuth (no key needed), but a **standalone OpenAI-SDK script cannot perform OAuth**. So it must use the OpenRouter key with the configured model *name* (e.g. `tencent/hy3:free`, available on OpenRouter). Do NOT point these scripts at the Nous base URL or a `NOUS_API_KEY` — that fails auth.
 
@@ -185,12 +185,12 @@ A successful run produces:
 ```bash
 journalctl --user -u cron --since "1 hour ago"   # Check cron logs
 ```
-Cron command should be: `MAX_ARTICLES=25 LOOKBACK_HOURS=24 ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py`
+Cron command should be: `MAX_ARTICLES=25 LOOKBACK_HOURS=24 ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py`
 
 **Cron model-pin audit** — if delivery fails with rate-limit errors, the job's `model` field may be hardcoded to a rate-limited free model (e.g. `nvidia/nemotron-3-ultra-550b-a55b:free`, 32-worker limit) that bypasses the user's documented fallback-avoidance rules. Verify and re-pin to the Hermes default (see "Pitfall: Cron job model pin bypasses fallback-avoidance rules" above).
 
 ### 9. Performance Optimization
-- Cache in `~/.hermes/newsletter_cache.db` auto-expires
+- Cache in `${HOME}/.hermes/newsletter_cache.db` auto-expires
 - Jina API key helps with blocked domains but has rate limits
 - Adjust FETCH_TIMEOUT / READ_TIMEOUT constants in the script for slow networks
 
@@ -204,7 +204,7 @@ Cron command should be: `MAX_ARTICLES=25 LOOKBACK_HOURS=24 ~/.hermes/newsletter_
 ```bash
 ps aux | grep newsletter_builder
 pkill -f newsletter_builder.py
-sqlite3 ~/.hermes/newsletter_cache.db "DELETE FROM article_cache WHERE expires_at < $(date +%s);"
+sqlite3 ${HOME}/.hermes/newsletter_cache.db "DELETE FROM article_cache WHERE expires_at < $(date +%s);"
 ```
 
 ## Related Skills

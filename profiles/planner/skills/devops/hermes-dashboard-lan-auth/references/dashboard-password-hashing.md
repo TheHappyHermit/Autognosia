@@ -7,7 +7,7 @@ silent login failure. Always pass the password through an environment variable.
 
 ## Hash a password (safe — no shell interpolation)
 ```bash
-cd ~/.hermes/hermes-agent
+cd ${HOME}/.hermes/hermes-agent
 PW='J1234osh$' venv/bin/python -c \
   "from plugins.dashboard_auth.basic import hash_password, os; print(hash_password(os.environ['PW']))"
 ```

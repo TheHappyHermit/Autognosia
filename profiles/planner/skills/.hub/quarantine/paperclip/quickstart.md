@@ -21,9 +21,9 @@ Default local storage paths:
 
 | Item | Path |
 |------|------|
-| Config | `~/.paperclip/instances/default/config.json` |
-| Storage | `~/.paperclip/instances/default/data/storage` |
-| Logs | `~/.paperclip/instances/default/logs` |
+| Config | `${HOME}/.paperclip/instances/default/config.json` |
+| Storage | `${HOME}/.paperclip/instances/default/data/storage` |
+| Logs | `${HOME}/.paperclip/instances/default/logs` |
 
 ## Isolated Sandbox Instance
 

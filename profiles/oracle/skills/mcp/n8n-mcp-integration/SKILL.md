@@ -19,7 +19,7 @@ The n8n MCP server exposes the full n8n Workflow SDK as MCP tools, allowing prog
 - native-mcp skill loaded
 
 ## Configuration
-The n8n MCP server should be configured in ~/.hermes/config.yaml:
+The n8n MCP server should be configured in ${HOME}/.hermes/config.yaml:
 ```yaml
 mcp_servers:
   n8n-mcp:

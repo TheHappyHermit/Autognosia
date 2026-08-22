@@ -42,7 +42,7 @@ SCRIPT="$HOME/.agent-skills/hamelnb/skills/jupyter-live-kernel/scripts/jupyter_l
 
 If not cloned yet:
 ```
-git clone https://github.com/hamelsmu/hamelnb.git ~/.agent-skills/hamelnb
+git clone https://github.com/hamelsmu/hamelnb.git ${HOME}/.agent-skills/hamelnb
 ```
 
 ### Starting JupyterLab
@@ -65,7 +65,7 @@ Note: Token/password disabled for local agent access. The server runs headless.
 
 If you just need a REPL (no existing notebook), create a minimal notebook file:
 ```
-mkdir -p ~/notebooks
+mkdir -p ${HOME}/notebooks
 ```
 Write a minimal .ipynb JSON file with one empty code cell, then start a kernel
 session via the Jupyter REST API:

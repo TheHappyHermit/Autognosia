@@ -481,8 +481,8 @@ Template Setup Checklist:
 
 ```bash
 # Create your paper directory with the complete template
-cp -r templates/neurips2025/ ~/papers/my-new-paper/
-cd ~/papers/my-new-paper/
+cp -r templates/neurips2025/ ${HOME}/papers/my-new-paper/
+cd ${HOME}/papers/my-new-paper/
 
 # Verify structure is complete
 ls -la

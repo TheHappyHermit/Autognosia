@@ -2,7 +2,7 @@
 
 ## What's in the Output Files
 
-Cron output files in `~/.hermes/cron/output/<job_id>/` contain:
+Cron output files in `${HOME}/.hermes/cron/output/<job_id>/` contain:
 - **Start time** (e.g., `2026-05-22_08-41-21.md`)
 - The assembled prompt
 - The agent's response/output
@@ -18,8 +18,8 @@ Cron output files in `~/.hermes/cron/output/<job_id>/` contain:
 
 ```bash
 # Count successful vs failed runs in a date range
-grep -c "FAILED" ~/.hermes/cron/output/<job_id>/2026-05-22_*.md  # failed count
-grep -L "FAILED" ~/.hermes/cron/output/<job_id>/2026-05-22_*.md  # list successful files
+grep -c "FAILED" ${HOME}/.hermes/cron/output/<job_id>/2026-05-22_*.md  # failed count
+grep -L "FAILED" ${HOME}/.hermes/cron/output/<job_id>/2026-05-22_*.md  # list successful files
 ```
 
 ## Estimating Run Duration (Workaround)
@@ -50,6 +50,6 @@ Or better: add a `duration` field to the output template in the cron job config 
 
 ## Key Files to Know
 
-- `~/.hermes/cron/output/<job_id>/` — raw output files per run
-- `~/.hermes/cron/<job_id>.yaml` — cron job config (schedule, model, etc.)
+- `${HOME}/.hermes/cron/output/<job_id>/` — raw output files per run
+- `${HOME}/.hermes/cron/<job_id>.yaml` — cron job config (schedule, model, etc.)
 - Cron job status via `cronjob action='list'` — shows last_status, last_run_at, next_run_at

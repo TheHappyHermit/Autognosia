@@ -15,14 +15,14 @@ This skill covers setting up external memory providers (primarily **Honcho**) as
 
 ## Overview
 
-Hermes Agent supports multiple memory backends via plugins. The default is built-in session memory (stored in `~/.hermes/state.db`). For true cross-session persistence with semantic recall, external backends like **Honcho** are required.
+Hermes Agent supports multiple memory backends via plugins. The default is built-in session memory (stored in `${HOME}/.hermes/state.db`). For true cross-session persistence with semantic recall, external backends like **Honcho** are required.
 
 ## Prerequisites
 
 - Docker Desktop (Windows/Mac) or Docker Engine (Linux)
 - OpenRouter API key (for LLM) or local Ollama
 - ~3GB free RAM if using local Ollama models
-- `HONCHO_API_KEY` set in `~/.hermes/.env` (can be dummy value for local Honcho with auth disabled)
+- `HONCHO_API_KEY` set in `${HOME}/.hermes/.env` (can be dummy value for local Honcho with auth disabled)
 
 ## Step-by-Step: Honcho Memory Backend
 
@@ -87,7 +87,7 @@ hermes config set honcho.workspace hermes-memory
 hermes config set honcho.api_key " "  # dummy value for auth-disabled local
 
 # Add dummy key to .env
-echo "HONCHO_API_KEY= " >> ~/.hermes/.env
+echo "HONCHO_API_KEY= " >> ${HOME}/.hermes/.env
 
 # Verify
 hermes memory status
@@ -113,7 +113,7 @@ hermes chat -q "What's my favorite color?"
 | `ValidationError: USE_AUTH Input should be boolean` | `.env` has comments merged into values → recreate `.env` cleanly |
 | `AuthenticationError` on chat | No valid LLM key → check `.env` LLM_OPENAI_API_KEY |
 | `BadRequestError` on chat | Model doesn't support tools → use `nvidia/nemotron-3-ultra-550b-a55b:free` |
-| Honcho status shows "Missing HONCHO_API_KEY" | Add dummy key: `echo "HONCHO_API_KEY= " >> ~/.hermes/.env` |
+| Honcho status shows "Missing HONCHO_API_KEY" | Add dummy key: `echo "HONCHO_API_KEY= " >> ${HOME}/.hermes/.env` |
 | Graphify processes consuming LM Studio | `powershell -Command "Stop-Process -Id <PIDs> -Force"` |
 
 ## Hybrid LLM Configuration Pattern

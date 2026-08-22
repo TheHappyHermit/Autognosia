@@ -31,8 +31,8 @@ Set up LiteLLM as a Docker container to serve as a centralized API proxy for mul
 
 ### 1. Create Directory Structure
 ```bash
-mkdir -p ~/litellm-proxy/{config,models,logs,data}
-cd ~/litellm-proxy
+mkdir -p ${HOME}/litellm-proxy/{config,models,logs,data}
+cd ${HOME}/litellm-proxy
 ```
 
 ### 2. Create Environment File (.env)

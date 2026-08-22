@@ -7,12 +7,12 @@ version: "1.0"
 # Honcho Memory Migration
 
 ## User Preference
-- User wants to TEST Honcho before committing to migration from sqlite memory system (~/.hermes/memory_enhancement/memories.db)
+- User wants to TEST Honcho before committing to migration from sqlite memory system (${HOME}/.hermes/memory_enhancement/memories.db)
 - Always verify basic operations (workspace, peer, session, message creation) before attempting migration
 - User prefers methodical verification at each step
 
 ## Current SQLite Memory System
-- Location: ~/.hermes/memory_enhancement/memories.db
+- Location: ${HOME}/.hermes/memory_enhancement/memories.db
 - Contains user profile data, environment facts, preferences, and stable conventions
 - User explicitly prefers this over Honcho due to its zero-dependency, offline-capable, private nature
 - Do NOT suggest migration unless specifically requested
@@ -48,18 +48,18 @@ Create a `deriver` service in addition to the server:
 ### 2. Fix config.py defaults before building
 The `src/config.py` source has medium/high/max dialectic levels defaulting to "anthropic". Change them to "google" to work with Gemini:
 ```bash
-cd ~/honcho && sed -i 's/PROVIDER="anthropic",/PROVIDER="google",/g' src/config.py
+cd ${HOME}/honcho && sed -i 's/PROVIDER="anthropic",/PROVIDER="google",/g' src/config.py
 ```
 Note: The `config.py` file contains `***` values for THINKING_BUDGET_TOKENS — these are content-filter redacted in the source but actually valid integers. `config.py` loads fine despite appearing broken.
 
 ### 3. Run migrations
 ```bash
-cd ~/honcho && docker compose exec server alembic upgrade head
+cd ${HOME}/honcho && docker compose exec server alembic upgrade head
 ```
 
 ### 4. Start all services
 ```bash
-cd ~/honcho && docker compose up -d --build
+cd ${HOME}/honcho && docker compose up -d --build
 ```
 
 ## Testing Checklist

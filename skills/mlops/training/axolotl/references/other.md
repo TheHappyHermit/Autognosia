@@ -928,7 +928,7 @@ Make sure the main machine is reachable by other machines.
 
 You will need to create a configuration for accelerate, either by using accelerate config and follow the instructions or you can use one of the preset below:
 
-~/.cache/huggingface/accelerate/default_config.yaml
+${HOME}/.cache/huggingface/accelerate/default_config.yaml
 
 Configure your model to use FSDP in the Axolotl yaml. For example:
 

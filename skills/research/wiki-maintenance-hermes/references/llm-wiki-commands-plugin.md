@@ -1,9 +1,9 @@
 # LLM Wiki Commands Plugin
 
-User plugin providing slash commands for the LLM Wiki at `~/.autognosia/active-wiki`.
+User plugin providing slash commands for the LLM Wiki at `${HOME}/.autognosia/active-wiki`.
 
 ## Location
-`~/.hermes/plugins/llm-wiki-commands/`
+`${HOME}/.hermes/plugins/llm-wiki-commands/`
 
 ## Files
 - `plugin.yaml` — manifest with 3 commands
@@ -16,7 +16,7 @@ Ingest a source into the LLM Wiki.
 
 **Source types:**
 - URL: `https://arxiv.org/abs/2402.03300`
-- Local file: `~/paper.pdf`, `/path/to/file.md`
+- Local file: `${HOME}/paper.pdf`, `/path/to/file.md`
 - Raw text: `"GRPO is a new RL algorithm..."`
 
 **Auto-operations:**

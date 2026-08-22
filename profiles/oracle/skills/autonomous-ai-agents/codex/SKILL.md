@@ -33,15 +33,15 @@ Requires the codex CLI and a git repository.
 - Use `pty=true` in terminal calls — Codex is an interactive terminal app
 
 For Hermes itself, `model.provider: openai-codex` uses Hermes-managed Codex
-OAuth from `~/.hermes/auth.json` after `hermes auth add openai-codex`. For the
+OAuth from `${HOME}/.hermes/auth.json` after `hermes auth add openai-codex`. For the
 standalone Codex CLI, a valid CLI OAuth session may live under
-`~/.codex/auth.json`; do not treat a missing `OPENAI_API_KEY` alone as proof
+`${HOME}/.codex/auth.json`; do not treat a missing `OPENAI_API_KEY` alone as proof
 that Codex auth is missing.
 
 ## One-Shot Tasks
 
 ```
-terminal(command="codex exec 'Add dark mode toggle to settings'", workdir="~/project", pty=true)
+terminal(command="codex exec 'Add dark mode toggle to settings'", workdir="${HOME}/project", pty=true)
 ```
 
 For scratch work (Codex needs a git repo):
@@ -53,7 +53,7 @@ terminal(command="cd $(mktemp -d) && git init && codex exec 'Build a snake game 
 
 ```
 # Start in background with PTY
-terminal(command="codex exec --sandbox workspace-write 'Refactor the auth module'", workdir="~/project", background=true, pty=true)
+terminal(command="codex exec --sandbox workspace-write 'Refactor the auth module'", workdir="${HOME}/project", background=true, pty=true)
 # Returns session_id
 
 # Monitor progress
@@ -108,8 +108,8 @@ terminal(command="REVIEW=$(mktemp -d) && git clone https://github.com/user/repo.
 
 ```
 # Create worktrees
-terminal(command="git worktree add -b fix/issue-78 /tmp/issue-78 main", workdir="~/project")
-terminal(command="git worktree add -b fix/issue-99 /tmp/issue-99 main", workdir="~/project")
+terminal(command="git worktree add -b fix/issue-78 /tmp/issue-78 main", workdir="${HOME}/project")
+terminal(command="git worktree add -b fix/issue-99 /tmp/issue-99 main", workdir="${HOME}/project")
 
 # Launch Codex in each
 terminal(command="codex --sandbox workspace-write exec 'Fix issue #78: <description>. Commit when done.'", workdir="/tmp/issue-78", background=true, pty=true)
@@ -123,21 +123,21 @@ terminal(command="cd /tmp/issue-78 && git push -u origin fix/issue-78")
 terminal(command="gh pr create --repo user/repo --head fix/issue-78 --title 'fix: ...' --body '...'")
 
 # Cleanup
-terminal(command="git worktree remove /tmp/issue-78", workdir="~/project")
+terminal(command="git worktree remove /tmp/issue-78", workdir="${HOME}/project")
 ```
 
 ## Batch PR Reviews
 
 ```
 # Fetch all PR refs
-terminal(command="git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*'", workdir="~/project")
+terminal(command="git fetch origin '+refs/pull/*/head:refs/remotes/origin/pr/*'", workdir="${HOME}/project")
 
 # Review multiple PRs in parallel
-terminal(command="codex exec 'Review PR #86. git diff origin/main...origin/pr/86'", workdir="~/project", background=true, pty=true)
-terminal(command="codex exec 'Review PR #87. git diff origin/main...origin/pr/87'", workdir="~/project", background=true, pty=true)
+terminal(command="codex exec 'Review PR #86. git diff origin/main...origin/pr/86'", workdir="${HOME}/project", background=true, pty=true)
+terminal(command="codex exec 'Review PR #87. git diff origin/main...origin/pr/87'", workdir="${HOME}/project", background=true, pty=true)
 
 # Post results
-terminal(command="gh pr comment 86 --body '<review>'", workdir="~/project")
+terminal(command="gh pr comment 86 --body '<review>'", workdir="${HOME}/project")
 ```
 
 ## Rules

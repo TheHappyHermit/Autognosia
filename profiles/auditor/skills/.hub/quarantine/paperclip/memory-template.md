@@ -1,6 +1,6 @@
 # Memory Template — Paperclip
 
-Create `~/paperclip/memory.md`:
+Create `${HOME}/paperclip/memory.md`:
 
 ```markdown
 # Paperclip Memory

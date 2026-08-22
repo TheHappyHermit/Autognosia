@@ -21,7 +21,7 @@ services:
     ports:
       - "127.0.0.1:8001:8000"
     volumes:
-      - ~/.autognosia/personal-organizer/data:/app/data
+      - ${HOME}/.autognosia/personal-organizer/data:/app/data
     environment:
       - DATABASE_URL=sqlite:////app/data/organizer.db
     restart: unless-stopped

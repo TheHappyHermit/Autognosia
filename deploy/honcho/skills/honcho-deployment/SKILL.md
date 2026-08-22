@@ -8,7 +8,7 @@ description: Set up, start, and troubleshoot Honcho AI memory server (port 8000)
 ## Quick Start
 
 ```bash
-cd ~/honcho && docker compose up -d
+cd ${HOME}/honcho && docker compose up -d
 ```
 
 Docs available at: `http://127.0.0.1:8000/docs`
@@ -17,7 +17,7 @@ Docs available at: `http://127.0.0.1:8000/docs`
 
 ## Docker Compose Configuration
 
-The repo at `~/honcho` includes a `docker-compose.yml` with two services:
+The repo at `${HOME}/honcho` includes a `docker-compose.yml` with two services:
 - **honcho_db**: PostgreSQL with pgvector on port 5432
 - **honcho_server**: FastAPI server on port 8000
 
@@ -31,7 +31,7 @@ Required environment variables in docker-compose.yml:
 ### Symptom: Server container exits immediately, container not listed in `docker ps`
 
 ```bash
-cd ~/honcho && docker compose logs server --tail=80
+cd ${HOME}/honcho && docker compose logs server --tail=80
 ```
 
 ### Issue 1: `ValueError: Missing client for X: <provider>`
@@ -80,7 +80,7 @@ sed -i 's/AUTH_USE_AUTH=.*/AUTH_USE_AUTH=false/' docker-compose.yml
 docker ps | grep honcho
 
 # Check server crash logs
-cd ~/honcho && docker compose logs server --tail=80
+cd ${HOME}/honcho && docker compose logs server --tail=80
 
 # Verify server is up
 curl -s http://127.0.0.1:8000/docs | head -5

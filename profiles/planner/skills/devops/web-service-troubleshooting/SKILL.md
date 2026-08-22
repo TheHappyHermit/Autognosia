@@ -103,10 +103,10 @@ When troubleshooting an OpenClaw gateway that appears running but fails to proce
 4. **Verify Model Provider Registration**
    ```bash
    # Check configured providers
-   jq '.models.providers | keys' ~/.openclaw/openclaw.json
+   jq '.models.providers | keys' ${HOME}/.openclaw/openclaw.json
    # Check referenced models in agents
-   jq '.agents.defaults.models | keys' ~/.openclaw/openclaw.json
-   jq '.agents.list[].model.primary' ~/.openclaw/openclaw.json
+   jq '.agents.defaults.models | keys' ${HOME}/.openclaw/openclaw.json
+   jq '.agents.list[].model.primary' ${HOME}/.openclaw/openclaw.json
    ```
    Every model referenced in `agents.*.model` MUST have a corresponding entry in `models.providers.<provider>.models[]` with matching `id`.
 

@@ -16,9 +16,9 @@ Please set up the Autognosia from https://github.com/<your-org>/autognosia
 
 Hermes will:
 1. Clone the repository
-2. Create the `~/.autognosia/` directory structure
+2. Create the `${HOME}/.autognosia/` directory structure
 3. Initialize databases (`organizer.db`, `autognosia.db`) with sample data
-4. Install all repo skills to `~/.hermes/skills/`
+4. Install all repo skills to `${HOME}/.hermes/skills/`
 5. Configure environment (`.env`, secrets)
 6. Start Docker services (SearXNG, Honcho, Personal Organizer) and setup GBrain (PGLite)
 7. Automatically start the **Command Deck Dashboard daemon** on `http://127.0.0.1:8088`
@@ -95,9 +95,9 @@ bash scripts/auto_setup.sh --verbose
 
 The script does:
 - **Phase 1:** Checks prerequisites (Python, curl, git)
-- **Phase 2:** Creates complete directory structure (`~/.autognosia/`)
+- **Phase 2:** Creates complete directory structure (`${HOME}/.autognosia/`)
 - **Phase 3:** Initializes databases with schema + sample data
-- **Phase 4:** Installs all repo skills to `~/.hermes/skills/`
+- **Phase 4:** Installs all repo skills to `${HOME}/.hermes/skills/`
 - **Phase 5:** Configures environment (copies `.env.example`, generates secrets)
 - **Phase 6:** Starts Docker services (if Docker available): SearXNG → Honcho → Personal Organizer
 - **Phase 7:** Runs comprehensive verification suite
@@ -114,11 +114,11 @@ python3 scripts/init_autognosia_db.py --yes       # Experience Index (autognosia
 python3 scripts/init_graphify.py              # Graphify (gracefully skips if CLI not installed)
 ```
 
-These create `~/.autognosia/` with all subdirectories and SQLite schemas. Sample data is inserted automatically.
+These create `${HOME}/.autognosia/` with all subdirectories and SQLite schemas. Sample data is inserted automatically.
 
 #### Install Skills
 ```bash
-python3 scripts/install_skills.py             # Copies Autognosia skills from repo to ~/.hermes/skills/
+python3 scripts/install_skills.py             # Copies Autognosia skills from repo to ${HOME}/.hermes/skills/
 
 # Optional: Install official Nous Research Obsidian note-taking skill
 hermes skills install obsidian
@@ -161,21 +161,21 @@ Graphify builds relationship indexes over the Active Wiki and Oracle Wiki:
 uv tool install graphifyy
 
 # Initialize Graphify output directories
-mkdir -p ~/.autognosia/graphify-main-out
-mkdir -p ~/.autognosia/graphify-oracle-out
+mkdir -p ${HOME}/.autognosia/graphify-main-out
+mkdir -p ${HOME}/.autognosia/graphify-oracle-out
 
 # Run extraction (uses local LLM at http://10.1.1.10:8080 by default)
 # For Active Wiki (main graph):
-graphify extract ~/.autognosia/active-wiki \
+graphify extract ${HOME}/.autognosia/active-wiki \
   --backend openai \
   --model Qwen3.6-35B-A3B-Q4_K_M.gguf \
-  --out ~/.autognosia/graphify-main-out
+  --out ${HOME}/.autognosia/graphify-main-out
 
 # For Oracle Wiki (oracle graph):
-graphify extract ~/.autognosia/oracle/brain \
+graphify extract ${HOME}/.autognosia/oracle/brain \
   --backend openai \
   --model Qwen3.6-35B-A3B-Q4_K_M.gguf \
-  --out ~/.autognosia/graphify-oracle-out
+  --out ${HOME}/.autognosia/graphify-oracle-out
 ```
 
 Graphify is configured to use the local llama.cpp server — **never** an OpenAI key on OpenRouter. The cron job `Graphify Refresh` runs weekly to rebuild both graphs.
@@ -218,7 +218,7 @@ curl -s -X POST http://127.0.0.1:8000/v3/workspaces/hermes-workspace/peers \
 SessionDB's messages table already has FTS5 indexing. To enable FTS on the sessions table:
 
 ```bash
-cd ~/.hermes
+cd ${HOME}/.hermes
 python3 << 'EOF'
 import sqlite3
 conn = sqlite3.connect("state.db")
@@ -414,7 +414,7 @@ curl http://127.0.0.1:9377/health
 
 ### 13. Weekly Session Export
 
-Completed sessions older than 7 days are automatically exported to structured JSON format each Sunday at 5am. Exported sessions are stored in `~/.hermes/archives/sessions/` with full message history and timestamps. No data is pruned — sessions are preserved indefinitely for long-term archival retrieval.
+Completed sessions older than 7 days are automatically exported to structured JSON format each Sunday at 5am. Exported sessions are stored in `${HOME}/.hermes/archives/sessions/` with full message history and timestamps. No data is pruned — sessions are preserved indefinitely for long-term archival retrieval.
 
 ---
 

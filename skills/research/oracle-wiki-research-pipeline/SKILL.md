@@ -7,7 +7,7 @@ description: Use when building Oracle wiki via researcher delegation.
 
 ## Research Protocol (CRITICAL)
 
-**NEVER use web_search directly.** All internet research goes through the Researcher profile via `delegate_task`. This is enforced via `~/.autognosia/SYSTEM-RULES.md`.
+**NEVER use web_search directly.** All internet research goes through the Researcher profile via `delegate_task`. This is enforced via `${HOME}/.autognosia/SYSTEM-RULES.md`.
 
 **NEVER write research files yourself.** Your training data is not verified research. Only content produced by the Researcher profile (which uses web_search) counts as verified.
 
@@ -31,9 +31,9 @@ CRITICAL INSTRUCTIONS:
 
 ### File Naming Convention
 ```
-~/.autognosia/oracle/brain\<Domain>\Domain-Topic-PartN-<Specific>.md
-~/.autognosia/oracle/brain\Entities\<Person-Name>.md          # For individual researchers/thinkers
-~/.autognosia/oracle/brain\Entities\<Theory-Name>.md          # For named theories/frameworks
+${HOME}/.autognosia/oracle/brain\<Domain>\Domain-Topic-PartN-<Specific>.md
+${HOME}/.autognosia/oracle/brain\Entities\<Person-Name>.md          # For individual researchers/thinkers
+${HOME}/.autognosia/oracle/brain\Entities\<Theory-Name>.md          # For named theories/frameworks
 ```
 
 ## Pipeline Loop

@@ -20,9 +20,9 @@ metadata:
 
 ### Diagnostic Steps
 
-1. **Check agent logs** — `~/.hermes/logs/agent.log`
+1. **Check agent logs** — `${HOME}/.hermes/logs/agent.log`
    ```
-   grep "platform=desktop" ~/.hermes/logs/agent.log | tail -20
+   grep "platform=desktop" ${HOME}/.hermes/logs/agent.log | tail -20
    ```
 
 2. **Look for these errors:**
@@ -32,7 +32,7 @@ metadata:
 
 3. **Check compression status:**
    ```
-   grep "context compression" ~/.hermes/logs/agent.log | tail -10
+   grep "context compression" ${HOME}/.hermes/logs/agent.log | tail -10
    ```
    Compression can take 7+ minutes on a 27B model. During that time, desktop shows nothing.
 
@@ -43,7 +43,7 @@ metadata:
 
 5. **Check session token count:**
    ```
-   grep "history=" ~/.hermes/logs/agent.log | grep "platform=desktop" | tail -5
+   grep "history=" ${HOME}/.hermes/logs/agent.log | grep "platform=desktop" | tail -5
    ```
    High history counts (100+) mean the session is approaching context limits.
 
@@ -101,27 +101,27 @@ Use `hermes update --force-venv` to bypass the guard. Risk: the blocked process 
 
 **Symptom:** Script-only cron job (`no_agent=True`) reports `error` status even though the same script works when run manually from the terminal.
 
-**Root cause:** Hermes copies the script to `~/.hermes/scripts/` and runs it from that directory as CWD. Two common failures:
+**Root cause:** Hermes copies the script to `${HOME}/.hermes/scripts/` and runs it from that directory as CWD. Two common failures:
 
-1. **`script` field contains a shell command** (e.g., `python "C:/path/to/script.py"`) instead of just a filename. The `script` field expects a **filename only** — Hermes runs it via `python filename` from `~/.hermes/scripts/`.
+1. **`script` field contains a shell command** (e.g., `python "C:/path/to/script.py"`) instead of just a filename. The `script` field expects a **filename only** — Hermes runs it via `python filename` from `${HOME}/.hermes/scripts/`.
 
-2. **Script uses relative paths based on `__file__`** (e.g., `os.path.dirname(os.path.abspath(__file__))`). When Hermes copies the script to `~/.hermes/scripts/`, those relative paths resolve to the wrong location.
+2. **Script uses relative paths based on `__file__`** (e.g., `os.path.dirname(os.path.abspath(__file__))`). When Hermes copies the script to `${HOME}/.hermes/scripts/`, those relative paths resolve to the wrong location.
 
-3. **Script path drift (Autognosia migration):** Scripts were moved from `hermes-cortex/scripts/` to `.autognosia/scripts/` as part of the project rename from "Hermes Cortex" to "Autognosia". The cron job's `script` field may point to a missing path. If the script exists at `~/.autognosia/scripts/` but the job reports `Script not found`, set `workdir` to `~/.autognosia/scripts`.
+3. **Script path drift (Autognosia migration):** Scripts were moved from `hermes-cortex/scripts/` to `.autognosia/scripts/` as part of the project rename from "Hermes Cortex" to "Autognosia". The cron job's `script` field may point to a missing path. If the script exists at `${HOME}/.autognosia/scripts/` but the job reports `Script not found`, set `workdir` to `${HOME}/.autognosia/scripts`.
 
 ### Fix
 
 Use absolute paths in scripts, anchored to `HERMES_ROOT` or a hardcoded absolute path:
 
 ```python
-# WRONG — breaks when script is copied to ~/.hermes/scripts/
+# WRONG — breaks when script is copied to ${HOME}/.hermes/scripts/
 HERMES_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Hermes")
 
 # CORRECT — works from any directory
 HERMES_ROOT = os.environ.get("HERMES_ROOT", "C:/Hermes")
 ```
 
-For jobs that need to run multiple scripts, create a **wrapper script** in `~/.hermes/scripts/` that calls the real scripts via absolute paths:
+For jobs that need to run multiple scripts, create a **wrapper script** in `${HOME}/.hermes/scripts/` that calls the real scripts via absolute paths:
 
 ```python
 #!/usr/bin/env python3
@@ -139,7 +139,7 @@ Then set the cron job's `script` field to just the wrapper filename (e.g., `inte
 
 Test from the correct directory before trusting the fix:
 ```bash
-cd ~/.hermes/scripts && python your_script.py
+cd ${HOME}/.hermes/scripts && python your_script.py
 ```
 If it works here, it will work as a cron job.
 
@@ -147,7 +147,7 @@ If it works here, it will work as a cron job.
 
 After the project rename from "Hermes Cortex" to "Autognosia", verify:
 - [ ] All scripts in `.autognosia/scripts/` have no references to `hermes-cortex` paths
-- [ ] All cron jobs with `no_agent=True` and script references have `workdir` set to `~/.autognosia/scripts` if the script lives there
+- [ ] All cron jobs with `no_agent=True` and script references have `workdir` set to `${HOME}/.autognosia/scripts` if the script lives there
 - [ ] The script file `check_cortex_dbs.py` has been renamed to `check_autognosia_dbs.py` with all "cortex" references replaced with "autognosia"
 
 ## Cron Jobs Fail Closed After Changing Global Model
@@ -214,11 +214,11 @@ When creating new agent-based cron jobs, pin the model in `jobs.json` immediatel
 
 ## Diagnosing Cron Job Failures — Per-Run Output Files
 
-Each cron run writes a full report to `~/.hermes/cron/output/<job_id>/<YYYY-MM-DD_HH-MM-SS>.md` containing the prompt, schedule, and (on failure) the exact error block. This is where you find the real failure reason — faster than digging through agent.log:
+Each cron run writes a full report to `${HOME}/.hermes/cron/output/<job_id>/<YYYY-MM-DD_HH-MM-SS>.md` containing the prompt, schedule, and (on failure) the exact error block. This is where you find the real failure reason — faster than digging through agent.log:
 
 ```bash
-ls -t ~/.hermes/cron/output/<job_id>/ | head -3   # latest runs
-tail -20 "$(ls -t ~/.hermes/cron/output/<job_id>/* | head -1)"
+ls -t ${HOME}/.hermes/cron/output/<job_id>/ | head -3   # latest runs
+tail -20 "$(ls -t ${HOME}/.hermes/cron/output/<job_id>/* | head -1)"
 ```
 
 ## Quick Reference Commands
@@ -234,8 +234,8 @@ netstat -ano | grep "8765"
 for /f "tokens=5" %a in ('netstat -ano ^| findstr ":8765"') do taskkill /PID %a /F
 
 # View recent desktop session logs
-grep "platform=desktop" ~/.hermes/logs/agent.log | tail -20
+grep "platform=desktop" ${HOME}/.hermes/logs/agent.log | tail -20
 
 # Check for context overflow
-grep "Context size\|fetch failed\|compression" ~/.hermes/logs/agent.log | tail -10
+grep "Context size\|fetch failed\|compression" ${HOME}/.hermes/logs/agent.log | tail -10
 ```

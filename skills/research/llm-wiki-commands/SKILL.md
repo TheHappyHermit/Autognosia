@@ -13,7 +13,7 @@ metadata:
 
 # LLM Wiki Slash Commands
 
-Provides three slash commands for easy wiki operations at `~/.autognosia/active-wiki`.
+Provides three slash commands for easy wiki operations at `${HOME}/.autognosia/active-wiki`.
 
 ## Commands
 
@@ -21,7 +21,7 @@ Provides three slash commands for easy wiki operations at `~/.autognosia/active-
 
 Ingest a source into the wiki. Source can be:
 - URL: `https://arxiv.org/abs/2402.03300`
-- Local file: `~/paper.pdf`, `/path/to/file.md`
+- Local file: `${HOME}/paper.pdf`, `/path/to/file.md`
 - Raw text: `"GRPO is a new RL algorithm..."`
 
 **Automatically:**

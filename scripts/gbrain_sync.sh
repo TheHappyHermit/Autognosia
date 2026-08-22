@@ -1,5 +1,5 @@
 """
-GBrain sync script — syncs ~/.autognosia/oracle/brain into GBrain.
+GBrain sync script — syncs ${HOME}/.autognosia/oracle/brain into GBrain.
 Runs in no-agent cron (every 15 min). Exits 0 if nothing changed.
 """
 

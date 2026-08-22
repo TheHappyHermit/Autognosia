@@ -10,7 +10,7 @@ When you tell Hermes to set up the Autognosia from the repository, Hermes follow
 
 1. **Clone** the repository to a temporary location
 2. **Read** `config/paths.yaml` to understand the directory structure
-3. **Create** all directories under `~/.autognosia/` (wiki, oracle, personal-organizer, backups, exchange, logs)
+3. **Create** all directories under `${HOME}/.autognosia/` (wiki, oracle, personal-organizer, backups, exchange, logs)
 4. **Initialize databases** by running `scripts/init_db.py` and `scripts/init_autognosia_db.py` with `--yes`
 5. **Copy** `docker/.env.example` to `docker/.env` and auto-fill Honcho LLM settings from Hermes's own provider config
 6. **Generate** `SEARXNG_SECRET` using `openssl rand -hex 32`
@@ -89,7 +89,7 @@ See [`cron-jobs/definitions.md`](cron-jobs/definitions.md) for canonical specifi
 
 ## 4. Active Wiki Structure
 
-Active Wiki resides at `~/.autognosia/active-wiki/`:
+Active Wiki resides at `${HOME}/.autognosia/active-wiki/`:
 
 ```text
 active-wiki/
@@ -120,7 +120,7 @@ source: session:YYYYMMDD_HHMMSS
 
 ## 5. Personal Organizer Database Schema (`organizer.db`)
 
-Location: `~/.autognosia/personal-organizer/data/organizer.db`
+Location: `${HOME}/.autognosia/personal-organizer/data/organizer.db`
 
 ```sql
 CREATE TABLE IF NOT EXISTS tasks (
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 ## 6. Experience Index Schema (`autognosia.db`)
 
-Location: `~/.autognosia/autognosia.db`
+Location: `${HOME}/.autognosia/autognosia.db`
 
 Tracks operational traces, verification outcomes, routing accuracy, and reflections:
 - `operations` — Discrete actions taken by agents.

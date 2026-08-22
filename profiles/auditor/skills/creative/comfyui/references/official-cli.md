@@ -36,7 +36,7 @@ Workspace resolution priority:
 3. `--here` (cwd)
 4. `comfy set-default` path
 5. Most recently used
-6. `~/comfy/ComfyUI` (Linux) or `~/Documents/comfy/ComfyUI` (macOS/Win)
+6. `${HOME}/comfy/ComfyUI` (Linux) or `${HOME}/Documents/comfy/ComfyUI` (macOS/Win)
 
 ## Lifecycle Commands
 
@@ -237,9 +237,9 @@ Cache expires after 7 days; max 10 builds.
 
 | OS | Path |
 |----|------|
-| Linux | `~/.config/comfy-cli/config.ini` |
-| macOS | `~/Library/Application Support/comfy-cli/config.ini` |
-| Windows | `~/AppData/Local/comfy-cli/config.ini` |
+| Linux | `${HOME}/.config/comfy-cli/config.ini` |
+| macOS | `${HOME}/Library/Application Support/comfy-cli/config.ini` |
+| Windows | `${HOME}/AppData/Local/comfy-cli/config.ini` |
 
 Stores: default workspace, recent workspace, background server PID, API
 tokens, manager GUI mode, launch extras.

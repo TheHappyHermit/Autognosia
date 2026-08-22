@@ -2,7 +2,7 @@
 
 ## What Is state.db
 
-The main SQLite database at `~/.hermes/state.db` stores all conversation state:
+The main SQLite database at `${HOME}/.hermes/state.db` stores all conversation state:
 - **Messages table**: 1.2M+ rows of full conversation history
 - **FTS5 indexes**: Full-text search + trigram indexes for fuzzy search
 - **Sessions table**: 25K+ session metadata rows

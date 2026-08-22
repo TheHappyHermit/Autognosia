@@ -173,7 +173,7 @@ hermes cron create \
 hermes cron create \
   --name "Research Exchange Sync" \
   --schedule "0 3 * * 3" \
-  --prompt "Check research exchange directory (~/.autognosia/exchange/research) for completed research packages. For each: evaluate quality, verify citations, route approved packages to wiki-ingestion, archive rejected." \
+  --prompt "Check research exchange directory (${HOME}/.autognosia/exchange/research) for completed research packages. For each: evaluate quality, verify citations, route approved packages to wiki-ingestion, archive rejected." \
   --skills wiki-ingestion,research-request \
   --enabled-toolsets file,terminal \
   --deliver local

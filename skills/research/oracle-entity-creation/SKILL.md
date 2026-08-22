@@ -5,11 +5,11 @@ description: Create new Oracle entity/reference files from web research.
 
 # Oracle Entity File Creation
 
-Create new entity or reference pages for the Oracle vault (`~/.autognosia/oracle/brain\`) from scratch via web research, rather than importing existing files. Distinct from `library-onboarding` (importing files) and `wiki-ingestion` (bulk wiki imports).
+Create new entity or reference pages for the Oracle vault (`${HOME}/.autognosia/oracle/brain\`) from scratch via web research, rather than importing existing files. Distinct from `library-onboarding` (importing files) and `wiki-ingestion` (bulk wiki imports).
 
 ## When to Use
 
-- Creating a new entity page (person, organization, concept, technology) for `~/.autognosia/oracle/brain\Entities\` or domain pages under `~/.autognosia/oracle/brain\domains\`
+- Creating a new entity page (person, organization, concept, technology) for `${HOME}/.autognosia/oracle/brain\Entities\` or domain pages under `${HOME}/.autognosia/oracle/brain\domains\`
 - User specifies mandated topics/sections and a size constraint
 - Content must be sourced from live web research, not existing files
 
@@ -35,10 +35,10 @@ The `browser_snapshot(full=true)` returns the accessibility tree with all page c
 
 ### 0.5. Read SCHEMA.md and Existing Entity Files
 
-**Always read `~/.autognosia/oracle/brain\SCHEMA.md`** before writing. It contains authoritative conventions that override any defaults in this skill:
+**Always read `${HOME}/.autognosia/oracle/brain\SCHEMA.md`** before writing. It contains authoritative conventions that override any defaults in this skill:
 
 ```
-read_file("~/.autognosia/oracle/brain\SCHEMA.md")
+read_file("${HOME}/.autognosia/oracle/brain\SCHEMA.md")
 ```
 
 Key conventions from SCHEMA.md (verify current values each session):
@@ -51,7 +51,7 @@ Key conventions from SCHEMA.md (verify current values each session):
 Then search the vault for related entity files to use as format/style reference:
 
 ```
-search_files(pattern="entity_topic", path="~/.autognosia/oracle/brain", output_mode="files_only")
+search_files(pattern="entity_topic", path="${HOME}/.autognosia/oracle/brain", output_mode="files_only")
 read_file(existing_entity.md)
 ```
 

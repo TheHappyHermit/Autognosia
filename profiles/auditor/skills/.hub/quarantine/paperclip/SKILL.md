@@ -5,7 +5,7 @@ version: 1.0.0
 homepage: https://clawic.com/skills/paperclip
 description: Run Paperclip locally for agent orchestration, AI company setup, and OpenClaw, Codex, or Claude control-plane operations.
 changelog: "Added local-first Paperclip operations, adapter selection, and OpenClaw integration guidance."
-metadata: {"clawdbot":{"emoji":"📎","requires":{"bins":["curl","pnpm"],"env":{"optional":["PAPERCLIP_API_URL","PAPERCLIP_API_KEY","PAPERCLIP_COMPANY_ID","PAPERCLIP_RUN_ID","OPENAI_API_KEY","ANTHROPIC_API_KEY","OPENCLAW_GATEWAY_TOKEN"]},"config":["~/paperclip/","~/.paperclip/instances/"]},"os":["linux","darwin","win32"],"configPaths":["~/paperclip/","~/.paperclip/instances/"]}}
+metadata: {"clawdbot":{"emoji":"📎","requires":{"bins":["curl","pnpm"],"env":{"optional":["PAPERCLIP_API_URL","PAPERCLIP_API_KEY","PAPERCLIP_COMPANY_ID","PAPERCLIP_RUN_ID","OPENAI_API_KEY","ANTHROPIC_API_KEY","OPENCLAW_GATEWAY_TOKEN"]},"config":["${HOME}/paperclip/","${HOME}/.paperclip/instances/"]},"os":["linux","darwin","win32"],"configPaths":["${HOME}/paperclip/","${HOME}/.paperclip/instances/"]}}
 ---
 
 ## Setup
@@ -18,10 +18,10 @@ User needs to install, operate, or evaluate Paperclip as the control plane for a
 
 ## Architecture
 
-Skill memory lives in `~/paperclip/`. Paperclip application data usually lives in `~/.paperclip/instances/`. If `~/paperclip/` does not exist, run `setup.md`. See `memory-template.md` for structure.
+Skill memory lives in `${HOME}/paperclip/`. Paperclip application data usually lives in `${HOME}/.paperclip/instances/`. If `${HOME}/paperclip/` does not exist, run `setup.md`. See `memory-template.md` for structure.
 
 ```
-~/paperclip/
+${HOME}/paperclip/
 ├── memory.md            # Operator context, active instances, adapter preferences
 ├── companies.md         # Company names, goals, and status snapshots
 ├── commands.md          # Reused CLI/API snippets that worked
@@ -97,8 +97,8 @@ No other endpoints should be contacted unless the user explicitly configures rem
 - Any provider traffic created by the agent runtimes the user installs and authorizes
 
 **Data that stays local:**
-- Paperclip instance state in `~/.paperclip/instances/`
-- Skill memory in `~/paperclip/`
+- Paperclip instance state in `${HOME}/.paperclip/instances/`
+- Skill memory in `${HOME}/paperclip/`
 - Local workspaces attached to projects
 
 **This skill does NOT:**

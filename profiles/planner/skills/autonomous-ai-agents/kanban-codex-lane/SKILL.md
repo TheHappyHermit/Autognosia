@@ -96,7 +96,7 @@ codex features enable goals || true
 codex --enable goals --version
 ```
 
-Authentication can be via `OPENAI_API_KEY` or the Codex CLI OAuth state (often `~/.codex/auth.json`). Do not print token files. A missing `OPENAI_API_KEY` is not proof that auth is unavailable.
+Authentication can be via `OPENAI_API_KEY` or the Codex CLI OAuth state (often `${HOME}/.codex/auth.json`). Do not print token files. A missing `OPENAI_API_KEY` is not proof that auth is unavailable.
 
 ## Mode Selection
 

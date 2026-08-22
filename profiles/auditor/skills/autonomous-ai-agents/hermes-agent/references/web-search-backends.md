@@ -24,12 +24,12 @@ pip install ddgs
 
 Or via the Hermes venv:
 ```bash
-~/.hermes/hermes-agent/venv/bin/pip install ddgs
+${HOME}/.hermes/hermes-agent/venv/bin/pip install ddgs
 ```
 
 ## Config file
 
-Located at `~/.hermes/config.yaml`:
+Located at `${HOME}/.hermes/config.yaml`:
 
 ```yaml
 web:

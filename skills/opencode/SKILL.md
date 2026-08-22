@@ -48,7 +48,7 @@ opencode run "Fix this error: [error message]" --model opencode/big-pickle
 
 ## Configure Preferred Models
 
-Configure your preferred models in `~/.hermes/config.yaml`:
+Configure your preferred models in `${HOME}/.hermes/config.yaml`:
 
 ```yaml
 opencode:
@@ -64,7 +64,7 @@ opencode:
 # Install OpenCode CLI from https://github.com/opencode-ai/opencode
 # Hermes will attempt: npm install -g @opencode/cli (or brew on Mac)
 # Add to PATH
-# Configure models in ~/.hermes/config.yaml
+# Configure models in ${HOME}/.hermes/config.yaml
 ```
 
 ## When NOT to Use OpenCode

@@ -11,7 +11,7 @@ def _get_default_model(openrouter_key):
     follows the agent default instead of a hardcoded model."""
     try:
         import yaml
-        with open(os.path.expanduser("~/.hermes/config.yaml")) as f:
+        with open(os.path.expanduser("${HOME}/.hermes/config.yaml")) as f:
             cfg = yaml.safe_load(f)
         m = cfg.get("model", {})
         model = m.get("default", "tencent/hy3:free")

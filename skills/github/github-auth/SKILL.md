@@ -64,7 +64,7 @@ Tell the user to go to: **https://github.com/settings/tokens**
 
 ```bash
 # Set up the credential helper to cache credentials
-# "store" saves to ~/.git-credentials in plaintext (simple, persistent)
+# "store" saves to ${HOME}/.git-credentials in plaintext (simple, persistent)
 git config --global credential.helper store
 
 # Now do a test operation that triggers auth — git will prompt for credentials
@@ -115,17 +115,17 @@ Good for users who prefer SSH or already have keys set up.
 **Step 1: Check for existing SSH keys**
 
 ```bash
-ls -la ~/.ssh/id_*.pub 2>/dev/null || echo "No SSH keys found"
+ls -la ${HOME}/.ssh/id_*.pub 2>/dev/null || echo "No SSH keys found"
 ```
 
 **Step 2: Generate a key if needed**
 
 ```bash
 # Generate an ed25519 key (modern, secure, fast)
-ssh-keygen -t ed25519 -C "their-email@example.com" -f ~/.ssh/id_ed25519 -N ""
+ssh-keygen -t ed25519 -C "their-email@example.com" -f ${HOME}/.ssh/id_ed25519 -N ""
 
 # Display the public key for them to add to GitHub
-cat ~/.ssh/id_ed25519.pub
+cat ${HOME}/.ssh/id_ed25519.pub
 ```
 
 Tell the user to add the public key at: **https://github.com/settings/keys**
@@ -196,7 +196,7 @@ while true; do
     *access_token*)
       # Never echo the token; pipe it straight into gh.
       # timeout guards the headless-keyring hang (see pitfall below) —
-      # on exit 124, fall back to writing ~/.config/gh/hosts.yml directly.
+      # on exit 124, fall back to writing ${HOME}/.config/gh/hosts.yml directly.
       echo "$POLL" | sed 's/.*"access_token":"\([^"]*\)".*/\1/' | timeout 20 gh auth login --with-token \
         || { echo "WITH_TOKEN_HUNG_OR_FAILED — use the hosts.yml fallback below"; exit 1; }
       gh auth setup-git
@@ -222,12 +222,12 @@ Note: on Windows winget installs, gh lands at `/c/Program Files/GitHub CLI` — 
 >
 > ```bash
 > # $TOKEN = the access token from the device flow above (never echo it)
-> mkdir -p ~/.config/gh
+> mkdir -p ${HOME}/.config/gh
 > LOGIN=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/user \
 >   | sed 's/.*"login": *"\([^"]*\)".*/\1/')
 > printf 'github.com:\n    users:\n        %s:\n            oauth_token: %s\n    git_protocol: https\n    oauth_token: %s\n    user: %s\n' \
->   "$LOGIN" "$TOKEN" "$TOKEN" "$LOGIN" > ~/.config/gh/hosts.yml
-> chmod 600 ~/.config/gh/hosts.yml
+>   "$LOGIN" "$TOKEN" "$TOKEN" "$LOGIN" > ${HOME}/.config/gh/hosts.yml
+> chmod 600 ${HOME}/.config/gh/hosts.yml
 > gh auth status          # reads hosts.yml directly — verifies without the keyring
 > gh auth setup-git       # wires the git credential helper (does not hang)
 > ```
@@ -250,14 +250,14 @@ If `--with-token` hangs here (can happen with terminal tools that can't handle s
 > **PITFALL (corrupted hosts.yml):** if `gh auth status` reports "Failed to log in" and `gh auth login --with-token` fails with "failed to create root command / failed to read configuration / invalid config file", the `hosts.yml` file has been corrupted by a previous agent writing raw JSON (e.g. a GitHub API response) directly into it. The file is unfixable — YAML parsers can't recover from embedded JSON objects as keys. **Recovery: delete the file, then re-authenticate.**
 >
 > ```bash
-> rm ~/.config/gh/hosts.yml
+> rm ${HOME}/.config/gh/hosts.yml
 > # Then either use --with-token or write hosts.yml directly:
 > ```
 >
 > Always back up a corrupted file before deleting so you can extract a token if needed:
 > ```bash
-> cp ~/.config/gh/hosts.yml ~/.config/gh/hosts.yml.bak
-> rm ~/.config/gh/hosts.yml
+> cp ${HOME}/.config/gh/hosts.yml ${HOME}/.config/gh/hosts.yml.bak
+> rm ${HOME}/.config/gh/hosts.yml
 > ```
 
 ### Verify
@@ -305,7 +305,7 @@ elif [ -n "$GITHUB_TOKEN" ]; then
 elif _hermes_env="${HERMES_HOME:-$HOME/.hermes}/.env"; [ -f "$_hermes_env" ] && grep -q "^GITHUB_TOKEN=" "$_hermes_env"; then
   export GITHUB_TOKEN=$(grep "^GITHUB_TOKEN=" "$_hermes_env" | head -1 | cut -d= -f2 | tr -d '\n\r')
   echo "AUTH_METHOD=curl"
-elif grep -q "github.com" ~/.git-credentials 2>/dev/null; then
+elif grep -q "github.com" ${HOME}/.git-credentials 2>/dev/null; then
   export GITHUB_TOKEN=$(uv run python "${HERMES_HOME:-$HOME/.hermes}/skills/github/github-auth/scripts/git-credential-token.py")
   echo "AUTH_METHOD=curl"
 else
@@ -323,7 +323,7 @@ fi
 | `git push` asks for password | GitHub disabled password auth. Use a personal access token as the password, or switch to SSH |
 | `remote: Permission to X denied` | Token may lack `repo` scope — regenerate with correct scopes |
 | `fatal: Authentication failed` | Cached credentials may be stale — run `git credential reject` then re-authenticate |
-| `ssh: connect to host github.com port 22: Connection refused` | Try SSH over HTTPS port: add `Host github.com` with `Port 443` and `Hostname ssh.github.com` to `~/.ssh/config` |
+| `ssh: connect to host github.com port 22: Connection refused` | Try SSH over HTTPS port: add `Host github.com` with `Port 443` and `Hostname ssh.github.com` to `${HOME}/.ssh/config` |
 | Credentials not persisting | Check `git config --global credential.helper` — must be `store` or `cache` |
-| Multiple GitHub accounts | Use SSH with different keys per host alias in `~/.ssh/config`, or per-repo credential URLs |
+| Multiple GitHub accounts | Use SSH with different keys per host alias in `${HOME}/.ssh/config`, or per-repo credential URLs |
 | `gh: command not found` + no sudo | Use git-only Method 1 above — no installation needed |

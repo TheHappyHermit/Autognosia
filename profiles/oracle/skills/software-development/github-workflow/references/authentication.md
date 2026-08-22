@@ -40,7 +40,7 @@ Most portable method — works everywhere, no SSH config needed.
 **Step 2: Configure git credential helper**
 
 ```bash
-# Store credentials persistently (plaintext in ~/.git-credentials)
+# Store credentials persistently (plaintext in ${HOME}/.git-credentials)
 git config --global credential.helper store
 
 # Test - git will prompt for credentials once
@@ -78,13 +78,13 @@ Good for users who prefer SSH or already have keys.
 
 **Step 1: Check for existing keys**
 ```bash
-ls -la ~/.ssh/id_*.pub 2>/dev/null || echo "No SSH keys found"
+ls -la ${HOME}/.ssh/id_*.pub 2>/dev/null || echo "No SSH keys found"
 ```
 
 **Step 2: Generate key if needed**
 ```bash
-ssh-keygen -t ed25519 -C "their-email@example.com" -f ~/.ssh/id_ed25519 -N ""
-cat ~/.ssh/id_ed25519.pub
+ssh-keygen -t ed25519 -C "their-email@example.com" -f ${HOME}/.ssh/id_ed25519 -N ""
+cat ${HOME}/.ssh/id_ed25519.pub
 ```
 Add public key at: **https://github.com/settings/keys**
 
@@ -141,7 +141,7 @@ export GITHUB_TOKEN="<token>"
 curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
 
 # Option 2: Extract from git credential store
-grep "github.com" ~/.git-credentials 2>/dev/null | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|'
+grep "github.com" ${HOME}/.git-credentials 2>/dev/null | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|'
 ```
 
 ### Helper: Detect Auth Method
@@ -153,8 +153,8 @@ elif [ -n "$GITHUB_TOKEN" ]; then
 elif _hermes_env="${HERMES_HOME:-$HOME/.hermes}/.env"; [ -f "$_hermes_env" ] && grep -q "^GITHUB_TOKEN=" "$_hermes_env"; then
   export GITHUB_TOKEN=$(grep "^GITHUB_TOKEN=" "$_hermes_env" | head -1 | cut -d= -f2 | tr -d '\n\r')
   AUTH_METHOD=curl
-elif grep -q "github.com" ~/.git-credentials 2>/dev/null; then
-  export GITHUB_TOKEN=$(grep "github.com" ~/.git-credentials | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
+elif grep -q "github.com" ${HOME}/.git-credentials 2>/dev/null; then
+  export GITHUB_TOKEN=$(grep "github.com" ${HOME}/.git-credentials | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
   AUTH_METHOD=curl
 else
   AUTH_METHOD=none
@@ -171,7 +171,7 @@ fi
 | `git push` asks for password | GitHub disabled password auth. Use PAT as password or switch to SSH |
 | `remote: Permission to X denied` | Token lacks `repo` scope — regenerate with correct scopes |
 | `fatal: Authentication failed` | Cached credentials stale — run `git credential reject` then re-authenticate |
-| `ssh: connect to host github.com port 22: Connection refused` | Try SSH over HTTPS port: add `Host github.com` with `Port 443` and `Hostname ssh.github.com` to `~/.ssh/config` |
+| `ssh: connect to host github.com port 22: Connection refused` | Try SSH over HTTPS port: add `Host github.com` with `Port 443` and `Hostname ssh.github.com` to `${HOME}/.ssh/config` |
 | Credentials not persisting | Check `git config --global credential.helper` — must be `store` or `cache` |
-| Multiple GitHub accounts | Use SSH with different keys per host alias in `~/.ssh/config`, or per-repo credential URLs |
+| Multiple GitHub accounts | Use SSH with different keys per host alias in `${HOME}/.ssh/config`, or per-repo credential URLs |
 | `gh: command not found` + no sudo | Use git-only Method 1 above — no installation needed |

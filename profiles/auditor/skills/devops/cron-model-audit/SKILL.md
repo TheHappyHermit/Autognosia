@@ -25,7 +25,7 @@ This skill covers detecting and fixing that class of failure.
    - Or CLI: `hermes cron list`
 2. Read the agent default:
    ```bash
-   grep -nA3 "^model:" ~/.hermes/config.yaml
+   grep -nA3 "^model:" ${HOME}/.hermes/config.yaml
    # e.g. default: tencent/hy3:free / provider: nous
    ```
 3. For any job whose `model` differs from the default (or is a known-bad free model), repin it.

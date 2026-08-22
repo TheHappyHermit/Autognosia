@@ -128,7 +128,7 @@ Docker is consuming too much space.
 
 ### Hermes can't reach Firecrawl
 The Hermes config has the wrong URL or API key.
-- **Fix:** In `~/.hermes/config.yaml`, verify:
+- **Fix:** In `${HOME}/.hermes/config.yaml`, verify:
   ```yaml
   browser:
     firecrawl:

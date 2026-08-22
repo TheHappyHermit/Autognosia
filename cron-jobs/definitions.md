@@ -25,7 +25,7 @@ deliver: "local"
 import subprocess
 import os
 
-AUTOGNOSIA_HOME = os.path.expanduser("~/.autognosia")
+AUTOGNOSIA_HOME = os.path.expanduser("${HOME}/.autognosia")
 AUTOGNOSIA_REPO = os.path.join(AUTOGNOSIA_HOME, "..", "autognosia")
 
 items = [
@@ -112,7 +112,7 @@ deliver: "local"
 **Script** (`fill_oracle_gaps.py`):
 - Extracts key topics/concepts from Oracle wiki (frontmatter tags, titles, Title Case entities)
 - Identifies expansion directions: historical context, modern applications, critiques/limitations, related frameworks, key figures, open problems, case studies, prerequisites
-- Creates research request packages in `~/.autognosia/exchange/research/` for Researcher profile
+- Creates research request packages in `${HOME}/.autognosia/exchange/research/` for Researcher profile
 - Researcher picks up via `research-request` skill, researches externally via SearXNG
 - Completed research flows to `wiki-ingestion` targeting Oracle wiki
 - Max 5 research requests per night
@@ -267,13 +267,13 @@ prompt: |
   - Flag: jobs with last_status=error, jobs not run in 7+ days, disabled jobs
 
   ### 2. Backup Verification
-  - Check ~/.autognosia/backups/ for recent backups
+  - Check ${HOME}/.autognosia/backups/ for recent backups
   - Verify backup files are growing and intact
   - Run integrity check script
 
   ### 3. Memory Tier Health
-  - Active Wiki: count pages in ~/.autognosia/active-wiki/
-  - Oracle Wiki: count pages in ~/.autognosia/oracle/brain/
+  - Active Wiki: count pages in ${HOME}/.autognosia/active-wiki/
+  - Oracle Wiki: count pages in ${HOME}/.autognosia/oracle/brain/
   - Personal Organizer: query organizer.db for task/project counts
   - Graphify: check graph stats
 
@@ -416,7 +416,7 @@ deliver: "origin"
 ```yaml
 name: "Research Exchange Sync"
 schedule: "0 3 * * 3"
-prompt: "Check research exchange directory (~/.autognosia/exchange/research) for completed research packages. For each: evaluate quality, verify citations, route approved packages to wiki-ingestion, archive rejected."
+prompt: "Check research exchange directory (${HOME}/.autognosia/exchange/research) for completed research packages. For each: evaluate quality, verify citations, route approved packages to wiki-ingestion, archive rejected."
 skills: ["wiki-ingestion", "research-request"]
 enabled_toolsets: ["file", "terminal"]
 deliver: "local"
@@ -498,7 +498,7 @@ deliver: "local"
 
 **Script** (`export_sessions.py`):
 - Queries SessionDB for completed sessions where `ended_at` is >7 days ago and `archived=0`
-- Creates export directory per session: `~/.hermes/archives/sessions/YYYY-MM-DD_{session_id}/`
+- Creates export directory per session: `${HOME}/.hermes/archives/sessions/YYYY-MM-DD_{session_id}/`
 - Writes `session_metadata.json` with session-level information
 - Writes `messages.jsonl` with all messages in JSONL format (one JSON object per line)
 - Each message includes: `id`, `role`, `content`, `timestamp`, `tool` (if applicable)
@@ -592,7 +592,7 @@ on_failure: "alert"
 
 ## 23. Full System Archive (Daily 03:00)
 
-**Purpose**: Creates compressed `.tar.gz` system snapshot of `~/.autognosia/` and Hermes configuration in `~/backups/` with rolling 7-day retention.
+**Purpose**: Creates compressed `.tar.gz` system snapshot of `${HOME}/.autognosia/` and Hermes configuration in `${HOME}/backups/` with rolling 7-day retention.
 
 **Implementation**: Script job (`no_agent: true`)
 

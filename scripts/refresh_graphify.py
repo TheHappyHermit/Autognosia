@@ -15,7 +15,7 @@ import subprocess
 import sys
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.path.expanduser("~/.autognosia")
+AUTOGNOSIA_HOME = os.path.expanduser("${HOME}/.autognosia")
 ACTIVE_WIKI = os.path.join(AUTOGNOSIA_HOME, "active-wiki")
 ORACLE_BRAIN = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
 MAIN_GRAPH_OUT = os.path.join(AUTOGNOSIA_HOME, "graphify-main-out")

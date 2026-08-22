@@ -43,7 +43,7 @@ Honcho provides Hermes with **persistent cross-session memory and user modeling*
 
 ## Configuration
 
-### File: `~/.honcho/config.json`
+### File: `${HOME}/.honcho/config.json`
 
 ```json
 {
@@ -96,7 +96,7 @@ Resolution order: per-peer field wins → shorthand `memoryMode` → default `"h
 HONCHO_BASE_URL="http://127.0.0.1:8000"
 ```
 
-### Hermes Config (`~/.hermes/config.yaml`)
+### Hermes Config (`${HOME}/.hermes/config.yaml`)
 
 ```yaml
 memory:
@@ -117,7 +117,7 @@ memory:
 
 1. **Create config directory:**
    ```bash
-   mkdir -p ~/.honcho
+   mkdir -p ${HOME}/.honcho
    ```
 
 2. **Create config.json** (see Configuration section above)
@@ -189,7 +189,7 @@ memory:
    hermes memory status   # Should show: Provider: honcho ← active
    ```
 
-   **Pitfall**: `~/.hermes/config.yaml` cannot be edited via `patch`/`write_file` — it's security-protected. The agent will get a refusal error. Use `hermes config set memory.provider honcho` instead. Without this step, Hermes falls back to built-in memory only and Honcho is never consulted even if the server is running and `~/.honcho/config.json` is correct.
+   **Pitfall**: `${HOME}/.hermes/config.yaml` cannot be edited via `patch`/`write_file` — it's security-protected. The agent will get a refusal error. Use `hermes config set memory.provider honcho` instead. Without this step, Hermes falls back to built-in memory only and Honcho is never consulted even if the server is running and `${HOME}/.honcho/config.json` is correct.
 
 7. **Verify Honcho is actually receiving messages from Hermes:**
 
@@ -198,7 +198,7 @@ memory:
    curl -s -X POST "http://127.0.0.1:8000/v3/workspaces/<workspace>/sessions/global-session/messages" \
      -H "Content-Type: application/json" \
      -d '{"messages": [{"content": "Testing Honcho memory integration", "peer_id": "hermes"}]}'
-   docker compose -f ~/honcho/docker-compose.yml logs deriver --tail=20 | grep -E "(Embedded|observation)"
+   docker compose -f ${HOME}/honcho/docker-compose.yml logs deriver --tail=20 | grep -E "(Embedded|observation)"
    ```
 
    Then do a cross-session recall test via a fresh Hermes CLI session:
@@ -286,11 +286,11 @@ hermes honcho status
 ### Connection fails
 ```bash
 # Check Honcho server is running
-docker compose -f ~/honcho/docker-compose.yml ps
+docker compose -f ${HOME}/honcho/docker-compose.yml ps
 curl -s http://127.0.0.1:8000/v3/workspaces
 
 # Verify config
-cat ~/.honcho/config.json | python3 -c "
+cat ${HOME}/.honcho/config.json | python3 -c "
 import json, sys; c = json.load(sys.stdin)
 print(f'baseUrl: {c.get(\"baseUrl\")}')
 print(f'workspace: {c[\"hosts\"][\"hermes\"][\"workspace\"]}')
@@ -301,10 +301,10 @@ print(f'enabled: {c[\"hosts\"][\"hermes\"][\"enabled\"]}')
 ### Memories not being extracted
 ```bash
 # Check deriver is processing
-docker compose -f ~/honcho/docker-compose.yml logs deriver --tail=30 | grep -E "(observation|embedding|reconciled)"
+docker compose -f ${HOME}/honcho/docker-compose.yml logs deriver --tail=30 | grep -E "(observation|embedding|reconciled)"
 
 # Check deriver is running
-docker compose -f ~/honcho/docker-compose.yml ps deriver
+docker compose -f ${HOME}/honcho/docker-compose.yml ps deriver
 ```
 
 ### API issues
@@ -315,7 +315,7 @@ curl -s http://127.0.0.1:8000/v3/workspaces/<workspace>/peers/list | python3 -m 
 ```
 
 ### Database port conflict
-If port 5432 is already in use by another PostgreSQL instance (e.g., TimescaleDB, pgvector, LiteLLM), change the Honcho database port in `~/honcho/docker-compose.yml`:
+If port 5432 is already in use by another PostgreSQL instance (e.g., TimescaleDB, pgvector, LiteLLM), change the Honcho database port in `${HOME}/honcho/docker-compose.yml`:
 
 ```yaml
 ports:
@@ -333,7 +333,7 @@ Each runs on its own Docker network with isolated ports — change the host port
 ### Missing database tables (alembic migration required)
 After fresh database creation, run migrations on the server container:
 ```bash
-cd ~/honcho && docker compose exec server alembic upgrade head
+cd ${HOME}/honcho && docker compose exec server alembic upgrade head
 ```
 Then restart deriver and server:
 ```bash
@@ -345,7 +345,7 @@ The deriver will fail with `relation "public.active_queue_sessions" does not exi
 ### Session strategy issues
 - `per-directory` — each directory gets isolated session memory
 - `global` — all conversations share one session (current setup)
-- Change with: edit `sessionStrategy` in `~/.honcho/config.json`
+- Change with: edit `sessionStrategy` in `${HOME}/.honcho/config.json`
 
 ### Disable Honcho temporarily
 ```bash
@@ -358,7 +358,7 @@ hermes memory off   # Falls back to local memory only
 
 ## Migration from Legacy SQLite Memory
 
-The old memory system (`~/.hermes/memory_enhancement/memories.db`) has been replaced by Honcho. Migration was performed:
+The old memory system (`${HOME}/.hermes/memory_enhancement/memories.db`) has been replaced by Honcho. Migration was performed:
 
 1. Extracted unique memories from SQLite (5 unique from 25 raw entries)
 2. Combined with config.yaml persistent memory facts (13 entries)

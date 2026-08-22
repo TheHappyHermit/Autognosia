@@ -90,27 +90,27 @@ If the user wants the least brittle long-term setup, use this skill. If they wan
 
 ## Where to Store Credentials
 
-`x-cli` looks for credentials in `~/.config/x-cli/.env`.
+`x-cli` looks for credentials in `${HOME}/.config/x-cli/.env`.
 
-If you already keep your X credentials in `~/.hermes/.env`, the cleanest setup is:
+If you already keep your X credentials in `${HOME}/.hermes/.env`, the cleanest setup is:
 
 ```bash
-mkdir -p ~/.config/x-cli
-ln -sf ~/.hermes/.env ~/.config/x-cli/.env
+mkdir -p ${HOME}/.config/x-cli
+ln -sf ${HOME}/.hermes/.env ${HOME}/.config/x-cli/.env
 ```
 
 Or create a dedicated file:
 
 ```bash
-mkdir -p ~/.config/x-cli
-cat > ~/.config/x-cli/.env <<'EOF'
+mkdir -p ${HOME}/.config/x-cli
+cat > ${HOME}/.config/x-cli/.env <<'EOF'
 X_API_KEY=your_consumer_key
 X_API_SECRET=your_secret_key
 X_BEARER_TOKEN=your_bearer_token
 X_ACCESS_TOKEN=your_access_token
 X_ACCESS_TOKEN_SECRET=your_access_token_secret
 EOF
-chmod 600 ~/.config/x-cli/.env
+chmod 600 ${HOME}/.config/x-cli/.env
 ```
 
 ## Quick Verification
@@ -192,7 +192,7 @@ Recommended defaults:
 - **403 oauth1-permissions**: regenerate the access token after enabling `Read and write`.
 - **Reply restrictions**: X restricts many programmatic replies. `tweet quote` is often more reliable than `tweet reply`.
 - **Rate limits**: expect per-endpoint limits and cooldown windows.
-- **Credential drift**: if you rotate tokens in `~/.hermes/.env`, make sure `~/.config/x-cli/.env` still points at the current file.
+- **Credential drift**: if you rotate tokens in `${HOME}/.hermes/.env`, make sure `${HOME}/.config/x-cli/.env` still points at the current file.
 
 ## Notes
 

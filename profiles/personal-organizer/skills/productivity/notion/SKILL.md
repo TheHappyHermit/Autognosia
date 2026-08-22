@@ -26,7 +26,7 @@ Talk to Notion two ways. Same integration token works for both — pick by what'
 
 1. Create an integration at https://notion.so/my-integrations
 2. Copy the API key (starts with `ntn_` or `secret_`)
-3. Store in `${HERMES_HOME:-~/.hermes}/.env`:
+3. Store in `${HERMES_HOME:-${HOME}/.hermes}/.env`:
    ```
    NOTION_API_KEY=ntn_your_key_here
    ```
@@ -50,7 +50,7 @@ export NOTION_API_TOKEN=$NOTION_API_KEY      # ntn reads NOTION_API_TOKEN
 export NOTION_KEYRING=0                       # don't try to use the OS keychain
 ```
 
-Add those exports to your shell profile (or to `${HERMES_HOME:-~/.hermes}/.env`) so every session inherits them.
+Add those exports to your shell profile (or to `${HERMES_HOME:-${HOME}/.hermes}/.env`) so every session inherits them.
 
 ### 3. Choose path at runtime
 
@@ -147,7 +147,7 @@ Compare to the 3-step HTTP flow (create upload → PUT bytes → reference).
 | Var | Effect |
 |---|---|
 | `NOTION_API_TOKEN` | Auth token (overrides keychain) — set this to your integration token |
-| `NOTION_KEYRING=0` | File-based creds at `~/.config/notion/auth.json` instead of OS keychain |
+| `NOTION_KEYRING=0` | File-based creds at `${HOME}/.config/notion/auth.json` instead of OS keychain |
 | `NOTION_WORKSPACE_ID` | Skip the workspace picker prompt |
 
 ## Path B — HTTP + curl (cross-platform, default on Windows)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Install all repo skills to ~/.hermes/skills/ directory.
+Install all repo skills to ${HOME}/.hermes/skills/ directory.
 
 This script copies skills from the repository into the Hermes Agent
 skills directory so they're available immediately after setup.

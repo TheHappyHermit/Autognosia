@@ -2,13 +2,13 @@
 
 Extended backup procedures for the OpenClaw agent ecosystem and Paperclip control plane.
 
-## OpenClaw Customizations (`~/.openclaw/`)
+## OpenClaw Customizations (`${HOME}/.openclaw/`)
 
 ### What to Backup
-- **19 plugin skills** in `~/.openclaw/skills/`
-- **8 agent workspaces** in `~/.openclaw/agents/` (each with AGENTS.md, SOUL.md, TOOLS.md, HEARTBEAT.md)
-- **Main config** `~/.openclaw/openclaw.json`
-- **Credentials** `~/.openclaw/credentials/` (Telegram allowlist/pairing)
+- **19 plugin skills** in `${HOME}/.openclaw/skills/`
+- **8 agent workspaces** in `${HOME}/.openclaw/agents/` (each with AGENTS.md, SOUL.md, TOOLS.md, HEARTBEAT.md)
+- **Main config** `${HOME}/.openclaw/openclaw.json`
+- **Credentials** `${HOME}/.openclaw/credentials/` (Telegram allowlist/pairing)
 
 ### What to Exclude
 - `.env` files (secrets)
@@ -35,7 +35,7 @@ if [ ! -d .git ]; then
 fi
 
 # Skills (19 plugin skills)
-rsync -a ~/.openclaw/skills/ skills/ \
+rsync -a ${HOME}/.openclaw/skills/ skills/ \
     --exclude='.clawhub' \
     --exclude='.git' \
     --exclude='*.crate' \
@@ -44,7 +44,7 @@ rsync -a ~/.openclaw/skills/ skills/ \
 
 # Agent workspaces (8 agents)
 mkdir -p agents
-rsync -a ~/.openclaw/agents/ agents/ \
+rsync -a ${HOME}/.openclaw/agents/ agents/ \
     --exclude='.env' \
     --exclude='qmd/' \
     --exclude='memory/' \
@@ -56,11 +56,11 @@ rsync -a ~/.openclaw/agents/ agents/ \
     --exclude='.mcp.json'
 
 # Main config
-cp ~/.openclaw/openclaw.json .
+cp ${HOME}/.openclaw/openclaw.json .
 
 # Credentials
 mkdir -p agents/credentials
-rsync -a ~/.openclaw/credentials/ agents/credentials/
+rsync -a ${HOME}/.openclaw/credentials/ agents/credentials/
 
 # Commit & push
 git add -A
@@ -88,10 +88,10 @@ if [ ! -d .git ]; then
 fi
 
 # 4 custom skills
-rsync -av ~/paperclip/skills/paperclip-board/ skills/
-rsync -av ~/paperclip/skills/paperclip-converting-plans-to-tasks/ skills/
-rsync -av ~/paperclip/skills/paperclip-create-agent/ skills/
-rsync -av ~/paperclip/skills/para-memory-files/ skills/
+rsync -av ${HOME}/paperclip/skills/paperclip-board/ skills/
+rsync -av ${HOME}/paperclip/skills/paperclip-converting-plans-to-tasks/ skills/
+rsync -av ${HOME}/paperclip/skills/paperclip-create-agent/ skills/
+rsync -av ${HOME}/paperclip/skills/para-memory-files/ skills/
 
 git add -A
 git commit -m "Paperclip custom skills backup $(date -u +%Y-%m-%d)"
@@ -108,7 +108,7 @@ The `feat/externalize-hermes-adapter` branch (commit `fd2f82ac5`) was merged int
 set -euo pipefail
 
 # One-time setup
-cd ~/paperclip
+cd ${HOME}/paperclip
 git remote add myfork https://github.com/openclaw434/paperclip.git  # if not already added
 
 # Push master (includes Hermes adapters)
@@ -146,18 +146,18 @@ git clone https://github.com/openclaw434/openclaw-customizations.git /tmp/restor
 cd /tmp/restore
 
 # 2. Restore skills (merges with any bundled skills)
-rsync -a skills/ ~/.openclaw/skills/
+rsync -a skills/ ${HOME}/.openclaw/skills/
 
 # 3. Restore agent workspaces (REVIEW FIRST - merge SOUL.md, AGENTS.md)
-# Use diff to compare: diff agents/openclaw-agent-coder/AGENTS.md ~/.openclaw/agents/openclaw-agent-coder/AGENTS.md
-rsync -a agents/ ~/.openclaw/agents/ --exclude='.git'
+# Use diff to compare: diff agents/openclaw-agent-coder/AGENTS.md ${HOME}/.openclaw/agents/openclaw-agent-coder/AGENTS.md
+rsync -a agents/ ${HOME}/.openclaw/agents/ --exclude='.git'
 
 # 4. Restore config (REVIEW FIRST)
-diff openclaw.json ~/.openclaw/openclaw.json
-cp openclaw.json ~/.openclaw/openclaw.json
+diff openclaw.json ${HOME}/.openclaw/openclaw.json
+cp openclaw.json ${HOME}/.openclaw/openclaw.json
 
 # 5. Restore credentials
-cp agents/credentials/* ~/.openclaw/credentials/
+cp agents/credentials/* ${HOME}/.openclaw/credentials/
 
 # 6. Restart OpenClaw
 ```
@@ -165,14 +165,14 @@ cp agents/credentials/* ~/.openclaw/credentials/
 ### Paperclip Skills
 ```bash
 git clone https://github.com/openclaw434/paperclip-customizations.git /tmp/pc-restore
-rsync -a /tmp/pc-restore/skills/ ~/paperclip/skills/
+rsync -a /tmp/pc-restore/skills/ ${HOME}/paperclip/skills/
 ```
 
 ### Paperclip Fork
 ```bash
 # Fresh clone of your fork
-git clone https://github.com/openclaw434/paperclip.git ~/paperclip
-cd ~/paperclip
+git clone https://github.com/openclaw434/paperclip.git ${HOME}/paperclip
+cd ${HOME}/paperclip
 # Verify Hermes adapters present
 ls packages/adapters/hermes/ packages/adapters/hermes-gateway/
 ```

@@ -36,7 +36,7 @@ services:
       - LLM_BASE_URL=http://${GBRAIN_LLM_HOST:-localhost}:${GBRAIN_LLM_PORT:-8080}/v1
       - LLM_API_KEY=${GBRAIN_LLM_API_KEY:-}
     volumes:
-      - ~/.autognosia/oracle/brain:/brain:ro
+      - ${HOME}/.autognosia/oracle/brain:/brain:ro
     ports:
       - "127.0.0.1:3131:3131"
     depends_on:

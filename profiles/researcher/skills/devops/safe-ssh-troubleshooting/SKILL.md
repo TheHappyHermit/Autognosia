@@ -20,7 +20,7 @@ When you need to troubleshoot SSH connection issues to remote systems, especiall
 ### 1. Initial Connection Attempt (Minimal Impact)
 ```bash
 # Single connection attempt with verbose output and timeout
-ssh -v -o ConnectTimeout=10 -o BatchMode=yes user@host -i ~/.ssh/key echo "test"
+ssh -v -o ConnectTimeout=10 -o BatchMode=yes user@host -i ${HOME}/.ssh/key echo "test"
 ```
 - **Purpose**: Establish baseline connectivity with minimal risk
 - **Watch for**: Specific error messages in verbose output

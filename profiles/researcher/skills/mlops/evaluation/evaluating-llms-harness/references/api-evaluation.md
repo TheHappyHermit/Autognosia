@@ -394,7 +394,7 @@ lm_eval --model openai-chat-completions \
   --limit 100
 ```
 
-Cache location: `~/.cache/lm_eval/`
+Cache location: `${HOME}/.cache/lm_eval/`
 
 ### Error Handling
 

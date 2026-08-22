@@ -66,7 +66,7 @@ Under `display.pet` in `config.yaml`:
 
 - A pet only shows once one is installed AND selected (`enabled: true`).
 - Inside a pipe/redirect (no TTY) terminal rendering is disabled by design.
-- The petdex npm CLI installs to `~/.codex/pets`; Hermes uses its own
+- The petdex npm CLI installs to `${HOME}/.codex/pets`; Hermes uses its own
   profile-scoped `<HERMES_HOME>/pets/` instead — install through `hermes pets`.
 
 ## Verification

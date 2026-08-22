@@ -15,18 +15,18 @@ Hermes Agent can create, read, and manage notes in an Obsidian vault using stand
 
 ## Vault Location
 By default, Hermes Agent uses:
-- **Vault Path**: `~/Documents/Obsidian Vault`
-- **Hermes Subfolder**: `~/Documents/Obsidian Vault/Hermes` (for organizing Agent-created content)
+- **Vault Path**: `${HOME}/Documents/Obsidian Vault`
+- **Hermes Subfolder**: `${HOME}/Documents/Obsidian Vault/Hermes` (for organizing Agent-created content)
 
-You can customize the vault location by setting the `OBSIDIAN_VAULT_PATH` environment variable in `~/.hermes/.env`:
+You can customize the vault location by setting the `OBSIDIAN_VAULT_PATH` environment variable in `${HOME}/.hermes/.env`:
 ```bash
 OBSIDIAN_VAULT_PATH="/path/to/your/vault"
 ```
 
 ## Setup Verification
-The Obsidian vault should be set up at `~/Documents/Obsidian Vault` with a Hermes subfolder:
+The Obsidian vault should be set up at `${HOME}/Documents/Obsidian Vault` with a Hermes subfolder:
 ```
-~/Documents/Obsidian Vault/
+${HOME}/Documents/Obsidian Vault/
 ├── Hermes/                 # ← Agent-created content
 │   ├── test-note-from-hermes.md
 │   ├── workflow-ideas.md
@@ -97,7 +97,7 @@ find "$HOME/Documents/Obsidian Vault" -name "*.md" -type f
 ## Best Practices
 
 ### Organization
-1. **Use the Hermes subfolder**: Keep Agent-created content organized in `~/Documents/Obsidian Vault/Hermes/`
+1. **Use the Hermes subfolder**: Keep Agent-created content organized in `${HOME}/Documents/Obsidian Vault/Hermes/`
 2. **Create subfolders by topic**: Organize notes by project, area of responsibility, or theme
 3. **Use clear, descriptive names**: Make note filenames easy to understand and search for
 4. **Use consistent naming**: Consider using prefixes like `meeting-`, `project-`, `idea-`, `log-`
@@ -255,7 +255,7 @@ EOF
 ### Common Issues
 1. **"No such file or directory"**: 
    - Verify the vault path is correct
-   - Check that `~/Documents/Obsidian Vault` exists
+   - Check that `${HOME}/Documents/Obsidian Vault` exists
    - Ensure you have write permissions
 
 2. **Permission denied**:

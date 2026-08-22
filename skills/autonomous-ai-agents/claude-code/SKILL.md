@@ -339,7 +339,7 @@ mcp__<server>__<tool>   # Specific MCP tool
 1. **CLI flags** — override everything
 2. **Local project:** `.claude/settings.local.json` (personal, gitignored)
 3. **Project:** `.claude/settings.json` (shared, git-tracked)
-4. **User:** `~/.claude/settings.json` (global)
+4. **User:** `${HOME}/.claude/settings.json` (global)
 
 ### Permissions in Settings
 ```json
@@ -353,7 +353,7 @@ mcp__<server>__<tool>   # Specific MCP tool
 ```
 
 ### Memory Files (CLAUDE.md) Hierarchy
-1. **Global:** `~/.claude/CLAUDE.md` — applies to all projects
+1. **Global:** `${HOME}/.claude/CLAUDE.md` — applies to all projects
 2. **Project:** `./CLAUDE.md` — project-specific context (git-tracked)
 3. **Local:** `.claude/CLAUDE.local.md` — personal project overrides (gitignored)
 
@@ -402,7 +402,7 @@ Use the `#` prefix in interactive mode to quickly add to memory: `# Always use 2
 | `/release-notes` | Interactive picker for version release notes |
 
 ### Custom Slash Commands
-Create `.claude/commands/<name>.md` (project-shared) or `~/.claude/commands/<name>.md` (personal):
+Create `.claude/commands/<name>.md` (project-shared) or `${HOME}/.claude/commands/<name>.md` (personal):
 
 ```markdown
 # .claude/commands/deploy.md
@@ -499,13 +499,13 @@ Run multiple independent Claude tasks simultaneously:
 
 ```
 # Task 1: Fix backend
-terminal(command="tmux new-session -d -s task1 -x 140 -y 40 && tmux send-keys -t task1 'cd ~/project && claude -p \"Fix the auth bug in src/auth.py\" --allowedTools \"Read,Edit\" --max-turns 10' Enter")
+terminal(command="tmux new-session -d -s task1 -x 140 -y 40 && tmux send-keys -t task1 'cd ${HOME}/project && claude -p \"Fix the auth bug in src/auth.py\" --allowedTools \"Read,Edit\" --max-turns 10' Enter")
 
 # Task 2: Write tests
-terminal(command="tmux new-session -d -s task2 -x 140 -y 40 && tmux send-keys -t task2 'cd ~/project && claude -p \"Write integration tests for the API endpoints\" --allowedTools \"Read,Write,Bash\" --max-turns 15' Enter")
+terminal(command="tmux new-session -d -s task2 -x 140 -y 40 && tmux send-keys -t task2 'cd ${HOME}/project && claude -p \"Write integration tests for the API endpoints\" --allowedTools \"Read,Write,Bash\" --max-turns 15' Enter")
 
 # Task 3: Update docs
-terminal(command="tmux new-session -d -s task3 -x 140 -y 40 && tmux send-keys -t task3 'cd ~/project && claude -p \"Update README.md with the new API endpoints\" --allowedTools \"Read,Edit\" --max-turns 5' Enter")
+terminal(command="tmux new-session -d -s task3 -x 140 -y 40 && tmux send-keys -t task3 'cd ${HOME}/project && claude -p \"Update README.md with the new API endpoints\" --allowedTools \"Read,Edit\" --max-turns 5' Enter")
 
 # Monitor all
 terminal(command="sleep 30 && for s in task1 task2 task3; do echo '=== '$s' ==='; tmux capture-pane -t $s -p -S -5 2>/dev/null; done")
@@ -540,23 +540,23 @@ Claude Code auto-loads `CLAUDE.md` from the project root. Use it to persist proj
 ### Rules Directory (Modular CLAUDE.md)
 For projects with many rules, use the rules directory instead of one massive CLAUDE.md:
 - **Project rules:** `.claude/rules/*.md` — team-shared, git-tracked
-- **User rules:** `~/.claude/rules/*.md` — personal, global
+- **User rules:** `${HOME}/.claude/rules/*.md` — personal, global
 
 Each `.md` file in the rules directory is loaded as additional context. This is cleaner than cramming everything into a single CLAUDE.md.
 
 ### Auto-Memory
-Claude automatically stores learned project context in `~/.claude/projects/<project>/memory/`.
+Claude automatically stores learned project context in `${HOME}/.claude/projects/<project>/memory/`.
 - **Limit:** 25KB or 200 lines per project
 - This is separate from CLAUDE.md — it's Claude's own notes about the project, accumulated across sessions
 
 ## Custom Subagents
 
-Define specialized agents in `.claude/agents/` (project), `~/.claude/agents/` (personal), or via `--agents` CLI flag (session):
+Define specialized agents in `.claude/agents/` (project), `${HOME}/.claude/agents/` (personal), or via `--agents` CLI flag (session):
 
 ### Agent Location Priority
 1. `.claude/agents/` — project-level, team-shared
 2. `--agents` CLI flag — session-specific, dynamic
-3. `~/.claude/agents/` — user-level, personal
+3. `${HOME}/.claude/agents/` — user-level, personal
 
 ### Creating an Agent
 ```markdown
@@ -585,7 +585,7 @@ Claude can orchestrate multiple agents: "Use @db-expert to optimize queries, the
 
 ## Hooks — Automation on Events
 
-Configure in `.claude/settings.json` (project) or `~/.claude/settings.json` (global):
+Configure in `.claude/settings.json` (project) or `${HOME}/.claude/settings.json` (global):
 
 ```json
 {
@@ -652,7 +652,7 @@ terminal(command="claude mcp add puppeteer -- npx @anthropic-ai/server-puppeteer
 ### MCP Scopes
 | Flag | Scope | Storage |
 |------|-------|---------|
-| `-s user` | Global (all projects) | `~/.claude.json` |
+| `-s user` | Global (all projects) | `${HOME}/.claude.json` |
 | `-s local` | This project (personal) | `.claude/settings.local.json` (gitignored) |
 | `-s project` | This project (team-shared) | `.claude/settings.json` (git-tracked) |
 

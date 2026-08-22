@@ -12,7 +12,7 @@ The FreshRSS newsletter builder script fails during the summarization step with 
 ## Context
 This issue occurred while running the scheduled newsletter builder:
 ```
-MAX_ARTICLES=25 LOOKBACK_HOURS=24 ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py
+MAX_ARTICLES=25 LOOKBACK_HOURS=24 ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py
 ```
 
 The script successfully:
@@ -101,7 +101,7 @@ A distinct failure class from the OpenRouter 'choices' HTML issue above: **the m
    ```
    The `model` field takes a JSON object `{model, provider}`, NOT a bare string.
 
-2. **Script hardcoded model** — `newsletter_builder.py` / `newsletter_builder_v2.py` both call `client.chat.completions.create(model="openai/gpt-4o-mini", ...)` directly, bypassing the agent default and billing OpenRouter even when a free default exists. Fix: read the default model + provider from `~/.hermes/config.yaml` at runtime and route accordingly (Nous base URL when provider is `nous`). See `references/newsletter_model_runtime.md` for the drop-in `_get_default_model()` helper.
+2. **Script hardcoded model** — `newsletter_builder.py` / `newsletter_builder_v2.py` both call `client.chat.completions.create(model="openai/gpt-4o-mini", ...)` directly, bypassing the agent default and billing OpenRouter even when a free default exists. Fix: read the default model + provider from `${HOME}/.hermes/config.yaml` at runtime and route accordingly (Nous base URL when provider is `nous`). See `references/newsletter_model_runtime.md` for the drop-in `_get_default_model()` helper.
 
 ### Prevention
 - After creating any cron job, run `cronjob action=list` and confirm every `model`/`provider` matches the default.

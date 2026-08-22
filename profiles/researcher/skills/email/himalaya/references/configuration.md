@@ -1,6 +1,6 @@
 # Himalaya Configuration Reference
 
-Configuration file location: `~/.config/himalaya/config.toml`
+Configuration file location: `${HOME}/.config/himalaya/config.toml`
 
 ## Minimal IMAP + SMTP Setup
 
@@ -186,7 +186,7 @@ himalaya --account work envelope list
 email = "user@example.com"
 
 backend.type = "notmuch"
-backend.db-path = "~/.mail/.notmuch"
+backend.db-path = "${HOME}/.mail/.notmuch"
 ```
 
 ## OAuth2 Authentication (for providers that support it)
@@ -215,7 +215,7 @@ signature-delim = "-- \n"
 
 ```toml
 [accounts.default]
-downloads-dir = "~/Downloads/himalaya"
+downloads-dir = "${HOME}/Downloads/himalaya"
 ```
 
 ### Editor for composing

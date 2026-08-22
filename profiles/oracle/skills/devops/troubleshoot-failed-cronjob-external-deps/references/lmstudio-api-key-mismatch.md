@@ -24,7 +24,7 @@ RuntimeError: Error code: 401 - {'detail': 'Unauthorized'}
 
 2. **Check the default model config:**
    ```bash
-   grep -A3 "model:" ~/.hermes/config.yaml | head -6
+   grep -A3 "model:" ${HOME}/.hermes/config.yaml | head -6
    ```
    If you see `provider: lmstudio` AND `api_key_env: ...`, that's the mismatch.
 
@@ -35,7 +35,7 @@ RuntimeError: Error code: 401 - {'detail': 'Unauthorized'}
 
 ## Fix
 
-Remove the `api_key_env` line from the default model in `~/.hermes/config.yaml`:
+Remove the `api_key_env` line from the default model in `${HOME}/.hermes/config.yaml`:
 
 ```yaml
 model:

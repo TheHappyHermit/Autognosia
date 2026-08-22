@@ -37,7 +37,7 @@ Validated 5-phase approach for wiki expansion:
 
 ### Cross-Domain Bridge Document Pattern
 
-Bridge documents connect two domains and live in `~/.autognosia/oracle/brain\Cross-Domain\`. Each bridge:
+Bridge documents connect two domains and live in `${HOME}/.autognosia/oracle/brain\Cross-Domain\`. Each bridge:
 - Maps concepts from Domain A to Domain B with explicit comparisons
 - Includes comparison tables and cross-references
 - Identifies what each field can learn from the other
@@ -49,5 +49,5 @@ Bridge documents connect two domains and live in `~/.autognosia/oracle/brain\Cro
 - Dashboard at `localhost:8765` is embedded in Hermes desktop app (Electron/React); source is immutable
 - Standalone Python tracker (`token_tracker.py`) parses LM Studio server logs
 - Daily cron job delivers fresh stats; first delivery at 23:42
-- Log source: `~/.lmstudio/server-logs/`
+- Log source: `${HOME}/.lmstudio/server-logs/`
 - Cache efficiency: 0% (local inference doesn't support prompt caching)

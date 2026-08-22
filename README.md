@@ -202,10 +202,10 @@ It learns things such as:
 
 ```bash
 # Clone upstream
-git clone https://github.com/plastic-labs/honcho.git ~/honcho
+git clone https://github.com/plastic-labs/honcho.git ${HOME}/honcho
 
 # Copy Autognosia's universalized skills to your Hermes
-cp -r deploy/honcho/skills/* ~/.hermes/skills/
+cp -r deploy/honcho/skills/* ${HOME}/.hermes/skills/
 ```
 
 The repo includes three universalized skills (personal details stripped):
@@ -224,7 +224,7 @@ pip install notebooklm-mcp-cli
 nlm skill install hermes
 ```
 
-Add to `~/.hermes/config.yaml`:
+Add to `${HOME}/.hermes/config.yaml`:
 ```yaml
 mcp_servers:
   notebooklm:

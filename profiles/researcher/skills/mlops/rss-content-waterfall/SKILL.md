@@ -210,11 +210,11 @@ model by default to avoid silent failures. Test-swap before deploying.
 When editing `.env` files, NEVER use `echo >>` for values containing `$`:
 ```bash
 # BAD — $ in password gets interpreted as shell variable
-echo "FRESHRSS_API_PASSWORD=secret$123" >> ~/.hermes/.env
+echo "FRESHRSS_API_PASSWORD=secret$123" >> ${HOME}/.hermes/.env
 
 # GOOD — use Python to write the file safely
 python3 -c "
-with open('~/.hermes/.env', 'a') as f:
+with open('${HOME}/.hermes/.env', 'a') as f:
     f.write('FRESHRSS_API_PASSWORD=secret$123\n')
 "
 ```
@@ -223,7 +223,7 @@ with open('~/.hermes/.env', 'a') as f:
 If a password contains `$` and `echo` was used without a trailing newline on the previous line,
 the shell will merge lines. Always verify the raw bytes after editing env files:
 ```python
-with open('~/.hermes/.env') as f:
+with open('${HOME}/.hermes/.env') as f:
     for line in f:
         if 'PASSWORD' in line:
             _, _, val = line.strip().partition('=')
@@ -287,7 +287,7 @@ Best approach: use the cron tool with `deliver: telegram` for automated delivery
 {
   "name": "Morning Newsletter (6 AM)",
   "schedule": "0 6 * * *",
-  "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the output as your final response.",
+  "prompt": "Run ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py and deliver the output as your final response.",
   "deliver": "telegram",
   "toolsets": ["terminal", "file"]
 }
@@ -310,7 +310,7 @@ Use a cache to:
 
 ```python
 import sqlite3
-conn = sqlite3.connect("~/.hermes/newsletter_cache.db")
+conn = sqlite3.connect("${HOME}/.hermes/newsletter_cache.db")
 conn.execute("""
     CREATE TABLE IF NOT EXISTS article_cache (
         url_hash TEXT PRIMARY KEY, url TEXT, title TEXT, summary TEXT,

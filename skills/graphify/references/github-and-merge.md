@@ -13,17 +13,17 @@ LOCAL_PATH=$(graphify clone <github-url> [--branch <branch>])
 **Multiple repos (cross-repo graph):**
 ```bash
 # Clone each repo, run the full pipeline on each, then merge
-graphify clone <url1>   # → ~/.graphify/repos/<owner1>/<repo1>
-graphify clone <url2>   # → ~/.graphify/repos/<owner2>/<repo2>
+graphify clone <url1>   # → ${HOME}/.graphify/repos/<owner1>/<repo1>
+graphify clone <url2>   # → ${HOME}/.graphify/repos/<owner2>/<repo2>
 # Run /graphify on each local path to produce their graph.json files
 # Then merge:
 graphify merge-graphs \
-  ~/.graphify/repos/<owner1>/<repo1>/graphify-out/graph.json \
-  ~/.graphify/repos/<owner2>/<repo2>/graphify-out/graph.json \
+  ${HOME}/.graphify/repos/<owner1>/<repo1>/graphify-out/graph.json \
+  ${HOME}/.graphify/repos/<owner2>/<repo2>/graphify-out/graph.json \
   --out graphify-out/cross-repo-graph.json
 ```
 
-Graphify clones into `~/.graphify/repos/<owner>/<repo>` and reuses existing clones on repeat runs. Each node in the merged graph carries a `repo` attribute so you can filter by origin.
+Graphify clones into `${HOME}/.graphify/repos/<owner>/<repo>` and reuses existing clones on repeat runs. Each node in the merged graph carries a `repo` attribute so you can filter by origin.
 
 **Multiple local subfolders (monorepo or multi-service layout):**
 

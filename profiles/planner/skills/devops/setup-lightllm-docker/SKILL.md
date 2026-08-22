@@ -23,7 +23,7 @@ When you need to set up a LightLLM proxy server in Docker that:
 
 ### 1. Create Project Directory
 ```bash
-mkdir -p ~/lightllm-proxy && cd ~/lightllm-proxy
+mkdir -p ${HOME}/lightllm-proxy && cd ${HOME}/lightllm-proxy
 ```
 
 ### 2. Create docker-compose.yml

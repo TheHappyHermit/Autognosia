@@ -45,7 +45,7 @@ Hermes has a built-in web dashboard (separate from Open WebUI) for managing conf
 
 ### Default (localhost only)
 ```bash
-cd ~/.hermes/hermes-agent && source venv/bin/activate
+cd ${HOME}/.hermes/hermes-agent && source venv/bin/activate
 python -m hermes_cli.main dashboard --no-open
 ```
 
@@ -75,7 +75,7 @@ Plus restart-counter fires fast (`systemctl --user status` shows `activating aut
 **Fix (LAN/bind 0.0.0.0):**
 1. Set credentials in config.yaml via the CLI (direct edits to config.yaml are BLOCKED by a safety guard):
    ```bash
-   cd ~/.hermes/hermes-agent
+   cd ${HOME}/.hermes/hermes-agent
    python -m hermes_cli.main config set dashboard.basic_auth.username admin
    python -m hermes_cli.main config set dashboard.basic_auth.password_hash "<scrypt-hash>"
    # hash a password:
@@ -122,17 +122,17 @@ If sudo is unavailable, use a **user-level** systemd service. If sudo works, a s
 ### User-level service (no sudo required)
 
 ```bash
-mkdir -p ~/.config/systemd/user
+mkdir -p ${HOME}/.config/systemd/user
 
-cat > ~/.config/systemd/user/hermes-dashboard.service << 'EOF'
+cat > ${HOME}/.config/systemd/user/hermes-dashboard.service << 'EOF'
 [Unit]
 Description=Hermes Agent Web Dashboard
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=~/.hermes/hermes-agent
-ExecStart=~/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --host 0.0.0.0 --port 9119 --no-open --insecure
+WorkingDirectory=${HOME}/.hermes/hermes-agent
+ExecStart=${HOME}/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --host 0.0.0.0 --port 9119 --no-open --insecure
 Restart=on-failure
 RestartSec=5
 
@@ -167,5 +167,5 @@ journalctl --user -u hermes-dashboard -f   # follow logs
 - `hermes dashboard` defaults to localhost; use `--insecure --host 0.0.0.0` for LAN access
 - The `--insecure` flag is mandatory for non-localhost binding (safety gate)
 - Build step may take a few seconds before port binds — allow startup time
-- `/etc/systemd/system/` requires sudo; use `~/.config/systemd/user/` as fallback
+- `/etc/systemd/system/` requires sudo; use `${HOME}/.config/systemd/user/` as fallback
 - `loginctl enable-linger` is essential for user services to persist across reboots/logouts

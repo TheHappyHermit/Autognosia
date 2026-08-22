@@ -38,7 +38,7 @@ model:
    from hermes_cli.config import get_compatible_custom_providers
    import yaml, os
    
-   cfg = yaml.safe_load(open(os.path.expanduser('~/.hermes/config.yaml')))
+   cfg = yaml.safe_load(open(os.path.expanduser('${HOME}/.hermes/config.yaml')))
    custom_provs = get_compatible_custom_providers(cfg)
    
    results = list_authenticated_providers(
@@ -99,13 +99,13 @@ This is a non-fatal warning — it doesn't prevent other providers from showing.
 
 ```bash
 # Check gateway logs for errors
-grep -i "error\|fail\|context" ~/.hermes/logs/gateway.log | tail -30
+grep -i "error\|fail\|context" ${HOME}/.hermes/logs/gateway.log | tail -30
 
 # Verify gateway is running
 ps aux | grep "gateway run" | grep -v grep
 
 # Check Telegram adapter capabilities
-~/.hermes/hermes-agent/venv/bin/python -c "
+${HOME}/.hermes/hermes-agent/venv/bin/python -c "
 import hermes_plugins.telegram_platform.adapter as a
 print('has send_model_picker:', hasattr(a, 'TelegramAdapter') and getattr(a.TelegramAdapter, 'send_model_picker', None) is not None)
 "

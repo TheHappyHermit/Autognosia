@@ -1,7 +1,7 @@
 # Cron cron vault path permission failure
 
 ## Symptom
-Cron job attempts to write under a synced/vault-style path under user home such as `~/Documents/...` and `patch`/`write_file` fails with `Permission denied` on a temp file created next to the target. `cp`/`cp --backup` may also fail. The target file itself may still be readable.
+Cron job attempts to write under a synced/vault-style path under user home such as `${HOME}/Documents/...` and `patch`/`write_file` fails with `Permission denied` on a temp file created next to the target. `cp`/`cp --backup` may also fail. The target file itself may still be readable.
 
 ## Likely cause
 The agent process runs with a different effective UID/GID than the path owner, or the mount/remote-filesystem blocks create/rename operations even though owner/group look correct.

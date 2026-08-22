@@ -31,7 +31,7 @@ Turn any folder of files into a navigable knowledge graph with community detecti
 /graphify <path> --mcp                                # start MCP stdio server for agent access
 /graphify <path> --watch                              # watch folder, auto-rebuild on code changes (no LLM needed)
 /graphify <path> --wiki                               # build agent-crawlable wiki (index.md + one article per community)
-/graphify <path> --obsidian --obsidian-dir ~/vaults/my-project  # write vault to custom path (e.g. existing vault)
+/graphify <path> --obsidian --obsidian-dir ${HOME}/vaults/my-project  # write vault to custom path (e.g. existing vault)
 /graphify add <url>                                   # fetch URL, save to ./raw, update graph
 /graphify add <url> --author "Name"                   # tag who wrote it
 /graphify add <url> --contributor "Name"              # tag who added it to the corpus
@@ -550,7 +550,7 @@ If `--obsidian` was given:
 
 ```bash
 graphify export obsidian
-# or with custom dir: graphify export obsidian --dir ~/vaults/my-project
+# or with custom dir: graphify export obsidian --dir ${HOME}/vaults/my-project
 ```
 
 Generate the HTML graph (always, unless `--no-viz`):
@@ -670,13 +670,13 @@ The graph is the map. Your job after the pipeline is to be the guide.
 
 ## Environment: Terminal Gateway Timeout Pitfall
 
-When graphify operations take >60s (typical for corpora >20k nodes), the terminal gateway will kill the process. **Workaround:** use `execute_code()` with `subprocess.run()` and the correct Python interpreter path instead of `terminal()`. The graphifyy interpreter lives at `~/.local/share/uv/tools/graphifyy/bin/python3` — use that as the subprocess command. This bypasses the terminal gateway's timeout on long-running scripts.
+When graphify operations take >60s (typical for corpora >20k nodes), the terminal gateway will kill the process. **Workaround:** use `execute_code()` with `subprocess.run()` and the correct Python interpreter path instead of `terminal()`. The graphifyy interpreter lives at `${HOME}/.local/share/uv/tools/graphifyy/bin/python3` — use that as the subprocess command. This bypasses the terminal gateway's timeout on long-running scripts.
 
 Example:
 ```python
 import subprocess
 subprocess.run(
-    ['~/.local/share/uv/tools/graphifyy/bin/python3', '-c', '...script...'],
+    ['${HOME}/.local/share/uv/tools/graphifyy/bin/python3', '-c', '...script...'],
     capture_output=True, text=True, timeout=120, cwd='/path/to/corpus'
 )
 ```

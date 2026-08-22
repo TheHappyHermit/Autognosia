@@ -40,7 +40,7 @@ Based on [Cocoon AI's architecture-diagram-generator](https://github.com/Cocoon-
 
 1. User describes their system architecture (components, connections, technologies)
 2. Generate the HTML file following the design system below
-3. Save with `write_file` to a `.html` file (e.g. `~/architecture-diagram.html`)
+3. Save with `write_file` to a `.html` file (e.g. `${HOME}/architecture-diagram.html`)
 4. User opens in any browser — works offline, no dependencies
 
 ### Output Location

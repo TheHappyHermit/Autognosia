@@ -19,7 +19,7 @@ The Home Assistant MCP server exposes your Home Assistant entities and services 
 - native-mcp skill loaded
 
 ## Configuration
-The Home Assistant MCP server should be configured in ~/.hermes/config.yaml:
+The Home Assistant MCP server should be configured in ${HOME}/.hermes/config.yaml:
 ```yaml
 mcp_servers:
   home-assistant:

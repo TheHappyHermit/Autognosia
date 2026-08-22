@@ -6,7 +6,7 @@ Cron jobs configured with `model: "auto"` and `provider: "auto"` fail with **401
 
 ## Root Cause
 
-The `provider_routing.order` array in `~/.hermes/config.yaml` forces a specific provider as primary, **overriding** the `provider: auto` setting in cron jobs.
+The `provider_routing.order` array in `${HOME}/.hermes/config.yaml` forces a specific provider as primary, **overriding** the `provider: auto` setting in cron jobs.
 
 ```yaml
 # This OVERRIDES cron job "auto" selection
@@ -30,19 +30,19 @@ When the cron job runs `resolve_runtime_provider(requested="auto")`, the provide
 
 ```bash
 # 1. Check provider_routing in config
-grep -A 5 "provider_routing:" ~/.hermes/config.yaml
+grep -A 5 "provider_routing:" ${HOME}/.hermes/config.yaml
 
 # 2. Test what "auto" actually resolves to
-HERMES_HOME=~/.hermes ~/.hermes/hermes-agent/venv/bin/python3 -c "
+HERMES_HOME=${HOME}/.hermes ${HOME}/.hermes/hermes-agent/venv/bin/python3 -c "
 import os, sys
-sys.path.insert(0, '~/.hermes/hermes-agent')
+sys.path.insert(0, '${HOME}/.hermes/hermes-agent')
 from hermes_cli.runtime_provider import resolve_runtime_provider
 print('auto ->', resolve_runtime_provider(requested='auto').get('provider'))
 print('nous ->', resolve_runtime_provider(requested='nous').get('provider'))
 "
 
 # 3. Verify the forced provider has no credentials
-grep -i "MISTRAL_API_KEY" ~/.hermes/.env
+grep -i "MISTRAL_API_KEY" ${HOME}/.hermes/.env
 # If empty/absent -> that's the problem
 ```
 
@@ -63,7 +63,7 @@ provider_routing:
 
 **Option 3: Add credentials for the forced provider** (if you want Mistral primary)
 ```bash
-# Add to ~/.hermes/.env
+# Add to ${HOME}/.hermes/.env
 MISTRAL_API_KEY=your_key_here
 ```
 
@@ -80,9 +80,9 @@ The provider resolution chain in `hermes_cli/runtime_provider.py:resolve_runtime
 
 ```bash
 # Re-run the test
-HERMES_HOME=~/.hermes ~/.hermes/hermes-agent/venv/bin/python3 -c "
+HERMES_HOME=${HOME}/.hermes ${HOME}/.hermes/hermes-agent/venv/bin/python3 -c "
 import os, sys
-sys.path.insert(0, '~/.hermes/hermes-agent')
+sys.path.insert(0, '${HOME}/.hermes/hermes-agent')
 from hermes_cli.runtime_provider import resolve_runtime_provider
 print('auto ->', resolve_runtime_provider(requested='auto').get('provider'))
 "  # Should now print "nous"
@@ -148,7 +148,7 @@ hermes cron update <job_id> --model '{"model": "nvidia/nemotron-3-ultra:free", "
 
 ### Note on `provider_routing`
 
-The `provider_routing` section in `~/.hermes/config.yaml` **only applies when using OpenRouter**. It does NOT affect direct provider connections (Nous, Mistral, Anthropic, etc. used directly via their base URLs). For direct providers, cron jobs should explicitly specify `model` and `provider` to avoid the `"auto"` string bug.
+The `provider_routing` section in `${HOME}/.hermes/config.yaml` **only applies when using OpenRouter**. It does NOT affect direct provider connections (Nous, Mistral, Anthropic, etc. used directly via their base URLs). For direct providers, cron jobs should explicitly specify `model` and `provider` to avoid the `"auto"` string bug.
 
 ## Verification After Fix
 

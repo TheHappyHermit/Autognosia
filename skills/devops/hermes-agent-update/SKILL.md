@@ -15,16 +15,16 @@ Systematic approach to update Hermes Agent to the newest version from the main b
 - After hearing about new Hermes releases
 
 ## Prerequisites
-- Hermes Agent installed in ~/.hermes/hermes-agent/
+- Hermes Agent installed in ${HOME}/.hermes/hermes-agent/
 - Git available in PATH
 - Pip available in PATH
-- Write permissions to ~/.hermes/ directory
+- Write permissions to ${HOME}/.hermes/ directory
 
 ## Steps
 
 ### 1. Navigate to Hermes directory
 ```bash
-cd ~/.hermes/hermes-agent
+cd ${HOME}/.hermes/hermes-agent
 ```
 
 ### 2. Stash any local changes (if any)
@@ -68,7 +68,7 @@ git stash pop
 After update, the version output should show:
 ```
 Hermes Agent vX.X.X (YYYY.MM.DD)
-Project: ~/.hermes/hermes-agent
+Project: ${HOME}/.hermes/hermes-agent
 Python: X.X.X
 OpenAI SDK: X.X.X
 Up to date

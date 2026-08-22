@@ -32,7 +32,7 @@ All releases: https://github.com/JulienTant/blogwatcher-cli/releases
 
 ### Docker with persistent storage
 
-By default the database lives at `~/.blogwatcher-cli/blogwatcher-cli.db`. In Docker this is lost on container restart. Use `BLOGWATCHER_DB` or a volume mount to persist it:
+By default the database lives at `${HOME}/.blogwatcher-cli/blogwatcher-cli.db`. In Docker this is lost on container restart. Use `BLOGWATCHER_DB` or a volume mount to persist it:
 
 ```bash
 # Named volume (simplest)
@@ -47,7 +47,7 @@ docker run --rm -v /path/on/host:/data -e BLOGWATCHER_DB=/data/blogwatcher-cli.d
 If upgrading from `Hyaxia/blogwatcher`, move your database:
 
 ```bash
-mv ~/.blogwatcher/blogwatcher.db ~/.blogwatcher-cli/blogwatcher-cli.db
+mv ${HOME}/.blogwatcher/blogwatcher.db ${HOME}/.blogwatcher-cli/blogwatcher-cli.db
 ```
 
 The binary name changed from `blogwatcher` to `blogwatcher-cli`.
@@ -133,5 +133,5 @@ Unread articles (2):
 - Falls back to HTML scraping if RSS fails and `--scrape-selector` is configured.
 - Categories from RSS/Atom feeds are stored and can be used to filter articles.
 - Import blogs in bulk from OPML files exported by Feedly, Inoreader, NewsBlur, etc.
-- Database stored at `~/.blogwatcher-cli/blogwatcher-cli.db` by default (override with `--db` or `BLOGWATCHER_DB`).
+- Database stored at `${HOME}/.blogwatcher-cli/blogwatcher-cli.db` by default (override with `--db` or `BLOGWATCHER_DB`).
 - Use `blogwatcher-cli <command> --help` to discover all flags and options.

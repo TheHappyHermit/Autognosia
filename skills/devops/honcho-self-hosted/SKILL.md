@@ -10,9 +10,9 @@ trigger: When user wants to set up, debug, or use self-hosted Honcho for memory 
 Honcho is an open-source memory system for stateful AI agents. Uses FastAPI server + PostgreSQL/pgvector.
 
 ## Files
-- `~/honcho/` - Honcho source (cloned from plastic-labs/honcho)
-- `~/honcho/docker-compose.yml` - Docker config
-- `~/honcho/src/config.py` - Patched to use "google" provider for all dialectic levels (also hardcodes model names — must be updated to change models)
+- `${HOME}/honcho/` - Honcho source (cloned from plastic-labs/honcho)
+- `${HOME}/honcho/docker-compose.yml` - Docker config
+- `${HOME}/honcho/src/config.py` - Patched to use "google" provider for all dialectic levels (also hardcodes model names — must be updated to change models)
 
 ## Architecture
 ```
@@ -130,7 +130,7 @@ All DIALECTIC level defaults must be set to `"google"` provider (PATCH done). Th
 
 ## Verification Steps
 1. Edit `src/config.py` (all model references) AND `docker-compose.yml`
-2. `cd ~/honcho && docker compose up -d --build server deriver`
+2. `cd ${HOME}/honcho && docker compose up -d --build server deriver`
 3. Verify model: `docker exec honcho_deriver python -c "from src.config import settings; print(settings.DERIVER.MODEL)"`
 4. Check server: `docker compose logs --tail-10 server` (should show Uvicorn on :8000)
 5. Check deriver: `docker compose logs --tail=30 deriver` (look for PERFORMANCE metrics or errors)

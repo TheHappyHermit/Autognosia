@@ -49,7 +49,7 @@ The script will:
 
 ### Manual steps (one-time, cannot be automated)
 
-1. **Drag `~/Downloads/twozero.tox` into the TD network editor** → click Install
+1. **Drag `${HOME}/Downloads/twozero.tox` into the TD network editor** → click Install
 2. **Enable MCP:** click twozero icon → Settings → mcp → "auto start MCP" → Yes
 3. **Restart Hermes session** to pick up the new MCP server
 

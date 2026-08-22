@@ -158,9 +158,9 @@ du -h / --max-depth=1 2>/dev/null | sort -hr | head -30
 du -h /home --max-depth=2 2>/dev/null | sort -hr | head -40
 
 # Specific problematic paths
-du -h ~/.hermes --max-depth=2 2>/dev/null | sort -hr
-du -h ~/.cache --max-depth-2 2>/dev/null | sort -hr
-du -h ~/.local --max-depth-2 2>/dev/null | sort -hr
+du -h ${HOME}/.hermes --max-depth=2 2>/dev/null | sort -hr
+du -h ${HOME}/.cache --max-depth-2 2>/dev/null | sort -hr
+du -h ${HOME}/.local --max-depth-2 2>/dev/null | sort -hr
 du -h /snap --max-depth=2 2>/dev/null | sort -hr
 du -h /var --max-depth=2 2>/dev/null | sort -hr
 ```
@@ -170,23 +170,23 @@ du -h /var --max-depth=2 2>/dev/null | sort -hr
 | Target | Command | Space | Risk |
 |--------|---------|-------|------|
 | **Hermes state.db optimization** | `hermes sessions optimize-storage` | **~8 GB (60%)** | ✅ Zero |
-| Stale Hermes venv | `rm -rf ~/.hermes/hermes-agent/venv.stale.runtime-*` | ~5.6 GB | ✅ Zero |
-| Old Hermes sessions | `find ~/.hermes/sessions -name "*.json" -mtime +30 -delete` | ~1.5 GB | ✅ Zero |
-| Rust build artifacts | `rm -rf ~/cel-ast-research/target` | ~1.3 GB | ✅ Zero (rebuilds) |
-| pnpm store | `~/.local/share/pnpm/pnpm store prune` | ~1.5 GB | ✅ Zero |
-| uv cache | `~/.hermes/bin/uv cache clean` | ~437 MB | ✅ Zero |
-| Bazel cache | `rm -rf ~/.cache/bazel` (needs sudo) | ~1.3 GB | ✅ Zero |
+| Stale Hermes venv | `rm -rf ${HOME}/.hermes/hermes-agent/venv.stale.runtime-*` | ~5.6 GB | ✅ Zero |
+| Old Hermes sessions | `find ${HOME}/.hermes/sessions -name "*.json" -mtime +30 -delete` | ~1.5 GB | ✅ Zero |
+| Rust build artifacts | `rm -rf ${HOME}/cel-ast-research/target` | ~1.3 GB | ✅ Zero (rebuilds) |
+| pnpm store | `${HOME}/.local/share/pnpm/pnpm store prune` | ~1.5 GB | ✅ Zero |
+| uv cache | `${HOME}/.hermes/bin/uv cache clean` | ~437 MB | ✅ Zero |
+| Bazel cache | `rm -rf ${HOME}/.cache/bazel` (needs sudo) | ~1.3 GB | ✅ Zero |
 | systemd journal | `journalctl --vacuum-time=30d` | ~800 MB | ✅ Zero |
 | apt cache | `apt clean` (needs sudo) | ~525 MB | ✅ Zero |
 | **Docker build cache** | `docker builder prune -a` | **~5 GB** | ✅ Zero |
 | Old Snap revisions | `snap remove --revision=N <pkg>` (needs sudo) | ~3-5 GB | ✅ Low |
 | **Rust toolchains (if unused)** | `rustup self uninstall -y` | **~2.4 GB** | ✅ Zero |
-| **Go module cache (if unused)** | `chmod -R u+w ~/go && rm -rf ~/go` | **~477 MB** | ✅ Zero |
+| **Go module cache (if unused)** | `chmod -R u+w ${HOME}/go && rm -rf ${HOME}/go` | **~477 MB** | ✅ Zero |
 
 ### Requires sudo (run as separate step)
 ```bash
 # Bazel cache
-sudo rm -rf ~/.cache/bazel
+sudo rm -rf ${HOME}/.cache/bazel
 
 # apt cache
 sudo apt clean
@@ -221,7 +221,7 @@ done
 
 **No automated newsletter sessions exist in the database.**
 
-The cron jobs (`Morning Newsletter (6 AM)`, `Evening Newsletter (9 PM)`) use `deliver: "telegram"` in their config (`~/.hermes/cron/jobs.json`), which sends the newsletter directly via the Telegram Bot API — **no Hermes session is created**.
+The cron jobs (`Morning Newsletter (6 AM)`, `Evening Newsletter (9 PM)`) use `deliver: "telegram"` in their config (`${HOME}/.hermes/cron/jobs.json`), which sends the newsletter directly via the Telegram Bot API — **no Hermes session is created**.
 
 Keyword matches for "newsletter" in messages were false positives from the current conversation discussing cleanup results (e.g., "## ✅ Cleanup Complete — Disk Usage: 69 GB → 58 GB").
 
@@ -241,19 +241,19 @@ GROUP BY s.id HAVING user_count = 0 AND total > 5;
 ## 6. Complete In-Place Hermes Upgrade + Desktop Build
 
 ### Prerequisites
-- Running Hermes installation at `~/.hermes`
+- Running Hermes installation at `${HOME}/.hermes`
 - `gh` CLI authenticated for backups
 - Node.js + npm (for Desktop build)
 
 ### Steps
 
 ```bash
-# 1. Full backup + update (creates zip snapshot in ~/.hermes/backups/)
+# 1. Full backup + update (creates zip snapshot in ${HOME}/.hermes/backups/)
 hermes update --backup
 
 # 2. If Node.js engine warning blocks npm (common on Node v24+):
 #    Workaround: use system npm with --ignore-scripts for workspace installs
-cd ~/.hermes/hermes-agent
+cd ${HOME}/.hermes/hermes-agent
 npm install --ignore-scripts
 npm install --workspace web --ignore-scripts
 npm install --workspace ui-tui --ignore-scripts
@@ -263,14 +263,14 @@ npm install --workspace apps/desktop --ignore-scripts
 #    npm install -g npm@11.17.0
 
 # 3. Build all workspaces
-cd ~/.hermes/hermes-agent/web && npm run build
-cd ~/.hermes/hermes-agent/ui-tui && npm run build
-cd ~/.hermes/hermes-agent/apps/desktop && npm run build
+cd ${HOME}/.hermes/hermes-agent/web && npm run build
+cd ${HOME}/.hermes/hermes-agent/ui-tui && npm run build
+cd ${HOME}/.hermes/hermes-agent/apps/desktop && npm run build
 
 # 4. Verify
 hermes --version
-# Desktop binary: ~/.hermes/hermes-agent/apps/desktop/release/linux-unpacked/Hermes
-# .desktop launcher: ~/.local/share/applications/hermes.desktop
+# Desktop binary: ${HOME}/.hermes/hermes-agent/apps/desktop/release/linux-unpacked/Hermes
+# .desktop launcher: ${HOME}/.local/share/applications/hermes.desktop
 ```
 
 ### What Gets Preserved (Verified)

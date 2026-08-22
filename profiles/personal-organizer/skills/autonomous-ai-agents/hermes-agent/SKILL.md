@@ -68,21 +68,21 @@ hermes proxy                   # OpenAI-compatible local proxy backed by your OA
 ## Key Paths
 
 ```
-~/.hermes/config.yaml       Main configuration (settings — never secrets)
-~/.hermes/.env              API keys and secrets ONLY (under $HERMES_HOME if set)
+${HOME}/.hermes/config.yaml       Main configuration (settings — never secrets)
+${HOME}/.hermes/.env              API keys and secrets ONLY (under $HERMES_HOME if set)
 $HERMES_HOME/skills/        Installed skills
-~/.hermes/skins/            Custom themes (see references/themes.md)
-~/.hermes/desktop-plugins/  Desktop app UI plugins (see references/desktop-plugins.md)
-~/.hermes/tui-widgets/      TUI widget apps (see references/tui-widgets.md)
-~/.hermes/pets/             Installed pet mascots (see references/petdex.md)
-~/.hermes/state.db          Canonical session store (SQLite + FTS5)
-~/.hermes/sessions/         Gateway routing index, request dumps, *.jsonl transcripts
-~/.hermes/logs/             Gateway and error logs
-~/.hermes/auth.json         OAuth tokens and credential pools
-~/.hermes/hermes-agent/     Source code (if git-installed)
+${HOME}/.hermes/skins/            Custom themes (see references/themes.md)
+${HOME}/.hermes/desktop-plugins/  Desktop app UI plugins (see references/desktop-plugins.md)
+${HOME}/.hermes/tui-widgets/      TUI widget apps (see references/tui-widgets.md)
+${HOME}/.hermes/pets/             Installed pet mascots (see references/petdex.md)
+${HOME}/.hermes/state.db          Canonical session store (SQLite + FTS5)
+${HOME}/.hermes/sessions/         Gateway routing index, request dumps, *.jsonl transcripts
+${HOME}/.hermes/logs/             Gateway and error logs
+${HOME}/.hermes/auth.json         OAuth tokens and credential pools
+${HOME}/.hermes/hermes-agent/     Source code (if git-installed)
 ```
 
-Profiles use `~/.hermes/profiles/<name>/` with the same layout. When a profile is active, resolve the real home from `$HERMES_HOME` — never hardcode `~/.hermes`.
+Profiles use `${HOME}/.hermes/profiles/<name>/` with the same layout. When a profile is active, resolve the real home from `$HERMES_HOME` — never hardcode `${HOME}/.hermes`.
 
 ## Routing Table — load the reference for the task
 
@@ -133,10 +133,10 @@ Run additional Hermes processes as fully independent subprocesses — separate s
 ### One-Shot Mode
 
 ```
-terminal(command="hermes chat -q 'Research GRPO papers and write summary to ~/research/grpo.md'", timeout=300)
+terminal(command="hermes chat -q 'Research GRPO papers and write summary to ${HOME}/research/grpo.md'", timeout=300)
 
 # Background for long tasks:
-terminal(command="hermes chat -q 'Set up CI/CD for ~/myapp'", background=true)
+terminal(command="hermes chat -q 'Set up CI/CD for ${HOME}/myapp'", background=true)
 ```
 
 ### Interactive PTY Mode (via tmux)

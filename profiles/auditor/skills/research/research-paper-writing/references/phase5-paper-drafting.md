@@ -389,8 +389,8 @@ Template Setup Checklist:
 **Step 1: Copy the Full Template**
 
 ```bash
-cp -r templates/neurips2025/ ~/papers/my-paper/
-cd ~/papers/my-paper/
+cp -r templates/neurips2025/ ${HOME}/papers/my-paper/
+cd ${HOME}/papers/my-paper/
 ls -la  # Should see: main.tex, neurips.sty, Makefile, etc.
 ```
 

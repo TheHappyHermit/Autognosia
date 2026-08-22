@@ -127,7 +127,7 @@ A multi-stage fallback pipeline for extracting full article content from URLs. O
 ### Playwright Setup:
 - Python `playwright` pip package installed in the newsletter venv
 - System Chromium at `/snap/bin/chromium` (Ubuntu snap) — works reliably
-- Playwright's own bundled chromium (in `~/.cache/ms-playwright/`) has version mismatches — DON'T use it
+- Playwright's own bundled chromium (in `${HOME}/.cache/ms-playwright/`) has version mismatches — DON'T use it
 - Always specify `executable_path` to use system Chromium
 - Multiline `page.evaluate()` strings cause "Invalid or unexpected token" errors — use single-line strings
 - `page.evaluate('document.querySelectorAll("selector").forEach(el => el.remove())')` — keep inline, no newlines

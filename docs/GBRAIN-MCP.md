@@ -9,7 +9,7 @@ the rebuildable long-term retrieval/index layer, accessed over MCP.
 
 GBrain installs via Bun as a script with a `#!/usr/bin/env bun` shebang.
 MCP clients launch stdio servers from a **minimal environment** whose `PATH`
-usually does not include `~/.bun/bin`. The interpreter is never found and the
+usually does not include `${HOME}/.bun/bin`. The interpreter is never found and the
 server dies instantly — the client reports:
 
 ```

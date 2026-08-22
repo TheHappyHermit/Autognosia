@@ -12,8 +12,8 @@ if command -v gh &>/dev/null && gh auth status &>/dev/null; then
   AUTH=***  if [ -z "$GITHUB_TOKEN" ]; then
     if _hermes_env="${HERMES_HOME:-$HOME/.hermes}/.env"; [ -f "$_hermes_env" ] && grep -q "^GITHUB_TOKEN=*** "$_hermes_env"; then
       GITHUB_TOKEN=*** "^GITHUB_TOKEN=*** "$_hermes_env" | head -1 | cut -d= -f2 | tr -d '\n\r')
-    elif grep -q "github.com" ~/.git-credentials 2>/dev/null; then
-      GITHUB_TOKEN=*** "github.com" ~/.git-credentials 2>/dev/null | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
+    elif grep -q "github.com" ${HOME}/.git-credentials 2>/dev/null; then
+      GITHUB_TOKEN=*** "github.com" ${HOME}/.git-credentials 2>/dev/null | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
     fi
   fi
 fi
@@ -249,7 +249,7 @@ curl -s -X PUT \
 **With gh (dramatically simpler):**
 ```bash
 gh secret set API_KEY --body "your-secret-value"
-gh secret set SSH_KEY < ~/.ssh/id_rsa
+gh secret set SSH_KEY < ${HOME}/.ssh/id_rsa
 gh secret list
 gh secret delete API_KEY
 ```

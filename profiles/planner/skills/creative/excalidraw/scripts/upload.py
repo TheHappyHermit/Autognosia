@@ -13,7 +13,7 @@ Usage:
     python upload.py <path-to-file.excalidraw>
 
 Example:
-    python upload.py ~/diagrams/architecture.excalidraw
+    python upload.py ${HOME}/diagrams/architecture.excalidraw
     # prints: https://excalidraw.com/#json=abc123,encryptionKeyHere
 """
 

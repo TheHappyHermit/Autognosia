@@ -25,18 +25,18 @@ try:
 except (ModuleNotFoundError, ImportError):
 
     def get_hermes_home() -> Path:
-        """Return the Hermes home directory (default: ~/.hermes).
+        """Return the Hermes home directory (default: ${HOME}/.hermes).
 
         Mirrors ``hermes_constants.get_hermes_home()``."""
         val = os.environ.get("HERMES_HOME", "").strip()
         return Path(val) if val else Path.home() / ".hermes"
 
     def display_hermes_home() -> str:
-        """Return a user-friendly ``~/``-shortened display string.
+        """Return a user-friendly ``${HOME}/``-shortened display string.
 
         Mirrors ``hermes_constants.display_hermes_home()``."""
         home = get_hermes_home()
         try:
-            return "~/" + str(home.relative_to(Path.home()))
+            return "${HOME}/" + str(home.relative_to(Path.home()))
         except ValueError:
             return str(home)

@@ -7,7 +7,7 @@ Exits 0 if verification passes, 1 if it fails.
 
 PLATFORM: Cross-platform (Python 3)
   • All dependencies (verify_stack.py, gbrain CLI, Python) are cross-platform
-  • The verify_stack.py script must exist at ~/personal-agent/verify_stack.py
+  • The verify_stack.py script must exist at ${HOME}/personal-agent/verify_stack.py
 
 Linux-specific notes:
   • On Linux, systemctl is used — not available on macOS/Windows

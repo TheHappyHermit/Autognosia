@@ -14,7 +14,7 @@ Keep the Active Wiki healthy by finding orphans, broken links, stale pages, and 
 
 ## Wiki Location
 
-- **Active Wiki**: `~/.autognosia/active-wiki/`
+- **Active Wiki**: `${HOME}/.autognosia/active-wiki/`
 - **Categories**: `projects/`, `reference/`, `system/`, `personal/`
 - **Metadata**: `.meta/` directory for ingestion logs and content hashes
 
@@ -24,16 +24,16 @@ Keep the Active Wiki healthy by finding orphans, broken links, stale pages, and 
 
 Pages with no incoming links:
 ```bash
-find ~/.autognosia/active-wiki/ -name "*.md" -exec grep -L "^Source:" {} \;
+find ${HOME}/.autognosia/active-wiki/ -name "*.md" -exec grep -L "^Source:" {} \;
 ```
 
 ### 2. Check Broken Links
 
 Find links to pages that don't exist:
 ```bash
-grep -roh '\[\[.*\]\]' ~/.autognosia/active-wiki/ | while read link; do
+grep -roh '\[\[.*\]\]' ${HOME}/.autognosia/active-wiki/ | while read link; do
   page=$(echo "$link" | sed 's/\[\[\([^]]*\)\]\]/\1/')
-  if ! find ~/.autognosia/active-wiki/ -name "$page.md" -o -name "$page/index.md" | grep -q .; then
+  if ! find ${HOME}/.autognosia/active-wiki/ -name "$page.md" -o -name "$page/index.md" | grep -q .; then
     echo "Broken link: $link"
   fi
 done
@@ -43,7 +43,7 @@ done
 
 Pages not updated in 90+ days:
 ```bash
-find ~/.autognosia/active-wiki/ -name "*.md" -mtime +90 -exec ls -la {} \;
+find ${HOME}/.autognosia/active-wiki/ -name "*.md" -mtime +90 -exec ls -la {} \;
 ```
 
 ### 4. Check Contradictions
@@ -68,7 +68,7 @@ For each issue, suggest:
 
 ### 7. Update Metadata Log
 
-Record maintenance actions in `~/.autognosia/active-wiki/.meta/ingestion-log.md`.
+Record maintenance actions in `${HOME}/.autognosia/active-wiki/.meta/ingestion-log.md`.
 
 ## Maintenance Schedule
 
@@ -87,8 +87,8 @@ Stale pages should be archived, not deleted. Move to Oracle Wiki if they represe
 ## Metadata Maintenance
 
 After maintenance, update:
-- `~/.autognosia/active-wiki/.meta/ingestion-log.md` — Log what was checked and found
-- `~/.autognosia/active-wiki/.meta/content-hashes.json` — Update if pages were modified
+- `${HOME}/.autognosia/active-wiki/.meta/ingestion-log.md` — Log what was checked and found
+- `${HOME}/.autognosia/active-wiki/.meta/content-hashes.json` — Update if pages were modified
 
 ## Related Bundled Skills
 

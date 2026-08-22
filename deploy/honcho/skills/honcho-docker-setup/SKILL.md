@@ -34,7 +34,7 @@ If starting from `plastic-labs/honcho` upstream directly:
 The upstream `src/config.py` has medium/high/max dialectic levels defaulting to **anthropic**. If you only have Gemini credentials:
 
 ```bash
-cd ~/honcho
+cd ${HOME}/honcho
 sed -i 's/PROVIDER="anthropic",/PROVIDER="google",/g' src/config.py
 sed -i 's/MODEL="claude-haiku-4-5",/MODEL="gemini-1.5-flash",/g' src/config.py
 sed -i 's/MODEL="gemini-2.5-flash-lite",/MODEL="gemini-1.5-flash",/g' src/config.py
@@ -104,7 +104,7 @@ Both server and deriver need these env vars:
 ## Setup Steps
 
 ```bash
-cd ~/honcho
+cd ${HOME}/honcho
 
 # 1. Fix config.py providers (step above)
 
@@ -249,7 +249,7 @@ docker compose down && docker compose up -d --build
 
 ## Memory Modes (for Hermes Integration)
 
-When connecting Hermes Agent, configure these in `~/.honcho/config.json`:
+When connecting Hermes Agent, configure these in `${HOME}/.honcho/config.json`:
 
 ```json
 {

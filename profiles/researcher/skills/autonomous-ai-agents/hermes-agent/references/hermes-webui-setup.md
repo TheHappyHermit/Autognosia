@@ -14,12 +14,12 @@ Hermes WebUI (`https://github.com/nesquena/hermes-webui`) provides a Claude-styl
 
 ### 1. Clone the repo
 ```bash
-cd ~/.hermes && git clone https://github.com/nesquena/hermes-webui.git hermes-webui
+cd ${HOME}/.hermes && git clone https://github.com/nesquena/hermes-webui.git hermes-webui
 ```
 
 ### 2. Create a .env file (optional)
 ```bash
-cat > ~/.hermes/hermes-webui/.env << 'EOF'
+cat > ${HOME}/.hermes/hermes-webui/.env << 'EOF'
 HERMES_WEBUI_HOST=0.0.0.0
 HERMES_WEBUI_PORT=8787
 HERMES_WEBUI_PASSWORD=your_secure_password_here
@@ -31,12 +31,12 @@ EOF
 
 ### 3. Start the server
 ```bash
-cd ~/.hermes/hermes-webui && bash start.sh
+cd ${HOME}/.hermes/hermes-webui && bash start.sh
 ```
 
 Or manually:
 ```bash
-cd ~/.hermes/hermes-webui
+cd ${HOME}/.hermes/hermes-webui
 HERMES_WEBUI_HOST=0.0.0.0 HERMES_WEBUI_PORT=8787 \
   HERMES_WEBUI_AGENT_DIR=$HOME/.hermes/hermes-agent \
   nohup $(hermes-agent-venv)/bin/python server.py > /tmp/hermes-webui.log 2>&1 &
@@ -57,11 +57,11 @@ After=network.target
 [Service]
 Type=simple
 User=josh434
-WorkingDirectory=~/.hermes/hermes-webui
+WorkingDirectory=${HOME}/.hermes/hermes-webui
 Environment=HERMES_WEBUI_HOST=0.0.0.0
 Environment=HERMES_WEBUI_PORT=8787
-Environment=HERMES_WEBUI_AGENT_DIR=~/.hermes/hermes-agent
-ExecStart=~/.hermes/hermes-agent/venv/bin/python server.py
+Environment=HERMES_WEBUI_AGENT_DIR=${HOME}/.hermes/hermes-agent
+ExecStart=${HOME}/.hermes/hermes-agent/venv/bin/python server.py
 Restart=on-failure
 
 [Install]

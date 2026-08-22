@@ -17,9 +17,9 @@ The user uploaded new images to the `hermes-cortex/` repo that were meant to rep
 4. Force-pushed to restore clean state: `git push origin main --force`
 
 ## Key Files Involved
-- Source (legacy, DO NOT blindly copy): `~/hermes-cortex/assets/`
-- Target: `~/autognosia-repo/assets/`
-- Backup of correct versions: `~/autognosia-clean/assets/`
+- Source (legacy, DO NOT blindly copy): `${HOME}/hermes-cortex/assets/`
+- Target: `${HOME}/autognosia-repo/assets/`
+- Backup of correct versions: `${HOME}/autognosia-clean/assets/`
 - README before changes: `git show 4810638:README.md`
 
 ## Lesson

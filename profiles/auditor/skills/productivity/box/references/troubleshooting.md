@@ -28,6 +28,6 @@ Confirm the current actor, resource type, ID, resource-specific collaboration, a
 | 429 | rate limit | honor `Retry-After`, retry the same request, and reduce batch rate |
 | Box AI access error | feature disabled, plan/unit restriction, unsupported content | explain the limitation and offer metadata/search, a sample, units, or approved fallback |
 
-If two Hermes profiles or sessions appear to change each other's Box actor, remember that a private npm installation does not isolate Box CLI environments for the same OS user. List environments, verify the current actor, and ask before switching. On Linux, if the CLI reports plaintext credential fallback, warn about `~/.box` without reading or printing its credential files and recommend configuring Secret Service/libsecret or an isolated runtime user.
+If two Hermes profiles or sessions appear to change each other's Box actor, remember that a private npm installation does not isolate Box CLI environments for the same OS user. List environments, verify the current actor, and ask before switching. On Linux, if the CLI reports plaintext credential fallback, warn about `${HOME}/.box` without reading or printing its credential files and recommend configuring Secret Service/libsecret or an isolated runtime user.
 
 Do not diagnose missing content until identity and access are verified. Do not silently change actors, broaden sharing, or download confidential source files as a workaround.

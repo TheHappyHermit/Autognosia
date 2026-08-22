@@ -8,10 +8,10 @@ license: MIT
 
 # Hermes Config YAML Repair Skill
 
-This skill provides guidance for diagnosing and fixing YAML formatting issues in the Hermes Agent configuration file (`~/.hermes/config.yaml`), with specific focus on MCP server configuration sections.
+This skill provides guidance for diagnosing and fixing YAML formatting issues in the Hermes Agent configuration file (`${HOME}/.hermes/config.yaml`), with specific focus on MCP server configuration sections.
 
 ## Overview
-Hermes Agent uses a YAML configuration file at `~/.hermes/config.yaml` to define MCP servers, API keys, and other settings. YAML is sensitive to indentation and structure, and misconfigurations can cause persistent warnings or prevent Hermes from loading properly.
+Hermes Agent uses a YAML configuration file at `${HOME}/.hermes/config.yaml` to define MCP servers, API keys, and other settings. YAML is sensitive to indentation and structure, and misconfigurations can cause persistent warnings or prevent Hermes from loading properly.
 
 ## When to Use This Skill
 Use this skill when you see warnings like:
@@ -77,7 +77,7 @@ model:
 
 **Diagnostic Steps**:
 1. Check the error message - 401 Unauthorized usually indicates authentication/provider mismatch
-2. Look at your `model:` section in `~/.hermes/config.yaml`
+2. Look at your `model:` section in `${HOME}/.hermes/config.yaml`
 3. Verify the provider matches the base_url and api_key_env:
    - `lmstudio`: typically local URL like `http://localhost:1234/v1`, no API key needed
    - `openrouter`: `https://openrouter.ai/api/v1`, requires `OPENROUTER_API_KEY`
@@ -130,7 +130,7 @@ mcp_servers:  n8n-mcp:    url: "https://example.com"    headers:      Authorizat
 
 ### Step 1: Backup Your Config
 ```bash
-cp ~/.hermes/config.yaml ~/.hermes/config.yaml.backup
+cp ${HOME}/.hermes/config.yaml ${HOME}/.hermes/config.yaml.backup
 ```
 
 ### Step 2: Check for Obvious Issues Visually
@@ -150,7 +150,7 @@ pip3 install --break-system-packages pyyaml
 python3 -c "
 import yaml
 try:
-    with open('~/.hermes/config.yaml', 'r') as f:
+    with open('${HOME}/.hermes/config.yaml', 'r') as f:
         data = yaml.safe_load(f)
     print('✅ YAML is valid!')
     if data.get('mcp_servers'):
@@ -169,7 +169,7 @@ except Exception as e:
 pip3 install --break-system-packages yamllint
 
 # Check for issues
-yamllint ~/.hermes/config.yaml
+yamllint ${HOME}/.hermes/config.yaml
 ```
 
 ## Repair Procedure
@@ -293,7 +293,7 @@ Here's how I fixed the severely malformed config we encountered:
 
 ```bash
 # 1. Backup first
-cp ~/.hermes/config.yaml ~/.hermes/config.yaml.backup.$(date +%s)
+cp ${HOME}/.hermes/config.yaml ${HOME}/.hermes/config.yaml.backup.$(date +%s)
 
 # 2. Identify the problematic section (we found repeated blocks and single-line configurations)
 
@@ -373,7 +373,7 @@ mcp_home_assistant_HassGetStates --domain "light"  # Should return your lights
 
 ### Validate YAML
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('~/.hermes/config.yaml')); print('Valid YAML')"
+python3 -c "import yaml; yaml.safe_load(open('${HOME}/.hermes/config.yaml')); print('Valid YAML')"
 ```
 
 ### List MCP Tools (to verify config is working)
@@ -397,7 +397,7 @@ mcp_home_assistant_HassGetStates --domain "switch" | head -5
 ### Show Current MCP Configuration (safely)
 ```bash
 # Show just the MCP servers section (hiding sensitive data)
-sed -n '/# MCP Servers Configuration/,/^[[^ ]]/p' ~/.hermes/config.yaml | \
+sed -n '/# MCP Servers Configuration/,/^[[^ ]]/p' ${HOME}/.hermes/config.yaml | \
     grep -v "Authorization" | \
     sed 's/Authorization: .*/Authorization: "Bearer [REDACTED]"/'
 ```
@@ -489,12 +489,12 @@ except Exception as e:
 "
 ```
 
-Save this as `~/hermes-config-repair.sh`, make it executable (`chmod +x`), and run it when you encounter issues.
+Save this as `${HOME}/hermes-config-repair.sh`, make it executable (`chmod +x`), and run it when you encounter issues.
 
 ## When to Start Fresh
 
 If the config is severely corrupted and repair is taking too long:
-1. Backup your current config: `cp ~/.hermes/config.yaml ~/.hermes/config.yaml.broken`
+1. Backup your current config: `cp ${HOME}/.hermes/config.yaml ${HOME}/.hermes/config.yaml.broken`
 2. Create a minimal working config from scratch
 3. Gradually add back your MCP servers and other settings
 4. Validate after each addition

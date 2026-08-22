@@ -107,7 +107,7 @@ tools_response = requests.post(url, headers=headers, json=tools_payload, timeout
 ```
 
 ### 5. **Configure in Hermes Agent**
-Once tested and working, add to `~/.hermes/config.yaml`:
+Once tested and working, add to `${HOME}/.hermes/config.yaml`:
 
 ```yaml
 mcp_servers:

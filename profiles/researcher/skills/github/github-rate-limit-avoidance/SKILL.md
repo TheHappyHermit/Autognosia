@@ -95,7 +95,7 @@ This pattern requires `gh` auth or SSH keys configured locally:
 gh auth login
 # or
 ssh-keygen -t ed25519
-gh ssh-key add ~/.ssh/id_ed25519.pub
+gh ssh-key add ${HOME}/.ssh/id_ed25519.pub
 ```
 
 Once configured, **all subsequent GitHub operations are local** — no LLM involvement needed.

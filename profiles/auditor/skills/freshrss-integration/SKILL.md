@@ -382,11 +382,11 @@ Based on real-world testing, here are common issues and solutions:
 - Max tokens: 300, temperature: 0.2
 - If no articles found: a single short line, no elaboration
 
-When modifying or rebuilding the newsletter builder script (`~/.hermes/scripts/newsletter_builder.py`), always enforce these style constraints in the prompt template and output formatting.
+When modifying or rebuilding the newsletter builder script (`${HOME}/.hermes/scripts/newsletter_builder.py`), always enforce these style constraints in the prompt template and output formatting.
 
 ### Newsletter Builder: Fetching & Categorization
 
-The newsletter builder script (`~/.hermes/scripts/newsletter_builder.py`) uses FreshRSS to generate topic-based newsletters. Key patterns and pitfalls:
+The newsletter builder script (`${HOME}/.hermes/scripts/newsletter_builder.py`) uses FreshRSS to generate topic-based newsletters. Key patterns and pitfalls:
 
 1. **ALWAYS use `"r": "n"` (newest first)** when fetching the reading list. Without this, the API returns oldest-first and your newsletter will show 82-day-old articles. This is the single most common bug.
 
@@ -419,10 +419,10 @@ See `references/reasoning-model-summarization.md` for the verified fix recipe wh
    - Edit the SearXNG `settings.yml` to enable `search_format: json` (or add `json` to the allowed output formats)
    - Or use an alternative free search backend: `ddgs` (DuckDuckGo, needs `pip install ddgs` + set `web.search_backend: ddgs` in config.yaml), or `brave-free` (needs `BRAVE_SEARCH_API_KEY`)
 
-8. **Hardcoded IPs in Client Scripts**: The newsletter builder script (`~/.hermes/scripts/newsletter_builder.py`) has a hardcoded `freshrss_ip` value. The correct local server IP is `10.1.1.10` (not `161.153.112.27`, which was the old Oracle server IP). See `references/server-locations.md` for a full map of internal service IPs.
+8. **Hardcoded IPs in Client Scripts**: The newsletter builder script (`${HOME}/.hermes/scripts/newsletter_builder.py`) has a hardcoded `freshrss_ip` value. The correct local server IP is `10.1.1.10` (not `161.153.112.27`, which was the old Oracle server IP). See `references/server-locations.md` for a full map of internal service IPs.
 
 9. **Uninitialized FreshRSS Instance**: Newly deployed FreshRSS containers return "Not Found" on API endpoints until the initial web-based setup is completed. Access `http://freshrss.wineandgecko.com/install.php` to:
-   - Create the admin user (username: `josh434`, password from `FRESHRSS_API_PASSWORD` in `~/.hermes/.env`)
+   - Create the admin user (username: `josh434`, password from `FRESHRSS_API_PASSWORD` in `${HOME}/.hermes/.env`)
    - Enable the Google Reader API in FreshRSS settings (Settings → Reading → Enable Google Reader API)
    - Note: CLI initialization attempts (e.g., `docker exec freshrss php /var/www/FreshRSS/app/install.php`) return "Forbidden" — only browser-based setup works.
    - Note: CLI initialization attempts (e.g., `docker exec freshrss php /var/www/FreshRSS/app/install.php`) return "Forbidden" — only browser-based setup is supported.

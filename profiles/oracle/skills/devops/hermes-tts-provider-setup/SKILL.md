@@ -13,14 +13,14 @@ license: MIT
 - Switching TTS provider (e.g., from `edge` to `elevenlabs`, `openai`, `xai`, `mistral`, `piper`)
 - Configuring STT provider (local Whisper, OpenAI, Mistral Voxtral, ElevenLabs Scribe)
 - Setting/changing voice IDs, models, or provider-specific options
-- Adding API keys to `~/.hermes/.env` for premium providers
+- Adding API keys to `${HOME}/.hermes/.env` for premium providers
 - Debugging TTS/STT failures (missing keys, wrong model IDs, 401 errors)
 
 ## Quick Start: Switch to ElevenLabs TTS
 
 ```bash
 # 1. Add API key to .env (required for ElevenLabs, OpenAI, XAI, Mistral)
-echo "ELEVENLABS_API_KEY=your_key_here" >> ~/.hermes/.env
+echo "ELEVENLABS_API_KEY=your_key_here" >> ${HOME}/.hermes/.env
 
 # 2. Switch TTS provider
 hermes config set tts.provider elevenlabs
@@ -29,7 +29,7 @@ hermes config set tts.provider elevenlabs
 hermes --tts "Hello from ElevenLabs"
 ```
 
-## Config Structure (from `~/.hermes/config.yaml`)
+## Config Structure (from `${HOME}/.hermes/config.yaml`)
 
 ### TTS Section (`tts:`)
 ```yaml
@@ -100,15 +100,15 @@ voice:
 ## Managing API Keys in `.env`
 
 ### Location
-`~/.hermes/.env` (auto-loaded by Hermes at startup)
+`${HOME}/.hermes/.env` (auto-loaded by Hermes at startup)
 
 ### Adding Keys
 ```bash
 # Single key
-echo "ELEVENLABS_API_KEY=sk_xxxxx" >> ~/.hermes/.env
+echo "ELEVENLABS_API_KEY=sk_xxxxx" >> ${HOME}/.hermes/.env
 
 # Multiple keys at once
-cat >> ~/.hermes/.env << 'EOF'
+cat >> ${HOME}/.hermes/.env << 'EOF'
 ELEVENLABS_API_KEY=sk_xxxxx
 OPENAI_API_KEY=sk-xxxxx
 MISTRAL_API_KEY=xxxxx
@@ -155,7 +155,7 @@ hermes config set stt.elevenlabs.model_id scribe_v2
 
 ### 1. "ELEVENLABS_API_KEY not set" / 401 Unauthorized
 **Cause**: Premium provider selected but API key missing from `.env`
-**Fix**: Add `ELEVENLABS_API_KEY=...` to `~/.hermes/.env` and restart Hermes
+**Fix**: Add `ELEVENLABS_API_KEY=...` to `${HOME}/.hermes/.env` and restart Hermes
 
 ### 2. STT not working with `provider: elevenlabs`
 **Cause**: `stt.enabled: false` or missing `stt.elevenlabs` config section
@@ -167,7 +167,7 @@ hermes config set stt.elevenlabs.model_id scribe_v2
 
 ### 4. Piper voice not found
 **Cause**: Voice name must match installed Piper voice exactly
-**Fix**: List available: `piper --list-voices` or check `~/.local/share/piper/voices/`
+**Fix**: List available: `piper --list-voices` or check `${HOME}/.local/share/piper/voices/`
 
 ### 5. Local Whisper model download fails
 **Cause**: No internet or model not cached

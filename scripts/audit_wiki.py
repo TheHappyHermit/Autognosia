@@ -10,7 +10,7 @@ Checks:
 - Broken cross-references (basic check)
 
 Usage:
-  python3 scripts/audit_wiki.py [--path ~/.autognosia/oracle/brain]
+  python3 scripts/audit_wiki.py [--path ${HOME}/.autognosia/oracle/brain]
 """
 
 import os
@@ -18,7 +18,7 @@ import sys
 import argparse
 import yaml
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
 DEFAULT_VAULT = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
 
 MIN_FILE_SIZE = 5000  # 5KB minimum for content files

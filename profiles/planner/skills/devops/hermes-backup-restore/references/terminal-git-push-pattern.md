@@ -19,10 +19,10 @@ cd ~
 git clone https://github.com/openclaw434/autognosia.git
 
 # 2. Write file directly from cached source (no LLM processing)
-cat ~/.hermes/cache/documents/doc_<hash>_message.txt > ~/autognosia/INSTALL.md
+cat ${HOME}/.hermes/cache/documents/doc_<hash>_message.txt > ${HOME}/autognosia/INSTALL.md
 
 # 3. Commit and push via git (uses local gh auth)
-cd ~/autognosia
+cd ${HOME}/autognosia
 git add INSTALL.md
 git commit -m "Add INSTALL.md"
 git push origin main
@@ -41,7 +41,7 @@ The `gh` CLI auth is already configured on the VM — `git push` uses it automat
 
 ### When User Sends a File
 
-1. File lands at `~/.hermes/cache/documents/doc_<hash>_message.txt`
+1. File lands at `${HOME}/.hermes/cache/documents/doc_<hash>_message.txt`
 2. Use `cat` to copy it to the repo
 3. Git add/commit/push — all via `terminal`
 
@@ -57,9 +57,9 @@ The `gh` CLI auth is already configured on the VM — `git push` uses it automat
 # Push any file from cache to repo
 REPO=autognosia
 FILE=INSTALL.md
-CACHE_FILE=$(ls -t ~/.hermes/cache/documents/doc_*_message.txt | head -1)
-cat "$CACHE_FILE" > "~/$REPO/$FILE"
-cd "~/$REPO"
+CACHE_FILE=$(ls -t ${HOME}/.hermes/cache/documents/doc_*_message.txt | head -1)
+cat "$CACHE_FILE" > "${HOME}/$REPO/$FILE"
+cd "${HOME}/$REPO"
 git add "$FILE"
 git commit -m "Add $FILE"
 git push origin main

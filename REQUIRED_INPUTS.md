@@ -8,7 +8,7 @@ This file is referenced by [INSTALL.md](INSTALL.md). Fill in these values during
 Configure the following before deploying services:
 
 - [ ] **LLM Provider API Key** — For Honcho's deriver (user-model derivation)
-  - If Hermes is setting up the system automatically: Honcho will inherit the same provider and API key that Hermes is already configured to use (from your Hermes `.env` file at `~/.hermes/.env`). No extra input needed.
+  - If Hermes is setting up the system automatically: Honcho will inherit the same provider and API key that Hermes is already configured to use (from your Hermes `.env` file at `${HOME}/.hermes/.env`). No extra input needed.
   - For manual setup, choose one:
     - Local endpoint (LM Studio, Ollama, vLLM): set `HONCHO_LLM_BASE_URL` and `HONCHO_LLM_MODEL`
     - Cloud provider: set `HONCHO_LLM_PROVIDER` and `HONCHO_LLM_API_KEY`
@@ -37,7 +37,7 @@ Configure the following before deploying services:
 ### Auto-Setup (Hermes does the work)
 
 1. Tell Hermes: "Set up the Autognosia from the repository"
-2. Hermes reads your existing `.env` file at `~/.hermes/.env` and auto-fills the provider/API key configuration
+2. Hermes reads your existing `.env` file at `${HOME}/.hermes/.env` and auto-fills the provider/API key configuration
 3. Hermes generates the SearXNG secret automatically
 4. Hermes prompts you only for inputs it cannot infer (e.g., GBrain API keys if not present)
 

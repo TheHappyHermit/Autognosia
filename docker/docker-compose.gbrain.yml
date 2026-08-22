@@ -15,9 +15,9 @@
 # Most users should use the PGLite mode above — it requires no Docker.
 #
 # Configuration:
-#   - Brain data: ~/.gbrain/brain.pglite
-#   - Config: ~/.gbrain/config.json
-#   - Syncs with brain git repo at ~/.autognosia/oracle/brain
+#   - Brain data: ${HOME}/.gbrain/brain.pglite
+#   - Config: ${HOME}/.gbrain/config.json
+#   - Syncs with brain git repo at ${HOME}/.autognosia/oracle/brain
 #
 # Important notes:
 #   - GBrain's Docker Compose is for PostgreSQL backend only.
