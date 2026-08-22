@@ -131,7 +131,7 @@ This skill is referenced by the **Config Backup** cron job (daily 01:00) in `cro
 ## Related Repositories
 
 - **autognosia** — This skill lives in the Autognosia repo for deployment portability
-- **hermes-backup** (private) — Full-config backup repo example
+- **hermes-laptop** (`josh434434/hermes-laptop`, private) — Full-config backup repo example
 
 ## References
 

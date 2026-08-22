@@ -18,28 +18,29 @@
       "schedule_display": "0 6 * * *",
       "repeat": {
         "times": null,
-        "completed": 137
+        "completed": 139
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-04-04T15:51:03.178000-07:00",
-      "next_run_at": "2026-08-20T06:00:00-07:00",
-      "last_run_at": "2026-08-19T06:03:30.866298-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T06:00:00-07:00",
+      "last_run_at": "2026-08-21T06:01:03.545021-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "deliver": "telegram",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null
       },
-      "last_delivery_error": null,
+      "last_delivery_error": "delivery error: Telegram send failed: httpx.ConnectError: [Errno -3] Temporary failure in name resolution (target telegram:7791814261)",
       "fire_claim": null,
       "provider_snapshot": "custom",
-      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
+      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "failure_streak": 1
     },
     {
       "id": "2fdcb131de85",
@@ -59,33 +60,34 @@
       "schedule_display": "0 21 * * *",
       "repeat": {
         "times": null,
-        "completed": 139
+        "completed": 142
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-04-04T15:51:07.898680-07:00",
-      "next_run_at": "2026-08-19T21:00:00-07:00",
-      "last_run_at": "2026-08-18T21:06:18.898878-07:00",
+      "next_run_at": "2026-08-22T21:00:00-07:00",
+      "last_run_at": "2026-08-21T21:01:11.058653-07:00",
       "last_status": "ok",
       "last_error": null,
       "deliver": "telegram",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null
       },
       "last_delivery_error": null,
       "fire_claim": null,
       "provider_snapshot": "custom",
-      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
+      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "failure_streak": 0
     },
     {
       "id": "97842ab6d078",
       "name": "Personal Ops Intention Check",
-      "prompt": "Check Personal State for due reminders and matching intentions. Run: python3 /home/<user>/.autognosia/.autognosia/scripts/autognosia_backup.py 2>&1 || echo 'Personal State check failed'",
+      "prompt": "Check Personal State for due reminders and matching intentions. Run: python3 /home/josh434/.autognosia/scripts/autognosia_backup.py 2>&1 || echo 'Personal State check failed'",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -107,34 +109,35 @@
       "schedule_display": "every 60m",
       "repeat": {
         "times": null,
-        "completed": 65
+        "completed": 124
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:48:11.328210-07:00",
-      "next_run_at": "2026-08-19T10:59:41.522542-07:00",
-      "last_run_at": "2026-08-19T09:59:41.522542-07:00",
+      "next_run_at": "2026-08-22T01:16:34.341709-07:00",
+      "last_run_at": "2026-08-22T00:16:34.341709-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "5070d3ef9331",
       "name": "Daily Backup",
-      "prompt": "Run: bash /home/<user>/.autognosia/.autognosia/scripts/gbrain_sync.sh",
+      "prompt": "Run: bash /home/josh434/.autognosia/scripts/gbrain_sync.sh",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -156,29 +159,30 @@
       "schedule_display": "0 3 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:51:42.167343-07:00",
-      "next_run_at": "2026-08-20T03:00:00-07:00",
-      "last_run_at": "2026-08-19T03:00:54.190971-07:00",
-      "last_status": null,
+      "next_run_at": "2026-08-22T03:00:00-07:00",
+      "last_run_at": "2026-08-21T03:01:01.019839-07:00",
+      "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/<user>/.autognosia/.autognosia/scripts",
-      "fire_claim": null
+      "workdir": "/home/josh434/.autognosia/scripts",
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "2f8c625a2cc2",
@@ -205,29 +209,30 @@
       "schedule_display": "0 8 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:51:42.175865-07:00",
-      "next_run_at": "2026-08-20T08:00:00-07:00",
-      "last_run_at": "2026-08-19T08:00:02.630510-07:00",
-      "last_status": null,
-      "last_error": null,
+      "next_run_at": "2026-08-22T08:00:00-07:00",
+      "last_run_at": "2026-08-21T08:00:51.282994-07:00",
+      "last_status": "error",
+      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: 2026-08-21T08:00:44.744953\n[fail] Verification failed\nr verified\n[OK] Directories - All 5 directories present\n[OK] Secrets Dir - permissions 700\n[OK] Personal Organizer - Personal Organizer API running (openapi.json)\n[FAIL] Command Deck\n[OK] Skills - All 15 Autognosia skills installed in ~/.hermes/skills/\n[OK] Plugin - Autognosia core operating in native profile & skill mode (plugin optional)\n[OK] Profiles Config - Specialist profiles configured (Honcho isolated)\n[OK] GBrain Repo - Brain repo initialized\n\n=== Summary ===\nPassed: 12/13\nFailed: 1/13\n\n[ok] GBrain healthy\n[ok] Personal Organizer API healthy\n=== Health check complete ===",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/<user>/.autognosia/.autognosia/scripts",
-      "fire_claim": null
+      "workdir": "/home/josh434/.autognosia/scripts",
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "92b879153696",
@@ -269,10 +274,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -303,34 +308,35 @@
       "schedule_display": "every 60m",
       "repeat": {
         "times": null,
-        "completed": 67
+        "completed": 128
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:51:56.184886-07:00",
-      "next_run_at": "2026-08-19T11:43:11.649028-07:00",
-      "last_run_at": "2026-08-19T10:43:11.649028-07:00",
+      "next_run_at": "2026-08-22T01:11:05.827175-07:00",
+      "last_run_at": "2026-08-22T00:11:05.827175-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "4cf5692a359f",
       "name": "Config Backup",
-      "prompt": "Run config backup: rsync config.yaml, SOUL.md, profiles/, skills/, cron/ from /home/<user>/.autognosia/.autognosia/ to the autognosia git repo. Then git add -A, commit with timestamp, and push to origin.",
+      "prompt": "Run config backup: rsync config.yaml, SOUL.md, profiles/, skills/, cron/ from /home/josh434/.autognosia/ to the autognosia git repo. Then git add -A, commit with timestamp, and push to origin.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -352,29 +358,33 @@
       "schedule_display": "0 1 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:15.263560-07:00",
-      "next_run_at": "2026-08-20T01:00:00-07:00",
-      "last_run_at": "2026-08-19T01:25:21.790837-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-23T01:00:00-07:00",
+      "last_run_at": "2026-08-21T01:00:59.167284-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": {
+        "at": "2026-08-22T01:02:06.297020-07:00",
+        "by": "JoshAgent:1356:168eb07a3dea4786961181e6788302ad"
+      },
+      "failure_streak": 1
     },
     {
       "id": "762c05cb9451",
@@ -401,29 +411,30 @@
       "schedule_display": "0 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:19.650984-07:00",
-      "next_run_at": "2026-08-20T02:00:00-07:00",
-      "last_run_at": "2026-08-19T02:01:54.076043-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T02:00:00-07:00",
+      "last_run_at": "2026-08-21T02:00:59.477558-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "eba297436736",
@@ -450,40 +461,41 @@
       "schedule_display": "30 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:24.554778-07:00",
-      "next_run_at": "2026-08-20T02:30:00-07:00",
-      "last_run_at": "2026-08-19T02:33:53.032451-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T02:30:00-07:00",
+      "last_run_at": "2026-08-21T02:31:00.584169-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "1983f8c1f638",
-      "name": "Oracle Knowledge Expansion",
-      "prompt": "Run Oracle knowledge expansion: execute the fill_oracle_gaps.py script from the autognosia repository. This script extracts key topics from the Oracle wiki, identifies expansion directions (historical context, modern applications, critiques, related frameworks), and creates research request packages for the Researcher profile.",
+      "name": "Oracle Knowledge Expansion (batch 0)",
+      "prompt": "Deep Oracle research — batch 0. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
       "provider": "llamaCPP",
-      "provider_snapshot": "custom",
-      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "provider_snapshot": null,
+      "model_snapshot": null,
       "base_url": null,
       "script": null,
       "no_agent": false,
@@ -499,43 +511,44 @@
       "schedule_display": "45 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:38.666762-07:00",
-      "next_run_at": "2026-08-20T02:45:00-07:00",
-      "last_run_at": "2026-08-19T02:47:07.869015-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T02:45:00-07:00",
+      "last_run_at": "2026-08-21T02:46:01.029862-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": null,
-      "fire_claim": null
+      "workdir": "/home/josh434/.autognosia/scripts",
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "3a11d29b7c57",
-      "name": "Oracle Index Rebuild",
-      "prompt": "Run Oracle index rebuild: execute the rebuild_oracle_index.py script from the autognosia repository. This rebuilds the Oracle search index from the Active Wiki content.",
+      "name": "Oracle Index Update",
+      "prompt": "Run Oracle index update: execute the oracle_index_update.py script from the autognosia repository. This script incrementally updates the Oracle search index by detecting modified wiki files since the last run, running graphify extract in incremental mode (never --force), and merging new chunks into the existing graph. Unlike a full rebuild (which takes ~24h), this incremental update only processes changed files and should complete in minutes. Appends to the existing graph rather than rebuilding from scratch. Log results to oracle/brain/rebuild-log.md.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
       "provider": "llamaCPP",
-      "provider_snapshot": "custom",
-      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "provider_snapshot": null,
+      "model_snapshot": null,
       "base_url": null,
-      "script": null,
-      "no_agent": false,
+      "script": "oracle_index_update.py",
+      "no_agent": true,
       "monitor_script": null,
       "monitor_url": null,
       "monitor_state": null,
@@ -548,29 +561,30 @@
       "schedule_display": "30 3 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.182898-07:00",
-      "next_run_at": "2026-08-20T03:30:00-07:00",
-      "last_run_at": "2026-08-19T03:37:05.589286-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T03:30:00-07:00",
+      "last_run_at": "2026-08-21T03:31:01.525741-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": null,
-      "fire_claim": null
+      "workdir": "/home/josh434/.autognosia/scripts",
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "1752062c0ea4",
@@ -597,29 +611,30 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.202214-07:00",
-      "next_run_at": "2026-08-20T04:00:00-07:00",
-      "last_run_at": "2026-08-19T04:14:23.965287-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T04:00:00-07:00",
+      "last_run_at": "2026-08-21T04:01:03.113629-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "ac55638e8cd9",
@@ -661,10 +676,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -694,34 +709,35 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.240058-07:00",
-      "next_run_at": "2026-08-20T04:00:00-07:00",
-      "last_run_at": "2026-08-19T04:13:58.408245-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T04:00:00-07:00",
+      "last_run_at": "2026-08-21T04:01:03.135669-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "d6bc81139794",
       "name": "Memory Consolidation Full Cascade",
-      "prompt": "Run full three-tier memory cascade: Honcho autobiographical \u2192 Active Wiki curated \u2192 Oracle specialist \u2192 GBrain indexed \u2192 Historical Knowledge archived. Generate cascade report. Use the wiki-ingestion and wiki-maintenance skills.",
+      "prompt": "Run full three-tier memory cascade: Honcho autobiographical → Active Wiki curated → Oracle specialist → GBrain indexed → Historical Knowledge archived. Generate cascade report. Use the wiki-ingestion and wiki-maintenance skills.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -758,10 +774,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -791,29 +807,30 @@
       "schedule_display": "0 5 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.275486-07:00",
-      "next_run_at": "2026-08-20T05:00:00-07:00",
-      "last_run_at": "2026-08-19T05:01:16.072872-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T05:00:00-07:00",
+      "last_run_at": "2026-08-21T05:01:03.585986-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 1
     },
     {
       "id": "d77ba6619d4e",
@@ -840,35 +857,38 @@
       "schedule_display": "*/15 * * * *",
       "repeat": {
         "times": null,
-        "completed": 155
+        "completed": 403
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.292752-07:00",
-      "next_run_at": "2026-08-19T11:00:00-07:00",
-      "last_run_at": "2026-08-19T10:45:10.476411-07:00",
+      "next_run_at": "2026-08-22T01:15:00-07:00",
+      "last_run_at": "2026-08-22T01:00:06.524691-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "86a5fab29466",
       "name": "Daily Briefing",
       "prompt": "Generate daily briefing: check Personal State for due tasks/deadlines, review calendar, summarize overnight research/wiki changes, check health alerts. Deliver concise briefing to user. Use the organizer-state skill.",
-      "skills": [],
+      "skills": [
+        "organizer-state"
+      ],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
       "provider": "llamaCPP",
@@ -889,29 +909,30 @@
       "schedule_display": "0 7 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.307775-07:00",
-      "next_run_at": "2026-08-20T07:00:00-07:00",
-      "last_run_at": "2026-08-19T07:13:43.552563-07:00",
+      "next_run_at": "2026-08-22T07:00:00-07:00",
+      "last_run_at": "2026-08-21T07:03:22.989109-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "924f52372fe0",
@@ -938,34 +959,35 @@
       "schedule_display": "0 8 * * *",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.321636-07:00",
-      "next_run_at": "2026-08-20T08:00:00-07:00",
-      "last_run_at": "2026-08-19T08:00:31.782533-07:00",
+      "next_run_at": "2026-08-22T08:00:00-07:00",
+      "last_run_at": "2026-08-21T22:58:40.560432-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "ab26e06eee12",
       "name": "Weekday Prompt-Me",
-      "prompt": "Use the prompt-me skill to ask one targeted question. Review recent sessions for context about what's currently at stake. Pick the most impactful single question that helps the user \u2014 something they haven't considered, a weak spot in a plan, a missing piece of context. Deliver the question directly to the user via the configured messaging service.",
+      "prompt": "Use the prompt-me skill to ask one targeted question. Review recent sessions for context about what's currently at stake. Pick the most impactful single question that helps the user — something they haven't considered, a weak spot in a plan, a missing piece of context. Deliver the question directly to the user via the configured messaging service.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -987,29 +1009,30 @@
       "schedule_display": "0 9 * * 1-5",
       "repeat": {
         "times": null,
-        "completed": 3
+        "completed": 5
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.335055-07:00",
-      "next_run_at": "2026-08-20T09:00:00-07:00",
-      "last_run_at": "2026-08-19T09:01:27.452321-07:00",
+      "next_run_at": "2026-08-24T09:00:00-07:00",
+      "last_run_at": "2026-08-21T09:08:26.380922-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "8deb9940015c",
@@ -1051,10 +1074,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -1099,10 +1122,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -1110,16 +1133,16 @@
     {
       "id": "703dd7f07c60",
       "name": "Graphify Refresh",
-      "prompt": "Run graphify refresh: execute the refresh_graphify.py script from the autognosia repository. This refreshes the knowledge graphs after the weekly wiki maintenance.",
+      "prompt": "Run graphify refresh: execute the refresh_graphify.py script from the autognosia repository.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
       "provider": "llamaCPP",
-      "provider_snapshot": "custom",
-      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "provider_snapshot": null,
+      "model_snapshot": null,
       "base_url": null,
-      "script": null,
-      "no_agent": false,
+      "script": "refresh_graphify.py",
+      "no_agent": true,
       "monitor_script": null,
       "monitor_url": null,
       "monitor_state": null,
@@ -1147,13 +1170,13 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": null
+      "workdir": "/home/josh434/.autognosia/scripts"
     },
     {
       "id": "49bd562779d3",
@@ -1180,29 +1203,30 @@
       "schedule_display": "*/30 * * * *",
       "repeat": {
         "times": null,
-        "completed": 77
+        "completed": 202
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.397341-07:00",
-      "next_run_at": "2026-08-19T11:00:00-07:00",
-      "last_run_at": "2026-08-19T10:30:10.150017-07:00",
+      "next_run_at": "2026-08-22T01:30:00-07:00",
+      "last_run_at": "2026-08-22T01:00:06.577721-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": null
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "e67de44b4854",
@@ -1244,10 +1268,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1293,10 +1317,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -1341,10 +1365,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -1374,34 +1398,35 @@
       "schedule_display": "*/30 * * * *",
       "repeat": {
         "times": null,
-        "completed": 77
+        "completed": 202
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.455934-07:00",
-      "next_run_at": "2026-08-19T11:00:00-07:00",
-      "last_run_at": "2026-08-19T10:30:09.936964-07:00",
-      "last_status": "error",
-      "last_error": "Script not found: /home/user/.hermes/scripts/autognosia_health.py",
+      "next_run_at": "2026-08-22T01:30:00-07:00",
+      "last_run_at": "2026-08-22T01:00:10.586983-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/<user>/.autognosia/.autognosia/scripts",
-      "fire_claim": null
+      "workdir": "/home/josh434/.autognosia/scripts",
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "7ccdde5bb159",
       "name": "Research Exchange Sync",
-      "prompt": "Check the research exchange directory at /home/<user>/.autognosia/.autognosia/exchange/research for completed research packages. For each package: evaluate quality, verify citations, route approved packages to wiki-ingestion for the oracle wiki, and archive rejected ones. Use the wiki-ingestion and research-request skills.",
+      "prompt": "Check the research exchange directory at /home/josh434/.autognosia/exchange/research for completed research packages. For each package: evaluate quality, verify citations, route approved packages to wiki-ingestion for the oracle wiki, and archive rejected ones. Use the wiki-ingestion and research-request skills.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1438,10 +1463,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1487,10 +1512,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -1498,7 +1523,7 @@
     {
       "id": "5f2468a5d037",
       "name": "Graphify Progress Monitor",
-      "prompt": "Check if graphify is still running and report progress:\n\n1. Check if graphify process is running: `ps aux | grep graphify | grep -v grep | grep -v bash`\n2. Check graph.json size: `wc -c /home/<user>/.autognosia/.autognosia/graphify-oracle-out/graphify-out/graph.json 2>/dev/null`\n3. Count cache files: `find /home/<user>/.autognosia/.autognosia/graphify-oracle-out/graphify-out/cache/semantic-deep -type f 2>/dev/null | wc -l`\n4. If process has finished, check final stats: `cat /home/<user>/.autognosia/.autognosia/graphify-oracle-out/graphify-out/graph.json | python3 -c \"import sys,json; d=json.load(sys.stdin); print(f'Nodes: {len(d.get(\\\"nodes\\\",[]))}, Edges: {len(d.get(\\\"edges\\\",[]))}, Communities: {len(d.get(\\\"communities\\\",d.get(\\\"communities\\\",[])))}')\" 2>/dev/null`\n\nReport whether it's still running, how far along it is, and if it's done what the final stats are.",
+      "prompt": "Check graphify integrity using the permanent script:\n\nRun: python3 /home/josh434/.autognosia/scripts/verify_graphify_integrity.py\n\nIf it exits 0, report: ALL CHECKS PASSED\nIf it exits 1, report which checks failed.\nAlso report process status and graph.json file size.\nDo NOT create temporary verification scripts.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1520,30 +1545,286 @@
       "schedule_display": "0 10 * * *",
       "repeat": {
         "times": null,
-        "completed": 8
+        "completed": 53
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-19T01:45:26.771624-07:00",
-      "next_run_at": "2026-08-19T11:08:37.328513-07:00",
-      "last_run_at": "2026-08-19T10:08:37.328513-07:00",
+      "next_run_at": "2026-08-22T10:00:00-07:00",
+      "last_run_at": "2026-08-21T09:37:03.925893-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "REPLACE_ME_TELEGRAM_CHAT_ID",
-        "chat_name": "REPLACE_ME_TELEGRAM_DISPLAY_NAME",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "REPLACE_ME_TELEGRAM_USER_ID"
+        "user_id": "7791814261"
       },
       "enabled_toolsets": null,
       "workdir": null,
+      "fire_claim": null,
+      "failure_streak": 0
+    },
+    {
+      "id": "e5a6de8f5080",
+      "name": "Oracle Knowledge Expansion (batch 1)",
+      "prompt": "Deep Oracle research — batch 1. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "custom",
+      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "45 0 * * *",
+        "display": "45 0 * * *"
+      },
+      "schedule_display": "45 0 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-08-21T17:10:37.640242-07:00",
+      "next_run_at": "2026-08-23T00:45:00-07:00",
+      "last_run_at": "2026-08-22T00:56:06.001998-07:00",
+      "last_status": "error",
+      "last_error": "TimeoutError: Timed out waiting for the TERMINAL_CWD write lock after 660s — another cron job (a workdir writer, or long-running readers) has held it for longer than the cron inactivity limit. If a workdir job is the holder, stagger its schedule or remove its workdir to unblock this job (#79768).",
+      "last_delivery_error": null,
+      "failure_streak": 1,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null,
+        "user_id": "7791814261",
+        "scope_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": "/home/josh434/.autognosia/scripts",
       "fire_claim": null
+    },
+    {
+      "id": "cf0e602536a0",
+      "name": "Oracle Knowledge Expansion (batch 2)",
+      "prompt": "Deep Oracle research — batch 2. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "custom",
+      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "45 1 * * *",
+        "display": "45 1 * * *"
+      },
+      "schedule_display": "45 1 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-08-21T17:10:37.660464-07:00",
+      "next_run_at": "2026-08-22T01:45:00-07:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "failure_streak": 0,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null,
+        "user_id": "7791814261",
+        "scope_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": "/home/josh434/.autognosia/scripts"
+    },
+    {
+      "id": "615a9720977e",
+      "name": "Oracle Knowledge Expansion (batch 3)",
+      "prompt": "Deep Oracle research — batch 3. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "custom",
+      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "45 3 * * *",
+        "display": "45 3 * * *"
+      },
+      "schedule_display": "45 3 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-08-21T17:10:37.675734-07:00",
+      "next_run_at": "2026-08-22T03:45:00-07:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "failure_streak": 0,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null,
+        "user_id": "7791814261",
+        "scope_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": "/home/josh434/.autognosia/scripts"
+    },
+    {
+      "id": "7042e4e8d59e",
+      "name": "Oracle Knowledge Expansion (batch 4)",
+      "prompt": "Deep Oracle research — batch 4. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "custom",
+      "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "45 4 * * *",
+        "display": "45 4 * * *"
+      },
+      "schedule_display": "45 4 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-08-21T17:10:37.692841-07:00",
+      "next_run_at": "2026-08-22T04:45:00-07:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "failure_streak": 0,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null,
+        "user_id": "7791814261",
+        "scope_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": "/home/josh434/.autognosia/scripts"
+    },
+    {
+      "id": "a5e01552e0f7",
+      "name": "Frontier Research Trial (5min)",
+      "prompt": "Autonomous knowledge-building tick. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web using multiple authoritative sources (Stanford Encyclopedia of Philosophy, PubMed/PMC, scholarpedia, university lecture notes, original papers by the named researchers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs you actually consulted]\n---\nRequired sections in order: Overview; Core Mechanisms; Key Research & Evidence (name the researchers, findings, dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture — memory tiers, intention engine, action gate, verifier, routing, metacognition); Overlaps & Tensions (how this connects to or conflicts with adjacent concepts already in the brain — check with `gbrain search`); Open Questions; Sources (numbered).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum of deep, precise, well-structured prose. This is permanent long-term memory for a cognitive system, not a stub or summary. Never overwrite an existing file.\nCreate the domain directory if missing (e.g. oracle/brain/Memory-Architecture/). After writing run `gbrain sync` so it enters the index.\nOn success respond EXACTLY [SILENT]. On any failure, append one line to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "nous",
+      "model_snapshot": "stealth/ox-alpha",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "monitor_script": null,
+      "monitor_url": null,
+      "monitor_state": null,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "*/5 * * * *",
+        "display": "*/5 * * * *"
+      },
+      "schedule_display": "*/5 * * * *",
+      "repeat": {
+        "times": null,
+        "completed": 2
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-08-21T23:38:57.997376-07:00",
+      "next_run_at": "2026-08-22T01:05:00-07:00",
+      "last_run_at": "2026-08-22T00:33:34.962666-07:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "failure_streak": 0,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null,
+        "user_id": "7791814261",
+        "scope_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": {
+        "at": "2026-08-22T01:02:05.953062-07:00",
+        "by": "JoshAgent:1356:7bff5124fd1f485a9dc736a0190f40fa"
+      }
     }
   ],
-  "updated_at": "2026-08-19T10:45:10.477083-07:00"
+  "updated_at": "2026-08-22T01:02:06.297264-07:00"
 }

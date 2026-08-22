@@ -1,14 +1,10 @@
 model:
-  default: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
-  provider: llamaCPP
-  base_url: http://localhost:8080/v1
-  # SETUP: Change to your actual LLM server IP (e.g., http://<your-server-ip>:8080/v1)
-  # This should point to your llamaCPP server running the Qwen3.6-35B model
-  context_length: 262144
+  default: stealth/ox-alpha
+  provider: nous
+  base_url: ''
 providers:
   llamaCPP:
-    api: http://localhost:8080/v1
-    # SETUP: Change to your actual LLM server IP (e.g., http://<your-server-ip>:8080/v1)
+    api: http://10.1.1.10:8080/v1
     default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
     transport: chat_completions
 fallback_providers:
@@ -25,7 +21,7 @@ agent:
   verify_guidance: true
   max_verify_nudges: 3
   verify_on_stop: auto
-  reasoning_effort: high
+  reasoning_effort: ultra
 terminal:
   backend: local
   modal_mode: auto
@@ -44,6 +40,9 @@ terminal:
   docker_volumes: []
   docker_mount_cwd_to_workspace: false
   persistent_shell: true
+web:
+  search_backend: searxng
+  extract_backend: tavily
 browser:
   inactivity_timeout: 120
   command_timeout: 30
@@ -126,8 +125,8 @@ display:
   tool_progress: all
 dashboard:
   basic_auth:
-    username: admin
-    password_hash: ''
+    username: josh434
+    password_hash: scrypt$16384$8$1$OoY6swvLyHJyX1eKjTBIbQ==$QBmQgho9mpj3RgDtEjYlJH0wYy2gDHhyRENqA0pVBoY=
 privacy:
   redact_pii: false
 tts:
@@ -147,11 +146,11 @@ tts:
     device: cpu
 stt:
   enabled: true
-  provider: local
   local:
     model: base
   openai:
     model: whisper-1
+  provider: local
 voice:
   record_key: ctrl+b
   max_recording_seconds: 120
@@ -173,7 +172,7 @@ delegation:
   provider: ''
   base_url: ''
   api_key: ''
-  max_iterations: 50
+  max_iterations: 250
 prefill_messages_file: ''
 skills:
   guard_agent_created: true
@@ -197,10 +196,19 @@ approvals:
   timeout: 60
   destructive_slash_confirm: false
 command_allowlist:
-  - command parser limit or malformed executable payload
-  - docker restart/stop/kill (container lifecycle)
+  - git reset --hard (destroys uncommitted changes)
+  - recursive delete
   - docker compose restart/stop/kill/down (container lifecycle)
+  - git force push (rewrites remote history)
+  - execute_code
+  - delete in root path
+  - script execution via heredoc
+  - git force push short flag (rewrites remote history)
+  - stop/restart system service
+  - script execution via -e/-c flag
+  - command parser limit or malformed executable payload
   - hermes update (restarts gateway, kills running agents)
+  - docker restart/stop/kill (container lifecycle)
 security:
   redact_secrets: true
   tirith_enabled: true
@@ -217,7 +225,7 @@ onboarding:
   seen:
     openclaw_residue_cleanup: true
     busy_input_prompt: true
-_config_version: 35
+_config_version: 38
 smart_model_routing:
   enabled: false
   max_simple_chars: 160
@@ -234,3 +242,30 @@ plugins:
   enabled:
     - dashboard_auth/basic
   disabled: []
+mcp_servers:
+  gbrain:
+    command: /home/josh434/.autognosia/scripts/gbrain-mcp.sh
+    connect_timeout: 30.0
+    enabled: true
+
+# ── Fallback Model ────────────────────────────────────────────────────
+# Automatic provider failover when primary is unavailable.
+# Uncomment and configure to enable. Triggers on rate limits (429),
+# overload (529), service errors (503), or connection failures.
+#
+# Supported providers:
+#   openrouter   (OPENROUTER_API_KEY)  — routes to any model
+#   openai-codex (OAuth — hermes auth) — OpenAI Codex
+#   nous         (OAuth — hermes auth) — Nous Portal
+#   zai          (ZAI_API_KEY)         — Z.AI / GLM
+#   kimi-coding  (KIMI_API_KEY)        — Kimi / Moonshot
+#   kimi-coding-cn (KIMI_CN_API_KEY)   — Kimi / Moonshot (China)
+#   minimax      (MINIMAX_API_KEY)     — MiniMax
+#   minimax-cn   (MINIMAX_CN_API_KEY)  — MiniMax (China)
+#   bedrock      (AWS IAM / boto3)     — AWS Bedrock (Converse API)
+#
+# For custom OpenAI-compatible endpoints, add base_url and key_env.
+#
+# fallback_model:
+#   provider: openrouter
+#   model: anthropic/claude-sonnet-4

@@ -13,8 +13,8 @@ Four-pass import process for knowledge files added to the Oracle Vault.
 
 | Content type | Tier | Path |
 |---|---|---|
-| Specialist reference knowledge (technical, factual, domain-specific) | Oracle | `~/.autognosia/oracle/brain/` |
-| Personal facts, preferences, projects, decisions | Active Wiki | `~/.autognosia/active-wiki/` |
+| Specialist reference knowledge (technical, factual, domain-specific) | Oracle | `/home/josh434/.autognosia/oracle/brain/` |
+| Personal facts, preferences, projects, decisions | Active Wiki | `/home/josh434/.autognosia/active-wiki/` |
 
 **If content is mixed:** Split it — reference material to Oracle, personal context to Active Wiki with cross-reference links.
 
@@ -64,6 +64,6 @@ Only after structural normalization:
 
 ## Post-Import Index Sync
 
-After completing knowledge import to `~/.autognosia/oracle/brain/`:
-- Run the lightweight index sync: `python3 scripts/gbrain_sync.py` (or `gbrain sync --repo ~/.autognosia/oracle/brain`)
+After completing knowledge import to `/home/josh434/.autognosia/oracle/brain/`:
+- Run the lightweight index sync: `python3 scripts/gbrain_sync.py` (or `gbrain sync --repo /home/josh434/.autognosia/oracle/brain`)
 - Fast, differential hash check ensures newly added pages are immediately searchable by Oracle without waiting for the next cron cycle.
