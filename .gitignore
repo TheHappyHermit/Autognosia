@@ -60,3 +60,6 @@ cron/ticker_*
 **/*ppli-*
 **/*estate-tax*
 **/Hermes-Vault/
+
+# Private-infra skills (reference personal servers/domains)
+**/freshrss-troubleshooting/

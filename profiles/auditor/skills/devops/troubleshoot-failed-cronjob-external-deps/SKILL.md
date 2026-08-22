@@ -259,7 +259,7 @@ This indicates the issue may be outside your immediate control and requires esca
 ## Application to Real-World Scenario: Newsletter CronJob Failure
 
 This methodology was applied to troubleshoot a failing newsletter cronjob where investigation revealed:
-- **Layer 1 Failure**: DNS resolution for `freshrss.wineandgecko.com` failed (NXDOMAIN)
+- **Layer 1 Failure**: DNS resolution for `freshrss.[private-site].com` failed (NXDOMAIN)
 - **Layer 3 Failure**: The `newsletter_builder.py` script was a placeholder, not the actual script
 - **Layer 4 Failure**: The `openai` package was missing from the newsletter virtual environment
 

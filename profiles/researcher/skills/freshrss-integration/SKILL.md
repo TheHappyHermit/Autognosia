@@ -338,14 +338,14 @@ Based on real-world testing, here are common issues and solutions:
 **Symptom**: Connection timeouts, DNS resolution failures, or 404 errors
 
 **Solutions**:
-1. **Verify Host Header**: All requests MUST include `Host: freshrss.wineandgecko.com` when accessing via IP
+1. **Verify Host Header**: All requests MUST include `Host: freshrss.[private-site].com` when accessing via IP
    ```bash
-   curl -vk -H \"Host: freshrss.wineandgecko.com\" https://10.1.1.10/api/greader.php
+   curl -vk -H \"Host: freshrss.[private-site].com\" https://10.1.1.10/api/greader.php
    ```
 
 2. **Check /etc/hosts entry**: Add if missing
    ```
-   10.1.1.10 freshrss.wineandgecko.com
+   10.1.1.10 freshrss.[private-site].com
    ```
 
 3. **SSL Certificate**: Instance uses self-signed certificate (TRAEFIK DEFAULT CERT)
@@ -360,12 +360,12 @@ Based on real-world testing, here are common issues and solutions:
 5. **Cron Job Failures**: Ensure cron jobs have the `freshrss-integration` skill attached
    - Use `cronjob update <job_id> skills='[\"freshrss-integration\"]'`
 
-6. **Traefik Routing Verification**: If all requests (including root path `/`) return 404 when using IP direct with the correct `Host: freshrss.wineandgecko.com` header, Traefik is likely not routing the subdomain to the FreshRSS container. Troubleshoot:
+6. **Traefik Routing Verification**: If all requests (including root path `/`) return 404 when using IP direct with the correct `Host: freshrss.[private-site].com` header, Traefik is likely not routing the subdomain to the FreshRSS container. Troubleshoot:
    - Confirm FreshRSS container is running: `docker ps | grep freshrss`
-   - Check Traefik configuration (Docker labels or dynamic config) for a Host rule matching `freshrss.wineandgecko.com` pointing to the FreshRSS service
-   - Test Traefik's HTTP routing (bypass HTTPS): `curl -H "Host: freshrss.wineandgecko.com" http://<traefik-ip>:80/` (FreshRSS root should return a login page, not 404)
-   - Test FreshRSS setup page: `curl -H "Host: freshrss.wineandgecko.com" http://<traefik-ip>:80/install.php` — if this returns 404, Traefik isn't routing any FreshRSS paths, including the setup page required for initialization
-   - Quick diagnostic: If `curl -vk -H "Host: freshrss.wineandgecko.com" https://10.1.1.10/` returns 404, Traefik has no route for this host
+   - Check Traefik configuration (Docker labels or dynamic config) for a Host rule matching `freshrss.[private-site].com` pointing to the FreshRSS service
+   - Test Traefik's HTTP routing (bypass HTTPS): `curl -H "Host: freshrss.[private-site].com" http://<traefik-ip>:80/` (FreshRSS root should return a login page, not 404)
+   - Test FreshRSS setup page: `curl -H "Host: freshrss.[private-site].com" http://<traefik-ip>:80/install.php` — if this returns 404, Traefik isn't routing any FreshRSS paths, including the setup page required for initialization
+   - Quick diagnostic: If `curl -vk -H "Host: freshrss.[private-site].com" https://10.1.1.10/` returns 404, Traefik has no route for this host
 
 ### Newsletter Output Style
 
@@ -408,20 +408,20 @@ The newsletter builder script (`${HOME}/.hermes/scripts/newsletter_builder.py`) 
 See `references/newsletter-builder-categorization.md` for detailed code patterns, regex patterns, and keyword lists.
 
 ### References
-See `references/api-endpoints.md` for detailed endpoint testing results and working Python patterns specific to your FreshRSS instance at `https://freshrss.wineandgecko.com/api/`.
+See `references/api-endpoints.md` for detailed endpoint testing results and working Python patterns specific to your FreshRSS instance at `https://freshrss.[private-site].com/api/`.
 See `references/content-extraction-fallbacks.md` for the content extraction fallback hierarchy (web_extract > Jina > trafilatura) and Jina 402 rate-limiting notes.
 See `references/freshrss-oracle-deployment.md` for steps to deploy FreshRSS on the Oracle server with Traefik.
 See `references/traefik-routing-diagnostics.md` for step-by-step Traefik routing diagnostic commands to resolve 404 errors on FreshRSS API endpoints.
 See `references/newsletter-builder-categorization.md` for newsletter builder fetching logic, categorization patterns, and content extraction pitfalls.
 See `references/reasoning-model-summarization.md` for the verified fix recipe when the default OpenRouter model is reasoning-only (`tencent/hy3:free`) and silently returns `None` content.
 
-7. **SearXNG at search.wineandgecko.com** — the HTML search endpoint works (200), but the JSON API (`/search?q=...&format=json`) returns 403. The SearXNG instance runs v2026.5.8 behind Traefik. The `search_format: json` output format is disabled in the SearXNG settings — to fix, either:
+7. **SearXNG at search.[private-site].com** — the HTML search endpoint works (200), but the JSON API (`/search?q=...&format=json`) returns 403. The SearXNG instance runs v2026.5.8 behind Traefik. The `search_format: json` output format is disabled in the SearXNG settings — to fix, either:
    - Edit the SearXNG `settings.yml` to enable `search_format: json` (or add `json` to the allowed output formats)
    - Or use an alternative free search backend: `ddgs` (DuckDuckGo, needs `pip install ddgs` + set `web.search_backend: ddgs` in config.yaml), or `brave-free` (needs `BRAVE_SEARCH_API_KEY`)
 
 8. **Hardcoded IPs in Client Scripts**: The newsletter builder script (`${HOME}/.hermes/scripts/newsletter_builder.py`) has a hardcoded `freshrss_ip` value. The correct local server IP is `10.1.1.10` (not `161.153.112.27`, which was the old Oracle server IP). See `references/server-locations.md` for a full map of internal service IPs.
 
-9. **Uninitialized FreshRSS Instance**: Newly deployed FreshRSS containers return "Not Found" on API endpoints until the initial web-based setup is completed. Access `http://freshrss.wineandgecko.com/install.php` to:
+9. **Uninitialized FreshRSS Instance**: Newly deployed FreshRSS containers return "Not Found" on API endpoints until the initial web-based setup is completed. Access `http://freshrss.[private-site].com/install.php` to:
    - Create the admin user (username: `josh434`, password from `FRESHRSS_API_PASSWORD` in `${HOME}/.hermes/.env`)
    - Enable the Google Reader API in FreshRSS settings (Settings → Reading → Enable Google Reader API)
    - Note: CLI initialization attempts (e.g., `docker exec freshrss php /var/www/FreshRSS/app/install.php`) return "Forbidden" — only browser-based setup works.
@@ -429,4 +429,4 @@ See `references/reasoning-model-summarization.md` for the verified fix recipe wh
 
 10. **Cron Job /etc/hosts Limitations**: Cron jobs (and non-sudo users) cannot modify `/etc/hosts`. If the FreshRSS hostname is not in `/etc/hosts`, DNS resolution will fail. The newsletter script uses IP direct with `Host` header to bypass this, but this only works if Traefik is correctly routing the subdomain. If Traefik routing is broken, even IP direct will fail with "Not Found" errors.
 
-12. **FreshRSS Setup Page 404**: If `http://freshrss.wineandgecko.com/install.php` returns 404, Traefik is not routing the FreshRSS subdomain at all. The browser-based setup required for FreshRSS initialization cannot be completed until Traefik routing is fixed. This is a more severe issue than just API endpoint 404s.
+12. **FreshRSS Setup Page 404**: If `http://freshrss.[private-site].com/install.php` returns 404, Traefik is not routing the FreshRSS subdomain at all. The browser-based setup required for FreshRSS initialization cannot be completed until Traefik routing is fixed. This is a more severe issue than just API endpoint 404s.

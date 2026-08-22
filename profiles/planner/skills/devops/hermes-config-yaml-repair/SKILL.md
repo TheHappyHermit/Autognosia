@@ -200,7 +200,7 @@ yamllint ${HOME}/.hermes/config.yaml
 ```yaml
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.wineandgecko.com/mcp-server/http"
+    url: "https://n8n.[private-site].com/mcp-server/http"
     headers:
       Authorization: "Bearer YOUR_TOKEN_HERE"
     timeout: 180
@@ -221,7 +221,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.[private-site].com/mcp-server/http"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"    timeout: 30    connect_timeout: 10
 ```
 (Notice how everything is on one line after the mcp_servers key - this is invalid YAML)
 
@@ -235,7 +235,7 @@ mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"   
 # AFTER (fixed):
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.wineandgecko.com/mcp-server/http"
+    url: "https://n8n.[private-site].com/mcp-server/http"
     headers:
       Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"
     timeout: 180
@@ -260,7 +260,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.[private-site].com/mcp-server/http"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"    timeout: 30    connect_timeout: 10
 ```
 
 **Solution**:
@@ -273,7 +273,7 @@ mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"   
 # AFTER (fixed):
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.wineandgecko.com/mcp-server/http"
+    url: "https://n8n.[private-site].com/mcp-server/http"
     headers:
       Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"
     timeout: 180
@@ -304,7 +304,7 @@ cat > /tmp/mcp_fix.yaml << 'EOF'
 # MCP Servers Configuration
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.wineandgecko.com/mcp-server/http"
+    url: "https://n8n.[private-site].com/mcp-server/http"
     headers:
       Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"
     timeout: 180

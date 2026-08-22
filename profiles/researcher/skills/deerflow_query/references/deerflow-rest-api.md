@@ -2,7 +2,7 @@
 
 ## Discovery (2026-05-29)
 
-DeerFlow at `deerflow.wineandgecko.com` exposes a REST API, **not** an MCP endpoint.
+DeerFlow at `deerflow.[private-site].com` exposes a REST API, **not** an MCP endpoint.
 Both `/mcp` and `/sse` return 404.
 
 ## Endpoints

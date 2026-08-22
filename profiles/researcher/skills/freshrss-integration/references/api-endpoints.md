@@ -1,6 +1,6 @@
 # FreshRSS API Endpoints - Real World Testing Notes
 
-Based on actual testing of FreshRSS instance at https://freshrss.wineandgecko.com/api/
+Based on actual testing of FreshRSS instance at https://freshrss.[private-site].com/api/
 
 ## Working Endpoints (200 OK)
 
@@ -23,7 +23,7 @@ Based on actual testing of FreshRSS instance at https://freshrss.wineandgecko.co
 ## Critical Requirements
 
 ### 1. Virtual Host Header
-**ALL requests MUST include**: `Host: freshrss.wineandgecko.com`
+**ALL requests MUST include**: `Host: freshrss.[private-site].com`
 
 Without this header, you will get:
 - 301 redirect to HTTPS version (if accessing via IP)
@@ -32,7 +32,7 @@ Without this header, you will get:
 ### 2. IP + Host Header Combination
 When accessing via IP address (10.1.1.10):
 ```bash
-curl -vk -H "Host: freshrss.wineandgecko.com" https://10.1.1.10/api/greader.php
+curl -vk -H "Host: freshrss.[private-site].com" https://10.1.1.10/api/greader.php
 ```
 
 ### 3. SSL Verification
@@ -46,7 +46,7 @@ The instance uses a self-signed certificate (TRAEFIK DEFAULT CERT), so:
 import requests
 
 FRESHRSS_IP = "10.1.1.10"
-FRESHRSS_HOST = "freshrss.wineandgecko.com"
+FRESHRSS_HOST = "freshrss.[private-site].com"
 FRESHRSS_URL = f"https://{FRESHRSS_IP}/api/greader.php"
 USERNAME = "josh434"
 API_PASSWORD = "J1234osh$"

@@ -18,7 +18,7 @@ This skill defines how to process and filter newsletter content to match user pr
 ## Steps
 
 ### 1. Content Collection and Initial Filtering
-- Fetch articles from FreshRSS feeds (using IP-direct connection: 10.1.1.10 with Host: freshrss.wineandgecko.com)
+- Fetch articles from FreshRSS feeds (using IP-direct connection: 10.1.1.10 with Host: freshrss.[private-site].com)
 - Apply sports filtering: Exclude any articles containing sports-related keywords in title, content, or tags
   - Sports keywords: sport, football, soccer, baseball, basketball, tennis, golf, olympics, championship, tournament, match, game, team, player, league, nfl, nba, mlb, nhl, fifa, ufc, mma, cricket, rugby, etc.
 - Prioritize content categories: science, technology (especially LLM/AI), international/world news, politics, business, health, environment

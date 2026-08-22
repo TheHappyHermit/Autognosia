@@ -164,7 +164,8 @@ uv tool install graphifyy
 mkdir -p ${HOME}/.autognosia/graphify-main-out
 mkdir -p ${HOME}/.autognosia/graphify-oracle-out
 
-# Run extraction (uses local LLM at http://10.1.1.10:8080 by default)
+# Run extraction (uses your local LLM endpoint — set GRAPHIFY_BASE_URL,
+# e.g. http://<your-llm-server>:8080/v1 for a LAN llama.cpp server)
 # For Active Wiki (main graph):
 graphify extract ${HOME}/.autognosia/active-wiki \
   --backend openai \
