@@ -16,7 +16,7 @@ The `terminal` tool runs shell commands directly on the VM — **zero LLM tokens
 ```bash
 # 1. Clone (if not already local)
 cd ~
-git clone https://github.com/openclaw434/autognosia.git
+git clone https://github.com/[private]/autognosia.git
 
 # 2. Write file directly from cached source (no LLM processing)
 cat ${HOME}/.hermes/cache/documents/doc_<hash>_message.txt > ${HOME}/.autognosia/INSTALL.md

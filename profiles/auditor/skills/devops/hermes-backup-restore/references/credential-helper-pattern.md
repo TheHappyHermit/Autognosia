@@ -29,7 +29,7 @@ git push origin main
 
 ### With explicit username (if not inferrable from remote)
 ```bash
-git config --local credential.helper '!f() { echo "username=openclaw434"; echo "password=$(gh auth token)"; }; f'
+git config --local credential.helper '!f() { echo "username=[private]"; echo "password=$(gh auth token)"; }; f'
 ```
 
 ### In a script with error handling
@@ -38,7 +38,7 @@ git config --local credential.helper '!f() { echo "username=openclaw434"; echo "
 set -euo pipefail
 REPO_DIR="/tmp/my-backup"
 cd "$REPO_DIR"
-git config --local credential.helper '!f() { echo "username=openclaw434"; echo "password=$(gh auth token)"; }; f'
+git config --local credential.helper '!f() { echo "username=[private]"; echo "password=$(gh auth token)"; }; f'
 if ! git push origin main; then
     echo "Push failed - check gh auth status and repo permissions"
     exit 1
@@ -48,7 +48,7 @@ fi
 ### For multiple remotes (origin + myfork)
 ```bash
 # Configure for all remotes
-git config --local credential.helper '!f() { echo "username=openclaw434"; echo "password=$(gh auth token)"; }; f'
+git config --local credential.helper '!f() { echo "username=[private]"; echo "password=$(gh auth token)"; }; f'
 git push origin main
 git push myfork master
 ```

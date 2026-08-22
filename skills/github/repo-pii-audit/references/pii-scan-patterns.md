@@ -61,7 +61,7 @@ josh\.
 
 ### GitHub Handle Patterns
 ```
-openclaw434
+[private]
 [any github username in issue/pr references]
 ```
 

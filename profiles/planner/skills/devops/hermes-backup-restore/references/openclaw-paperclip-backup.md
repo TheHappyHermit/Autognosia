@@ -30,8 +30,8 @@ cd "$REPO_DIR"
 # Initialize if needed
 if [ ! -d .git ]; then
     git init
-    git config --local credential.helper '!f() { echo "username=openclaw434"; echo "password=$(gh auth token)"; }; f'
-    git remote add origin https://github.com/openclaw434/openclaw-customizations.git
+    git config --local credential.helper '!f() { echo "username=[private]"; echo "password=$(gh auth token)"; }; f'
+    git remote add origin https://github.com/[private]/openclaw-customizations.git
 fi
 
 # Skills (19 plugin skills)
@@ -83,8 +83,8 @@ cd "$REPO_DIR"
 
 if [ ! -d .git ]; then
     git init
-    git config --local credential.helper '!f() { echo "username=openclaw434"; echo "password=$(gh auth token)"; }; f'
-    git remote add origin https://github.com/openclaw434/paperclip-customizations.git
+    git config --local credential.helper '!f() { echo "username=[private]"; echo "password=$(gh auth token)"; }; f'
+    git remote add origin https://github.com/[private]/paperclip-customizations.git
 fi
 
 # 4 custom skills
@@ -109,16 +109,16 @@ set -euo pipefail
 
 # One-time setup
 cd ${HOME}/paperclip
-git remote add myfork https://github.com/openclaw434/paperclip.git  # if not already added
+git remote add myfork https://github.com/[private]/paperclip.git  # if not already added
 
 # Push master (includes Hermes adapters)
-git config --local credential.helper '!f() { echo "username=openclaw434"; echo "password=$(gh auth token)"; }; f'
+git config --local credential.helper '!f() { echo "username=[private]"; echo "password=$(gh auth token)"; }; f'
 git push myfork master
 ```
 
 ### Paperclip Fork Details
 - **Upstream:** `paperclipai/paperclip` (public)
-- **Fork:** `openclaw434/paperclip` (private)
+- **Fork:** `[private]/paperclip` (private)
 - **Key commit:** `fd2f82ac5` — "Add built-in Hermes adapters" (merged to master)
 - **Adapters included:** `hermes_local`, `hermes_gateway` (built-in, no adapter-manager install needed)
 - **Branch strategy:** Master branch contains all Hermes adapter work; no separate feature branch needed
@@ -142,7 +142,7 @@ See `references/credential-helper-pattern.md` for the `gh auth token` credential
 ### OpenClaw
 ```bash
 # 1. Clone backup
-git clone https://github.com/openclaw434/openclaw-customizations.git /tmp/restore
+git clone https://github.com/[private]/openclaw-customizations.git /tmp/restore
 cd /tmp/restore
 
 # 2. Restore skills (merges with any bundled skills)
@@ -164,14 +164,14 @@ cp agents/credentials/* ${HOME}/.openclaw/credentials/
 
 ### Paperclip Skills
 ```bash
-git clone https://github.com/openclaw434/paperclip-customizations.git /tmp/pc-restore
+git clone https://github.com/[private]/paperclip-customizations.git /tmp/pc-restore
 rsync -a /tmp/pc-restore/skills/ ${HOME}/paperclip/skills/
 ```
 
 ### Paperclip Fork
 ```bash
 # Fresh clone of your fork
-git clone https://github.com/openclaw434/paperclip.git ${HOME}/paperclip
+git clone https://github.com/[private]/paperclip.git ${HOME}/paperclip
 cd ${HOME}/paperclip
 # Verify Hermes adapters present
 ls packages/adapters/hermes/ packages/adapters/hermes-gateway/

@@ -150,10 +150,10 @@ This cleanup + optimization reduced `state.db` from **14.4 GB → 4.4 GB** (~69%
 
 | Repo | Contents |
 |------|----------|
-| `openclaw434/hermes-customizations` | Hermes skills, profiles, cron, scripts, plugins, config, WealthForge vault |
-| `openclaw434/openclaw-customizations` | 19 OpenClaw plugin skills, 8 agent workspaces, openclaw.json, Telegram credentials |
-| `openclaw434/paperclip-customizations` | 4 custom Paperclip skills (board, converting-plans, create-agent, para-memory-files) |
-| `openclaw434/paperclip` | Full Paperclip fork (master branch with Hermes adapters merged) |
+| `[private]/hermes-customizations` | Hermes skills, profiles, cron, scripts, plugins, config, WealthForge vault |
+| `[private]/openclaw-customizations` | 19 OpenClaw plugin skills, 8 agent workspaces, openclaw.json, Telegram credentials |
+| `[private]/paperclip-customizations` | 4 custom Paperclip skills (board, converting-plans, create-agent, para-memory-files) |
+| `[private]/paperclip` | Full Paperclip fork (master branch with Hermes adapters merged) |
 
 ---
 

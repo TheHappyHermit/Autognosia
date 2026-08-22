@@ -351,7 +351,7 @@ See `references/docker-compose-startup-pitfalls.md` for the full procedure cover
 - `honcho_deriver` (worker) — "unhealthy" (healthcheck bug), but working
 
 **Backups created (private GitHub repos):**
-- `openclaw434/hermes-customizations` — Hermes skills, profiles, cron, vault
-- `openclaw434/openclaw-customizations` — 19 skills, 8 agents, config, creds
-- `openclaw434/paperclip-customizations` — 4 custom Paperclip skills
-- `openclaw434/paperclip` — Full fork with Hermes adapter branch
+- `[private]/hermes-customizations` — Hermes skills, profiles, cron, vault
+- `[private]/openclaw-customizations` — 19 skills, 8 agents, config, creds
+- `[private]/paperclip-customizations` — 4 custom Paperclip skills
+- `[private]/paperclip` — Full fork with Hermes adapter branch
