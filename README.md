@@ -427,6 +427,11 @@ MCP deployment:
 
 https://github.com/garrytan/gbrain/blob/master/docs/mcp/DEPLOY.md
 
+Hermes Agent integration (including the Bun/PATH pitfall that breaks stdio
+launch):
+
+[`docs/GBRAIN-MCP.md`](docs/GBRAIN-MCP.md)
+
 ---
 
 # GBrain Is an Index, Not the Sole Brain

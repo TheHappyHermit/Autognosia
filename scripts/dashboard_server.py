@@ -15,20 +15,46 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-try:
-    from fastapi import FastAPI, HTTPException, Query, Body
-    from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.staticfiles import StaticFiles
-    from fastapi.responses import FileResponse, JSONResponse
-    import uvicorn
-except ImportError:
-    print("FastAPI / uvicorn not installed. Installing lightweight web dependencies...")
-    subprocess.run([sys.executable, "-m", "pip", "install", "fastapi", "uvicorn"], check=True)
-    from fastapi import FastAPI, HTTPException, Query, Body
-    from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.staticfiles import StaticFiles
-    from fastapi.responses import FileResponse, JSONResponse
-    import uvicorn
+def _ensure_web_deps() -> None:
+    """Ensure fastapi/uvicorn are importable in the current interpreter.
+
+    Prefers the dedicated dashboard venv (~/.autognosia/dashboard-venv) and
+    re-execs into it. On PEP 668 "externally-managed-environment" systems
+    (Homebrew, most distro Pythons) `pip install` into the system interpreter
+    is blocked, so bootstrapping always happens inside an isolated venv.
+    """
+    try:
+        import fastapi  # noqa: F401
+        import uvicorn  # noqa: F401
+        return
+    except ImportError:
+        pass
+
+    venv_dir = Path.home() / ".autognosia" / "dashboard-venv"
+    venv_python = venv_dir / "bin" / "python"
+
+    # Already running under the dashboard venv but deps went missing? Repair in place.
+    if venv_python.exists():
+        if Path(sys.executable).resolve() != venv_python.resolve():
+            os.execv(str(venv_python), [str(venv_python), *sys.argv])
+    else:
+        subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
+
+    subprocess.run(
+        [str(venv_python), "-m", "pip", "install", "--quiet", "fastapi", "uvicorn"],
+        check=True,
+    )
+    if Path(sys.executable).resolve() != venv_python.resolve():
+        os.execv(str(venv_python), [str(venv_python), *sys.argv])
+
+
+_ensure_web_deps()
+
+from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+import uvicorn
 
 # Resolve root directories
 REPO_ROOT = Path(__file__).resolve().parent.parent
