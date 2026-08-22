@@ -15,14 +15,14 @@ The `terminal` tool runs shell commands directly on the VM — **zero LLM tokens
 
 ```bash
 # 1. Clone (if not already local)
-cd /home/josh434
+cd ~
 git clone https://github.com/openclaw434/autognosia.git
 
 # 2. Write file directly from cached source (no LLM processing)
-cat /home/josh434/.hermes/cache/documents/doc_<hash>_message.txt > /home/josh434/.autognosia/INSTALL.md
+cat ~/.hermes/cache/documents/doc_<hash>_message.txt > ~/.autognosia/INSTALL.md
 
 # 3. Commit and push via git (uses local gh auth)
-cd /home/josh434/autognosia
+cd ~/autognosia
 git add INSTALL.md
 git commit -m "Add INSTALL.md"
 git push origin main
@@ -58,8 +58,8 @@ The `gh` CLI auth is already configured on the VM — `git push` uses it automat
 REPO=autognosia
 FILE=INSTALL.md
 CACHE_FILE=$(ls -t ~/.hermes/cache/documents/doc_*_message.txt | head -1)
-cat "$CACHE_FILE" > "/home/josh434/$REPO/$FILE"
-cd "/home/josh434/$REPO"
+cat "$CACHE_FILE" > "~/$REPO/$FILE"
+cd "~/$REPO"
 git add "$FILE"
 git commit -m "Add $FILE"
 git push origin main

@@ -5,7 +5,7 @@ This reference documents the full process for performing an in-place Hermes Agen
 ## Overview
 
 - **Hermes version**: v0.19.0 → v0.20.0
-- **HERMES_HOME**: `/home/josh434/.hermes` (preserved throughout)
+- **HERMES_HOME**: `~/.hermes` (preserved throughout)
 - **Desktop build**: Electron app built from source, auto-creates `.desktop` launcher
 - **State preservation**: 100% verified across all components
 
@@ -32,7 +32,7 @@ hermes update --backup
 
 **Result**: 
 - Version upgraded to v0.20.0 (2026.8.3)
-- Backup created at `/home/josh434/.hermes/backups/pre-update-2026-08-11-215142.zip`
+- Backup created at `~/.hermes/backups/pre-update-2026-08-11-215142.zip`
 - Additional snapshots in `~/.hermes/state-snapshots/`
 
 ---

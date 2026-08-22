@@ -131,8 +131,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/josh434/.hermes/hermes-agent
-ExecStart=/home/josh434/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --host 0.0.0.0 --port 9119 --no-open --insecure
+WorkingDirectory=~/.hermes/hermes-agent
+ExecStart=~/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --host 0.0.0.0 --port 9119 --no-open --insecure
 Restart=on-failure
 RestartSec=5
 

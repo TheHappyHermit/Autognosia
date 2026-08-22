@@ -256,6 +256,26 @@ def check_gbrain_repo():
         return True, "Autognosia repository git-initialized"
     return False, "Git repository structure not initialized"
 
+def check_schema_conformance():
+    """Run the schema guard: WAL mode, expected indexes, FK orphans,
+    timestamp-format consistency, exchange-package validity.
+    Probes live databases — no asset-existence fallback."""
+    import subprocess
+    script = REPO_ROOT / "scripts" / "verify_schema_conformance.py"
+    if not script.exists():
+        return False, "verify_schema_conformance.py missing from scripts/"
+    proc = subprocess.run(
+        [sys.executable, str(script)],
+        capture_output=True, text=True, timeout=60,
+    )
+    if proc.returncode == 0:
+        return True, "All stores conformant (WAL, indexes, FKs, formats)"
+    detail = "; ".join(
+        line.strip() for line in proc.stdout.splitlines()
+        if line.strip().startswith("-")
+    )[:300]
+    return False, f"Violations: {detail or proc.stdout[:200]}"
+
 def check_command_deck():
     """Check Command Deck Dashboard endpoint."""
     import urllib.request
@@ -287,6 +307,7 @@ if __name__ == "__main__":
     check("Plugin", check_plugin)
     check("Profiles Config", check_profiles_config)
     check("GBrain Repo", check_gbrain_repo)
+    check("Schema Conformance", check_schema_conformance)
     
     total = len(results)
     passed = sum(1 for r in results if r["status"] == "OK")

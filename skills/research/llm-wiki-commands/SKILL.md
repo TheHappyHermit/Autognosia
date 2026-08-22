@@ -13,7 +13,7 @@ metadata:
 
 # LLM Wiki Slash Commands
 
-Provides three slash commands for easy wiki operations at `/home/josh434/.autognosia/active-wiki`.
+Provides three slash commands for easy wiki operations at `~/.autognosia/active-wiki`.
 
 ## Commands
 

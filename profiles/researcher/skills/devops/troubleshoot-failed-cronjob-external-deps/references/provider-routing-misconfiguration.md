@@ -33,9 +33,9 @@ When the cron job runs `resolve_runtime_provider(requested="auto")`, the provide
 grep -A 5 "provider_routing:" ~/.hermes/config.yaml
 
 # 2. Test what "auto" actually resolves to
-HERMES_HOME=/home/josh434/.hermes /home/josh434/.hermes/hermes-agent/venv/bin/python3 -c "
+HERMES_HOME=~/.hermes ~/.hermes/hermes-agent/venv/bin/python3 -c "
 import os, sys
-sys.path.insert(0, '/home/josh434/.hermes/hermes-agent')
+sys.path.insert(0, '~/.hermes/hermes-agent')
 from hermes_cli.runtime_provider import resolve_runtime_provider
 print('auto ->', resolve_runtime_provider(requested='auto').get('provider'))
 print('nous ->', resolve_runtime_provider(requested='nous').get('provider'))
@@ -80,9 +80,9 @@ The provider resolution chain in `hermes_cli/runtime_provider.py:resolve_runtime
 
 ```bash
 # Re-run the test
-HERMES_HOME=/home/josh434/.hermes /home/josh434/.hermes/hermes-agent/venv/bin/python3 -c "
+HERMES_HOME=~/.hermes ~/.hermes/hermes-agent/venv/bin/python3 -c "
 import os, sys
-sys.path.insert(0, '/home/josh434/.hermes/hermes-agent')
+sys.path.insert(0, '~/.hermes/hermes-agent')
 from hermes_cli.runtime_provider import resolve_runtime_provider
 print('auto ->', resolve_runtime_provider(requested='auto').get('provider'))
 "  # Should now print "nous"

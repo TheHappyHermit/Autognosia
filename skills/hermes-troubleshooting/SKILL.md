@@ -107,7 +107,7 @@ Use `hermes update --force-venv` to bypass the guard. Risk: the blocked process 
 
 2. **Script uses relative paths based on `__file__`** (e.g., `os.path.dirname(os.path.abspath(__file__))`). When Hermes copies the script to `~/.hermes/scripts/`, those relative paths resolve to the wrong location.
 
-3. **Script path drift (Autognosia migration):** Scripts were moved from `hermes-cortex/scripts/` to `.autognosia/scripts/` as part of the project rename from "Hermes Cortex" to "Autognosia". The cron job's `script` field may point to a missing path. If the script exists at `~/.autognosia/scripts/` but the job reports `Script not found`, set `workdir` to `/home/josh434/.autognosia/scripts`.
+3. **Script path drift (Autognosia migration):** Scripts were moved from `hermes-cortex/scripts/` to `.autognosia/scripts/` as part of the project rename from "Hermes Cortex" to "Autognosia". The cron job's `script` field may point to a missing path. If the script exists at `~/.autognosia/scripts/` but the job reports `Script not found`, set `workdir` to `~/.autognosia/scripts`.
 
 ### Fix
 
@@ -147,7 +147,7 @@ If it works here, it will work as a cron job.
 
 After the project rename from "Hermes Cortex" to "Autognosia", verify:
 - [ ] All scripts in `.autognosia/scripts/` have no references to `hermes-cortex` paths
-- [ ] All cron jobs with `no_agent=True` and script references have `workdir` set to `/home/josh434/.autognosia/scripts` if the script lives there
+- [ ] All cron jobs with `no_agent=True` and script references have `workdir` set to `~/.autognosia/scripts` if the script lives there
 - [ ] The script file `check_cortex_dbs.py` has been renamed to `check_autognosia_dbs.py` with all "cortex" references replaced with "autognosia"
 
 ## Cron Jobs Fail Closed After Changing Global Model

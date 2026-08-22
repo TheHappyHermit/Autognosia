@@ -30,7 +30,7 @@ The `paperclip` user's password in PostgreSQL doesn't match what's in the `.env`
 
 To find the actual password, use `xxd` to read raw bytes (tools may redact it):
 ```
-xxd /home/josh434/paperclip/.env | grep -A1 "DATABASE_URL"
+xxd ~/paperclip/.env | grep -A1 "DATABASE_URL"
 ```
 
 Reset the database password to match `.env`:
@@ -69,8 +69,8 @@ Look for: `"status": "ok"`, `"pendingMigrations": []`
 
 ## Key Locations
 - Service: `/etc/systemd/system/paperclip.service`
-- Working dir: `/home/josh434/paperclip`
-- Env files: `/home/josh434/paperclip/.env` and `~/.paperclip/instances/default/.env`
+- Working dir: `~/paperclip`
+- Env files: `~/paperclip/.env` and `~/.paperclip/instances/default/.env`
 - Database: Docker container `default-postgres-1`, database `paperclip`
 - Instance config: `~/.paperclip/instances/default/config.json`
 

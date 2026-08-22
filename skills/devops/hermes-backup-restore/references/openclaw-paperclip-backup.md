@@ -108,7 +108,7 @@ The `feat/externalize-hermes-adapter` branch (commit `fd2f82ac5`) was merged int
 set -euo pipefail
 
 # One-time setup
-cd /home/josh434/paperclip
+cd ~/paperclip
 git remote add myfork https://github.com/openclaw434/paperclip.git  # if not already added
 
 # Push master (includes Hermes adapters)

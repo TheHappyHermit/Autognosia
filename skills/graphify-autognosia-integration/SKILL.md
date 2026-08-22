@@ -23,8 +23,8 @@ Patterns for integrating Graphify as a **derived relationship/connectivity index
 
 | Graph | Source Wiki | Temperature | Queried By | Refresh Cadence |
 |-------|-------------|-------------|------------|-----------------|
-| **Main Graph** | `/home/josh434/.autognosia/active-wiki/` | Hot/current | Main Hermes, Planner | Frequent (days/weeks) |
-| **Oracle Graph** | `/home/josh434/.autognosia/oracle/brain/` | Cold/historical | Oracle Profile | Infrequent (weeks/months) |
+| **Main Graph** | `~/.autognosia/active-wiki/` | Hot/current | Main Hermes, Planner | Frequent (days/weeks) |
+| **Oracle Graph** | `~/.autognosia/oracle/brain/` | Cold/historical | Oracle Profile | Infrequent (weeks/months) |
 
 **Critical**: Main and Oracle graphs are **logically separate** and **never automatically merged**. This preserves the hot vs cold knowledge hierarchy.
 
@@ -50,16 +50,16 @@ Patterns for integrating Graphify as a **derived relationship/connectivity index
 If Graphify is unavailable, stale, returning no result, or returning incorrect results:
 
 ### Main Graph Fallback Order
-1. Ordinary wiki search (`ripgrep /home/josh434/.autognosia/active-wiki/`)
+1. Ordinary wiki search (`ripgrep ~/.autognosia/active-wiki/`)
 2. Direct Markdown/source inspection
 3. Oracle (if appropriate)
 4. Research Hermes
 
 ### Oracle Graph Fallback Order
-1. Ordinary wiki search (`ripgrep /home/josh434/.autognosia/oracle/brain/`)
+1. Ordinary wiki search (`ripgrep ~/.autognosia/oracle/brain/`)
 2. Direct Markdown/source inspection
 3. GBrain semantic/hybrid retrieval (via Oracle profile)
-4. Raw evidence search (`/home/josh434/.autognosia/oracle/raw/`)
+4. Raw evidence search (`~/.autognosia/oracle/raw/`)
 5. Research Hermes
 
 **CRITICAL**: A Graphify failure or empty result MUST NOT be interpreted as proof that information does not exist. Never say "the knowledge does not exist" solely because Graphify failed to find it.
@@ -69,27 +69,27 @@ If Graphify is unavailable, stale, returning no result, or returning incorrect r
 ### Main Graph (Active Wiki)
 ```bash
 # Full semantic run (cache clear MANDATORY)
-rm -rf /home/josh434/.autognosia/graphify-main-out
-graphify extract /home/josh434/.autognosia/active-wiki \
+rm -rf ~/.autognosia/graphify-main-out
+graphify extract ~/.autognosia/active-wiki \
   --backend openai --model "your-model-id" \
   --token-budget 50000 --max-concurrency 4 --no-cluster --api-timeout 1200 \
-  --out /home/josh434/.autognosia/graphify-main-out
+  --out ~/.autognosia/graphify-main-out
 
 # Incremental (AST only)
-graphify update /home/josh434/.autognosia/active-wiki --graph /home/josh434/.autognosia/graphify-main-out
+graphify update ~/.autognosia/active-wiki --graph ~/.autognosia/graphify-main-out
 ```
 
 ### Oracle Graph (Oracle Wiki)
 ```bash
 # Full semantic run (cache clear MANDATORY)
-rm -rf /home/josh434/.autognosia/graphify-oracle-out
-graphify extract /home/josh434/.autognosia/oracle/brain \
+rm -rf ~/.autognosia/graphify-oracle-out
+graphify extract ~/.autognosia/oracle/brain \
   --backend openai --model "your-model-id" \
   --token-budget 50000 --max-concurrency 4 --no-cluster --api-timeout 1200 \
-  --out /home/josh434/.autognosia/graphify-oracle-out
+  --out ~/.autognosia/graphify-oracle-out
 
 # Incremental (AST only)
-graphify update /home/josh434/.autognosia/oracle/brain --graph /home/josh434/.autognosia/graphify-oracle-out
+graphify update ~/.autognosia/oracle/brain --graph ~/.autognosia/graphify-oracle-out
 ```
 
 ## Workspace Wrapper Pattern
@@ -98,19 +98,19 @@ Use the `graphify` CLI directly. Install via `uv tool install graphifyy` (or `pi
 
 ```bash
 # Extract
-graphify extract /home/josh434/.autognosia/active-wiki --backend openai --model "your-model-id"
+graphify extract ~/.autognosia/active-wiki --backend openai --model "your-model-id"
 
 # Query
-graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/graphify-main-out
+graphify query "How does X connect to Y?" --graph ~/.autognosia/graphify-main-out
 
 # Update (incremental)
-graphify update /home/josh434/.autognosia/active-wiki --graph /home/josh434/.autognosia/graphify-main-out
+graphify update ~/.autognosia/active-wiki --graph ~/.autognosia/graphify-main-out
 
 # Explain
-graphify explain "concept-name" --graph /home/josh434/.autognosia/graphify-main-out
+graphify explain "concept-name" --graph ~/.autognosia/graphify-main-out
 
 # Path
-graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/graphify-main-out
+graphify path "node-a" "node-b" --graph ~/.autognosia/graphify-main-out
 ```
 
 No wrapper scripts needed — the CLI handles environment variables and paths.
@@ -137,13 +137,13 @@ export GRAPHIFY_OPENROUTER_MODEL="your-model-id"
 
 ```bash
 # 1. mtime must postdate run
-ls -la --time-style=full-iso /home/josh434/.autognosia/graphify-main-out/GRAPH_REPORT.md
+ls -la --time-style=full-iso ~/.autognosia/graphify-main-out/GRAPH_REPORT.md
 
 # 2. Semantic cache files in thousands
-find /home/josh434/.autognosia/graphify-main-out/cache/semantic -type f | wc -l
+find ~/.autognosia/graphify-main-out/cache/semantic -type f | wc -l
 
 # 3. Log shows semantic extraction on ~total files
-grep "semantic extraction on" /home/josh434/.autognosia/graphify-main-out/*.log
+grep "semantic extraction on" ~/.autognosia/graphify-main-out/*.log
 ```
 
 **Success indicators**: AMBIGUOUS > 0%, tokens > 0, INFERRED > 0%, node/edge counts > AST baseline
@@ -164,16 +164,16 @@ Use Hermes no-agent cron. No LLM needed for incremental.
 
 ### Main Graph (Main Hermes / Planner)
 ```bash
-graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/graphify-main-out
-graphify explain "concept-name" --graph /home/josh434/.autognosia/graphify-main-out
-graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/graphify-main-out
+graphify query "How does X connect to Y?" --graph ~/.autognosia/graphify-main-out
+graphify explain "concept-name" --graph ~/.autognosia/graphify-main-out
+graphify path "node-a" "node-b" --graph ~/.autognosia/graphify-main-out
 ```
 
 ### Oracle Graph (Oracle Profile)
 ```bash
-graphify query "Trace compliance flow from A to B" --graph /home/josh434/.autognosia/graphify-oracle-out
-graphify explain "historical-concept" --graph /home/josh434/.autognosia/graphify-oracle-out
-graphify path "node-x" "node-y" --graph /home/josh434/.autognosia/graphify-oracle-out
+graphify query "Trace compliance flow from A to B" --graph ~/.autognosia/graphify-oracle-out
+graphify explain "historical-concept" --graph ~/.autognosia/graphify-oracle-out
+graphify path "node-x" "node-y" --graph ~/.autognosia/graphify-oracle-out
 ```
 
 ## Related Skills

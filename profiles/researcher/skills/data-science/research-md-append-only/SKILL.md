@@ -41,13 +41,13 @@ Before ANY write operation targeting RESEARCH.md:
    ```
    ```python
    # Method B: Python append (preferred for large entries)
-   with open('/home/josh434/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes/RESEARCH.md', 'a') as f:
+   with open('~/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes/RESEARCH.md', 'a') as f:
        f.write(content)
    ```
    ```python
    # Method C: Write to temp file first, then append (for entries >25KB)
    write_file('/tmp/research_entry.md', content)
-   with open('/home/josh434/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes/RESEARCH.md', 'a') as f:
+   with open('~/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes/RESEARCH.md', 'a') as f:
        f.write(open('/tmp/research_entry.md').read())
    os.remove('/tmp/research_entry.md')
    ```
@@ -65,7 +65,7 @@ Before ANY write operation targeting RESEARCH.md:
 1. Rebuild from individual files:
 ```python
 import os
-research_dir = '/home/josh434/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes'
+research_dir = '~/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes'
 files = sorted([f for f in os.listdir(research_dir) if f.endswith('.md') and f != 'RESEARCH.md'])
 header = "# WealthForge AI Research Log\n## APPEND-ONLY\n\n---\n\n"
 all_content = header

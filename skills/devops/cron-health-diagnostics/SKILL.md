@@ -141,11 +141,11 @@ creating temp scripts inline.
 
 **Fix:**
 1. Extract the logic from the temp scripts into a permanent script:
-   `/home/josh434/.autognosia/scripts/<name>.py`
-2. Make it executable: `chmod +x /home/josh434/.autognosia/scripts/<name>.py`
+   `~/.autognosia/scripts/<name>.py`
+2. Make it executable: `chmod +x ~/.autognosia/scripts/<name>.py`
 3. Update the cron job prompt to reference the permanent script:
    ```
-   Run: python3 /home/josh434/.autognosia/scripts/<name>.py
+   Run: python3 ~/.autognosia/scripts/<name>.py
    If it exits 0, report success. If it exits 1, report which checks failed.
    Do NOT create temporary scripts.
    ```
@@ -153,7 +153,7 @@ creating temp scripts inline.
 
 **Example:** The Graphify Progress Monitor cron was creating
 `/tmp/hermes-verify-graphify-integrity.py` every hour. Fixed by creating
-`/home/josh434/.autognosia/scripts/verify_graphify_integrity.py` and updating
+`~/.autognosia/scripts/verify_graphify_integrity.py` and updating
 the cron prompt to call it directly.
 
 **Watch for:** Any cron job whose agent creates temp scripts instead of
@@ -167,7 +167,7 @@ from `hermes-cortex/scripts/` to `.autognosia/scripts/`. Script-only cron jobs
 (`no_agent=True`) that reference these scripts will fail with `Script not found`
 because the script no longer exists at the expected location.
 
-**Symptom:** `last_error: "Script not found: /home/josh434/.hermes/scripts/autognosia_*.py"`
+**Symptom:** `last_error: "Script not found: ~/.hermes/scripts/autognosia_*.py"`
 but `ls ~/.autognosia/scripts/autognosia_*.py` shows the file exists.
 
 **Fix:** Copy the script to `~/.hermes/scripts/` so both locations have it:
@@ -177,7 +177,7 @@ chmod +x ~/.hermes/scripts/<script>.py
 ```
 This ensures the script works regardless of how the cron scheduler resolves
 the path. Alternatively, set the job's `workdir` to
-`/home/josh434/.autognosia/scripts`.
+`~/.autognosia/scripts`.
 
 **Watch for:** This affects all cron jobs with `no_agent=True` that reference
 `autognosia_backup.py`, `autognosia_health.py`, or any other script that was

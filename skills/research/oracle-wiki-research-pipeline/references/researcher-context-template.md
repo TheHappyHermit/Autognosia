@@ -3,7 +3,7 @@
 Copy-paste this into the `context` field when dispatching researchers:
 
 ```
-The user is building a comprehensive Oracle wiki at /home/josh434/.autognosia/oracle/brain\ for a personal AI agent system.
+The user is building a comprehensive Oracle wiki at ~/.autognosia/oracle/brain\ for a personal AI agent system.
 
 CRITICAL INSTRUCTIONS:
 1. You MUST write your research directly to a markdown file using write_file
@@ -12,7 +12,7 @@ CRITICAL INSTRUCTIONS:
 4. Include specific papers, researchers, and dates
 5. Do NOT skip the write_file step — persist research to disk
 
-Write to: /home/josh434/.autognosia/oracle/brain\<Domain>\Filename.md
+Write to: ~/.autognosia/oracle/brain\<Domain>\Filename.md
 ```
 
 ## Common Pitfalls to Avoid
@@ -24,8 +24,8 @@ Write to: /home/josh434/.autognosia/oracle/brain\<Domain>\Filename.md
 ## Verification After Completion
 Always run:
 ```bash
-ls -la /home/josh434/.autognosia/oracle/brain/<Domain>/
-wc -l /home/josh434/.autognosia/oracle/brain/<Domain>/*.md
+ls -la ~/.autognosia/oracle/brain/<Domain>/
+wc -l ~/.autognosia/oracle/brain/<Domain>/*.md
 ```
 
 If file is missing, the researcher hit context overflow — re-dispatch with narrower scope.

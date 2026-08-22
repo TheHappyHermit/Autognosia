@@ -28,7 +28,7 @@ description: In-place Hermes upgrade + Desktop install preserving state.
 ```bash
 # Version and paths
 hermes --version
-echo "HERMES_HOME: ${HERMES_HOME:-/home/josh434/.hermes}"
+echo "HERMES_HOME: ${HERMES_HOME:-~/.hermes}"
 ls -la ~/.hermes/
 
 # Check profiles
@@ -157,8 +157,8 @@ Type=Application
 Name=Hermes Desktop
 GenericName=Hermes Agent Desktop
 Comment=Launch Hermes Desktop
-Exec=/home/josh434/.hermes/hermes-agent/venv/bin/hermes desktop
-Icon=/home/josh434/.hermes/hermes-agent/apps/desktop/assets/icon.png
+Exec=~/.hermes/hermes-agent/venv/bin/hermes desktop
+Icon=~/.hermes/hermes-agent/apps/desktop/assets/icon.png
 Terminal=false
 Categories=Utility;
 StartupNotify=true
@@ -299,7 +299,7 @@ This is the **single largest space recovery** available on a typical Hermes VM �
 
 - [ ] Old version recorded: `v0.19.0 (2026.7.20)`
 - [ ] New version: `v0.20.0 (2026.8.3)`
-- [ ] HERMES_HOME: `/home/josh434/.hermes`
+- [ ] HERMES_HOME: `~/.hermes`
 - [ ] Backup location: `~/.hermes/backups/pre-update-2026-08-11-215142.zip`
 - [ ] Memories survived: ✅
 - [ ] Sessions/history survived: ✅ (842K CLI + 12K Telegram messages)

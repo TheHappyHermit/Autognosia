@@ -20,7 +20,7 @@ When a cron job's full research entry is lost (due to context compaction, accide
 
 ```python
 # From cron output log
-with open('/home/josh434/.hermes/cron/output/<job_id>/<date>.md') as f:
+with open('~/.hermes/cron/output/<job_id>/<date>.md') as f:
     cron_content = f.read()
     # Look for the "summary" or "What was researched" section
 

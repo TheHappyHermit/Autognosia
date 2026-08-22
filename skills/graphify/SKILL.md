@@ -670,13 +670,13 @@ The graph is the map. Your job after the pipeline is to be the guide.
 
 ## Environment: Terminal Gateway Timeout Pitfall
 
-When graphify operations take >60s (typical for corpora >20k nodes), the terminal gateway will kill the process. **Workaround:** use `execute_code()` with `subprocess.run()` and the correct Python interpreter path instead of `terminal()`. The graphifyy interpreter lives at `/home/josh434/.local/share/uv/tools/graphifyy/bin/python3` — use that as the subprocess command. This bypasses the terminal gateway's timeout on long-running scripts.
+When graphify operations take >60s (typical for corpora >20k nodes), the terminal gateway will kill the process. **Workaround:** use `execute_code()` with `subprocess.run()` and the correct Python interpreter path instead of `terminal()`. The graphifyy interpreter lives at `~/.local/share/uv/tools/graphifyy/bin/python3` — use that as the subprocess command. This bypasses the terminal gateway's timeout on long-running scripts.
 
 Example:
 ```python
 import subprocess
 subprocess.run(
-    ['/home/josh434/.local/share/uv/tools/graphifyy/bin/python3', '-c', '...script...'],
+    ['~/.local/share/uv/tools/graphifyy/bin/python3', '-c', '...script...'],
     capture_output=True, text=True, timeout=120, cwd='/path/to/corpus'
 )
 ```

@@ -80,5 +80,5 @@ When hot memory exceeds 80% capacity, archive old prompt-me entries to cold stor
 
 ## Wiki Location
 
-- **Active Wiki:** `/home/josh434/.autognosia/active-wiki/`
-- **prompt-me archive:** `/home/josh434/.autognosia/active-wiki/system/memory-archive/prompt-me/`
+- **Active Wiki:** `~/.autognosia/active-wiki/`
+- **prompt-me archive:** `~/.autognosia/active-wiki/system/memory-archive/prompt-me/`

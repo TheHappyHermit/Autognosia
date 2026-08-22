@@ -22,7 +22,7 @@ Oracle wiki at `~/.autognosia/oracle/brain/` — 598 markdown files, ~1.9M words
 - **Subagent dispatch timeouts** — when the task goal string contained large embedded file lists, dispatch timed out at 420s even though the subagent actually started.
 
 ## Key File Locations
-- Graph: `/home/josh434/.autognosia/oracle/brain/graphify-out/graph.json` (61.6 MB)
+- Graph: `~/.autognosia/oracle/brain/graphify-out/graph.json` (61.6 MB)
 - Report: `graphify-out/GRAPH_REPORT.md` (65.4 KB, 1,296 lines)
 - Analysis: `graphify-out/.graphify_analysis.json` (1 MB)
 - Extract: `graphify-out/.graphify_extract.json` (77 MB)

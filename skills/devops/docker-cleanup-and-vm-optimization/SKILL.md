@@ -158,9 +158,9 @@ du -h / --max-depth=1 2>/dev/null | sort -hr | head -30
 du -h /home --max-depth=2 2>/dev/null | sort -hr | head -40
 
 # Specific problematic paths
-du -h /home/josh434/.hermes --max-depth=2 2>/dev/null | sort -hr
-du -h /home/josh434/.cache --max-depth-2 2>/dev/null | sort -hr
-du -h /home/josh434/.local --max-depth-2 2>/dev/null | sort -hr
+du -h ~/.hermes --max-depth=2 2>/dev/null | sort -hr
+du -h ~/.cache --max-depth-2 2>/dev/null | sort -hr
+du -h ~/.local --max-depth-2 2>/dev/null | sort -hr
 du -h /snap --max-depth=2 2>/dev/null | sort -hr
 du -h /var --max-depth=2 2>/dev/null | sort -hr
 ```
@@ -186,7 +186,7 @@ du -h /var --max-depth=2 2>/dev/null | sort -hr
 ### Requires sudo (run as separate step)
 ```bash
 # Bazel cache
-sudo rm -rf /home/josh434/.cache/bazel
+sudo rm -rf ~/.cache/bazel
 
 # apt cache
 sudo apt clean

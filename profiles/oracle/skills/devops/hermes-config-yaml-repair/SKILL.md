@@ -150,7 +150,7 @@ pip3 install --break-system-packages pyyaml
 python3 -c "
 import yaml
 try:
-    with open('/home/josh434/.hermes/config.yaml', 'r') as f:
+    with open('~/.hermes/config.yaml', 'r') as f:
         data = yaml.safe_load(f)
     print('✅ YAML is valid!')
     if data.get('mcp_servers'):
@@ -373,7 +373,7 @@ mcp_home_assistant_HassGetStates --domain "light"  # Should return your lights
 
 ### Validate YAML
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('/home/josh434/.hermes/config.yaml')); print('Valid YAML')"
+python3 -c "import yaml; yaml.safe_load(open('~/.hermes/config.yaml')); print('Valid YAML')"
 ```
 
 ### List MCP Tools (to verify config is working)

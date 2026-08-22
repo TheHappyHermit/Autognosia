@@ -50,3 +50,13 @@ npm-debug.log*
 *.tmp
 *.temp
 checkpoints/
+
+# Private knowledge bases & runtime artifacts (never commit)
+cron/output/
+cron/usage_audit.jsonl
+cron/ticker_*
+**/wealthforge*
+**/*wealthforge*
+**/*ppli-*
+**/*estate-tax*
+**/Hermes-Vault/

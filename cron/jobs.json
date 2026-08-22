@@ -87,7 +87,7 @@
     {
       "id": "97842ab6d078",
       "name": "Personal Ops Intention Check",
-      "prompt": "Check Personal State for due reminders and matching intentions. Run: python3 /home/josh434/.autognosia/scripts/autognosia_backup.py 2>&1 || echo 'Personal State check failed'",
+      "prompt": "Check Personal State for due reminders and matching intentions. Run: python3 ~/.autognosia/scripts/autognosia_backup.py 2>&1 || echo 'Personal State check failed'",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -137,7 +137,7 @@
     {
       "id": "5070d3ef9331",
       "name": "Daily Backup",
-      "prompt": "Run: bash /home/josh434/.autognosia/scripts/gbrain_sync.sh",
+      "prompt": "Run: bash ~/.autognosia/scripts/gbrain_sync.sh",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -180,7 +180,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts",
+      "workdir": "~/.autognosia/scripts",
       "fire_claim": null,
       "failure_streak": 0
     },
@@ -230,7 +230,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts",
+      "workdir": "~/.autognosia/scripts",
       "fire_claim": null,
       "failure_streak": 1
     },
@@ -336,7 +336,7 @@
     {
       "id": "4cf5692a359f",
       "name": "Config Backup",
-      "prompt": "Run config backup: rsync config.yaml, SOUL.md, profiles/, skills/, cron/ from /home/josh434/.autognosia/ to the autognosia git repo. Then git add -A, commit with timestamp, and push to origin.",
+      "prompt": "Run config backup: rsync config.yaml, SOUL.md, profiles/, skills/, cron/ from ~/.autognosia/ to the autognosia git repo. Then git add -A, commit with timestamp, and push to origin.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -489,7 +489,7 @@
     {
       "id": "1983f8c1f638",
       "name": "Oracle Knowledge Expansion (batch 0)",
-      "prompt": "Deep Oracle research — batch 0. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — batch 0. Run: python3 ~/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ~/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -532,7 +532,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts",
+      "workdir": "~/.autognosia/scripts",
       "fire_claim": null,
       "failure_streak": 1
     },
@@ -582,7 +582,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts",
+      "workdir": "~/.autognosia/scripts",
       "fire_claim": null,
       "failure_streak": 1
     },
@@ -1176,7 +1176,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts"
+      "workdir": "~/.autognosia/scripts"
     },
     {
       "id": "49bd562779d3",
@@ -1419,14 +1419,14 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts",
+      "workdir": "~/.autognosia/scripts",
       "fire_claim": null,
       "failure_streak": 0
     },
     {
       "id": "7ccdde5bb159",
       "name": "Research Exchange Sync",
-      "prompt": "Check the research exchange directory at /home/josh434/.autognosia/exchange/research for completed research packages. For each package: evaluate quality, verify citations, route approved packages to wiki-ingestion for the oracle wiki, and archive rejected ones. Use the wiki-ingestion and research-request skills.",
+      "prompt": "Check the research exchange directory at ~/.autognosia/exchange/research for completed research packages. For each package: evaluate quality, verify citations, route approved packages to wiki-ingestion for the oracle wiki, and archive rejected ones. Use the wiki-ingestion and research-request skills.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1523,7 +1523,7 @@
     {
       "id": "5f2468a5d037",
       "name": "Graphify Progress Monitor",
-      "prompt": "Check graphify integrity using the permanent script:\n\nRun: python3 /home/josh434/.autognosia/scripts/verify_graphify_integrity.py\n\nIf it exits 0, report: ALL CHECKS PASSED\nIf it exits 1, report which checks failed.\nAlso report process status and graph.json file size.\nDo NOT create temporary verification scripts.",
+      "prompt": "Check graphify integrity using the permanent script:\n\nRun: python3 ~/.autognosia/scripts/verify_graphify_integrity.py\n\nIf it exits 0, report: ALL CHECKS PASSED\nIf it exits 1, report which checks failed.\nAlso report process status and graph.json file size.\nDo NOT create temporary verification scripts.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1573,7 +1573,7 @@
     {
       "id": "e5a6de8f5080",
       "name": "Oracle Knowledge Expansion (batch 1)",
-      "prompt": "Deep Oracle research — batch 1. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — batch 1. Run: python3 ~/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ~/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1618,13 +1618,13 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts",
+      "workdir": "~/.autognosia/scripts",
       "fire_claim": null
     },
     {
       "id": "cf0e602536a0",
       "name": "Oracle Knowledge Expansion (batch 2)",
-      "prompt": "Deep Oracle research — batch 2. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — batch 2. Run: python3 ~/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ~/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1669,12 +1669,12 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts"
+      "workdir": "~/.autognosia/scripts"
     },
     {
       "id": "615a9720977e",
       "name": "Oracle Knowledge Expansion (batch 3)",
-      "prompt": "Deep Oracle research — batch 3. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — batch 3. Run: python3 ~/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ~/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1719,12 +1719,12 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts"
+      "workdir": "~/.autognosia/scripts"
     },
     {
       "id": "7042e4e8d59e",
       "name": "Oracle Knowledge Expansion (batch 4)",
-      "prompt": "Deep Oracle research — batch 4. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — batch 4. Run: python3 ~/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ~/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1769,12 +1769,12 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.autognosia/scripts"
+      "workdir": "~/.autognosia/scripts"
     },
     {
       "id": "a5e01552e0f7",
       "name": "Frontier Research Trial (5min)",
-      "prompt": "Autonomous knowledge-building tick. Run: python3 /home/josh434/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web using multiple authoritative sources (Stanford Encyclopedia of Philosophy, PubMed/PMC, scholarpedia, university lecture notes, original papers by the named researchers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs you actually consulted]\n---\nRequired sections in order: Overview; Core Mechanisms; Key Research & Evidence (name the researchers, findings, dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture — memory tiers, intention engine, action gate, verifier, routing, metacognition); Overlaps & Tensions (how this connects to or conflicts with adjacent concepts already in the brain — check with `gbrain search`); Open Questions; Sources (numbered).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum of deep, precise, well-structured prose. This is permanent long-term memory for a cognitive system, not a stub or summary. Never overwrite an existing file.\nCreate the domain directory if missing (e.g. oracle/brain/Memory-Architecture/). After writing run `gbrain sync` so it enters the index.\nOn success respond EXACTLY [SILENT]. On any failure, append one line to /home/josh434/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Autonomous knowledge-building tick. Run: python3 ~/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web using multiple authoritative sources (Stanford Encyclopedia of Philosophy, PubMed/PMC, scholarpedia, university lecture notes, original papers by the named researchers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs you actually consulted]\n---\nRequired sections in order: Overview; Core Mechanisms; Key Research & Evidence (name the researchers, findings, dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture — memory tiers, intention engine, action gate, verifier, routing, metacognition); Overlaps & Tensions (how this connects to or conflicts with adjacent concepts already in the brain — check with `gbrain search`); Open Questions; Sources (numbered).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum of deep, precise, well-structured prose. This is permanent long-term memory for a cognitive system, not a stub or summary. Never overwrite an existing file.\nCreate the domain directory if missing (e.g. oracle/brain/Memory-Architecture/). After writing run `gbrain sync` so it enters the index.\nOn success respond EXACTLY [SILENT]. On any failure, append one line to ~/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,

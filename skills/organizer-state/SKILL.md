@@ -119,8 +119,8 @@ now = datetime.now()
 yesterday = now - timedelta(hours=24)
 
 dbs = [
-    '/home/josh434/.autognosia/personal-organizer/data/organizer.db',
-    '/home/josh434/.autognosia/personal-state/data/organizer.db',
+    '~/.autognosia/personal-organizer/data/organizer.db',
+    '~/.autognosia/personal-state/data/organizer.db',
 ]
 
 for db_path in dbs:
@@ -183,7 +183,7 @@ for db_path in dbs:
 from pathlib import Path
 from datetime import timedelta
 
-autognosia = Path("/home/josh434/.autognosia")
+autognosia = Path("~/.autognosia")
 active_wiki = autognosia / "active-wiki"
 oracle_brain = autognosia / "oracle" / "brain"
 

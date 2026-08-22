@@ -104,10 +104,10 @@ hermes cron edit <job_id> --model "nvidia/nemotron-3-ultra-550b-a55b:free" --pro
 
 ## Script Path Resolution
 
-Cron jobs expect scripts in `~/.hermes/scripts/`. Scripts live in the project repo at `/home/josh434/autognosia-repo/scripts/`. If a `no_agent=True` cron job reports `Script not found`, copy it:
+Cron jobs expect scripts in `~/.hermes/scripts/`. Scripts live in the project repo at `~/autognosia-repo/scripts/`. If a `no_agent=True` cron job reports `Script not found`, copy it:
 
 ```bash
-cp /home/josh434/autognosia-repo/scripts/<scriptname>.py ~/.hermes/scripts/<scriptname>.py
+cp ~/autognosia-repo/scripts/<scriptname>.py ~/.hermes/scripts/<scriptname>.py
 chmod +x ~/.hermes/scripts/<scriptname>.py
 ```
 
@@ -118,7 +118,7 @@ chmod +x ~/.hermes/scripts/<scriptname>.py
 ## Cron Job Troubleshooting
 
 ### Cron job fails: "Script not found"
-1. Check if the script exists in the repo: `ls /home/josh434/autognosia-repo/scripts/`
+1. Check if the script exists in the repo: `ls ~/autognosia-repo/scripts/`
 2. Copy to `~/.hermes/scripts/` and make executable
 3. Update the cron job's `script` field via `jobs.json` edit if the filename doesn't match
 
@@ -137,13 +137,13 @@ When a cron job's prompt says "Use the X skill" but `X` skill is not installed, 
 When a cron job has `"skills": []` but references a skill in its prompt, the agent can't load it. Fix by editing `jobs.json`:
 ```python
 import json
-with open('/home/josh434/.hermes/cron/jobs.json') as f:
+with open('~/.hermes/cron/jobs.json') as f:
     data = json.load(f)
 for j in data.get('jobs', []):
     if 'briefing' in j.get('name', '').lower():
         j['skills'] = ['organizer-state']
         break
-with open('/home/josh434/.hermes/cron/jobs.json', 'w') as f:
+with open('~/.hermes/cron/jobs.json', 'w') as f:
     json.dump(data, f, indent=2)
 ```
 
