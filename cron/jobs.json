@@ -3,7 +3,7 @@
     {
       "id": "eebf16fd600a",
       "name": "Morning Newsletter (6 AM)",
-      "prompt": "Run ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py and deliver the result via Telegram. Use the default model fallback chain (openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free).",
+      "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the result via Telegram. Use the default model fallback chain (openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free).",
       "skills": [],
       "skill": "freshrss-integration",
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -18,17 +18,17 @@
       "schedule_display": "0 6 * * *",
       "repeat": {
         "times": null,
-        "completed": 139
+        "completed": 140
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-04-04T15:51:03.178000-07:00",
-      "next_run_at": "2026-08-22T06:00:00-07:00",
-      "last_run_at": "2026-08-21T06:01:03.545021-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "next_run_at": "2026-08-23T06:00:00-07:00",
+      "last_run_at": "2026-08-22T06:01:47.718490-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "deliver": "telegram",
       "origin": {
         "platform": "telegram",
@@ -36,16 +36,16 @@
         "chat_name": "Josh",
         "thread_id": null
       },
-      "last_delivery_error": "delivery error: Telegram send failed: httpx.ConnectError: [Errno -3] Temporary failure in name resolution (target telegram:7791814261)",
+      "last_delivery_error": null,
       "fire_claim": null,
       "provider_snapshot": "custom",
       "model_snapshot": "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf",
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "2fdcb131de85",
       "name": "Evening Newsletter (9 PM)",
-      "prompt": "Run ${HOME}/.hermes/newsletter_venv/bin/python3 ${HOME}/.hermes/scripts/newsletter_builder.py and deliver the result via Telegram. Use the default model fallback chain (openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free).",
+      "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the result via Telegram. Use the default model fallback chain (openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free).",
       "skills": [],
       "skill": "freshrss-integration",
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -109,15 +109,15 @@
       "schedule_display": "every 60m",
       "repeat": {
         "times": null,
-        "completed": 124
+        "completed": 135
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:48:11.328210-07:00",
-      "next_run_at": "2026-08-22T01:16:34.341709-07:00",
-      "last_run_at": "2026-08-22T00:16:34.341709-07:00",
+      "next_run_at": "2026-08-22T12:30:31.467411-07:00",
+      "last_run_at": "2026-08-22T11:30:31.467411-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -159,15 +159,15 @@
       "schedule_display": "0 3 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:51:42.167343-07:00",
-      "next_run_at": "2026-08-22T03:00:00-07:00",
-      "last_run_at": "2026-08-21T03:01:01.019839-07:00",
+      "next_run_at": "2026-08-23T03:00:00-07:00",
+      "last_run_at": "2026-08-22T03:00:42.819738-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -187,7 +187,7 @@
     {
       "id": "2f8c625a2cc2",
       "name": "Daily Health Check",
-      "prompt": "Run: bash ${HOME}/personal-agent/verify_stack.py 2>&1 || echo 'Verification failed'",
+      "prompt": "Run: bash ~/personal-agent/verify_stack.py 2>&1 || echo 'Verification failed'",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -209,17 +209,17 @@
       "schedule_display": "0 8 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:51:42.175865-07:00",
-      "next_run_at": "2026-08-22T08:00:00-07:00",
-      "last_run_at": "2026-08-21T08:00:51.282994-07:00",
-      "last_status": "error",
-      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: 2026-08-21T08:00:44.744953\n[fail] Verification failed\nr verified\n[OK] Directories - All 5 directories present\n[OK] Secrets Dir - permissions 700\n[OK] Personal Organizer - Personal Organizer API running (openapi.json)\n[FAIL] Command Deck\n[OK] Skills - All 15 Autognosia skills installed in ${HOME}/.hermes/skills/\n[OK] Plugin - Autognosia core operating in native profile & skill mode (plugin optional)\n[OK] Profiles Config - Specialist profiles configured (Honcho isolated)\n[OK] GBrain Repo - Brain repo initialized\n\n=== Summary ===\nPassed: 12/13\nFailed: 1/13\n\n[ok] GBrain healthy\n[ok] Personal Organizer API healthy\n=== Health check complete ===",
+      "next_run_at": "2026-08-23T08:00:00-07:00",
+      "last_run_at": "2026-08-22T08:00:35.984481-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -232,7 +232,7 @@
       "enabled_toolsets": null,
       "workdir": "${HOME}/.autognosia/scripts",
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "92b879153696",
@@ -308,15 +308,15 @@
       "schedule_display": "every 60m",
       "repeat": {
         "times": null,
-        "completed": 128
+        "completed": 139
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T14:51:56.184886-07:00",
-      "next_run_at": "2026-08-22T01:11:05.827175-07:00",
-      "last_run_at": "2026-08-22T00:11:05.827175-07:00",
+      "next_run_at": "2026-08-22T12:11:40.576171-07:00",
+      "last_run_at": "2026-08-22T11:11:40.576171-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -358,7 +358,7 @@
       "schedule_display": "0 1 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
@@ -366,9 +366,9 @@
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:15.263560-07:00",
       "next_run_at": "2026-08-23T01:00:00-07:00",
-      "last_run_at": "2026-08-21T01:00:59.167284-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "last_run_at": "2026-08-22T01:06:15.915605-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -380,11 +380,8 @@
       },
       "enabled_toolsets": null,
       "workdir": null,
-      "fire_claim": {
-        "at": "2026-08-22T01:02:06.297020-07:00",
-        "by": "JoshAgent:1356:168eb07a3dea4786961181e6788302ad"
-      },
-      "failure_streak": 1
+      "fire_claim": null,
+      "failure_streak": 0
     },
     {
       "id": "762c05cb9451",
@@ -411,17 +408,17 @@
       "schedule_display": "0 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:19.650984-07:00",
-      "next_run_at": "2026-08-22T02:00:00-07:00",
-      "last_run_at": "2026-08-21T02:00:59.477558-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "next_run_at": "2026-08-23T02:00:00-07:00",
+      "last_run_at": "2026-08-22T02:01:10.689167-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -434,7 +431,7 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "eba297436736",
@@ -461,17 +458,17 @@
       "schedule_display": "30 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:24.554778-07:00",
-      "next_run_at": "2026-08-22T02:30:00-07:00",
-      "last_run_at": "2026-08-21T02:31:00.584169-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "next_run_at": "2026-08-23T02:30:00-07:00",
+      "last_run_at": "2026-08-22T02:31:32.715060-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -484,18 +481,18 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "1983f8c1f638",
       "name": "Oracle Knowledge Expansion (batch 0)",
-      "prompt": "Deep Oracle research — batch 0. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — nightly batch 0. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\n\nResearch phase (max 4 web_search calls, max 2 gbrain search calls).\n\nWriting phase — CRITICAL: never emit the whole page in one response. Build it in sections via repeated terminal appends (cat >> file):\n1. Create file with OKF frontmatter + title + Overview (~400 words).\n2. Append one section per call (~500-700 words each): Core Mechanisms; Key Research & Evidence; Computational & Agent Parallels; Overlaps & Tensions; Open Questions + Sources.\n\nPage contract:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs consulted]\n---\nTotal depth target: 2,500-4,000 words. Permanent long-term memory for a cognitive system — not a stub. Never overwrite an existing file. Create the domain directory if missing.\nAfter writing run gbrain sync.\nOn success respond EXACTLY [SILENT]. On any failure append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
-      "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
-      "provider": "llamaCPP",
-      "provider_snapshot": null,
-      "model_snapshot": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": "nous",
+      "model_snapshot": "stealth/ox-alpha",
       "base_url": null,
       "script": null,
       "no_agent": false,
@@ -511,17 +508,17 @@
       "schedule_display": "45 2 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:29:38.666762-07:00",
-      "next_run_at": "2026-08-22T02:45:00-07:00",
-      "last_run_at": "2026-08-21T02:46:01.029862-07:00",
+      "next_run_at": "2026-08-23T02:45:00-07:00",
+      "last_run_at": "2026-08-22T02:56:21.398487-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "last_error": "TimeoutError: Timed out waiting for the TERMINAL_CWD write lock after 660s — another cron job (a workdir writer, or long-running readers) has held it for longer than the cron inactivity limit. If a workdir job is the holder, stagger its schedule or remove its workdir to unblock this job (#79768).",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -534,7 +531,7 @@
       "enabled_toolsets": null,
       "workdir": "${HOME}/.autognosia/scripts",
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 2
     },
     {
       "id": "3a11d29b7c57",
@@ -561,17 +558,17 @@
       "schedule_display": "30 3 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.182898-07:00",
-      "next_run_at": "2026-08-22T03:30:00-07:00",
-      "last_run_at": "2026-08-21T03:31:01.525741-07:00",
+      "next_run_at": "2026-08-23T03:30:00-07:00",
+      "last_run_at": "2026-08-22T03:30:24.810899-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "last_error": "Script not found: ${HOME}/.hermes/scripts/oracle_index_update.py",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -584,7 +581,7 @@
       "enabled_toolsets": null,
       "workdir": "${HOME}/.autognosia/scripts",
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 2
     },
     {
       "id": "1752062c0ea4",
@@ -611,17 +608,17 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.202214-07:00",
-      "next_run_at": "2026-08-22T04:00:00-07:00",
-      "last_run_at": "2026-08-21T04:01:03.113629-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "next_run_at": "2026-08-23T04:00:00-07:00",
+      "last_run_at": "2026-08-22T04:06:19.103891-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -634,7 +631,7 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "ac55638e8cd9",
@@ -709,17 +706,17 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.240058-07:00",
-      "next_run_at": "2026-08-22T04:00:00-07:00",
-      "last_run_at": "2026-08-21T04:01:03.135669-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "next_run_at": "2026-08-23T04:00:00-07:00",
+      "last_run_at": "2026-08-22T04:06:48.814635-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -732,7 +729,7 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "d6bc81139794",
@@ -807,17 +804,17 @@
       "schedule_display": "0 5 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.275486-07:00",
-      "next_run_at": "2026-08-22T05:00:00-07:00",
-      "last_run_at": "2026-08-21T05:01:03.585986-07:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Hermes can't reach the model provider. You may be offline. Check your internet connection and try again.",
+      "next_run_at": "2026-08-23T05:00:00-07:00",
+      "last_run_at": "2026-08-22T05:01:06.602714-07:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -830,7 +827,7 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null,
-      "failure_streak": 1
+      "failure_streak": 0
     },
     {
       "id": "d77ba6619d4e",
@@ -857,15 +854,15 @@
       "schedule_display": "*/15 * * * *",
       "repeat": {
         "times": null,
-        "completed": 403
+        "completed": 446
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.292752-07:00",
-      "next_run_at": "2026-08-22T01:15:00-07:00",
-      "last_run_at": "2026-08-22T01:00:06.524691-07:00",
+      "next_run_at": "2026-08-22T12:00:00-07:00",
+      "last_run_at": "2026-08-22T11:45:03.624434-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -909,15 +906,15 @@
       "schedule_display": "0 7 * * *",
       "repeat": {
         "times": null,
-        "completed": 5
+        "completed": 6
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.307775-07:00",
-      "next_run_at": "2026-08-22T07:00:00-07:00",
-      "last_run_at": "2026-08-21T07:03:22.989109-07:00",
+      "next_run_at": "2026-08-23T07:00:00-07:00",
+      "last_run_at": "2026-08-22T07:02:05.574274-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -959,15 +956,15 @@
       "schedule_display": "0 8 * * *",
       "repeat": {
         "times": null,
-        "completed": 6
+        "completed": 7
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.321636-07:00",
-      "next_run_at": "2026-08-22T08:00:00-07:00",
-      "last_run_at": "2026-08-21T22:58:40.560432-07:00",
+      "next_run_at": "2026-08-23T08:00:00-07:00",
+      "last_run_at": "2026-08-22T08:03:05.137919-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -1203,15 +1200,15 @@
       "schedule_display": "*/30 * * * *",
       "repeat": {
         "times": null,
-        "completed": 202
+        "completed": 223
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.397341-07:00",
-      "next_run_at": "2026-08-22T01:30:00-07:00",
-      "last_run_at": "2026-08-22T01:00:06.577721-07:00",
+      "next_run_at": "2026-08-22T12:00:00-07:00",
+      "last_run_at": "2026-08-22T11:30:03.195841-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -1398,17 +1395,17 @@
       "schedule_display": "*/30 * * * *",
       "repeat": {
         "times": null,
-        "completed": 202
+        "completed": 223
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-16T21:30:11.455934-07:00",
-      "next_run_at": "2026-08-22T01:30:00-07:00",
-      "last_run_at": "2026-08-22T01:00:10.586983-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-22T12:00:00-07:00",
+      "last_run_at": "2026-08-22T11:30:07.271892-07:00",
+      "last_status": "error",
+      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: 2026-08-22T11:30:03.010740\n[fail] Verification failed\n - permissions 700\n[OK] Personal Organizer - Personal Organizer API running (openapi.json)\n[OK] Command Deck - Command Deck running on http://127.0.0.1:8088\n[OK] Skills - All 15 Autognosia skills installed in ~/.hermes/skills/\n[OK] Plugin - Autognosia core operating in native profile & skill mode (plugin optional)\n[OK] Profiles Config - Specialist profiles configured (Honcho isolated)\n[OK] GBrain Repo - Brain repo initialized\n[FAIL] Schema Conformance\n\n=== Summary ===\nPassed: 13/14\nFailed: 1/14\n\n[ok] GBrain healthy\n[ok] Personal Organizer API healthy\n=== Health check complete ===",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
@@ -1421,7 +1418,7 @@
       "enabled_toolsets": null,
       "workdir": "${HOME}/.autognosia/scripts",
       "fire_claim": null,
-      "failure_streak": 0
+      "failure_streak": 6
     },
     {
       "id": "7ccdde5bb159",
@@ -1545,17 +1542,17 @@
       "schedule_display": "0 10 * * *",
       "repeat": {
         "times": null,
-        "completed": 53
+        "completed": 54
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-19T01:45:26.771624-07:00",
-      "next_run_at": "2026-08-22T10:00:00-07:00",
-      "last_run_at": "2026-08-21T09:37:03.925893-07:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-08-23T10:00:00-07:00",
+      "last_run_at": "2026-08-22T10:00:39.506112-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: [drift_skip] Skipped to prevent unintended spend: global inference config drifted since this job was created (provider 'custom' -> 'nous'; model '/models/qwen3.6-35b-a3b-q4_k_m.gguf' -> 'stealth/ox-alpha'), and this job is unpinned. No inference call was made. To run on the new config, on the host running Hermes pin it explicitly: `hermes cron edit 5f2468a5d037 --provider <provider> --model <model>` (or pin the original values to keep them). This alert is sent once; the job stays skipped until the config is pinned or restored. See #44585.",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
@@ -1568,12 +1565,13 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": null,
-      "failure_streak": 0
+      "failure_streak": 1,
+      "drift_alerted": true
     },
     {
       "id": "e5a6de8f5080",
       "name": "Oracle Knowledge Expansion (batch 1)",
-      "prompt": "Deep Oracle research — batch 1. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — nightly batch. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\n\nResearch phase (max 4 web_search calls, max 2 gbrain search calls).\n\nWriting phase — CRITICAL: never emit the whole page in one response. Build it in sections via repeated terminal appends (cat >> file):\n1. Create file with OKF frontmatter + title + Overview (~400 words).\n2. Append one section per call (~500-700 words each): Core Mechanisms; Key Research & Evidence; Computational & Agent Parallels; Overlaps & Tensions; Open Questions + Sources.\n\nPage contract:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs consulted]\n---\nTotal depth target: 2,500-4,000 words. Permanent long-term memory for a cognitive system — not a stub. Never overwrite an existing file. Create the domain directory if missing.\nAfter writing run gbrain sync.\nOn success respond EXACTLY [SILENT]. On any failure append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1624,7 +1622,7 @@
     {
       "id": "cf0e602536a0",
       "name": "Oracle Knowledge Expansion (batch 2)",
-      "prompt": "Deep Oracle research — batch 2. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — nightly batch. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\n\nResearch phase (max 4 web_search calls, max 2 gbrain search calls).\n\nWriting phase — CRITICAL: never emit the whole page in one response. Build it in sections via repeated terminal appends (cat >> file):\n1. Create file with OKF frontmatter + title + Overview (~400 words).\n2. Append one section per call (~500-700 words each): Core Mechanisms; Key Research & Evidence; Computational & Agent Parallels; Overlaps & Tensions; Open Questions + Sources.\n\nPage contract:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs consulted]\n---\nTotal depth target: 2,500-4,000 words. Permanent long-term memory for a cognitive system — not a stub. Never overwrite an existing file. Create the domain directory if missing.\nAfter writing run gbrain sync.\nOn success respond EXACTLY [SILENT]. On any failure append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1646,19 +1644,19 @@
       "schedule_display": "45 1 * * *",
       "repeat": {
         "times": null,
-        "completed": 0
+        "completed": 1
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-21T17:10:37.660464-07:00",
-      "next_run_at": "2026-08-22T01:45:00-07:00",
-      "last_run_at": null,
-      "last_status": null,
-      "last_error": null,
+      "next_run_at": "2026-08-23T01:45:00-07:00",
+      "last_run_at": "2026-08-22T01:45:11.470731-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: [drift_skip] Skipped to prevent unintended spend: global inference config drifted since this job was created (provider 'custom' -> 'nous'; model '/models/qwen3.6-35b-a3b-q4_k_m.gguf' -> 'stealth/ox-alpha'), and this job is unpinned. No inference call was made. To run on the new config, on the host running Hermes pin it explicitly: `hermes cron edit cf0e602536a0 --provider <provider> --model <model>` (or pin the original values to keep them). This alert is sent once; the job stays skipped until the config is pinned or restored. See #44585.",
       "last_delivery_error": null,
-      "failure_streak": 0,
+      "failure_streak": 1,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
@@ -1669,12 +1667,14 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "${HOME}/.autognosia/scripts"
+      "workdir": "${HOME}/.autognosia/scripts",
+      "fire_claim": null,
+      "drift_alerted": true
     },
     {
       "id": "615a9720977e",
       "name": "Oracle Knowledge Expansion (batch 3)",
-      "prompt": "Deep Oracle research — batch 3. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — nightly batch. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\n\nResearch phase (max 4 web_search calls, max 2 gbrain search calls).\n\nWriting phase — CRITICAL: never emit the whole page in one response. Build it in sections via repeated terminal appends (cat >> file):\n1. Create file with OKF frontmatter + title + Overview (~400 words).\n2. Append one section per call (~500-700 words each): Core Mechanisms; Key Research & Evidence; Computational & Agent Parallels; Overlaps & Tensions; Open Questions + Sources.\n\nPage contract:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs consulted]\n---\nTotal depth target: 2,500-4,000 words. Permanent long-term memory for a cognitive system — not a stub. Never overwrite an existing file. Create the domain directory if missing.\nAfter writing run gbrain sync.\nOn success respond EXACTLY [SILENT]. On any failure append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1696,19 +1696,19 @@
       "schedule_display": "45 3 * * *",
       "repeat": {
         "times": null,
-        "completed": 0
+        "completed": 1
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-21T17:10:37.675734-07:00",
-      "next_run_at": "2026-08-22T03:45:00-07:00",
-      "last_run_at": null,
-      "last_status": null,
-      "last_error": null,
+      "next_run_at": "2026-08-23T03:45:00-07:00",
+      "last_run_at": "2026-08-22T03:47:14.915497-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: [drift_skip] Skipped to prevent unintended spend: global inference config drifted since this job was created (provider 'custom' -> 'nous'; model '/models/qwen3.6-35b-a3b-q4_k_m.gguf' -> 'stealth/ox-alpha'), and this job is unpinned. No inference call was made. To run on the new config, on the host running Hermes pin it explicitly: `hermes cron edit 615a9720977e --provider <provider> --model <model>` (or pin the original values to keep them). This alert is sent once; the job stays skipped until the config is pinned or restored. See #44585.",
       "last_delivery_error": null,
-      "failure_streak": 0,
+      "failure_streak": 1,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
@@ -1719,12 +1719,14 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "${HOME}/.autognosia/scripts"
+      "workdir": "${HOME}/.autognosia/scripts",
+      "fire_claim": null,
+      "drift_alerted": true
     },
     {
       "id": "7042e4e8d59e",
       "name": "Oracle Knowledge Expansion (batch 4)",
-      "prompt": "Deep Oracle research — batch 4. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web (multiple authoritative sources — Stanford Encyclopedia, PubMed/PMC, scholarpedia, university lecture notes, original papers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle, created, updated (today), type: research_report, tags: [4-8 lowercase], confidence: 0.80-0.95, sources: [real URLs you actually used]\n---\nSections: Overview; Core Mechanisms; Key Research & Evidence (named researchers/findings/dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture: memory tiers, intention engine, action gate, verifier, routing); Overlaps & Tensions (where this idea connects or conflicts with related concepts); Open Questions; Sources (numbered list).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum. This is permanent long-term memory — deep, precise, well-structured prose, not a summary. Never overwrite an existing file; if target exists, pick the adjacent subtopic angle and say so in the Overview.\nCreate the domain directory if missing. After writing, run `gbrain sync` so the page enters the search index.\nOn success respond EXACTLY [SILENT]. On failure, append one line describing the failure to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Deep Oracle research — nightly batch. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\n\nResearch phase (max 4 web_search calls, max 2 gbrain search calls).\n\nWriting phase — CRITICAL: never emit the whole page in one response. Build it in sections via repeated terminal appends (cat >> file):\n1. Create file with OKF frontmatter + title + Overview (~400 words).\n2. Append one section per call (~500-700 words each): Core Mechanisms; Key Research & Evidence; Computational & Agent Parallels; Overlaps & Tensions; Open Questions + Sources.\n\nPage contract:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs consulted]\n---\nTotal depth target: 2,500-4,000 words. Permanent long-term memory for a cognitive system — not a stub. Never overwrite an existing file. Create the domain directory if missing.\nAfter writing run gbrain sync.\nOn success respond EXACTLY [SILENT]. On any failure append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1746,19 +1748,19 @@
       "schedule_display": "45 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 0
+        "completed": 1
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-21T17:10:37.692841-07:00",
-      "next_run_at": "2026-08-22T04:45:00-07:00",
-      "last_run_at": null,
-      "last_status": null,
-      "last_error": null,
+      "next_run_at": "2026-08-23T04:45:00-07:00",
+      "last_run_at": "2026-08-22T04:56:26.644048-07:00",
+      "last_status": "error",
+      "last_error": "TimeoutError: Timed out waiting for the TERMINAL_CWD write lock after 660s — another cron job (a workdir writer, or long-running readers) has held it for longer than the cron inactivity limit. If a workdir job is the holder, stagger its schedule or remove its workdir to unblock this job (#79768).",
       "last_delivery_error": null,
-      "failure_streak": 0,
+      "failure_streak": 1,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
@@ -1769,12 +1771,13 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "${HOME}/.autognosia/scripts"
+      "workdir": "${HOME}/.autognosia/scripts",
+      "fire_claim": null
     },
     {
       "id": "a5e01552e0f7",
       "name": "Frontier Research Trial (5min)",
-      "prompt": "Autonomous knowledge-building tick. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\nOtherwise: research that topic DEEPLY on the live web using multiple authoritative sources (Stanford Encyclopedia of Philosophy, PubMed/PMC, scholarpedia, university lecture notes, original papers by the named researchers). Write a permanent OKF v2 page to the target_path from the topic JSON:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs you actually consulted]\n---\nRequired sections in order: Overview; Core Mechanisms; Key Research & Evidence (name the researchers, findings, dates); Computational & Agent Parallels (map explicitly onto a faithful AI cognitive architecture — memory tiers, intention engine, action gate, verifier, routing, metacognition); Overlaps & Tensions (how this connects to or conflicts with adjacent concepts already in the brain — check with `gbrain search`); Open Questions; Sources (numbered).\nDEPTH REQUIREMENT: 2,500-5,000 words minimum of deep, precise, well-structured prose. This is permanent long-term memory for a cognitive system, not a stub or summary. Never overwrite an existing file.\nCreate the domain directory if missing (e.g. oracle/brain/Memory-Architecture/). After writing run `gbrain sync` so it enters the index.\nOn success respond EXACTLY [SILENT]. On any failure, append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
+      "prompt": "Autonomous knowledge-building tick. Run: python3 ${HOME}/.autognosia/scripts/pick_next_wiki_topic.py\nIt outputs one JSON topic. If {\"exhausted\": true}, respond [SILENT].\n\nResearch phase (keep it tight — max 4 web_search calls, max 2 gbrain search calls):\nGather sources on the topic. Do NOT read entire pages; extract what you need per search.\n\nWriting phase — CRITICAL: never emit the whole page in one response. Build it in sections:\n1. First terminal call: create the file with the OKF frontmatter + \"# <title>\" + the Overview section (~400 words). Use a single heredoc append (cat >> file).\n2. Then 3-5 more terminal calls, each appending ONE section (~500-700 words): Core Mechanisms; Key Research & Evidence; Computational & Agent Parallels; Overlaps & Tensions; Open Questions + numbered Sources.\nEach response = one section only. Never regenerate earlier sections; just append.\n\nPage contract:\n---\ntitle: <title>, created: today, updated: today, type: research_report, tags: [4-8 lowercase tags], confidence: 0.80-0.95, sources: [real URLs consulted]\n---\nTotal depth target: 2,500-4,000 words across all sections. This is permanent long-term memory for a cognitive system, not a stub. Never overwrite an existing file. Create the domain directory if missing.\nAfter writing run `gbrain sync` so it enters the index.\nOn success respond EXACTLY [SILENT]. On any failure, append one line to ${HOME}/.autognosia/logs/deep_research_failures.log and respond [SILENT].",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1796,15 +1799,15 @@
       "schedule_display": "*/5 * * * *",
       "repeat": {
         "times": null,
-        "completed": 2
+        "completed": 35
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-08-21T23:38:57.997376-07:00",
-      "next_run_at": "2026-08-22T01:05:00-07:00",
-      "last_run_at": "2026-08-22T00:33:34.962666-07:00",
+      "next_run_at": "2026-08-22T12:00:00-07:00",
+      "last_run_at": "2026-08-22T11:51:59.492642-07:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -1821,10 +1824,10 @@
       "enabled_toolsets": null,
       "workdir": null,
       "fire_claim": {
-        "at": "2026-08-22T01:02:05.953062-07:00",
-        "by": "JoshAgent:1356:7bff5124fd1f485a9dc736a0190f40fa"
+        "at": "2026-08-22T11:57:03.979373-07:00",
+        "by": "JoshAgent:1480324:b60b4820a8af42f5b5dc5c052b1e8092"
       }
     }
   ],
-  "updated_at": "2026-08-22T01:02:06.297264-07:00"
+  "updated_at": "2026-08-22T11:57:03.979699-07:00"
 }
