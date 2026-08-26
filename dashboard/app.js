@@ -431,7 +431,15 @@ class CommandDeck {
 
     const priList = document.getElementById('briefing-priorities-list');
     if (b.top_priorities && b.top_priorities.length > 0) {
-      priList.innerHTML = b.top_priorities.map(p => `<li>${p}</li>`).join('');
+      priList.innerHTML = b.top_priorities.map(p => `
+        <li>
+          ${escapeHtml(p.title)}
+          <span class="badge badge-${p.priority || 'medium'}">${escapeHtml(p.priority)}</span>
+          ${p.due_at ? `<span>⏰ Due ${escapeHtml(p.due_at)}</span>` : ''}
+        </li>
+      `).join('');
+    } else {
+      priList.innerHTML = '<li class="empty-hint">No open priorities.</li>';
     }
   }
 
@@ -456,6 +464,11 @@ class CommandDeck {
     if (this.calFilter === 'meeting') events = events.filter(e => e.category === 'meeting' || e.type === 'calendar');
     else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
     else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
+
+    if (events.length === 0) {
+      stage.innerHTML = '<div class="empty-hint">No events scheduled.</div>';
+      return;
+    }
 
     if (this.selectedCalendarView === 'day') {
       this.renderDayView(stage, heading, events);
@@ -587,6 +600,7 @@ class CommandDeck {
   renderTasks() {
     const container = document.getElementById('task-list-container');
     const waitingContainer = document.getElementById('waiting-list-container');
+    if (!container) return;
     
     let filtered = this.state.tasks;
     if (this.taskFilter === 'critical') filtered = filtered.filter(t => t.priority === 'critical' && t.status !== 'completed');
@@ -603,10 +617,12 @@ class CommandDeck {
 
     // Waiting / Blocked tab
     const waitingTasks = this.state.tasks.filter(t => t.status === 'waiting' || t.status === 'blocked');
-    if (waitingTasks.length === 0) {
-      waitingContainer.innerHTML = '<div class="empty-hint">No blocked or waiting tasks. Pipeline is clear!</div>';
-    } else {
-      waitingContainer.innerHTML = waitingTasks.map(t => this.renderTaskCard(t)).join('');
+    if (waitingContainer) {
+      if (waitingTasks.length === 0) {
+        waitingContainer.innerHTML = '<div class="empty-hint">No blocked or waiting tasks. Pipeline is clear!</div>';
+      } else {
+        waitingContainer.innerHTML = waitingTasks.map(t => this.renderTaskCard(t)).join('');
+      }
     }
 
     // Bind checkboxes
@@ -736,6 +752,7 @@ class CommandDeck {
 
   renderProjects() {
     const container = document.getElementById('projects-list-container');
+    if (!container) return;
     if (this.state.projects.length === 0) {
       container.innerHTML = '<div class="empty-hint">No active projects configured.</div>';
       return;

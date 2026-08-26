@@ -184,17 +184,61 @@ def get_daily_briefing():
     """Returns today's executive briefing synthesis and prompt-me reflection."""
     now = datetime.now()
     date_str = now.strftime("%A, %B %d, %Y")
-    
+    today_str = now.strftime("%Y-%m-%d")
+
+    conn = get_organizer_conn()
+    cur = conn.cursor()
+
+    active_tasks = cur.execute(
+        "SELECT COUNT(*) FROM tasks WHERE status != 'completed'"
+    ).fetchone()[0]
+    due_today = cur.execute(
+        "SELECT COUNT(*) FROM tasks WHERE status != 'completed' AND date(due_at) = ?",
+        (today_str,)
+    ).fetchone()[0]
+    overdue = cur.execute(
+        "SELECT COUNT(*) FROM tasks WHERE status != 'completed' AND date(due_at) < ?",
+        (today_str,)
+    ).fetchone()[0]
+    active_projects = cur.execute(
+        "SELECT COUNT(*) FROM projects WHERE status = 'active'"
+    ).fetchone()[0]
+
+    top_priorities = [
+        dict(r) for r in cur.execute(
+            """
+            SELECT id, title, priority, status, due_at
+            FROM tasks
+            WHERE status != 'completed'
+            ORDER BY CASE priority WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 ELSE 4 END, due_at ASC
+            LIMIT 3
+            """
+        ).fetchall()
+    ]
+
+    conn.close()
+
+    if active_tasks == 0 and active_projects == 0:
+        summary = "Nothing is scheduled today: no open tasks and no active projects."
+    else:
+        task_word = "task" if active_tasks == 1 else "tasks"
+        project_word = "project" if active_projects == 1 else "projects"
+        summary = (
+            f"{active_tasks} open {task_word}, {due_today} due today, "
+            f"{overdue} overdue, across {active_projects} active {project_word}."
+        )
+
     return {
         "date": date_str,
-        "summary": "Cognitive systems nominal. 3 priority deadlines scheduled today. 2 research packages ingested into Oracle Vault overnight.",
-        "top_priorities": [
-            "Finalize Neuro-Symbolic memory latency benchmark revisions for Dr. Thorne review.",
-            "Review pull request #14 for GBrain PGLite hybrid vector recall optimization.",
-            "Decant completed active project documentation to Oracle Brain."
-        ],
+        "summary": summary,
+        "top_priorities": top_priorities,
         "prompt_me": "What single unblocked operational task would yield the greatest leverage for your goals today?",
-        "weather": {"condition": "Optimal Focus", "temp": "68°F / 20°C"}
+        "counts": {
+            "active_tasks": active_tasks,
+            "due_today": due_today,
+            "overdue": overdue,
+            "active_projects": active_projects,
+        }
     }
 
 @app.get("/api/tasks")

@@ -108,58 +108,8 @@ def get_external_calendar_events() -> List[Dict[str, Any]]:
         except Exception:
             pass
 
-    # Provide initial realistic sample events if no external feed is configured yet
-    now = datetime.now()
-    today_str = now.strftime("%Y-%m-%d")
-    tomorrow_str = (now + timedelta(days=1)).strftime("%Y-%m-%d")
-    next_week_str = (now + timedelta(days=3)).strftime("%Y-%m-%d")
-
-    return [
-        {
-            "id": "ext-1",
-            "title": "Hermes Architecture Sync & Strategy",
-            "start": f"{today_str}T10:00:00",
-            "end": f"{today_str}T11:00:00",
-            "all_day": False,
-            "category": "meeting",
-            "type": "calendar",
-            "location": "Google Meet",
-            "color": "#06b6d4"
-        },
-        {
-            "id": "ext-2",
-            "title": "Deep Work: Autognosia Knowledge Ingestion",
-            "start": f"{today_str}T14:00:00",
-            "end": f"{today_str}T16:30:00",
-            "all_day": False,
-            "category": "focus",
-            "type": "calendar",
-            "location": "Workstation",
-            "color": "#10b981"
-        },
-        {
-            "id": "ext-3",
-            "title": "Weekly Systems & Infrastructure Review",
-            "start": f"{tomorrow_str}T09:30:00",
-            "end": f"{tomorrow_str}T10:30:00",
-            "all_day": False,
-            "category": "review",
-            "type": "calendar",
-            "location": "Local",
-            "color": "#f59e0b"
-        },
-        {
-            "id": "ext-4",
-            "title": "Oracle Vault Decanting Milestone",
-            "start": f"{next_week_str}T15:00:00",
-            "end": f"{next_week_str}T16:00:00",
-            "all_day": False,
-            "category": "milestone",
-            "type": "calendar",
-            "location": "Hermes Terminal",
-            "color": "#6366f1"
-        }
-    ]
+    # Return an empty list when no external calendar feed is configured, so the UI can show a truthful empty state.
+    return []
 
 def get_all_schedule_events() -> List[Dict[str, Any]]:
     """Merge internal database schedule items with external calendar feeds."""

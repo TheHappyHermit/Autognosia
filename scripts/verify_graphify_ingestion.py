@@ -59,7 +59,7 @@ SKIP_DIRS = {
 }
 
 # Counted as real source files. graphify also ingests .py as "code".
-SOURCE_SUFFIXES = {".md"}
+SOURCE_SUFFIXES = {".md", ".py"}
 
 
 def find_source_files(directory: Path):
