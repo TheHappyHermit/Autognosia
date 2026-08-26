@@ -51,10 +51,10 @@ Cron job outputs live in `~/.hermes/cron/output/<job_id>/` as timestamped `.md` 
 - `eebf16fd600a` — Morning Newsletter (6 AM) — **active**, delivers to Telegram
 - `2fdcb131de85` — Evening Newsletter (9 PM) — **active**, delivers to Telegram
 
-### Paused/Removed Job Cleanup (WealthForge)
-The following WealthForge research cron jobs are **paused** and their output directories can be safely deleted:
-- `f3a967f632f9` — WealthForge Research Cron (every 5 min) — **paused May 30**, 10,848 runs, **29 MB** output
-- `082b13bf66ea` — WealthForge Research Cron (every 10 min) — **paused Aug 11**, erroring (502), **444 KB** output
+### Paused/Removed Job Cleanup (the client platform)
+The following the client platform research cron jobs are **paused** and their output directories can be safely deleted:
+- `f3a967f632f9` — the client platform Research Cron (every 5 min) — **paused May 30**, 10,848 runs, **29 MB** output
+- `082b13bf66ea` — the client platform Research Cron (every 10 min) — **paused Aug 11**, erroring (502), **444 KB** output
 
 **Cleanup commands:**
 ```bash
@@ -117,8 +117,8 @@ The `state.db` SQLite database contains:
 
 | Source | Sessions | Messages | Nature |
 |--------|----------|----------|--------|
-| **CLI** | ~2,600 | ~842K | **Mixed**: ~2,560 are Paperclip agent runs (Apr 2026), ~35 are real user sessions |
-| **Cron** | ~22,700 | ~368K | WealthForge research runs (every 5-10 min), newsletter runs — **redundant with RESEARCH.md/Telegram** |
+| **CLI** | ~2,600 | ~842K | **Mixed**: ~2,560 are the workspace app agent runs (Apr 2026), ~35 are real user sessions |
+| **Cron** | ~22,700 | ~368K | the client platform research runs (every 5-10 min), newsletter runs — **redundant with RESEARCH.md/Telegram** |
 | **Telegram** | ~218 | ~12K | Real user conversations |
 
 **Cron Session Deletion** (safe, reclaims ~2 GB):
@@ -158,10 +158,10 @@ VACUUM;
 | Initial `state.db` | 14.4 GB | — | — |
 | After `hermes sessions optimize-storage` | 14.4 GB | 6.5 GB | **7.8 GB (55%)** |
 | After cron session deletion + VACUUM | 6.5 GB | 4.4 GB | **2.0 GB (31%)** |
-| After Paperclip agent session deletion + VACUUM | 4.4 GB | 4.4 GB* | **~0 GB** (index already compact) |
+| After the workspace app agent session deletion + VACUUM | 4.4 GB | 4.4 GB* | **~0 GB** (index already compact) |
 | **Total** | **14.4 GB** | **4.4 GB** | **~10 GB (69%)** |
 
-*Paperclip deletion removed 842K messages but indexes were already compact from prior optimization; VACUUM confirmed no further reclaim.
+*the workspace app deletion removed 842K messages but indexes were already compact from prior optimization; VACUUM confirmed no further reclaim.
 
 This is the **single largest space recovery** available on this VM — larger than any Docker cleanup or cache pruning.
 
@@ -197,9 +197,9 @@ Explicitly named corrupted/broken scripts:
 rm ~/.hermes/scripts/newsletter_builder.py.corrupted
 ```
 
-### Paperclip Agent Session Deletion (April 2026)
+### the workspace app Agent Session Deletion (April 2026)
 
-The CLI source contained **2,562 Paperclip agent runs from April 2026** (not real user conversations):
+The CLI source contained **2,562 the workspace app agent runs from April 2026** (not real user conversations):
 
 | Metric | Value |
 |--------|-------|
@@ -209,7 +209,7 @@ The CLI source contained **2,562 Paperclip agent runs from April 2026** (not rea
 
 **Deletion SQL:**
 ```sql
--- Identify Paperclip sessions (April 2026 CLI runs)
+-- Identify the workspace app sessions (April 2026 CLI runs)
 SELECT id FROM sessions 
 WHERE source = 'cli' 
   AND started_at >= strftime('%s', '2026-04-01') 
@@ -222,9 +222,9 @@ VACUUM;
 ```
 
 **Why safe to delete:**
-- These are automated Paperclip agent executions (Web Engineer, CI/CD agents, etc.)
-- Not user conversations — agent prompts + Paperclip API calls + tool outputs
-- Paperclip has been removed from this VM; these logs are orphaned
+- These are automated the workspace app agent executions (Web Engineer, CI/CD agents, etc.)
+- Not user conversations — agent prompts + the workspace app API calls + tool outputs
+- the workspace app has been removed from this VM; these logs are orphaned
 - Real CLI sessions (May–July 2026): only 33 sessions, 193 messages
 
 **Detection pattern for future sessions:**
@@ -263,7 +263,7 @@ GROUP BY s.id HAVING user_count = 0 AND total > 5;
 
 ### Rust / Go Toolchain Cleanup
 
-The VM had leftover toolchains from WealthForge research projects (not needed for Hermes):
+The VM had leftover toolchains from the client platform research projects (not needed for Hermes):
 
 | Toolchain | Path | Size | Removal |
 |-----------|------|------|---------|

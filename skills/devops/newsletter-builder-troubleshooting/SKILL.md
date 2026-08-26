@@ -29,7 +29,7 @@ Before changing any hardcoded address (IP, URL, port) in the newsletter builder 
 Quick connectivity test:
 ```bash
 curl -sk -o /dev/null -w "%{http_code}" "https://10.1.1.10/" \
-  -H "Host: freshrss.wineandgecko.com" --max-time 10
+  -H "Host: freshrss.<oracle-server>" --max-time 10
 ```
 
 ### 1. Initial Script Test with Minimal Parameters
@@ -165,7 +165,7 @@ The script then uses `hy3:free` via OpenRouter. A `429` (free-tier throttle) is 
 ```bash
 curl -sk -X POST "https://10.1.1.10/api/greader.php/accounts/ClientLogin" \
   -d "Email=<username>&Passwd=<pass>&service=reader" \
-  -H "Host: freshrss.wineandgecko.com"
+  -H "Host: freshrss.<oracle-server>"
 ```
 A valid response starts with `SID=...` and contains `Auth=...`. `{"detail":"Not Found"}` means the IP is wrong or Traefik isn't routing the subdomain.
 

@@ -1,7 +1,7 @@
 # Reasoning Model Stalling in Cron Jobs
 
 **Observed:** 2026-08-07
-**Context:** WealthForge Research Cron (`082b13bf66ea`) running every 10 min with `nvidia/nemotron-3-ultra-550b-a55b:free` via OpenRouter
+**Context:** the client platform Research Cron (`082b13bf66ea`) running every 10 min with `nvidia/nemotron-3-ultra-550b-a55b:free` via OpenRouter
 
 ## Symptoms
 
@@ -75,5 +75,5 @@ After any fix, monitor 2–3 consecutive runs:
 
 ## Related Skills
 
-- `wealthforge-research-workflow` — contains detailed cron workflow and this reference
+- `the client platform-research-workflow` — contains detailed cron workflow and this reference
 - `hermes-cron-management` — this skill (CLI management patterns)

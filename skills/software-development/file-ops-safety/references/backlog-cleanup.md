@@ -2,7 +2,7 @@
 
 ## Context
 
-WealthForge roadmap uses `agenda_backlog_toberesearched.md` — a 4,000+ line file with task entries in the format:
+the client platform roadmap uses `agenda_backlog_toberesearched.md` — a 4,000+ line file with task entries in the format:
 ```
 ||||||||||||||||||  - [⏳] **code: Title** — description text
 ```

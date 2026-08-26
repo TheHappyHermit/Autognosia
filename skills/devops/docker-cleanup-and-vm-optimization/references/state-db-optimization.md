@@ -82,10 +82,10 @@ hermes sessions optimize-storage
 | Initial `state.db` | 14.04 GB | — | — |
 | After `hermes sessions optimize-storage` | 14.04 GB | ~6.5 GB | **~7.8 GB (55%)** |
 | After cron session deletion + VACUUM | ~6.5 GB | ~4.4 GB | **~2.0 GB (31%)** |
-| After Paperclip agent session deletion + VACUUM | ~4.4 GB | ~4.4 GB* | **~0 GB** (index already compact) |
+| After the workspace app agent session deletion + VACUUM | ~4.4 GB | ~4.4 GB* | **~0 GB** (index already compact) |
 | **Total** | **14.04 GB** | **~4.4 GB** | **~10 GB (69%)** |
 
-*Paperclip deletion removed 842K messages but indexes were already compact from prior optimization; VACUUM confirmed no further reclaim.
+*the workspace app deletion removed 842K messages but indexes were already compact from prior optimization; VACUUM confirmed no further reclaim.
 
 This is the **single largest space recovery** available on this VM — larger than any Docker cleanup or cache pruning.
 
@@ -136,9 +136,9 @@ WHERE source = 'telegram';
 
 ---
 
-## Paperclip Agent Session Deletion (April 2026)
+## the workspace app Agent Session Deletion (April 2026)
 
-The CLI source contained **2,562 Paperclip agent runs from April 2026** (not real user conversations):
+The CLI source contained **2,562 the workspace app agent runs from April 2026** (not real user conversations):
 
 | Metric | Value |
 |--------|-------|
@@ -148,7 +148,7 @@ The CLI source contained **2,562 Paperclip agent runs from April 2026** (not rea
 
 **Deletion SQL:**
 ```sql
--- Identify Paperclip sessions (April 2026 CLI runs)
+-- Identify the workspace app sessions (April 2026 CLI runs)
 SELECT id FROM sessions 
 WHERE source = 'cli' 
   AND started_at >= strftime('%s', '2026-04-01') 
@@ -161,9 +161,9 @@ VACUUM;
 ```
 
 **Why safe to delete:**
-- These are automated Paperclip agent executions (Web Engineer, CI/CD agents, etc.)
-- Not user conversations — agent prompts + Paperclip API calls + tool outputs
-- Paperclip has been removed from this VM; these logs are orphaned
+- These are automated the workspace app agent executions (Web Engineer, CI/CD agents, etc.)
+- Not user conversations — agent prompts + the workspace app API calls + tool outputs
+- the workspace app has been removed from this VM; these logs are orphaned
 - Real CLI sessions (May–July 2026): only 33 sessions, 193 messages
 
 **Detection pattern for future sessions:**
@@ -185,7 +185,7 @@ Look for months with hundreds of sessions and thousands of messages per session 
 
 ## Cron Session Deletion (Safe, Reclaims ~2 GB)
 
-The cron source contained **22,699 WealthForge research runs** (every 5-10 min) and newsletter runs:
+The cron source contained **22,699 the client platform research runs** (every 5-10 min) and newsletter runs:
 
 | Metric | Value |
 |--------|-------|

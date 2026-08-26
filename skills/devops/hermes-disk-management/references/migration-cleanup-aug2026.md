@@ -1,22 +1,22 @@
 # Migration Cleanup Reference (Aug 2026)
 
 ## Context
-User is stopping WealthForge production and preparing for a memory system migration (Honcho DB preserved). Need to clean up WealthForge-specific artifacts before migration.
+User is stopping the client platform production and preparing for a memory system migration (Honcho DB preserved). Need to clean up the client platform-specific artifacts before migration.
 
 ## Cleanup Performed
 
-### 1. Skills Deleted (18 WealthForge skills)
-All WealthForge skills removed from the skill library:
-- `wealthforge-employee-role-research`
-- `wealthforge-qof`
-- `wealthforge-copula-diagnostics`
-- `wealthforge-deep-research`
-- `wealthforge-domain-knowledge`
-- `wealthforge-feature-design-patterns`
-- `wealthforge-research-deliverables`
-- `wealthforge-research-workflow`
-- `wealthforge-ria-operations`
-- `wealthforge-tax-treaties`
+### 1. Skills Deleted (18 the client platform skills)
+All the client platform skills removed from the skill library:
+- `the client platform-employee-role-research`
+- `the client platform-qof`
+- `the client platform-copula-diagnostics`
+- `the client platform-deep-research`
+- `the client platform-domain-knowledge`
+- `the client platform-feature-design-patterns`
+- `the client platform-research-deliverables`
+- `the client platform-research-workflow`
+- `the client platform-ria-operations`
+- `the client platform-tax-treaties`
 - `benchmark-quality-monitoring`
 - `confidence-aware-recommendations`
 - `gdpr-privacy-financial-services`
@@ -27,19 +27,19 @@ All WealthForge skills removed from the skill library:
 - `treaty-correlation-modeling`
 
 Also deleted:
-- `uhnw-wealth-management` (data-science)
+- `high-net-worth-wealth-management` (data-science)
 - `godmode` (red-teaming)
 - `openclaw-model-switch` (devops)
 
-Categories `wealthforge` and `red-teaming` are now empty.
+Categories `the client platform` and `red-teaming` are now empty.
 
 ### 2. Cron Jobs to Remove
-Two paused WealthForge research cron jobs:
+Two paused the client platform research cron jobs:
 
 | Job ID | Name | Status | Output Size | Runs |
 |--------|------|--------|-------------|------|
-| `f3a967f632f9` | WealthForge Research Cron (every 5 min) | Paused May 30 | 29 MB | 10,848 |
-| `082b13bf66ea` | WealthForge Research Cron (every 10 min) | Paused Aug 11 | 444 KB | Erroring (502) |
+| `f3a967f632f9` | the client platform Research Cron (every 5 min) | Paused May 30 | 29 MB | 10,848 |
+| `082b13bf66ea` | the client platform Research Cron (every 10 min) | Paused Aug 11 | 444 KB | Erroring (502) |
 
 **Commands to run:**
 ```bash
@@ -103,5 +103,5 @@ The `newsletter_builder.py` script already reads the default model from `config.
 - `node/` + `lsp/` (319 MB) — required for desktop app / TUI / plugins
 - `config.yaml`, `.env`, `auth.json` — live config
 - `honcho.json` — Honcho connection config
-- `skills/` — all non-WealthForge skills (200+ remain)
+- `skills/` — all non-the client platform skills (200+ remain)
 - `profiles/coder/` and `profiles/researcher/` — custom profiles

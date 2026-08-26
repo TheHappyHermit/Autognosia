@@ -1,6 +1,6 @@
 # Dark Mode Color Palette for Financial Dashboards
 
-Verified dark mode palette designed for WealthForge sensitivity dashboard, tested against WCAG 2.1 AA requirements.
+Verified dark mode palette designed for the client platform sensitivity dashboard, tested against WCAG 2.1 AA requirements.
 
 ## Background Colors
 

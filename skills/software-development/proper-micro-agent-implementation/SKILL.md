@@ -7,7 +7,7 @@ category: software-development
 # Proper Micro-Agent Implementation According to Specification
 
 ## Overview
-This skill describes the correct approach to implementing micro-agents in the WealthForge AI system, based on the specification principle: "Every micro-agent in this system is designed so that the LLM makes exactly one decision per invocation: which tool to call with what parameters. The tool itself contains all the logic."
+This skill describes the correct approach to implementing micro-agents in the the client platform system, based on the specification principle: "Every micro-agent in this system is designed so that the LLM makes exactly one decision per invocation: which tool to call with what parameters. The tool itself contains all the logic."
 
 ## Core Principle
 Agents are **decision layers**, not workflow reimplementations. They should be thin wrappers that delegate actual workflow logic to existing services.
@@ -93,7 +93,7 @@ Before considering an agent complete, verify:
 - [ ] No duplication of service logic (check against `/backend/app/services/` files)
 
 ## When to Apply This Skill
-- Creating new micro-agents in the WealthForge AI system
+- Creating new micro-agents in the the client platform system
 - Reviewing existing agent implementations for correctness
 - Refactoring agents that inappropriately duplicate workflow logic
 - Evaluating whether agent implementations follow the specification principle

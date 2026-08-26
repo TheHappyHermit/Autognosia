@@ -3,7 +3,7 @@
 *Last verified: 2026-06-09*
 
 ## Server
-- FreshRSS: 10.1.1.10:443, Host header: freshrss.wineandgecko.com
+- FreshRSS: 10.1.1.10:443, Host header: freshrss.<oracle-server>
 - Self-signed TLS (Traefik default cert), verify=False
 - DNS is NXDOMAIN on public internet, resolved via IP direct
 - Root page returns blank (normal), API endpoints work
