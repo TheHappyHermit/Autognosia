@@ -1,12 +1,20 @@
 model:
   default: stealth/ox-alpha
-  provider: nous
+  provider: lmStudio
   base_url: ''
 providers:
   llamaCPP:
     api: http://10.1.1.10:8080/v1
     default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
     transport: chat_completions
+  nous:
+    stale_timeout_seconds: 1440
+  lmStudio:
+    api: http://10.1.1.151:1234/v1
+    default_model: qwen/qwen3.6-35b-a3b
+  openai-compatible:
+    api: http://10.1.1.151:1234/v1
+    default_model: qwen/qwen3.6-35b-a3b
 fallback_providers:
   - provider: llamaCPP
     model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
@@ -67,12 +75,6 @@ auxiliary:
     api_key: ''
     timeout: 30
     download_timeout: 30
-  web_extract:
-    provider: auto
-    model: ''
-    base_url: ''
-    api_key: ''
-    timeout: 30
   compression:
     provider: auto
     model: ''
@@ -92,6 +94,12 @@ auxiliary:
     api_key: ''
     timeout: 30
   mcp:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  web_extract:
     provider: auto
     model: ''
     base_url: ''
@@ -196,21 +204,26 @@ approvals:
   timeout: 60
   destructive_slash_confirm: false
 command_allowlist:
-  - script execution via heredoc
-  - docker compose restart/stop/kill/down (container lifecycle)
-  - delete in root path
-  - recursive delete
-  - execute_code
-  - git force push short flag (rewrites remote history)
-  - stop/restart system service
-  - git force push (rewrites remote history)
-  - script execution via -e/-c flag
-  - overwrite system config
-  - command parser limit or malformed executable payload
-  - git reset --hard (destroys uncommitted changes)
-  - docker restart/stop/kill (container lifecycle)
-  - hermes update (restarts gateway, kills running agents)
   - copy/move file into system config path
+  - execute_code
+  - git branch force delete
+  - overwrite project env/config via redirection
+  - command parser limit or malformed executable payload
+  - overwrite system config
+  - stop/restart system service
+  - git reset --hard (destroys uncommitted changes)
+  - sudo with privilege flag (stdin/askpass/shell/list)
+  - overwrite system file via redirection
+  - script execution via -e/-c flag
+  - git force push (rewrites remote history)
+  - delete in root path
+  - docker compose restart/stop/kill/down (container lifecycle)
+  - git force push short flag (rewrites remote history)
+  - script execution via heredoc
+  - hermes update (restarts gateway, kills running agents)
+  - recursive delete
+  - docker restart/stop/kill (container lifecycle)
+  - shell command via -c/-lc flag
 security:
   redact_secrets: true
   tirith_enabled: true
@@ -227,7 +240,7 @@ onboarding:
   seen:
     openclaw_residue_cleanup: true
     busy_input_prompt: true
-_config_version: 38
+_config_version: 39
 smart_model_routing:
   enabled: false
   max_simple_chars: 160
