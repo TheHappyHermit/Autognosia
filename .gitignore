@@ -260,3 +260,8 @@ cache/
 *-venv/
 dashboard-venv/
 node_modules/
+
+# cron/ runtime state is ignored above, but the portable SETUP DOC is source
+# (it lets a fresh install recreate the schedule) -- keep it tracked.
+!cron/
+!cron/README-CRON-SETUP.md
