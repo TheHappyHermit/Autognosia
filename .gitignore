@@ -302,3 +302,10 @@ node_modules/
 **/financial-planning-tool-development-pattern/
 **/safe-research-append/
 **/research-md-append-only/
+
+# ── Personal home-automation / workflow infra (not part of the product) ──
+# Home Assistant and n8n are the operator's own smart-home and workflow servers.
+# They are not Autognosia components, they reference private endpoints, and their
+# examples carry real bearer tokens. Excluded from both the repo and the sync.
+**/home-assistant-mcp-integration/
+**/n8n-mcp-integration/

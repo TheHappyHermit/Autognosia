@@ -501,8 +501,6 @@ If the config is severely corrupted and repair is taking too long:
 
 ## Related Skills
 - `native-mcp`: For understanding how Hermes connects to MCP servers
-- `n8n-mcp-integration`: For using the n8n MCP server once configured
-- `home-assistant-mcp-integration`: For using the Home Assistant MCP server once configured
 - `mcporter`: For manual testing of MCP connections
 - `obsidian-integration`: For creating and managing notes in Obsidian vault
 
