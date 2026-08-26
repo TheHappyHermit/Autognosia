@@ -6,8 +6,8 @@ Complete regex patterns for repository PII crawling. Use with the `repo-pii-audi
 
 ### Name Patterns
 ```
-\bJosh\b
-\bJoshua\b
+\b<OperatorFirstName>\b
+\b<OperatorFullName>\b
 ```
 
 ### Email Patterns
@@ -48,10 +48,10 @@ password_hash
 
 ### Username Patterns (case-insensitive)
 ```
-<username>
-<username>-
-josh_
-<username>\.
+<operator>434
+<operator>
+<operator>
+<operator>.
 ```
 
 ### Telegram ID Patterns
@@ -81,7 +81,7 @@ josh_
 ## Severity Classification
 
 ### CRITICAL — Must Fix
-- Real names (the user, the user)
+- Real names (<operator>, <operator>ua)
 - Real email addresses (personal, not vendor)
 - Phone numbers
 - API keys / tokens (sk-*, ghp_*, etc.)
@@ -110,13 +110,13 @@ import os
 import re
 
 pii_patterns = {
-    'name': [r'\bJosh\b', r'\bJoshua\b'],
+    'name': [r'\b<OperatorFirstName>\b', r'\b<OperatorFullName>\b'],
     'email': [r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'],
     'phone': [r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b'],
     'api_keys': [r'sk-[a-zA-Z0-9]{20,}', r'ghp_[a-zA-Z0-9]{36}'],
     'passwords': [r'password_hash'],
     'ip_addresses': [r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b'],
-    'usernames': [r'<username>', r'<username>-'],
+    'usernames': [r'<operator>434', r'<operator>'],
     'telegram_ids': [r'\b7791814261\b'],
 }
 
