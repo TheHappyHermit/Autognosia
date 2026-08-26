@@ -151,3 +151,112 @@ token.json
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
+
+# ══════════════════════════════════════════════════════════════════
+# NEVER PUBLISH: backups, wiki content, databases, runtime state
+# ══════════════════════════════════════════════════════════════════
+# Rationale: these are personal data by nature, not code. They are excluded
+# unconditionally -- NOT because a PII scan flagged them, but because they
+# have no business in a public repo whether they happen to contain PII today
+# or not. A clean scan is not a licence to publish personal data.
+
+# ── Backups (any flavour, any depth) ──
+backups/
+**/backups/
+*.bak
+*.bak-*
+*.backup
+*.orig
+*.old
+.curator_backups/
+**/.curator_backups/
+*-backup-*/
+archives/
+checkpoints/
+
+# ── Wiki / knowledge-base content (the user's own writing and notes) ──
+active-wiki/
+**/active-wiki/
+oracle/
+**/oracle/brain/
+graphify-out/
+graphify-*-out/
+**/graphify-out/
+incoming/
+Documents/
+**/Documents/
+
+# ── Databases and their sidecar files ──
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.wal
+*.shm
+cortex.db
+autognosia.db
+organizer.db
+executions.db
+notepad.db
+
+# ── Credentials and auth material ──
+.env
+.env.*
+*.env
+auth.json
+auth.lock
+google_token.json
+google_client_secret.json
+credentials.json
+token.json
+*.pem
+*.key
+*.p12
+*.keystore
+id_ed25519*
+id_rsa*
+
+# ── Runtime state, locks, logs, telemetry ──
+*.lock
+.fire-*.lock
+*.pid
+*.sock
+*.tmp
+*.log
+logs/
+**/logs/
+sessions/
+**/sessions/
+output/
+**/cron/output/
+jobs.json
+usage_audit.jsonl
+.curator_ledger.jsonl
+.usage.json*
+catch_up_occurrences
+ticker_heartbeat
+ticker_last_success
+gateway_state.json
+gateway-starts.log
+context_length_cache.yaml
+desktop-build-stamp.json
+channel_directory.json
+
+# ── Memory stores (personal by definition) ──
+memories/
+**/memories/
+fact_store*
+personal-state/
+cascade-reports/
+reports/
+
+# ── Caches / build artifacts ──
+__pycache__/
+*.pyc
+audio_cache/
+cache/
+*-venv/
+dashboard-venv/
+node_modules/
