@@ -1,0 +1,31 @@
+# GBrain — Historical Retrieval Infrastructure
+#
+# GBrain runs as a local Bun/CLI tool via PGLite (embedded database).
+# No Docker Compose file needed for the standard deployment.
+#
+# Quick start:
+#   bun install -g gbrain
+#   gbrain init --pglite
+#   gbrain doctor
+#
+# Advanced: For users who want a full PostgreSQL backend:
+#   docker compose -f docker-compose.gbrain-postgres.yml up -d
+#   (see docker-compose.gbrain-postgres.yml for Docker Compose config)
+#
+# Most users should use the PGLite mode above — it requires no Docker.
+#
+# Configuration:
+#   - Brain data: ${HOME}/.gbrain/brain.pglite
+#   - Config: ${HOME}/.gbrain/config.json
+#   - Syncs with brain git repo at ${HOME}/.autognosia/oracle/brain
+#
+# Important notes:
+#   - GBrain's Docker Compose is for PostgreSQL backend only.
+#   - PGLite mode is the default and recommended for single-machine setups.
+#   - Embeddings use zeroentropyai:zembed-1 API (free, shuts down 2026-09-04).
+#     To migrate: gbrain migrate embeddings --to openai:text-embedding-3-small
+#
+# Architecture:
+#   GBrain is an index, not the sole brain.
+#   If it breaks, rebuild from the canonical Markdown corpus.
+#   See README.md section "GBrain Is an Index, Not the Sole Brain"

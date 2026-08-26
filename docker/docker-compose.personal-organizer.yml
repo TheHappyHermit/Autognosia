@@ -1,0 +1,38 @@
+# Autognosia — Personal Organizer Deterministic State
+#
+# Provides SQLite-backed task/project/subscription management.
+# API available at: http://127.0.0.1:8001
+#
+# Usage (from docker/ directory):
+#   docker compose -f docker-compose.personal-organizer.yml up -d
+#
+# Prerequisites:
+#   - Docker Engine installed
+#   - organizer.db initialized (run scripts/init_db.py first)
+
+name: autognosia-personal-organizer
+
+services:
+  api:
+    build:
+      context: ./personal-organizer
+      dockerfile: Dockerfile
+    container_name: personal-organizer-api
+    ports:
+      - "127.0.0.1:8001:8000"
+    volumes:
+      - ${HOME}/.autognosia/personal-organizer/data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:////app/data/organizer.db
+    restart: unless-stopped
+    networks:
+      - personal-organizer-net
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/openapi.json"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  personal-organizer-net:
+    driver: bridge
