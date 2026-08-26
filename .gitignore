@@ -265,3 +265,40 @@ node_modules/
 # (it lets a fresh install recreate the schedule) -- keep it tracked.
 !cron/
 !cron/README-CRON-SETUP.md
+
+# ══════════════════════════════════════════════════════════════════
+# WEALTHFORGE AI — SEPARATE PROJECT, NEVER PUBLISH HERE
+# ══════════════════════════════════════════════════════════════════
+# WealthForge AI (UHNW wealth-management platform) is a distinct project with
+# its own repo and its own client-confidential domain material. None of it
+# belongs in Autognosia. This covers the project by name, its infrastructure
+# (Paperclip workspace app, wineandgecko.com Oracle server) and its domain
+# skills (PPLI carriers, IRMAA/NIIT thresholds, treaty attribution, SHAP for
+# wealth management, UHNW document pipelines).
+
+# ── by project name ──
+**/*wealthforge*
+**/*WealthForge*
+**/*uhnw*
+**/*UHNW*
+
+# ── its infrastructure ──
+**/paperclip-integration/
+**/wineandgecko-deployment/
+**/wineandgecko-search/
+**/*wineandgecko*
+
+# ── its domain skills (UHNW wealth planning) ──
+**/*ppli-*
+**/*estate-tax*
+**/research-cron-knowledge-base/
+**/vine-copula-modeling/
+**/shap-accuracy-benchmarking/
+**/stacked-marginal-rate-calculator/
+**/cross-document-transfer-learning/
+**/ensemble-weight-management/
+**/ocr-quality-metrics/
+**/wealth-document-classification/
+**/financial-planning-tool-development-pattern/
+**/safe-research-append/
+**/research-md-append-only/

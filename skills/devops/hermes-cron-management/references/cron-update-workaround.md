@@ -57,7 +57,7 @@ Both should show the updated `model` and `provider` fields.
 **Successful approach:** `hermes cron edit` CLI for each job_id:
 - `eebf16fd600a` (Morning Newsletter)
 - `2fdcb131de85` (Evening Newsletter)
-- `082b13bf66ea` (WealthForge Research 10min)
-- `f3a967f632f9` (WealthForge Research 5min — paused)
+- `082b13bf66ea` (the client platform Research 10min)
+- `f3a967f632f9` (the client platform Research 5min — paused)
 
 All 4 now show `nvidia/nemotron-3-ultra-550b-a55b:free` / `openrouter`.

@@ -106,7 +106,7 @@ After fixing models:
 
 ```bash
 # Rebuild Docker image
-cd /opt/wealthforge-ai
+cd /opt/the client platform-ai
 docker build -t wf-api:latest ./backend
 
 # Restart

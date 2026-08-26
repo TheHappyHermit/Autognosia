@@ -111,7 +111,7 @@ def api_get_ip_direct(auth_token, path, params, freshrss_ip, freshrss_host, fres
     return resp
 ```
 
-**When to use**: The FreshRSS hostname is NXDOMAIN, not in `/etc/hosts`, or only resolves on a different network segment. Use the raw server IP (e.g., `10.1.1.10`) with the correct `Host` header (e.g., `freshrss.wineandgecko.com`).
+**When to use**: The FreshRSS hostname is NXDOMAIN, not in `/etc/hosts`, or only resolves on a different network segment. Use the raw server IP (e.g., `10.1.1.10`) with the correct `Host` header (e.g., `freshrss.<oracle-server>`).
 
 ## Content Extraction Waterfall
 

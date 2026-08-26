@@ -10,8 +10,8 @@ description: Interface to interact with DeerFlow 2.0 instance using curl command
 This skill provides a simple interface to interact with the DeerFlow 2.0 instance using curl commands to communicate with the DeerFlow Gateway and LangGraph APIs.
 
 ## Base URLs
-- Base URL: https://deerflow.wineandgecko.com
-- Gateway URL: https://deerflow.wineandgecko.com
+- Base URL: https://deerflow.<oracle-server>
+- Gateway URL: https://deerflow.<oracle-server>
 
 ## ⚠️ No MCP Endpoint
 DeerFlow does **not** expose an MCP or SSE endpoint. Both `/mcp` and `/sse` return 404. Use the REST API below instead.
@@ -33,19 +33,19 @@ DeerFlow does **not** expose an MCP or SSE endpoint. Both `/mcp` and `/sse` retu
 
 ### Health Check
 ```bash
-curl -X GET https://deerflow.wineandgecko.com/health
+curl -X GET https://deerflow.<oracle-server>/health
 ```
 
 ### Create Thread
 ```bash
-curl -X POST https://deerflow.wineandgecko.com/api/threads \
+curl -X POST https://deerflow.<oracle-server>/api/threads \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
 
 ### Start Streaming Run (Fast Mode)
 ```bash
-curl -X POST https://deerflow.wineandgecko.com/api/threads/{thread_id}/runs/stream \
+curl -X POST https://deerflow.<oracle-server>/api/threads/{thread_id}/runs/stream \
   -H "Content-Type: application/json" \
   -d '{
     "assistant_id": "lead_agent",
@@ -65,7 +65,7 @@ curl -X POST https://deerflow.wineandgecko.com/api/threads/{thread_id}/runs/stre
 
 ### Start Streaming Run (Pro Mode)
 ```bash
-curl -X POST https://deerflow.wineandgecko.com/api/threads/{thread_id}/runs/stream \
+curl -X POST https://deerflow.<oracle-server>/api/threads/{thread_id}/runs/stream \
   -H "Content-Type: application/json" \
   -d '{
     "assistant_id": "lead_agent",

@@ -11,7 +11,7 @@ Comprehensive patterns for cleaning up Docker environments, freeing VM disk spac
 ## When to Use
 
 - VM disk usage >80% and you need to identify/remove large Docker artifacts
-- Removing entire application stacks (Paperclip, OpenClaw, etc.) completely
+- Removing entire application stacks (the workspace app, OpenClaw, etc.) completely
 - Fixing Honcho deriver "unhealthy" status when it's actually working
 - Handling special characters in PostgreSQL passwords
 - Faster Honcho iteration without repeated docker compose builds
@@ -335,7 +335,7 @@ See `references/docker-compose-startup-pitfalls.md` for the full procedure cover
 
 | Component | Action | Freed |
 |-----------|--------|-------|
-| Paperclip Docker stack | Stop, rm containers, rm volumes, rmi images | ~8 GB |
+| the workspace app Docker stack | Stop, rm containers, rm volumes, rmi images | ~8 GB |
 | Rebate platform volumes | rm volumes | ~8 KB |
 | Stale Hermes venv | rm -rf | 5.6 GB |
 | Old Hermes sessions | find -mtime +30 -delete | ~1.5 GB |
@@ -343,7 +343,7 @@ See `references/docker-compose-startup-pitfalls.md` for the full procedure cover
 | pnpm store | pnpm store prune | ~1.5 GB |
 | uv cache | uv cache clean | 437 MB |
 | OpenClaw dir | rm -rf (backed up to GH) | 425 MB |
-| Paperclip dirs | rm -rf (backed up to GH) | 2.3 GB |
+| the workspace app dirs | rm -rf (backed up to GH) | 2.3 GB |
 
 **Honcho stack now running:**
 - `honcho_db` (pgvector) — healthy, port 5433
@@ -353,5 +353,5 @@ See `references/docker-compose-startup-pitfalls.md` for the full procedure cover
 **Backups created (private GitHub repos):**
 - `<username>/hermes-customizations` — Hermes skills, profiles, cron, vault
 - `<username>/openclaw-customizations` — 19 skills, 8 agents, config, creds
-- `<username>/paperclip-customizations` — 4 custom Paperclip skills
-- `<username>/paperclip` — Full fork with Hermes adapter branch
+- `<username>/the workspace app-customizations` — 4 custom the workspace app skills
+- `<username>/the workspace app` — Full fork with Hermes adapter branch

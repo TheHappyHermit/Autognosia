@@ -86,7 +86,7 @@ SSH heredoc strips `$` variables from the script. Use one of:
 
 ## SearXNG Search Backend
 
-SearXNG at `searxng.wineandgecko.com` runs behind Traefik on the server.
+SearXNG at `searxng.<oracle-server>` runs behind Traefik on the server.
 
 - Container IP: `172.18.0.11` (check with `docker inspect searxng`)
 - JSON API: `http://172.18.0.11:8080/search?q=query&format=json`

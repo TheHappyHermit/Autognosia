@@ -48,8 +48,8 @@ cronjob action='list'      # tool equivalent (returns full JSON)
 **Removed (Aug 14, 2026):**
 | Job ID | Name | Schedule | Model | Status | Notes |
 |--------|------|----------|-------|--------|-------|
-| `f3a967f632f9` | WealthForge Research Cron | `*/5 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | 10,848 runs; output 29 MB; deleted with output dirs |
-| `082b13bf66ea` | WealthForge Research Cron | `*/10 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | Erroring (502); output 444 KB; deleted with output dirs |
+| `f3a967f632f9` | the client platform Research Cron | `*/5 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | 10,848 runs; output 29 MB; deleted with output dirs |
+| `082b13bf66ea` | the client platform Research Cron | `*/10 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | Erroring (502); output 444 KB; deleted with output dirs |
 
 ## Model Update (Aug 14, 2026)
 
@@ -59,9 +59,9 @@ Both newsletter jobs were hardcoded to `nvidia/nemotron-3-ultra-550b-a55b:free` 
 
 The `cronjob` tool cannot update `model`/`provider` in isolation — requires full job spec or CLI workaround. Use `hermes cron edit <job_id> --model ... --provider ...` for changes.
 
-## WealthForge Cron Cleanup
+## the client platform Cron Cleanup
 
-The two paused WealthForge cron jobs (`f3a967f632f9`, `082b13bf66ea`) were removed along with their output directories (Aug 14, 2026):
+The two paused the client platform cron jobs (`f3a967f632f9`, `082b13bf66ea`) were removed along with their output directories (Aug 14, 2026):
 
 ```bash
 # Remove cron jobs
