@@ -84,14 +84,14 @@ grep -rl "timed out" $DIR/ 2>/dev/null | sort | tail -1
 | Empty error block | LLM produced no structured output (model hallucination or context overflow) |
 | Import/module error | Missing package in cron's venv or wrong Python path |
 
-## Session Example: the client platform Deep Research (May 2026)
+## Session Example: WealthForge Deep Research (May 2026)
 
 - **1,067 total runs, 593 failures (55.6%)**
 - **580 were 401 Unauthorized** — started May 16, persisted ~9 days. LMStudio at `10.1.1.151:1234` was down.
 - **13 were timeouts** — clustered on May 19 and May 23–24.
 - Job uses `provider: lmstudio` with **no** `api_key_env` (correct config), so 401s mean the service was unreachable.
 
-## Session Example: the client platform Deep Research (May 27, 2026)
+## Session Example: WealthForge Deep Research (May 27, 2026)
 
 - **417 runs in 48h**, **230 successful, 186 failed (44.6%)**
 - Failures concentrated 00:00–07:00 PDT — LMStudio auth token expired / service unavailable during overnight hours.

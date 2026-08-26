@@ -14,7 +14,7 @@ This skill provides guidance for connecting to and using the n8n MCP server to b
 The n8n MCP server exposes the full n8n Workflow SDK as MCP tools, allowing programmatic workflow creation and management.
 
 ## Prerequisites
-- n8n MCP server running at https://n8n.<oracle-server>/mcp-server/http
+- n8n MCP server running at https://n8n.wineandgecko.com/mcp-server/http
 - Valid Bearer token for authentication
 - native-mcp skill loaded
 
@@ -23,7 +23,7 @@ The n8n MCP server should be configured in ~/.hermes/config.yaml:
 ```yaml
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 180

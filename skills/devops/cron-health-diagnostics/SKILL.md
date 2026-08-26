@@ -11,7 +11,7 @@ covers the DNS/connectivity/script/credential layers). This skill captures
 operational patterns that surfaced from running crons in production.
 
 ## Pattern 1 — Duplicate identical crons amplify 429 rate-limits
-If two+ cron jobs carry byte-identical prompts (e.g. two "the client platform Research
+If two+ cron jobs carry byte-identical prompts (e.g. two "WealthForge Research
 Cron" both on `*/5 * * * *`, both `provider: nous`), they multiply API calls
 against the same key and trip:
 `RuntimeError: HTTP 429: Hold up for a bit, you've exceeded the rate limit on your API key.`

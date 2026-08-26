@@ -200,7 +200,7 @@ yamllint ~/.hermes/config.yaml
 ```yaml
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 180
@@ -221,7 +221,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
 ```
 (Notice how everything is on one line after the mcp_servers key - this is invalid YAML)
 
@@ -235,7 +235,7 @@ mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    
 # AFTER (fixed):
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 180
@@ -260,7 +260,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
 ```
 
 **Solution**:
@@ -273,7 +273,7 @@ mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    
 # AFTER (fixed):
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 180
@@ -304,7 +304,7 @@ cat > /tmp/mcp_fix.yaml << 'EOF'
 # MCP Servers Configuration
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 180

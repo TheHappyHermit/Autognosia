@@ -64,7 +64,7 @@ curl -H "Authorization: Bearer <MASTER_KEY>" http://localhost:7700/indexes
 
 ## Common Stacks on This Machine
 
-### the workspace app Stack
+### Paperclip Stack
 - **PostgreSQL (194 MB)**: 69 tables, ~60 issues, 14 agents, 5 projects — dev instance, disposable
 - **Qdrant (20 KB)**: Empty (0 collections) — discard
 - **Redis (16 KB)**: Empty (0 keys) — discard

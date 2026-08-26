@@ -178,7 +178,7 @@ class LLMAgent:
 ```
 
 ## Related Skills
-- `the client platform-subsystem-integration-pattern` - for integrating new subsystems
+- `wealthforge-subsystem-integration-pattern` - for integrating new subsystems
 - `financial-planning-tool-development-pattern` - for tax-aware financial tools
 - `test-driven-development` - for implementing features with tests
 

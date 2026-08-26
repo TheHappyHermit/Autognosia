@@ -1,7 +1,7 @@
 # Cron 429: pinned single free model, no fallback chain (real incident 2026-07-23)
 
 ## Symptom
-the client platform Research Cron (`082b13bf66ea`, `*/30 * * * *`) failing ~1 in 3 runs.
+WealthForge Research Cron (`082b13bf66ea`, `*/30 * * * *`) failing ~1 in 3 runs.
 Last failed run `2026-07-23_10-04-24.md` showed:
 
 ```
