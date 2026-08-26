@@ -65,7 +65,7 @@ This session confirmed the deriver works correctly despite the "unhealthy" statu
 
 ### Verified Working (Despite "Unhealthy" Status)
 - API at `http://localhost:8000/docs` — ✅ Accessible
-- Peers: `<username>`, `hermes`, `7791814261` — ✅ Present
+- Peers: `<username>`, `hermes`, `<telegram-chat-id>` — ✅ Present
 - Message ingestion → deriver processing — ✅ Working
 - Peer representations — ✅ Retrievable
 - DB connectivity from deriver container — ✅ Returns 0

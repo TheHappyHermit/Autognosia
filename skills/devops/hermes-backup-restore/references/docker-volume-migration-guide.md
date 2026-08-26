@@ -72,7 +72,7 @@ curl -H "Authorization: Bearer <MASTER_KEY>" http://localhost:7700/indexes
 
 ### Honcho Stack
 - **PostgreSQL (66 MB)**: 35 messages, 3 peers, 3 sessions, 5 collections, 114 docs — moderate value (memory/preferences learned)
-  - Peers: <username>, hermes, telegram (7791814261)
+  - Peers: <username>, hermes, telegram (<telegram-chat-id>)
   - Sessions: global-session, <workspace>, agent-main-telegram-dm
   - Contains session summary with user preferences, model config, browser choice, Obsidian path
 

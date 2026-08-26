@@ -56,7 +56,7 @@ password_hash
 
 ### Telegram ID Patterns
 ```
-\b7791814261\b
+\b<telegram-chat-id>\b
 ```
 
 ### GitHub Handle Patterns
@@ -117,7 +117,7 @@ pii_patterns = {
     'passwords': [r'password_hash'],
     'ip_addresses': [r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b'],
     'usernames': [r'<operator>434', r'<operator>'],
-    'telegram_ids': [r'\b7791814261\b'],
+    'telegram_ids': [r'\b<telegram-chat-id>\b'],
 }
 
 for root, dirs, files in os.walk(repo):
