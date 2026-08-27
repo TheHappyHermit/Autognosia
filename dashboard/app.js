@@ -35,6 +35,8 @@ class CommandDeck {
     this.startClock();
     await this.refreshAllData();
     this.setupAutoRefresh();
+    this.initCollapsiblePanels();
+    this.initKeyboardShortcuts();
   }
 
   // ── Event Bindings ─────────────────────────────────────────────────────────
@@ -44,6 +46,8 @@ class CommandDeck {
     refreshSelect.addEventListener('change', (e) => {
       this.autoRefreshInterval = parseInt(e.target.value, 10);
       this.setupAutoRefresh();
+    this.initCollapsiblePanels();
+    this.initKeyboardShortcuts();
     });
 
     // Calendar View Toggles
@@ -212,6 +216,9 @@ class CommandDeck {
     document.getElementById('btn-add-intention').addEventListener('click', () => this.openCreateModal('intention'));
     document.getElementById('btn-close-create').addEventListener('click', () => this.closeCreateModal());
     document.getElementById('btn-cancel-create').addEventListener('click', () => this.closeCreateModal());
+
+    // Service Refresh Button
+    document.getElementById('btn-service-refresh')?.addEventListener('click', () => this.fetchServices());
     
     // Type selector in create modal
     const createTypeSelect = document.getElementById('create-type');
@@ -288,8 +295,27 @@ class CommandDeck {
   }
 
   // ── Data Fetching ──────────────────────────────────────────────────────────
+
+  async fetchSystemStats() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/system`);
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById('stat-cpu').textContent = data.cpu_percent ?? '--';
+        document.getElementById('stat-ram').textContent = data.ram_percent ?? '--';
+        document.getElementById('stat-disk').textContent = data.disk_percent ?? '--';
+        document.getElementById('stat-network').textContent = data.network_mbps ?? '--';
+        document.getElementById('stat-agents').textContent = data.active_agents ?? '--';
+        document.getElementById('stat-uptime').textContent = data.uptime_days ?? '--';
+      }
+    } catch (e) {
+      console.warn('System stats fetch error:', e);
+    }
+  }
+
   async refreshAllData() {
     await Promise.all([
+      this.fetchSystemStats(),
       this.fetchOverview(),
       this.fetchBriefing(),
       this.fetchTasks(),
@@ -298,7 +324,10 @@ class CommandDeck {
       this.fetchCalendar(),
       this.fetchEmails(),
       this.fetchIntentions(),
-      this.fetchTelemetry()
+      this.fetchTelemetry(),
+      this.fetchServices(),
+      this.fetchMedia(),
+      this.fetchQueue()
     ]);
   }
 
@@ -910,6 +939,170 @@ class CommandDeck {
     body.innerHTML = html;
   }
 
+  // ── Phase 2: Service Grid, Media & Queue ──────────────────────────────────
+
+  getServiceIcon(name) {
+    const icons = {
+      'Jellyfin': '🎬',
+      'Plex': '🎥',
+      'Sonarr': '📺',
+      'Radarr': '🎞️',
+      'qBittorrent': '⬇️',
+      'Traefik': '🚦',
+      'Uptime Kuma': '📊',
+      'Grafana': '📈',
+      'Prometheus': '⚡',
+      'FreshRSS': '📰',
+      'Home Assistant': '🏠',
+    };
+    return icons[name] || '⚙️';
+  }
+
+  formatSize(bytes) {
+    if (!bytes) return '';
+    const gb = bytes / (1024 * 1024 * 1024);
+    return gb >= 1 ? `${gb.toFixed(1)} GB` : `${(bytes / (1024 * 1024)).toFixed(0)} MB`;
+  }
+
+  async fetchServices() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/services`);
+      if (res.ok) {
+        const services = await res.json();
+        this.renderServiceGrid(services);
+        this.updateServiceStatus(services);
+      }
+    } catch (e) {
+      console.warn('Service fetch error:', e);
+    }
+  }
+
+  renderServiceGrid(services) {
+    const grid = document.getElementById('service-grid');
+    if (!grid) return;
+
+    grid.innerHTML = Object.values(services).map(svc => {
+      const badgeHtml = svc.details?.queue_count
+        ? `<div class="service-card__queue" aria-label="${svc.details.queue_count} pending">${svc.details.queue_count} pending</div>`
+        : '';
+      const metricHtml = svc.details?.sessions
+        ? `<div class="service-card__metric"><span class="metric-label">Sessions</span><span class="metric-val">${svc.details.sessions}</span></div>`
+        : '';
+      return `
+        <div class="service-card" data-service="${svc.name.toLowerCase()}"
+             data-status="${svc.health}" tabindex="0" role="listitem"
+             aria-label="${svc.name}: ${svc.health}">
+          ${badgeHtml}
+          <div class="service-card__header">
+            <span class="service-card__icon" aria-hidden="true">${this.getServiceIcon(svc.name)}</span>
+            <span class="service-card__status status-dot status-dot--${svc.health}" aria-label="${svc.health}"></span>
+          </div>
+          <div class="service-card__body">
+            <h3 class="service-card__name">${svc.name}</h3>
+            <span class="service-card__port">:${svc.port}</span>
+            ${metricHtml}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  updateServiceStatus(services) {
+    const statusEl = document.getElementById('services-status');
+    if (!statusEl) return;
+
+    const healthy = Object.values(services).filter(s => s.health === 'healthy').length;
+    const unhealthy = Object.values(services).filter(s => s.health !== 'healthy').length;
+
+    if (healthy === Object.keys(services).length) {
+      statusEl.innerHTML = '<span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span><span>All services healthy</span>';
+    } else {
+      statusEl.innerHTML = `<span class="panel-status__dot panel-status__dot--warn" aria-hidden="true"></span><span>${healthy} up, ${unhealthy} down</span>`;
+    }
+
+    // Update freshness stamp
+    const freshEl = document.getElementById('services-freshness-text');
+    if (freshEl) freshEl.textContent = 'updated just now';
+    const freshEl2 = document.getElementById('services-freshness');
+    if (freshEl2) {
+      freshEl2.classList.remove('is-stale');
+      const dot = freshEl2.querySelector('.panel-freshness__dot');
+      if (dot) dot.className = 'panel-freshness__dot panel-freshness__dot--fresh';
+    }
+  }
+
+  async fetchMedia() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/media/active`);
+      if (res.ok) {
+        const streams = await res.json();
+        this.renderMediaGrid(streams);
+      }
+    } catch (e) {
+      console.warn('Media fetch error:', e);
+    }
+  }
+
+  renderMediaGrid(streams) {
+    const grid = document.getElementById('media-grid');
+    if (!grid) return;
+
+    const countEl = document.getElementById('media-count');
+    if (countEl) countEl.textContent = `${streams.length} active stream${streams.length !== 1 ? 's' : ''}`;
+
+    if (streams.length === 0) {
+      grid.innerHTML = '<div class="media-placeholder">No active streams</div>';
+      return;
+    }
+
+    grid.innerHTML = streams.map(s => {
+      const progress = s.total ? (s.progress / s.total) * 100 : 0;
+      return `
+        <div class="media-card">
+          <div class="media-card__info">
+            <span class="media-card__service">${s.service}</span>
+            <h3 class="media-card__title">${s.title || 'Unknown'}</h3>
+            <span class="media-card__user">${s.user || '?'} on ${s.device || 'unknown'}</span>
+          </div>
+          <div class="media-card__progress">
+            <div class="media-card__progress-bar" style="width: ${progress}%"></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async fetchQueue() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/queue`);
+      if (res.ok) {
+        const queue = await res.json();
+        this.renderQueue(queue);
+      }
+    } catch (e) {
+      console.warn('Queue fetch error:', e);
+    }
+  }
+
+  renderQueue(queue) {
+    const list = document.getElementById('queue-list');
+    if (!list) return;
+
+    const countEl = document.getElementById('queue-count');
+    if (countEl) countEl.textContent = `${queue.length} pending`;
+
+    if (queue.length === 0) {
+      list.innerHTML = '<div class="queue-placeholder">Queue is empty</div>';
+      return;
+    }
+
+    list.innerHTML = queue.map(item => `
+      <div class="queue-item" data-service="${item.service}">
+        <span class="queue-item__service queue-badge queue-badge--${item.service.toLowerCase()}">${item.service}</span>
+        <span class="queue-item__title">${item.title}</span>
+        <span class="queue-item__size">${this.formatSize(item.size)}</span>
+      </div>
+    `).join('');
+  }
+
   // ── Task, Reminder & Intention CRUD Operations ────────────────────────────
   async createTask(data) {
     await fetch(`${this.apiBase}/api/tasks`, {
@@ -1078,6 +1271,292 @@ function getCategoryBadge(cat) {
   if (cat === 'task_deadline') return 'badge-amber';
   if (cat === 'subscription') return 'badge-purple';
   return 'badge-medium';
+
+  // ── Phase 3: Agent Intelligence ──────────────────────────────────────────────
+
+  async fetchAgentStatus() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/agent`);
+      if (res.ok) {
+        const data = await res.json();
+        this.state.agentStatus = data;
+        this.renderAgentStatus();
+      }
+    } catch (e) {
+      console.warn('Agent status fetch error:', e);
+    }
+  }
+
+  async fetchCronJobs() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/cron`);
+      if (res.ok) {
+        const data = await res.json();
+        this.state.cronJobs = data;
+        this.renderCronJobs();
+      }
+    } catch (e) {
+      console.warn('Cron jobs fetch error:', e);
+    }
+  }
+
+  async fetchGraphifyStatus() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/graphify`);
+      if (res.ok) {
+        const data = await res.json();
+        this.state.graphifyStatus = data;
+        this.renderGraphifyStatus();
+      }
+    } catch (e) {
+      console.warn('Graphify status fetch error:', e);
+    }
+  }
+
+  async fetchHermesStatus() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/hermes`);
+      if (res.ok) {
+        const data = await res.json();
+        this.state.hermesStatus = data;
+        this.renderHermesStatus();
+      }
+    } catch (e) {
+      console.warn('Hermes status fetch error:', e);
+    }
+  }
+
+  renderAgentStatus() {
+    const data = this.state.agentStatus || {};
+    const grid = document.getElementById('agent-grid');
+    if (!grid) return;
+
+    const status = data.gateway_running ? 'ok' : 'warn';
+    const statusEl = document.getElementById('agent-status');
+    if (statusEl) {
+      statusEl.innerHTML = `
+        <span class="panel-status__dot panel-status__dot--${status}" aria-hidden="true"></span>
+        <span>${data.gateway_running ? 'Running' : 'Offline'}</span>
+      `;
+    }
+
+    grid.innerHTML = `
+      <div class="agent-stat">
+        <span class="agent-stat__label">Gateway</span>
+        <span class="agent-stat__value ${data.gateway_running ? 'ok' : 'danger'}">
+          ${data.gateway_running ? '✓ Active' : '✗ Offline'}
+        </span>
+      </div>
+      <div class="agent-stat">
+        <span class="agent-stat__label">Agent</span>
+        <span class="agent-stat__value ${data.agent_running ? 'ok' : 'warn'}">
+          ${data.agent_running ? '✓ Running' : '✗ Idle'}
+        </span>
+      </div>
+      <div class="agent-stat">
+        <span class="agent-stat__label">Cron Jobs</span>
+        <span class="agent-stat__value">${data.cron_jobs || 0}</span>
+      </div>
+      <div class="agent-stat">
+        <span class="agent-stat__label">Memory Files</span>
+        <span class="agent-stat__value">${data.memory_files || 0}</span>
+      </div>
+    `;
+  }
+
+  renderHermesStatus() {
+    const data = this.state.hermesStatus || {};
+    const statusEl = document.getElementById('agent-status');
+    if (statusEl) {
+      const count = (data.processes || []).length;
+      statusEl.innerHTML = `
+        <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
+        <span>${count} process(es)</span>
+      `;
+    }
+  }
+
+  renderGraphifyStatus() {
+    const data = this.state.graphifyStatus || {};
+    const grid = document.getElementById('graphify-grid');
+    if (!grid) return;
+
+    const statusEl = document.getElementById('graphify-status');
+    if (statusEl) {
+      const hasData = data.nodes > 0;
+      statusEl.innerHTML = `
+        <span class="panel-status__dot ${hasData ? 'panel-status__dot--ok' : 'panel-status__dot--warn'}" aria-hidden="true"></span>
+        <span>${hasData ? 'Indexed' : 'No data'}</span>
+      `;
+    }
+
+    grid.innerHTML = `
+      <div class="graphify-stat">
+        <span class="graphify-stat__label">Knowledge Graph Nodes</span>
+        <span class="graphify-stat__value">${data.nodes || 0}</span>
+      </div>
+      <div class="graphify-stat">
+        <span class="graphify-stat__label">Knowledge Graph Edges</span>
+        <span class="graphify-stat__value">${data.edges || 0}</span>
+      </div>
+      <div class="graphify-stat">
+        <span class="graphify-stat__label">Brain DB</span>
+        <span class="graphify-stat__value">${data.brain_dir ? '✓' : '✗'}</span>
+      </div>
+    `;
+  }
+
+  renderCronJobs() {
+    const data = this.state.cronJobs || {};
+    const list = document.getElementById('cron-list');
+    if (!list) return;
+
+    const statusEl = document.getElementById('cron-status');
+    if (statusEl) {
+      const count = data.total || 0;
+      statusEl.innerHTML = `
+        <span class="panel-status__dot panel-status__dot--info" aria-hidden="true"></span>
+        <span>${count} job(s)</span>
+      `;
+    }
+
+    if (!data.jobs || data.jobs.length === 0) {
+      list.innerHTML = '<div class="empty-hint">No scheduled jobs configured.</div>';
+      return;
+    }
+
+    list.innerHTML = data.jobs.map(job => `
+      <div class="cron-item">
+        <div>
+          <div class="cron-item__name">${escapeHtml(job.name || 'Untitled')}</div>
+          <div class="cron-item__schedule">${escapeHtml(job.schedule || 'Unknown')}</div>
+        </div>
+        <span class="badge ${job.enabled ? 'badge--ok' : 'badge--danger'}">
+          ${job.enabled ? 'Active' : 'Disabled'}
+        </span>
+      </div>
+    `).join('');
+  }
+
+
+
+  // ── Phase 4: Collapsible Panels ──────────────────────────────────────────────
+
+  initCollapsiblePanels() {
+    document.querySelectorAll('.collapsible-panel .panel-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        // Don't collapse if clicking on action buttons
+        if (e.target.closest('.panel-actions') || e.target.closest('button')) return;
+        
+        const panel = header.closest('.collapsible-panel');
+        const isCollapsed = panel.dataset.collapsed === 'true';
+        panel.dataset.collapsed = !isCollapsed;
+      });
+    });
+  }
+
+  // ── Phase 4: Improved Search with Highlighting ──────────────────────────────
+
+  highlightSearchTerm(text, term) {
+    if (!term) return escapeHtml(text);
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return escapeHtml(text).replace(regex, '<mark class="search-highlight">$1</mark>');
+  }
+
+  async searchWiki(query) {
+    if (!query || query.length < 2) return;
+    
+    const container = document.getElementById('wiki-results-container');
+    container.innerHTML = '<div class="empty-hint">Searching...</div>';
+    
+    try {
+      const res = await fetch(`${this.apiBase}/api/wiki/search?q=${encodeURIComponent(query)}`);
+      if (res.ok) {
+        const results = await res.json();
+        this.renderWikiResults(results, query);
+      }
+    } catch (e) {
+      console.warn('Wiki search error:', e);
+      container.innerHTML = '<div class="empty-hint">Search failed. Please try again.</div>';
+    }
+  }
+
+  renderWikiResults(results, query) {
+    const container = document.getElementById('wiki-results-container');
+    
+    if (results.length === 0) {
+      container.innerHTML = `<div class="empty-hint">No results found for "${escapeHtml(query)}"</div>`;
+      return;
+    }
+
+    const countEl = `<div class="search-results-count">${results.length} result(s)</div>`;
+    
+    const items = results.map(r => `
+      <div class="wiki-result-card" data-wiki-path="${escapeHtml(r.path)}">
+        <div class="wiki-result-header">
+          <span class="wiki-result-title">${this.highlightSearchTerm(r.title, query)}</span>
+          <span class="badge badge-cyan">${escapeHtml(r.tier)}</span>
+        </div>
+        <div class="wiki-res-snippet">${this.highlightSearchTerm(r.snippet, query)}</div>
+      </div>
+    `).join('');
+
+    container.innerHTML = countEl + items;
+  }
+
+  // ── Phase 4: Toast Notifications ─────────────────────────────────────────────
+
+  showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast--${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // ── Phase 4: Keyboard Shortcuts ──────────────────────────────────────────────
+
+  initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      // Don't trigger shortcuts when typing in inputs
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      
+      switch(e.key.toLowerCase()) {
+        case 'c':
+          // Toggle chat drawer
+          document.getElementById('chat-drawer').classList.toggle('open');
+          break;
+        case 't':
+          // Toggle telemetry drawer
+          document.getElementById('telemetry-drawer').classList.toggle('open');
+          break;
+        case 'n':
+          // Open create modal
+          this.openCreateModal('task');
+          break;
+        case 'k':
+          // Open command palette (Ctrl+K or Cmd+K)
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            document.getElementById('command-palette').showModal();
+          }
+          break;
+        case '/':
+          // Focus wiki search
+          e.preventDefault();
+          document.getElementById('wiki-search-input').focus();
+          break;
+      }
+    });
+  }
+
+
 }
 
 // Bootstrap application on DOM ready

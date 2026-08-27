@@ -118,6 +118,45 @@
   --z-popover:    300;
   --z-toast:      400;
   --z-palette:    500;
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     GLASSMORPHISM — frosted glass for panels [7]
+     ────────────────────────────────────────────────────────────────────────── */
+  --glass-bg:      rgba(17, 24, 39, 0.6);
+  --glass-border:  rgba(59, 130, 246, 0.15);
+  --glass-blur:    blur(12px);
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     GLOW SHADOWS — neon accent glows for interactive elements [2]
+     ────────────────────────────────────────────────────────────────────────── */
+  --shadow-glow-accent:   0 0 20px oklch(0.78 0.12 210 / 0.15);
+  --shadow-glow-healthy:  0 0 15px oklch(0.78 0.13 160 / 0.1);
+  --shadow-glow-error:    0 0 15px oklch(0.65 0.19 25 / 0.1);
+  --shadow-glow-warning:  0 0 15px oklch(0.80 0.13 80 / 0.1);
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     LIGHT-DARK THEMES — automatic system preference switching [5]
+     light-dark() evaluates at render time — no JS needed.
+     ────────────────────────────────────────────────────────────────────────── */
+  --bg-primary:   light-dark(#f8fafc, #0a0e17);
+  --bg-secondary: light-dark(#ffffff, #111827);
+  --text-primary: light-dark(#0f172a, #f1f5f9);
+  --text-secondary: light-dark(#475569, #94a3b8);
+  --border-light: light-dark(#e2e8f0, #1e293b);
+  --border-light-subtle: light-dark(#e2e8f0, oklch(1 0 0 / 0.08));
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     ENHANCED TYPOGRAPHIC SCALE — modular 1.25 ratio [1]
+     ────────────────────────────────────────────────────────────────────────── */
+  --fs-xs:      0.75rem;    /* 12px */
+  --fs-sm:      0.875rem;   /* 14px */
+  --fs-base:    1rem;       /* 16px */
+  --fs-lg:      1.125rem;   /* 18px */
+  --fs-xl:      1.25rem;    /* 20px */
+  --fs-2xl:     1.5rem;     /* 24px */
+  --fs-3xl:     1.875rem;   /* 30px */
+  --fs-4xl:     2.25rem;    /* 36px */
+  --fs-5xl:     3rem;       /* 48px */
 }
 
 /* ==========================================================================

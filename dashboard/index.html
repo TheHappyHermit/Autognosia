@@ -126,6 +126,40 @@
       </div>
     </header>
 
+    <!-- ── HERO STATS — System overview (span 12) ─────────────────────────────────── -->
+    <section class="hero-stats" role="region" aria-label="System overview">
+      <div class="hero-stat">
+        <span class="hero-stat__label">CPU</span>
+        <span class="hero-stat__value text-tabular" id="stat-cpu" data-numeric>--</span>
+        <span class="hero-stat__unit">%</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat__label">RAM</span>
+        <span class="hero-stat__value text-tabular" id="stat-ram" data-numeric>--</span>
+        <span class="hero-stat__unit">%</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat__label">DISK</span>
+        <span class="hero-stat__value text-tabular" id="stat-disk" data-numeric>--</span>
+        <span class="hero-stat__unit">%</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat__label">NETWORK</span>
+        <span class="hero-stat__value text-tabular" id="stat-network" data-numeric>--</span>
+        <span class="hero-stat__unit">Mbps</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat__label">AGENTS</span>
+        <span class="hero-stat__value text-tabular" id="stat-agents" data-numeric>--</span>
+        <span class="hero-stat__unit">active</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat__label">UPTIME</span>
+        <span class="hero-stat__value text-tabular" id="stat-uptime" data-numeric>--</span>
+        <span class="hero-stat__unit">days</span>
+      </div>
+    </section>
+
     <!-- ── 2. BRIEFING BAR — HERO TILE (span 12) [7] ───────────────────────────── -->
     <section class="briefing-bar panel" aria-labelledby="briefing-heading" aria-live="polite" aria-atomic="true">
       <div class="briefing-header">
@@ -159,7 +193,7 @@
     </section>
 
     <!-- ── 3. CALENDAR PANEL — CO-HERO (span 5, row-span 2) [7] ────────────────── -->
-    <section class="panel panel-calendar" aria-labelledby="cal-heading">
+    <section class="panel panel-calendar collapsible-panel" data-collapsed="false" aria-labelledby="cal-heading">
       <header class="panel-header">
         <div class="panel-title-group">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -214,7 +248,7 @@
     </section>
 
     <!-- ── 4. TASKS PANEL — Action Pipeline (span 4) ───────────────────────────── -->
-    <section class="panel panel-tasks" aria-labelledby="tasks-heading">
+    <section class="panel panel-tasks collapsible-panel" data-collapsed="false" aria-labelledby="tasks-heading">
       <header class="panel-header">
         <div class="panel-title-group">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -285,7 +319,7 @@
     </section>
 
     <!-- ── 5. TELEMETRY PANEL — Metrics grid (span 3) ──────────────────────────── -->
-    <section class="panel panel-telemetry" aria-labelledby="telemetry-heading">
+    <section class="panel panel-telemetry collapsible-panel" data-collapsed="false" aria-labelledby="telemetry-heading">
       <header class="panel-header">
         <div class="panel-title-group">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -318,7 +352,7 @@
     </section>
 
     <!-- ── 6. COMMUNICATIONS PANEL — 3 sub-panels in grid (span 12) ───────────── -->
-    <section class="panel panel-comms" aria-labelledby="comms-heading" role="region" aria-label="Communications & Knowledge">
+    <section class="panel panel-comms collapsible-panel" data-collapsed="false" aria-labelledby="comms-heading" role="region" aria-label="Communications & Knowledge">
       <header class="panel-header" style="grid-column: 1 / -1;">
         <div class="panel-title-group">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -430,6 +464,184 @@
     </section>
 
   </main>
+
+  <!-- ── 8. AGENT INTELLIGENCE — Hermes, Graphify, Cron ──────────────────────── -->
+  <div class="section-divider" role="separator" aria-label="Agent intelligence section">
+    <div class="section-title">🧠 Agent Intelligence</div>
+  </div>
+  <div class="deck-container section-grid" role="region" aria-label="Agent intelligence">
+    
+    <!-- Hermes Status Panel -->
+    <section class="panel" style="grid-column: span 4;" aria-labelledby="agent-heading">
+      <header class="panel-header">
+        <div class="panel-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <h2 id="agent-heading">Hermes Agent</h2>
+        </div>
+        <div class="panel-status" id="agent-status" aria-live="polite">
+          <span class="panel-status__dot" aria-hidden="true"></span>
+          <span>Checking…</span>
+        </div>
+      </header>
+      <div class="panel-body agent-grid" id="agent-grid" role="list">
+        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
+        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
+        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
+        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
+      </div>
+      <footer class="panel-footer">
+        <div class="panel-freshness" id="agent-freshness">
+          <span class="panel-status__dot" aria-hidden="true"></span>
+          <span id="agent-freshness-text">updated just now</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Graphify Status Panel -->
+    <section class="panel" style="grid-column: span 4;" aria-labelledby="graphify-heading">
+      <header class="panel-header">
+        <div class="panel-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="5" cy="5" r="2"/>
+            <circle cx="19" cy="5" r="2"/>
+            <circle cx="12" cy="19" r="2"/>
+            <line x1="5" y1="5" x2="12" y2="19"/>
+            <line x1="19" y1="5" x2="12" y2="19"/>
+          </svg>
+          <h2 id="graphify-heading">Graphify</h2>
+        </div>
+        <div class="panel-status" id="graphify-status" aria-live="polite">
+          <span class="panel-status__dot" aria-hidden="true"></span>
+          <span>Checking…</span>
+        </div>
+      </header>
+      <div class="panel-body graphify-grid" id="graphify-grid" role="list">
+        <div class="graphify-stat skeleton skeleton-card" aria-hidden="true"></div>
+        <div class="graphify-stat skeleton skeleton-card" aria-hidden="true"></div>
+        <div class="graphify-stat skeleton skeleton-card" aria-hidden="true"></div>
+      </div>
+      <footer class="panel-footer">
+        <div class="panel-freshness" id="graphify-freshness">
+          <span class="panel-status__dot" aria-hidden="true"></span>
+          <span id="graphify-freshness-text">updated just now</span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Cron Jobs Panel -->
+    <section class="panel" style="grid-column: span 4;" aria-labelledby="cron-heading">
+      <header class="panel-header">
+        <div class="panel-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <h2 id="cron-heading">Scheduled Jobs</h2>
+        </div>
+        <div class="panel-status" id="cron-status" aria-live="polite">
+          <span class="panel-status__dot" aria-hidden="true"></span>
+          <span>Loading…</span>
+        </div>
+      </header>
+      <div class="panel-body cron-list" id="cron-list" role="list">
+        <div class="skeleton skeleton-row" aria-hidden="true"></div>
+        <div class="skeleton skeleton-row" aria-hidden="true"></div>
+        <div class="skeleton skeleton-row" aria-hidden="true"></div>
+      </div>
+      <footer class="panel-footer">
+        <div class="panel-freshness" id="cron-freshness">
+          <span class="panel-status__dot" aria-hidden="true"></span>
+          <span id="cron-freshness-text">updated just now</span>
+        </div>
+      </footer>
+    </section>
+
+  </div>
+
+  <!-- ── 7. SERVICE GRID — homelab services overview ──────────────────────────── -->
+  <div class="section-divider" role="separator" aria-label="Service grid section">
+    <div class="section-title">🖥️ Homelab Services</div>
+  </div>
+  <div class="deck-container section-grid" role="region" aria-label="Homelab services">
+    <section class="panel" style="grid-column: span 12;" aria-labelledby="services-heading">
+      <header class="panel-header">
+        <div class="panel-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          <h2 id="services-heading">Homelab Services</h2>
+        </div>
+        <div class="panel-actions">
+          <div class="panel-status" id="services-status" aria-live="polite">
+            <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
+            <span>Scanning…</span>
+          </div>
+          <button class="btn btn--ghost btn--sm" id="btn-service-refresh" aria-label="Refresh services">
+            <span aria-hidden="true">⟳</span> Refresh
+          </button>
+        </div>
+      </header>
+      <div class="panel-body service-grid" id="service-grid" role="list" aria-label="Service health cards">
+        <!-- Skeleton loading cards -->
+        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
+        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
+        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
+        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
+      </div>
+      <footer class="panel-footer">
+        <div class="panel-freshness" id="services-freshness">
+          <span class="panel-freshness__dot panel-freshness__dot--fresh" aria-hidden="true"></span>
+          <span id="services-freshness-text">updated just now</span>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <!-- ── 8. MEDIA & DOWNLOADS — what's playing + queue ───────────────────────── -->
+  <div class="section-divider" role="separator" aria-label="Media and downloads section">
+    <div class="section-title">🎬 Media & Downloads</div>
+  </div>
+  <div class="deck-container section-grid" role="region" aria-label="Media playback and download queue">
+    <!-- Media panel — spans 8 columns -->
+    <section class="panel" style="grid-column: span 8;" aria-labelledby="media-heading">
+      <header class="panel-header">
+        <div class="panel-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <h2 id="media-heading">What's Playing</h2>
+        </div>
+        <span class="panel-subtitle" id="media-count" aria-live="polite">0 active streams</span>
+      </header>
+      <div class="panel-body media-grid" id="media-grid" role="list" aria-label="Active media streams">
+        <div class="media-placeholder">No active streams</div>
+      </div>
+    </section>
+
+    <!-- Download queue — spans 4 columns -->
+    <section class="panel" style="grid-column: span 4;" aria-labelledby="queue-heading">
+      <header class="panel-header">
+        <div class="panel-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <h2 id="queue-heading">Download Queue</h2>
+        </div>
+        <span class="panel-subtitle" id="queue-count" aria-live="polite">0 pending</span>
+      </header>
+      <div class="panel-body queue-list" id="queue-list" role="list" aria-label="Download queue">
+        <div class="queue-placeholder">Queue is empty</div>
+      </div>
+    </section>
+  </div>
 
   <!-- ── TELEMETRY DRAWER (slide-over) ───────────────────────────────────────── -->
   <aside class="drawer telemetry-drawer" id="telemetry-drawer" role="dialog" aria-modal="false" aria-label="System Telemetry">
