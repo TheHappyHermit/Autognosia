@@ -9,7 +9,7 @@ Writes an adapted tree to <tempdir>/cortex_skills_push, prints how many files
 changed, then verifies no Windows paths remain. Push with:
 
     cd /tmp/cortex_skills_push   # MSYS view of C:\\tmp\\cortex_skills_push
-    tar -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server <username>@10.1.1.37 \
+    tar -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server <username>@<LAN_HOST> \
         "mkdir -p ~/.hermes/skills/research ~/.hermes-cortex/incoming && tar -xf - -C ~/.hermes/skills/"
 
 Windows notes: run with `python` (no python3 on this box). MSYS /tmp maps to

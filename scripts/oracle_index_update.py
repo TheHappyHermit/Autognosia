@@ -58,7 +58,7 @@ def run_graphify_extract(files_to_process):
     """Run graphify extract on the modified files using incremental mode."""
     env = os.environ.copy()
     env["OPENAI_API_KEY"] = "x"
-    env["OPENAI_BASE_URL"] = "http://10.1.1.10:8080/v1"
+    env["OPENAI_BASE_URL"] = "http://<V100_INFERENCE_URL>/v1"
     env["OPENAI_MODEL"] = "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
     
     cmd = [

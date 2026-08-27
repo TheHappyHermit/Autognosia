@@ -4,16 +4,16 @@ model:
   base_url: ''
 providers:
   llamaCPP:
-    api: http://10.1.1.10:8080/v1
+    api: http://<V100_HOST>:8080/v1
     default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
     transport: chat_completions
   nous:
     stale_timeout_seconds: 1440
   lmStudio:
-    api: http://10.1.1.151:1234/v1
+    api: http://<DESKTOP_3090_HOST>:1234/v1
     default_model: qwen/qwen3.6-35b-a3b
   openai-compatible:
-    api: http://10.1.1.151:1234/v1
+    api: http://<DESKTOP_3090_HOST>:1234/v1
     default_model: qwen/qwen3.6-35b-a3b
 fallback_providers:
   - provider: llamaCPP

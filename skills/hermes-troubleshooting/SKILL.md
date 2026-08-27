@@ -126,7 +126,7 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
    ```
 
    - If `hostname` returns a *server* name (e.g. `<hostname>`) while you're *looking at* a desktop GUI, you are remoted into the server.
-   - The IP returned (e.g. `10.1.1.37`) is the **execution host** — where all terminal/tool calls land — not necessarily the desktop machine.
+   - The IP returned (e.g. `<LAN_HOST>`) is the **execution host** — where all terminal/tool calls land — not necessarily the desktop machine.
 
 3. **Check for SSH tunneling indicators** — if the desktop app is remoted:
 
@@ -140,12 +140,12 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
 ### Correct Mental Model
 
 ```
-[Windows desktop] —(GUI + SSH tunnel)→ [Ubuntu agent server 10.1.1.37]
+[Windows desktop] —(GUI + SSH tunnel)→ [Ubuntu agent server <LAN_HOST>]
    ↑ Hermes desktop app                 ↑ tools execute here
    ← profiles / sessions flow back
 ```
 
-The agent server at `10.1.1.37` is the persistent backend shared across frontends (desktop app, Telegram, etc.). The desktop app's profile list showing server profiles confirms the link is healthy. When you run `ip addr` from a tool call, the `10.1.1.37` address is the **agent server**, not the desktop.
+The agent server at `<LAN_HOST>` is the persistent backend shared across frontends (desktop app, Telegram, etc.). The desktop app's profile list showing server profiles confirms the link is healthy. When you run `ip addr` from a tool call, the `<LAN_HOST>` address is the **agent server**, not the desktop.
 
 ### Common Mistake to Avoid
 

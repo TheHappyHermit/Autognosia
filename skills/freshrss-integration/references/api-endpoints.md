@@ -30,9 +30,9 @@ Without this header, you will get:
 - 404 errors or wrong virtual host served
 
 ### 2. IP + Host Header Combination
-When accessing via IP address (10.1.1.10):
+When accessing via IP address (<V100_HOST>):
 ```bash
-curl -vk -H "Host: freshrss.<oracle-server>" https://10.1.1.10/api/greader.php
+curl -vk -H "Host: freshrss.<oracle-server>" https://<V100_HOST>/api/greader.php
 ```
 
 ### 3. SSL Verification
@@ -45,7 +45,7 @@ The instance uses a self-signed certificate (TRAEFIK DEFAULT CERT), so:
 ```python
 import requests
 
-FRESHRSS_IP = "10.1.1.10"
+FRESHRSS_IP = "<V100_HOST>"
 FRESHRSS_HOST = "freshrss.<oracle-server>"
 FRESHRSS_URL = f"https://{FRESHRSS_IP}/api/greader.php"
 USERNAME = "<username>"

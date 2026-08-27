@@ -28,7 +28,7 @@ Before changing any hardcoded address (IP, URL, port) in the newsletter builder 
 
 Quick connectivity test:
 ```bash
-curl -sk -o /dev/null -w "%{http_code}" "https://10.1.1.10/" \
+curl -sk -o /dev/null -w "%{http_code}" "https://<V100_HOST>/" \
   -H "Host: freshrss.<oracle-server>" --max-time 10
 ```
 
@@ -161,9 +161,9 @@ The script then uses `hy3:free` via OpenRouter. A `429` (free-tier throttle) is 
 #### Issue: FreshRSS Auth Fails with "Not Found"
 **Symptoms**: `Authentication failed: {"detail":"Not Found"}` — the IP direct connection fails.
 
-**Diagnosis**: The script has a hardcoded `freshrss_ip` in `get_freshrss_config()`. Check if FreshRSS moved servers. Current correct IP is `10.1.1.10` (local server). Verify directly:
+**Diagnosis**: The script has a hardcoded `freshrss_ip` in `get_freshrss_config()`. Check if FreshRSS moved servers. Current correct IP is `<V100_HOST>` (local server). Verify directly:
 ```bash
-curl -sk -X POST "https://10.1.1.10/api/greader.php/accounts/ClientLogin" \
+curl -sk -X POST "https://<V100_HOST>/api/greader.php/accounts/ClientLogin" \
   -d "Email=<username>&Passwd=<pass>&service=reader" \
   -H "Host: freshrss.<oracle-server>"
 ```

@@ -75,8 +75,8 @@ volumes:
 ### 3. Create .env File
 ```bash
 MASTER_KEY=sk-your-master-key-here  # Generate a strong key
-OPENAI_API_KEY=sk-your-openai-key-here
-ANTHROPIC_API_KEY=sk-ant-your-anthropic-key-here
+OPENAI_API_KEY=<REDACTED_API_KEY>
+ANTHROPIC_API_KEY=<REDACTED_API_KEY>
 # Add other API keys as needed
 ```
 

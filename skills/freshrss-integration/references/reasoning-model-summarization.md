@@ -18,7 +18,7 @@ The user's default OpenRouter model is `tencent/hy3:free` — a **reasoning-only
 ## Reproduction recipe (verified)
 ```python
 import openai
-c = openai.OpenAI(api_key=OPENROUTER_API_KEY, base_url="https://openrouter.ai/api/v1")
+c = openai.OpenAI(api_key=<REDACTED_API_KEY>, base_url="https://openrouter.ai/api/v1")
 
 # FAILS: content is None, reasoning holds the answer (especially multi-item batches)
 r = c.chat.completions.create(model="tencent/hy3:free",

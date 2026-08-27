@@ -23,8 +23,8 @@ Patterns for integrating Graphify as a **derived relationship/connectivity index
 
 | Graph | Source Wiki | Temperature | Queried By | Refresh Cadence |
 |-------|-------------|-------------|------------|-----------------|
-| **Main Graph** | `$HOME/.autognosia/active-wiki/` | Hot/current | Main Hermes, Planner | Frequent (days/weeks) |
-| **Oracle Graph** | `$HOME/.autognosia/oracle/brain/` | Cold/historical | Oracle Profile | Infrequent (weeks/months) |
+| **Main Graph** | `$AUTOGNOSIA/active-wiki/` | Hot/current | Main Hermes, Planner | Frequent (days/weeks) |
+| **Oracle Graph** | `$AUTOGNOSIA/oracle/brain/` | Cold/historical | Oracle Profile | Infrequent (weeks/months) |
 
 **Critical**: Main and Oracle graphs are **logically separate** and **never automatically merged**. This preserves the hot vs cold knowledge hierarchy.
 
@@ -50,100 +50,78 @@ Patterns for integrating Graphify as a **derived relationship/connectivity index
 If Graphify is unavailable, stale, returning no result, or returning incorrect results:
 
 ### Main Graph Fallback Order
-1. Ordinary wiki search (`ripgrep $HOME/.autognosia/active-wiki/`)
+1. Ordinary wiki search (`ripgrep $AUTOGNOSIA/active-wiki/`)
 2. Direct Markdown/source inspection
 3. Oracle (if appropriate)
 4. Research Hermes
 
 ### Oracle Graph Fallback Order
-1. Ordinary wiki search (`ripgrep $HOME/.autognosia/oracle/brain/`)
+1. Ordinary wiki search (`ripgrep $AUTOGNOSIA/oracle/brain/`)
 2. Direct Markdown/source inspection
 3. GBrain semantic/hybrid retrieval (via Oracle profile)
-4. Raw evidence search (`$HOME/.autognosia/oracle/raw/`)
+4. Raw evidence search (`$AUTOGNOSIA/oracle/raw/`)
 5. Research Hermes
 
 **CRITICAL**: A Graphify failure or empty result MUST NOT be interpreted as proof that information does not exist. Never say "the knowledge does not exist" solely because Graphify failed to find it.
 
-## Ingestion Pipeline
+## Ingestion Pipeline (V100-only — NO OpenRouter, NO desktop 3090)
+
+> **HARD RULE (Josh, 2026-08-26):** Graphify runs ONLY on the local V100 at
+> `http://<V100_HOST>:8080/v1` (`/models/Qwen3.6-35B-A3B-Q4_K_M.gguf`). It must
+> NEVER fall back to OpenRouter, and it must NEVER use the desktop 3090
+> (`<DESKTOP_3090_HOST>:1234` / `<DESKTOP_3090_HOST>`) — that GPU is reserved for OpenCode /
+> desktop-researcher. The launch scripts bake in this env and a 96k
+> (`GRAPHIFY_MAX_OUTPUT_TOKENS=98304`) client-side output cap (graphify's default
+> 8192 cap truncates JSON mid-object — bug #1365).
 
 ### Main Graph (Active Wiki)
 ```bash
-# Full semantic run (cache clear MANDATORY)
-rm -rf $HOME/.autognosia/graphify-main-out
-graphify extract $HOME/.autognosia/active-wiki \
-  --backend openai --model "your-model-id" \
-  --token-budget 50000 --max-concurrency 4 --no-cluster --api-timeout 1200 \
-  --out $HOME/.autognosia/graphify-main-out
-
-# Incremental (AST only)
-graphify update $HOME/.autognosia/active-wiki --graph $HOME/.autognosia/graphify-main-out
+# Full semantic run — uses the canonical script (V100-only, 96k cap)
+bash ~/.hermes/scripts/graphify_active_wiki.sh
+# Output lands in: $AUTOGNOSIA/active-wiki/graphify-out/
 ```
 
 ### Oracle Graph (Oracle Wiki)
 ```bash
-# Full semantic run (cache clear MANDATORY)
-rm -rf $HOME/.autognosia/graphify-oracle-out
-graphify extract $HOME/.autognosia/oracle/brain \
-  --backend openai --model "your-model-id" \
-  --token-budget 50000 --max-concurrency 4 --no-cluster --api-timeout 1200 \
-  --out $HOME/.autognosia/graphify-oracle-out
-
-# Incremental (AST only)
-graphify update $HOME/.autognosia/oracle/brain --graph $HOME/.autognosia/graphify-oracle-out
+# Full semantic run — uses the canonical script (V100-only, 96k cap)
+bash ~/.hermes/scripts/graphify_oracle_brain.sh
+# Output lands in: $AUTOGNOSIA/oracle/brain/graphify-out/
 ```
 
-## Workspace Wrapper Pattern
-
-Use the `graphify` CLI directly. Install via `uv tool install graphifyy` (or `pipx install graphifyy`).
-
-```bash
-# Extract
-graphify extract $HOME/.autognosia/active-wiki --backend openai --model "your-model-id"
-
-# Query
-graphify query "How does X connect to Y?" --graph $HOME/.autognosia/graphify-main-out
-
-# Update (incremental)
-graphify update $HOME/.autognosia/active-wiki --graph $HOME/.autognosia/graphify-main-out
-
-# Explain
-graphify explain "concept-name" --graph $HOME/.autognosia/graphify-main-out
-
-# Path
-graphify path "node-a" "node-b" --graph $HOME/.autognosia/graphify-main-out
-```
-
-No wrapper scripts needed — the CLI handles environment variables and paths.
+**Do not** hand-run `graphify extract` with `--out .../graphify-main-out` or
+`--out .../graphify-oracle-out` — those paths are stale and the skill previously
+pointed at them by mistake. Always use the two `.sh` scripts above; they set the
+correct backend, model, output dir, and token cap.
 
 ## LLM Backend Configuration
 
-### Local (Recommended for Privacy)
+### Local V100 (REQUIRED for this deployment)
 ```bash
-export OPENAI_API_KEY="local"
-export OPENAI_BASE_URL="http://localhost:1234/v1"
+export OPENAI_BASE_URL="http://<V100_HOST>:8080/v1"
+export OPENAI_API_KEY="sk-local"
+export OPENAI_MODEL="/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
+export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"   # 96k — avoids JSON truncation (bug #1365)
 ```
-
-### Cloud (OpenRouter)
-```bash
-export OPENROUTER_API_KEY="<key>"
-export GRAPHIFY_OPENROUTER_MODEL="your-model-id"
-```
-
-**Requires $10+ credits** for practical use (1,000 req/day vs 50/day free)
+This is the only supported backend for Autognosia graphify. There is intentionally
+**no OpenRouter fallback** and **no <DESKTOP_3090_HOST>:1234 (3090)** path — both are
+forbidden for graphify.
 
 ## Verification Protocol (DISK CHECK — Exit Code 0 ≠ Success)
 
 > **⚠️ STALE-REPORT TRAP**: Graphify can leave `GRAPH_REPORT.md` with OLD mtime while re-extracting only a handful of files.
 
 ```bash
-# 1. mtime must postdate run
-ls -la --time-style=full-iso $HOME/.autognosia/graphify-main-out/GRAPH_REPORT.md
+# Active wiki graph
+OUT=$AUTOGNOSIA/active-wiki/graphify-out
+ls -la --time-style=full-iso "$OUT/GRAPH_REPORT.md"
+find "$OUT/cache/semantic" -type f | wc -l
+grep "semantic extraction on" $AUTOGNOSIA/logs/graphify-active-wiki.log
 
-# 2. Semantic cache files in thousands
-find $HOME/.autognosia/graphify-main-out/cache/semantic -type f | wc -l
-
-# 3. Log shows semantic extraction on ~total files
-grep "semantic extraction on" $HOME/.autognosia/graphify-main-out/*.log
+# Oracle brain graph
+OUT=$AUTOGNOSIA/oracle/brain/graphify-out
+ls -la --time-style=full-iso "$OUT/GRAPH_REPORT.md"
+find "$OUT/cache/semantic" -type f | wc -l
+grep "semantic extraction on" $AUTOGNOSIA/logs/graphify-oracle-brain.log
 ```
 
 **Success indicators**: AMBIGUOUS > 0%, tokens > 0, INFERRED > 0%, node/edge counts > AST baseline
@@ -164,16 +142,16 @@ Use Hermes no-agent cron. No LLM needed for incremental.
 
 ### Main Graph (Main Hermes / Planner)
 ```bash
-graphify query "How does X connect to Y?" --graph $HOME/.autognosia/graphify-main-out
-graphify explain "concept-name" --graph $HOME/.autognosia/graphify-main-out
-graphify path "node-a" "node-b" --graph $HOME/.autognosia/graphify-main-out
+graphify query "How does X connect to Y?" --graph $AUTOGNOSIA/graphify-main-out
+graphify explain "concept-name" --graph $AUTOGNOSIA/graphify-main-out
+graphify path "node-a" "node-b" --graph $AUTOGNOSIA/graphify-main-out
 ```
 
 ### Oracle Graph (Oracle Profile)
 ```bash
-graphify query "Trace compliance flow from A to B" --graph $HOME/.autognosia/graphify-oracle-out
-graphify explain "historical-concept" --graph $HOME/.autognosia/graphify-oracle-out
-graphify path "node-x" "node-y" --graph $HOME/.autognosia/graphify-oracle-out
+graphify query "Trace compliance flow from A to B" --graph $AUTOGNOSIA/graphify-oracle-out
+graphify explain "historical-concept" --graph $AUTOGNOSIA/graphify-oracle-out
+graphify path "node-x" "node-y" --graph $AUTOGNOSIA/graphify-oracle-out
 ```
 
 ## Related Skills

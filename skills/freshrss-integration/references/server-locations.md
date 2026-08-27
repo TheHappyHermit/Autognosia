@@ -2,7 +2,7 @@
 
 Known IPs and access patterns for internal services on this network.
 
-## Local Server (10.1.1.10)
+## Local Server (<V100_HOST>)
 
 Primary machine running Docker-based services behind Traefik.
 
@@ -17,7 +17,7 @@ Primary machine running Docker-based services behind Traefik.
 
 ```bash
 # All services use Traefik with self-signed certs
-curl -sk "https://10.1.1.10/api/greader.php/accounts/ClientLogin" \
+curl -sk "https://<V100_HOST>/api/greader.php/accounts/ClientLogin" \
   -H "Host: freshrss.<oracle-server>" \
   --max-time 15
 ```

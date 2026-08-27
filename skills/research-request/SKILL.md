@@ -68,7 +68,7 @@ hermes --profile desktop-researcher chat -q "$(cat /tmp/task.txt)"
 A self-report is not proof. While the job runs, confirm the real TCP connection:
 
 ```bash
-ss -tnp | grep '10.1.1.151:1234'
+ss -tnp | grep '<DESKTOP_3090_LMSTUDIO_URL>'
 ```
 
 No connection there = it did not use the desktop GPU. Also confirm the output file

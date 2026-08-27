@@ -4,7 +4,7 @@ UPDATED 2026-08-23 (post-autognosia-migration, re-verified live on .37):
 - organizer.db: $HOME/.autognosia/personal-organizer/data/organizer.db (tables: tasks, projects, subscriptions, important_dates, intentions, waiting_states, reminders — NO source_records)
 - ~/.hermes-cortex now holds only cortex.db/exchange/logs/personal-organizer (stale path map below is history)
 
-# Agent Server (10.1.1.37) — Hermes Cortex Path Map
+# Agent Server (<LAN_HOST>) — Hermes Cortex Path Map
 
 Verified 2026-08-16. Repo: `~/hermes-cortex` (github.com/<username>/hermes-cortex). README is the design doc (~1900 lines): retrieval-cost hierarchy Honcho → Active Wiki → Oracle → GBrain; knowledge flows hot→cold, never deleted ("knowledge changes temperature").
 

@@ -28,7 +28,7 @@ Talk to Notion two ways. Same integration token works for both — pick by what'
 2. Copy the API key (starts with `ntn_` or `secret_`)
 3. Store in `${HERMES_HOME:-~/.hermes}/.env`:
    ```
-   NOTION_API_KEY=ntn_your_key_here
+   NOTION_API_KEY=<REDACTED_API_KEY>
    ```
 4. **Share target pages/databases with the integration** in Notion: page menu `...` → `Connect to` → your integration name. Without this, the API returns 404 for that page even though it exists.
 

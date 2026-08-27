@@ -46,7 +46,7 @@ graphify extract <source> \
   --out <output>
 ```
 
-Model recommendation: use the same model used historically (Qwen 3.6-35B or Quinn 3.6-6). For local models, configure `OPENAI_API_KEY=local` and `OPENAI_BASE_URL`.
+Model recommendation: use the same model used historically (Qwen 3.6-35B or Quinn 3.6-6). For local models, configure `OPENAI_API_KEY=<LOCAL_KEY>` and `OPENAI_BASE_URL`.
 
 ### Incremental (AST-only) — Acceptable Only for Code
 

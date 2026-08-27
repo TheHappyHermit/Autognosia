@@ -36,7 +36,7 @@ Use this skill when you see warnings like:
 model:
   default: qwen/qwen3.6-35b-a3b
   provider: lmstudio
-  base_url: http://10.1.1.151:1234/v1
+  base_url: http://<DESKTOP_3090_LMSTUDIO_URL>/v1
   api_key_env: OPENROUTER_API_KEY  # <-- MISMATCH! LMStudio doesn't use this
 
 # PROBLEMATIC: OpenRouter provider but missing API key in environment
@@ -58,7 +58,7 @@ model:
 model:
   default: qwen/qwen3.6-35b-a3b
   provider: lmstudio
-  base_url: http://10.1.1.151:1234/v1
+  base_url: http://<DESKTOP_3090_LMSTUDIO_URL>/v1
   # No api_key_env needed for LMStudio
 
 # CORRECT: OpenRouter setup (requires API key)
@@ -207,7 +207,7 @@ mcp_servers:
     connect_timeout: 60
 
   home-assistant:
-    url: "http://10.1.1.13:8123/api/mcp"
+    url: "http://<LAN_HOST>:8123/api/mcp"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 30
@@ -221,7 +221,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://<LAN_HOST>:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
 ```
 (Notice how everything is on one line after the mcp_servers key - this is invalid YAML)
 
@@ -242,7 +242,7 @@ mcp_servers:
     connect_timeout: 60
 
   home-assistant:
-    url: "http://10.1.1.13:8123/api/mcp"
+    url: "http://<LAN_HOST>:8123/api/mcp"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 30
@@ -260,7 +260,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://<LAN_HOST>:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
 ```
 
 **Solution**:
@@ -280,7 +280,7 @@ mcp_servers:
     connect_timeout: 60
 
   home-assistant:
-    url: "http://10.1.1.13:8123/api/mcp"
+    url: "http://<LAN_HOST>:8123/api/mcp"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 30
@@ -311,7 +311,7 @@ mcp_servers:
     connect_timeout: 60
 
   home-assistant:
-    url: "http://10.1.1.13:8123/api/mcp"
+    url: "http://<LAN_HOST>:8123/api/mcp"
     headers:
       Authorization: "Bearer <REDACTED>"
     timeout: 30

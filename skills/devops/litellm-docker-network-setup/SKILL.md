@@ -41,9 +41,9 @@ cd ~/litellm-proxy
 ```bash
 # === PRIMARY MODEL API KEYS ===
 # Get these from your secure storage (password manager, etc.)
-OPENAI_API_KEY=your_actual_openai_key_here
-ANTHROPIC_API_KEY=your_actual_anthropic_key_here
-GOOGLE_API_KEY=your_actual_google_key_here
+OPENAI_API_KEY=<REDACTED_API_KEY>
+ANTHROPIC_API_KEY=<REDACTED_API_KEY>
+GOOGLE_API_KEY=<REDACTED_API_KEY>
 
 # === ADDITIONAL PROVIDER KEYS (as needed) ===
 # COHERE_API_KEY=...

@@ -340,12 +340,12 @@ Based on real-world testing, here are common issues and solutions:
 **Solutions**:
 1. **Verify Host Header**: All requests MUST include `Host: freshrss.<oracle-server>` when accessing via IP
    ```bash
-   curl -vk -H \"Host: freshrss.<oracle-server>\" https://10.1.1.10/api/greader.php
+   curl -vk -H \"Host: freshrss.<oracle-server>\" https://<V100_HOST>/api/greader.php
    ```
 
 2. **Check /etc/hosts entry**: Add if missing
    ```
-   10.1.1.10 freshrss.<oracle-server>
+   <V100_HOST> freshrss.<oracle-server>
    ```
 
 3. **SSL Certificate**: Instance uses self-signed certificate (TRAEFIK DEFAULT CERT)
@@ -365,7 +365,7 @@ Based on real-world testing, here are common issues and solutions:
    - Check Traefik configuration (Docker labels or dynamic config) for a Host rule matching `freshrss.<oracle-server>` pointing to the FreshRSS service
    - Test Traefik's HTTP routing (bypass HTTPS): `curl -H "Host: freshrss.<oracle-server>" http://<traefik-ip>:80/` (FreshRSS root should return a login page, not 404)
    - Test FreshRSS setup page: `curl -H "Host: freshrss.<oracle-server>" http://<traefik-ip>:80/install.php` — if this returns 404, Traefik isn't routing any FreshRSS paths, including the setup page required for initialization
-   - Quick diagnostic: If `curl -vk -H "Host: freshrss.<oracle-server>" https://10.1.1.10/` returns 404, Traefik has no route for this host
+   - Quick diagnostic: If `curl -vk -H "Host: freshrss.<oracle-server>" https://<V100_HOST>/` returns 404, Traefik has no route for this host
 
 ### Newsletter Output Style
 
@@ -419,7 +419,7 @@ See `references/reasoning-model-summarization.md` for the verified fix recipe wh
    - Edit the SearXNG `settings.yml` to enable `search_format: json` (or add `json` to the allowed output formats)
    - Or use an alternative free search backend: `ddgs` (DuckDuckGo, needs `pip install ddgs` + set `web.search_backend: ddgs` in config.yaml), or `brave-free` (needs `BRAVE_SEARCH_API_KEY`)
 
-8. **Hardcoded IPs in Client Scripts**: The newsletter builder script (`~/.hermes/scripts/newsletter_builder.py`) has a hardcoded `freshrss_ip` value. The correct local server IP is `10.1.1.10` (not `161.153.112.27`, which was the old Oracle server IP). See `references/server-locations.md` for a full map of internal service IPs.
+8. **Hardcoded IPs in Client Scripts**: The newsletter builder script (`~/.hermes/scripts/newsletter_builder.py`) has a hardcoded `freshrss_ip` value. The correct local server IP is `<V100_HOST>` (not `161.153.112.27`, which was the old Oracle server IP). See `references/server-locations.md` for a full map of internal service IPs.
 
 9. **Uninitialized FreshRSS Instance**: Newly deployed FreshRSS containers return "Not Found" on API endpoints until the initial web-based setup is completed. Access `http://freshrss.<oracle-server>/install.php` to:
    - Create the admin user (username: `<username>`, password from `FRESHRSS_API_PASSWORD` in `~/.hermes/.env`)

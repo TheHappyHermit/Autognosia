@@ -87,7 +87,7 @@ grep -rl "timed out" $DIR/ 2>/dev/null | sort | tail -1
 ## Session Example: the client platform Deep Research (May 2026)
 
 - **1,067 total runs, 593 failures (55.6%)**
-- **580 were 401 Unauthorized** — started May 16, persisted ~9 days. LMStudio at `10.1.1.151:1234` was down.
+- **580 were 401 Unauthorized** — started May 16, persisted ~9 days. LMStudio at `<DESKTOP_3090_LMSTUDIO_URL>` was down.
 - **13 were timeouts** — clustered on May 19 and May 23–24.
 - Job uses `provider: lmstudio` with **no** `api_key_env` (correct config), so 401s mean the service was unreachable.
 
