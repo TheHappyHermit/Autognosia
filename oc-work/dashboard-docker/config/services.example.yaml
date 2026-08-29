@@ -1,0 +1,80 @@
+# Autognosia Command Deck — Service Definitions
+# Copy this to services.yaml and customize for your homelab.
+
+services:
+  jellyfin:
+    name: Jellyfin
+    port: 8096
+    icon: "🎬"
+    category: media
+    url: "http://jellyfin.local"
+
+  plex:
+    name: Plex
+    port: 32400
+    icon: "🎥"
+    category: media
+    url: "http://plex.local"
+
+  sonarr:
+    name: Sonarr
+    port: 8989
+    icon: "📺"
+    category: automation
+    url: "http://sonarr.local"
+
+  radarr:
+    name: Radarr
+    port: 7878
+    icon: "🎞️"
+    category: automation
+    url: "http://radarr.local"
+
+  qbittorrent:
+    name: qBittorrent
+    port: 8080
+    icon: "⬇️"
+    category: downloads
+    url: "http://qbittorrent.local"
+
+  traefik:
+    name: Traefik
+    port: 8080
+    icon: "🚦"
+    category: infra
+    url: "http://traefik.local"
+
+  uptimekuma:
+    name: Uptime Kuma
+    port: 3001
+    icon: "📊"
+    category: monitoring
+    url: "http://uptimekuma.local"
+
+  grafana:
+    name: Grafana
+    port: 3000
+    icon: "📈"
+    category: monitoring
+    url: "http://grafana.local"
+
+  prometheus:
+    name: Prometheus
+    port: 9090
+    icon: "⚡"
+    category: monitoring
+    url: "http://prometheus.local"
+
+  freshrss:
+    name: FreshRSS
+    port: 8081
+    icon: "📰"
+    category: feed
+    url: "http://freshrss.local"
+
+  homeassistant:
+    name: Home Assistant
+    port: 8123
+    icon: "🏠"
+    category: smart-home
+    url: "http://homeassistant.local"
