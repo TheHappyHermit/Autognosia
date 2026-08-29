@@ -812,6 +812,90 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
+
+
+# ── Bot Management Endpoints ───────────────────────────────────────────────────
+
+@app.get("/api/bots")
+def get_bots():
+    """List all configured bots/agents."""
+    import psutil
+    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    profiles_dir = hermes_home / "profiles"
+    bots = []
+
+    if profiles_dir.exists():
+        for profile_dir in sorted(profiles_dir.iterdir()):
+            if not profile_dir.is_dir():
+                continue
+            profile_name = profile_dir.name
+            config_file = profile_dir / "config.yaml"
+            agent_name = profile_name.replace("-", " ").title()
+            model = "unknown"
+            if config_file.exists():
+                try:
+                    import yaml
+                    with open(config_file) as f:
+                        cfg = yaml.safe_load(f) or {}
+                    model = cfg.get("model", "unknown")
+                except Exception:
+                    pass
+
+            status = "idle"
+            for proc in psutil.process_iter(['pid', 'cmdline']):
+                try:
+                    cmdline = ' '.join(proc.info['cmdline'] or [])
+                    if profile_name in cmdline and 'hermes' in cmdline.lower():
+                        status = "online"
+                        break
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+
+            bots.append({
+                "id": profile_name,
+                "name": agent_name,
+                "role": f"{profile_name.replace('-', ' ')} agent",
+                "model": model,
+                "provider": "Nous Research",
+                "status": status,
+                "current_task": None,
+                "last_activity": datetime.now(timezone.utc).isoformat(),
+                "avatar": "🤖" if profile_name == "default" else "🧠"
+            })
+
+    if not bots:
+        bots.append({
+            "id": "demo",
+            "name": "Demo Assistant",
+            "role": "Sample bot for UI testing",
+            "model": "demo-model",
+            "provider": "Demo",
+            "status": "idle",
+            "current_task": None,
+            "last_activity": datetime.now(timezone.utc).isoformat(),
+            "avatar": "🤖"
+        })
+
+    return {"bots": bots}
+
+
+@app.get("/api/bots/{bot_id}/history")
+def get_bot_history(bot_id: str):
+    """Get conversation history for a bot."""
+    return {"messages": []}
+
+
+@app.post("/api/bots/{bot_id}/message")
+def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
+    """Send a message to a specific bot."""
+    message = (payload.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+    return {
+        "reply": f"Echo from {bot_id}: {message}",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
 # ── Phase 2: Service Integration Endpoints ──────────────────────────────────────
 
 SERVICE_DEFINITIONS = {
@@ -1225,6 +1309,10 @@ def serve_services_css():
 @app.get("/agent.css")
 def serve_agent_css():
     return FileResponse(str(DASHBOARD_DIR / "agent.css"), media_type="text/css")
+
+@app.get("/bots.css")
+def serve_bots_css():
+    return FileResponse(str(DASHBOARD_DIR / "bots.css"), media_type="text/css")
 
 @app.get("/tokens.css")
 def serve_tokens():

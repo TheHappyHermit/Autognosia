@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="drawers.css" />
   <link rel="stylesheet" href="services.css" />
   <link rel="stylesheet" href="agent.css" />
+  <link rel="stylesheet" href="bots.css" />
 </head>
 <body>
   <div class="app-layout">
@@ -240,6 +241,13 @@
         </section>
       </div>
     </main>
+
+    <!-- Bots View (hidden by default) -->
+    <div id="view-bots" class="view-section" style="padding:var(--space-5);max-width:calc(100vw - var(--sidebar-width))">
+      <div id="bots-container">
+        <!-- Populated by app-bots.js -->
+      </div>
+    </div>
   </div>
 
   <!-- Toast Container -->
@@ -247,6 +255,7 @@
 
   <!-- Scripts -->
   <script src="app.js"></script>
+  <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
 </body>
 </html>
