@@ -4,7 +4,21 @@
  * prospective intentions, second brain search, and cognitive telemetry.
  */
 
-// ── Helper Utility Functions (must be defined before class) ─────────────────
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = `toast toast--${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+// Expose globally
+window.showToast = showToast;
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -61,6 +75,52 @@ class CommandDeck {
     this.setupAutoRefresh();
     this.initCollapsiblePanels();
     this.initKeyboardShortcuts();
+    this.initViewRouting();
+  }
+
+  initViewRouting() {
+    // Sidebar link clicks
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = link.dataset.view;
+        this.showView(view);
+      });
+    });
+
+    // Hamburger menu (mobile)
+    const hamburger = document.getElementById('hamburger-btn');
+    if (hamburger) {
+      hamburger.addEventListener('click', () => {
+        document.querySelector('.sidebar')?.classList.toggle('open');
+      });
+    }
+  }
+
+  showView(viewName) {
+    // Update sidebar active state
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    const link = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
+    if (link) link.classList.add('active');
+
+    // Show/hide sections
+    document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
+    const target = document.getElementById(`view-${viewName}`);
+    if (target) {
+      target.style.display = 'block';
+    }
+
+    // Initialize view-specific content
+    if (viewName === 'bots' && window.botsPage) {
+      window.botsPage.init();
+    }
+
+    // For dashboard view, show the main content
+    if (viewName === 'dashboard') {
+      document.querySelector('.content-area').style.display = 'block';
+    } else {
+      document.querySelector('.content-area').style.display = 'none';
+    }
   }
 
   // ── Event Bindings ─────────────────────────────────────────────────────────
@@ -466,32 +526,38 @@ class CommandDeck {
 
   renderOverview() {
     const stats = this.state.overview.stats || {};
-    document.getElementById('stat-active-tasks').textContent = stats.active_tasks ?? '--';
-    document.getElementById('stat-critical-tasks').textContent = stats.critical_tasks ?? '0';
-    const remStatEl = document.getElementById('stat-reminders');
-    if (remStatEl) remStatEl.textContent = stats.pending_reminders ?? '0';
-    document.getElementById('stat-today-events').textContent = stats.today_events_count ?? '0';
-    document.getElementById('stat-unread-emails').textContent = stats.unread_emails ?? '0';
-    document.getElementById('stat-intentions').textContent = stats.active_intentions ?? '0';
+    const setStat = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val ?? '--';
+    };
+    setStat('stat-active-tasks', stats.active_tasks);
+    setStat('stat-critical-tasks', stats.critical_tasks);
+    setStat('stat-reminders', stats.pending_reminders);
+    setStat('stat-today-events', stats.today_events_count);
+    setStat('stat-unread-emails', stats.unread_emails);
+    setStat('stat-intentions', stats.active_intentions);
   }
 
   renderBriefing() {
     const b = this.state.briefing;
-    if (b.date) document.getElementById('briefing-date').textContent = b.date;
-    if (b.summary) document.getElementById('briefing-summary').textContent = b.summary;
-    if (b.prompt_me) document.getElementById('briefing-prompt-text').textContent = `"${b.prompt_me}"`;
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    if (b.date) set('briefing-date', b.date);
+    if (b.summary) set('briefing-summary', b.summary);
+    if (b.prompt_me) set('briefing-prompt-text', `"${b.prompt_me}"`);
 
     const priList = document.getElementById('briefing-priorities-list');
-    if (b.top_priorities && b.top_priorities.length > 0) {
-      priList.innerHTML = b.top_priorities.map(p => `
-        <li>
-          ${escapeHtml(p.title)}
-          <span class="badge badge-${p.priority || 'medium'}">${escapeHtml(p.priority)}</span>
-          ${p.due_at ? `<span>⏰ Due ${escapeHtml(p.due_at)}</span>` : ''}
-        </li>
-      `).join('');
-    } else {
-      priList.innerHTML = '<li class="empty-hint">No open priorities.</li>';
+    if (priList) {
+      if (b.top_priorities && b.top_priorities.length > 0) {
+        priList.innerHTML = b.top_priorities.map(p => `
+          <li>
+            ${escapeHtml(p.title)}
+            <span class="badge badge-${p.priority || 'medium'}">${escapeHtml(p.priority)}</span>
+            ${p.due_at ? `<span>⏰ Due ${escapeHtml(p.due_at)}</span>` : ''}
+          </li>
+        `).join('');
+      } else {
+        priList.innerHTML = '<li class="empty-hint">No open priorities.</li>';
+      }
     }
   }
 
@@ -509,26 +575,21 @@ class CommandDeck {
 
   renderCalendar() {
     const stage = document.getElementById('calendar-stage');
+    if (!stage) return;
     const heading = document.getElementById('cal-heading');
     
-    // Filter events based on active category
     let events = this.state.calendarEvents;
     if (this.calFilter === 'meeting') events = events.filter(e => e.category === 'meeting' || e.type === 'calendar');
     else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
     else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
 
     if (events.length === 0) {
-      stage.innerHTML = '<div class="empty-hint">No events scheduled.</div>';
+      stage.innerHTML = '<div class="empty-state"><div class="empty-state__icon">📅</div><div class="empty-state__title">No events today</div><div class="empty-state__desc">Your schedule is clear.</div></div>';
       return;
     }
 
-    if (this.selectedCalendarView === 'day') {
-      this.renderDayView(stage, heading, events);
-    } else if (this.selectedCalendarView === 'week') {
-      this.renderWeekView(stage, heading, events);
-    } else if (this.selectedCalendarView === 'month') {
-      this.renderMonthView(stage, heading, events);
-    }
+    if (heading) heading.textContent = this.currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    stage.innerHTML = events.map(e => `<div class="calendar-event"><strong>${escapeHtml(e.title || 'Untitled')}</strong><br><small>${escapeHtml(e.start)}</small></div>`).join('');
   }
 
   renderDayView(stage, heading, events) {
@@ -834,9 +895,10 @@ class CommandDeck {
   // ── Emails & Communications ────────────────────────────────────────────────
   renderEmails() {
     const container = document.getElementById('email-stream-container');
+    if (!container) return;
     const badge = document.getElementById('email-unread-badge');
     const unreadCount = this.state.emails.filter(e => !e.read).length;
-    badge.textContent = `${unreadCount} Pending Action`;
+    if (badge) badge.textContent = `${unreadCount} Pending Action`;
 
     if (this.state.emails.length === 0) {
       container.innerHTML = '<div class="empty-hint">No triaged communications in inbox.</div>';
@@ -863,8 +925,9 @@ class CommandDeck {
   // ── Prospective Intentions ─────────────────────────────────────────────────
   renderIntentions() {
     const container = document.getElementById('intentions-stream-container');
+    if (!container) return;
     if (this.state.intentions.length === 0) {
-      container.innerHTML = '<div class="empty-hint">No active prospective intentions registered.</div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-state__icon">⏱</div><div class="empty-state__title">No active intentions</div><div class="empty-state__desc">Prospective memory is quiet.</div></div>';
       return;
     }
 
@@ -879,7 +942,8 @@ class CommandDeck {
   // ── Telemetry Drawer ───────────────────────────────────────────────────────
   renderTelemetry() {
     const t = this.state.telemetry;
-    const body = document.getElementById('telemetry-body');
+    const body = document.getElementById('telemetry-grid') || document.getElementById('telemetry-body');
+    if (!body) return;
 
     let html = '';
 

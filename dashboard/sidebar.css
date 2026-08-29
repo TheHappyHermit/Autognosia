@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Sidebar Navigation
+   ========================================================================== */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-3) 0;
+  z-index: 100;
+  animation: slide-in-left var(--motion-slow) ease-out;
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.sidebar-logo {
+  width: 36px;
+  height: 36px;
+  margin-bottom: var(--space-5);
+  color: var(--accent);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 20px;
+  transition: all var(--motion-fast);
+  position: relative;
+}
+
+.sidebar-link:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sidebar-link.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebar-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--motion-fast);
+}
+
+.sidebar-profile:hover {
+  transform: scale(1.05);
+}
+
+/* Mobile: hide sidebar, show hamburger */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--motion-base);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: oklch(0 0 0 / 0.4);
+    z-index: 99;
+  }
+
+  .sidebar-overlay.visible {
+    display: block;
+  }
+}

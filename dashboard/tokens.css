@@ -1,276 +1,90 @@
 /* ==========================================================================
-   Autognosia Command Deck — Design Token System (OKLCH)
-   Single source of truth for color, spacing, typography, motion.
-   Perceptually uniform lightness (L), predictable a11y, no hex drift.
+   Autognosia Command Deck — Design Tokens
+   Apple/Microsoft Fluent hybrid design system
    ========================================================================== */
 
 :root {
-  /* ──────────────────────────────────────────────────────────────────────────
-     SURFACE LADDER — elevation by LIGHTENING, not shadows [2][3]
-     Dark themes read best on #121212–#1E1E1E tiers; never pure black.
-     Page base (--bg-0) ≈ your #07090e territory; panels step UP from it.
-     ────────────────────────────────────────────────────────────────────────── */
-  --bg-0: oklch(0.145 0.012 250);   /* page background */
-  --bg-1: oklch(0.185 0.014 250);   /* panel / card base */
-  --bg-2: oklch(0.225 0.016 250);   /* raised card / hover */
-  --bg-3: oklch(0.275 0.018 250);   /* overlay / popover / drawer */
+  color-scheme: light dark;
 
-  /* Borders use subtle opacity on the surface ladder */
-  --border-subtle: oklch(1 0 0 / 0.08);
-  --border-active: oklch(0.78 0.12 210 / 0.35);  /* cyan accent */
-  --border-amber:  oklch(0.80 0.13 80  / 0.35);  /* amber accent */
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --bg-primary: light-dark(#f5f5f7, #0d0d0f);
+  --bg-secondary: light-dark(#ffffff, #1c1c1e);
+  --bg-tertiary: light-dark(#f0f0f2, #2c2c2e);
+  --bg-elevated: light-dark(#ffffff, #3a3a3c);
 
-  /* ──────────────────────────────────────────────────────────────────────────
-     TEXT TIERS — all pass 4.5:1 on bg-0/1; large text & UI glyphs ≥ 3:1 [4]
-     Desaturate so text doesn't vibrate against dark surfaces.
-     ────────────────────────────────────────────────────────────────────────── */
-  --text-1: oklch(0.93 0.01 250);   /* primary — headlines, values */
-  --text-2: oklch(0.72 0.012 250);  /* secondary — labels, meta */
-  --text-3: oklch(0.55 0.014 250);  /* captions, kickers, disabled */
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  --border-subtle: light-dark(oklch(0 0 0 / 0.08), oklch(1 0 0 / 0.08));
+  --border-active: light-dark(oklch(0.55 0.15 250 / 0.4), oklch(0.7 0.15 250 / 0.4));
 
-  /* ──────────────────────────────────────────────────────────────────────────
-     ACCENT RAMPS — one hue each, 3 usable steps (base/soft/glow)
-     Saturation dialed down so accents don't vibrate [2].
-     Status = semantics, not decoration.
-     ────────────────────────────────────────────────────────────────────────── */
-  --cyan:       oklch(0.78 0.12 210);   /* primary brand / info */
-  --cyan-soft:  oklch(0.78 0.12 210 / 0.14);
-  --cyan-glow:  oklch(0.78 0.12 210 / 0.35);
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --text-1: light-dark(oklch(0.15 0.01 250), oklch(0.95 0.01 250));
+  --text-2: light-dark(oklch(0.45 0.01 250), oklch(0.72 0.01 250));
+  --text-3: light-dark(oklch(0.65 0.01 250), oklch(0.50 0.01 250));
 
-  --amber:      oklch(0.80 0.13 80);    /* warning / attention */
-  --amber-soft: oklch(0.80 0.13 80  / 0.14);
-  --amber-glow: oklch(0.80 0.13 80  / 0.35);
+  /* ── Accents ──────────────────────────────────────────────────────────── */
+  --accent: light-dark(#007aff, #0a84ff);
+  --accent-soft: light-dark(oklch(0.55 0.15 250 / 0.1), oklch(0.7 0.15 250 / 0.15));
+  --accent-contrast: #ffffff;
 
-  --emerald:    oklch(0.78 0.13 160);   /* success / healthy */
-  --emerald-soft: oklch(0.78 0.13 160 / 0.14);
-  --emerald-glow: oklch(0.78 0.13 160 / 0.35);
+  /* ── Status ───────────────────────────────────────────────────────────── */
+  --success: light-dark(#34c759, #30d158);
+  --warning: light-dark(#ff9500, #ff9f0a);
+  --danger: light-dark(#ff3b30, #ff453a);
+  --info: light-dark(#5ac8fa, #64d2ff);
 
-  --rose:       oklch(0.65 0.19 25);    /* danger / critical */
-  --rose-soft:  oklch(0.65 0.19 25  / 0.14);
-  --rose-glow:  oklch(0.65 0.19 25  / 0.35);
+  /* ── Legacy Aliases ──────────────────────────────────────────────────── */
+  --text-muted: var(--text-3);
+  --text-secondary: var(--text-2);
+  --accent-emerald: var(--success);
+  --accent-cyan: var(--info);
+  --accent-amber: var(--warning);
+  --accent-red: var(--danger);
+  --accent-purple: #af52de;
+  --accent-orange: var(--warning);
 
-  --purple:     oklch(0.70 0.15 280);   /* intentions / prospective */
-  --purple-soft: oklch(0.70 0.15 280 / 0.14);
+  /* ── Typography ───────────────────────────────────────────────────────── */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
 
-  /* Semantic status aliases (use these in components) */
-  --ok:      var(--emerald);
-  --warn:    var(--amber);
-  --info:    var(--cyan);
-  --danger:  var(--rose);
-
-  /* ──────────────────────────────────────────────────────────────────────────
-     TYPOGRAPHY — system stack + monospace voice for "console" texture
-     Tabular numerals on EVERY dynamic number (clock, counts, telemetry) [19]
-     ────────────────────────────────────────────────────────────────────────── */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: ui-monospace, 'JetBrains Mono', 'SFMono-Regular', 'Fira Mono', Consolas, monospace;
-
-  /* Scale in rem so the whole deck scales with root size. Sized for reading at
-     a distance on a wall monitor, not at arm's length. */
-  --fs-kicker:   0.75rem;     /* 12px — uppercase, letter-spacing: .08em */
-  --fs-body:     0.9375rem;   /* 15px */
-  --fs-panel-title: 1.125rem; /* 18px */
-  --fs-hero:     2.25rem;     /* 36px */
-
-  --lh-tight: 1.3;
-  --lh-body:  1.5;
-  --lh-mono:  1.4;
-
-  /* ──────────────────────────────────────────────────────────────────────────
-     SPACING & GEOMETRY
-     ────────────────────────────────────────────────────────────────────────── */
+  /* ── Spacing (4pt grid) ───────────────────────────────────────────────── */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  /* ── Radius ───────────────────────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
-  /* ──────────────────────────────────────────────────────────────────────────
-     MOTION GRAMMAR — 150–250ms, transform/opacity ONLY [21]
-     Gate ALL motion behind prefers-reduced-motion [20]
-     ────────────────────────────────────────────────────────────────────────── */
-  --motion-fast:    120ms;  /* micro: checkbox, hover */
-  --motion-base:    180ms;  /* standard: panel switch, drawer */
-  --motion-slow:    250ms;  /* macro: view transition, expand */
-  --ease-out:       cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* ── Shadows ──────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04);
+  --shadow-md: 0 2px 8px oklch(0 0 0 / 0.06);
+  --shadow-lg: 0 8px 24px oklch(0 0 0 / 0.08);
+  --shadow-xl: 0 16px 48px oklch(0 0 0 / 0.12);
 
-  /* ──────────────────────────────────────────────────────────────────────────
-     SHADOWS — elevation expressed by lightening surfaces, not casting shadows [2][3]
-     Only use for true overlays (drawers, modals, popovers)
-     ────────────────────────────────────────────────────────────────────────── */
-  --shadow-overlay: 0 12px 40px oklch(0 0 0 / 0.5);
-  --shadow-drawer:  -8px 0 30px oklch(0 0 0 / 0.5);
+  /* ── Glassmorphism ────────────────────────────────────────────────────── */
+  --glass-bg: light-dark(oklch(1 0 0 / 0.72), oklch(0.15 0.01 250 / 0.72));
+  --glass-border: light-dark(oklch(1 0 0 / 0.2), oklch(1 0 0 / 0.1));
+  --glass-blur: blur(20px) saturate(180%);
 
-  /* ──────────────────────────────────────────────────────────────────────────
-     Z-INDEX LAYERING
-     ────────────────────────────────────────────────────────────────────────── */
-  --z-base:       0;
-  --z-panel:      10;
-  --z-drawer:     100;
-  --z-modal:      200;
-  --z-popover:    300;
-  --z-toast:      400;
-  --z-palette:    500;
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --motion-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  --motion-base: 250ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  --motion-slow: 350ms cubic-bezier(0.25, 0.1, 0.25, 1);
 
-  /* ──────────────────────────────────────────────────────────────────────────
-     GLASSMORPHISM — frosted glass for panels [7]
-     ────────────────────────────────────────────────────────────────────────── */
-  --glass-bg:      rgba(17, 24, 39, 0.6);
-  --glass-border:  rgba(59, 130, 246, 0.15);
-  --glass-blur:    blur(12px);
-
-  /* ──────────────────────────────────────────────────────────────────────────
-     GLOW SHADOWS — neon accent glows for interactive elements [2]
-     ────────────────────────────────────────────────────────────────────────── */
-  --shadow-glow-accent:   0 0 20px oklch(0.78 0.12 210 / 0.15);
-  --shadow-glow-healthy:  0 0 15px oklch(0.78 0.13 160 / 0.1);
-  --shadow-glow-error:    0 0 15px oklch(0.65 0.19 25 / 0.1);
-  --shadow-glow-warning:  0 0 15px oklch(0.80 0.13 80 / 0.1);
-
-  /* ──────────────────────────────────────────────────────────────────────────
-     LIGHT-DARK THEMES — automatic system preference switching [5]
-     light-dark() evaluates at render time — no JS needed.
-     ────────────────────────────────────────────────────────────────────────── */
-  --bg-primary:   light-dark(#f8fafc, #0a0e17);
-  --bg-secondary: light-dark(#ffffff, #111827);
-  --text-primary: light-dark(#0f172a, #f1f5f9);
-  --text-secondary: light-dark(#475569, #94a3b8);
-  --border-light: light-dark(#e2e8f0, #1e293b);
-  --border-light-subtle: light-dark(#e2e8f0, oklch(1 0 0 / 0.08));
-
-  /* ──────────────────────────────────────────────────────────────────────────
-     ENHANCED TYPOGRAPHIC SCALE — modular 1.25 ratio [1]
-     ────────────────────────────────────────────────────────────────────────── */
-  --fs-xs:      0.75rem;    /* 12px */
-  --fs-sm:      0.875rem;   /* 14px */
-  --fs-base:    1rem;       /* 16px */
-  --fs-lg:      1.125rem;   /* 18px */
-  --fs-xl:      1.25rem;    /* 20px */
-  --fs-2xl:     1.5rem;     /* 24px */
-  --fs-3xl:     1.875rem;   /* 30px */
-  --fs-4xl:     2.25rem;    /* 36px */
-  --fs-5xl:     3rem;       /* 48px */
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --sidebar-width: 64px;
+  --header-height: 56px;
 }
 
-/* ==========================================================================
-   GLOBAL RESET & BASE
-   ========================================================================== */
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html {
-  color-scheme: dark;                    /* native dark scrollbars, inputs, autofill [6] */
-  font-size: 16px;                       /* 1rem = 16px, the browser default, so every
-                                            rem token below means what it says. Was 13px,
-                                            which silently shrank every rem value by 19%. */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  background: var(--bg-0);
-  color: var(--text-1);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Tabular numerals on ALL numeric UI — the #1 premium data product tell [19] */
-:where(time, [data-numeric], .metric-val, .clock-display,
-       .task-count, .reminder-count, .telemetry-value,
-       .sparkline-value, .calendar-date, .badge-count) {
-  font-variant-numeric: tabular-nums;
-  font-family: var(--font-mono);
-}
-
-/* Focus visible rings — keyboard accessibility */
-:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
-}
-
-/* Selection styling */
-::selection {
-  background: var(--cyan-soft);
-  color: var(--text-1);
-}
-
-/* Scrollbars — thin, subtle */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-0); }
-::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 0.15);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover { background: var(--border-active); }
-
-/* ==========================================================================
-   MOTION — gated by prefers-reduced-motion [20]
-   Only transform/opacity animate cheaply [21]
-   ========================================================================== */
-
-@media (prefers-reduced-motion: no-preference) {
-  /* Base transitions */
-  .panel, .card, .btn, .chip, .tab-btn, .filter-chip,
-  .event-card, .task-card, .reminder-card, .email-card,
-  .project-card, .intention-card, .wiki-result-card,
-  .metric-chip, .drawer, .modal-box, .toast,
-  .command-palette, .palette-result {
-    transition: transform var(--motion-fast) var(--ease-out),
-                opacity var(--motion-fast) var(--ease-out),
-                background var(--motion-fast) var(--ease-out),
-                border-color var(--motion-fast) var(--ease-out),
-                box-shadow var(--motion-fast) var(--ease-out);
-  }
-
-  /* Skeleton shimmer */
-  @keyframes shimmer {
-    0% { opacity: 0.4; }
-    50% { opacity: 0.7; }
-    100% { opacity: 0.4; }
-  }
-  .skeleton { animation: shimmer 1.6s ease-in-out infinite; }
-
-  /* Breathing clock colon pulse */
-  @keyframes pulse-colon {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-  .clock-colon { animation: pulse-colon 1s ease-in-out infinite; }
-
-  /* Toast slide-in */
-  @keyframes toast-in {
-    from { transform: translateX(100%) translateY(-10px); opacity: 0; }
-    to   { transform: translateX(0) translateY(0); opacity: 1; }
-  }
-  @keyframes toast-out {
-    to { transform: translateX(100%) translateY(-10px); opacity: 0; }
-  }
-
-  /* Palette slide-down */
-  @keyframes palette-in {
-    from { transform: translateY(-8px); opacity: 0; }
-    to   { transform: translateY(0); opacity: 1; }
-  }
-
-  /* View Transitions — for calendar view switch, panel focus, theme flip [15] */
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: var(--motion-base);
-    animation-timing-function: var(--ease-out);
-  }
-}
-
-/* Respect reduced motion — disable ALL non-essential animation */
+/* ── Reduced Motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -278,427 +92,343 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .clock-colon { animation: none; opacity: 1; }
 }
 
-/* ==========================================================================
-   SKELETON SHAPES — mirror final layout, no frame-only [11]
-   ========================================================================== */
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-1) 25%,
-    var(--bg-2) 50%,
-    var(--bg-1) 75%
-  );
-  background-size: 200% 100%;
-  border-radius: var(--radius-sm);
-}
-
-.skeleton-text { height: 1em; width: 80%; }
-.skeleton-text.short { width: 40%; }
-.skeleton-title { height: 1.25em; width: 60%; font-weight: 600; }
-.skeleton-metric { height: 1.5em; width: 3ch; }
-.skeleton-badge { height: 1em; width: 5ch; }
-.skeleton-row { display: flex; gap: var(--space-2); align-items: center; }
-.skeleton-avatar { width: 32px; height: 32px; border-radius: 50%; }
-.skeleton-card { padding: var(--space-3); }
-
-/* ==========================================================================
-   UTILITY CLASSES
-   ========================================================================== */
-
+/* ── Utilities ──────────────────────────────────────────────────────────── */
 .sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0;
-  margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
-  white-space: nowrap; border: 0;
-}
-
-.visually-hidden { display: none !important; }
-
-.text-1 { color: var(--text-1); }
-.text-2 { color: var(--text-2); }
-.text-3 { color: var(--text-3); }
-
-.text-kicker {
-  font-size: var(--fs-kicker);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
-.text-mono { font-family: var(--font-mono); }
-.text-tabular { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
-
-.bg-1 { background: var(--bg-1); }
-.bg-2 { background: var(--bg-2); }
-.bg-3 { background: var(--bg-3); }
-
-.border-subtle { border: 1px solid var(--border-subtle); }
-.border-active { border: 1px solid var(--border-active); }
-
-.rounded-sm { border-radius: var(--radius-sm); }
-.rounded-md { border-radius: var(--radius-md); }
-.rounded-lg { border-radius: var(--radius-lg); }
-
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-1 { gap: var(--space-1); }
-.gap-2 { gap: var(--space-2); }
-.gap-3 { gap: var(--space-3); }
-.gap-4 { gap: var(--space-4); }
-
-.p-2 { padding: var(--space-2); }
-.p-3 { padding: var(--space-3); }
-.p-4 { padding: var(--space-4); }
-
-/* Badge utility — semantic colors only */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.badge--ok      { background: var(--emerald-soft); color: var(--emerald); border: 1px solid var(--emerald-glow); }
-.badge--warn    { background: var(--amber-soft);  color: var(--amber);  border: 1px solid var(--amber-glow); }
-.badge--info    { background: var(--cyan-soft);   color: var(--cyan);   border: 1px solid var(--cyan-glow); }
-.badge--danger  { background: var(--rose-soft);   color: var(--rose);   border: 1px solid var(--rose-glow); }
-.badge--neutral { background: oklch(1 0 0 / 0.08); color: var(--text-2); border: 1px solid var(--border-subtle); }
-.badge--purple  { background: var(--purple-soft); color: var(--purple); border: 1px solid oklch(0.70 0.15 280 / 0.35); }
-
-/* Priority variants. app.js emits `badge badge-<priority>` straight from the
-   task/priority field, which does not match the .badge--* BEM names above, so
-   these were rendering with the base .badge rule only (no colour). Mapped onto
-   the same semantic tokens rather than new colours. */
-.badge-critical { background: var(--rose-soft);    color: var(--rose);    border: 1px solid var(--rose-glow); }
-.badge-high     { background: var(--amber-soft);   color: var(--amber);   border: 1px solid var(--amber-glow); }
-.badge-medium   { background: var(--cyan-soft);    color: var(--cyan);    border: 1px solid var(--cyan-glow); }
-.badge-low      { background: oklch(1 0 0 / 0.08); color: var(--text-2); border: 1px solid var(--border-subtle); }
-
-/* Button base */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid transparent;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-}
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.btn--primary {
-  background: var(--cyan-soft);
-  color: var(--cyan);
-  border-color: var(--border-active);
-}
-.btn--primary:hover:not(:disabled) {
-  background: var(--cyan);
-  color: var(--bg-0);
+  border: 0;
 }
 
-.btn--secondary {
-  background: var(--bg-1);
-  color: var(--text-2);
-  border-color: var(--border-subtle);
-}
-.btn--secondary:hover:not(:disabled) {
-  background: var(--bg-2);
-  color: var(--text-1);
-  border-color: var(--border-subtle);
+.text-tabular { font-variant-numeric: tabular-nums; }
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.btn--ghost {
-  background: transparent;
-  color: var(--text-2);
-  border-color: transparent;
-}
-.btn--ghost:hover:not(:disabled) {
-  background: var(--bg-2);
-  color: var(--text-1);
-}
+/* ── Badge Classes (legacy) ─────────────────────────────────────────────── */
+.badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: 11px; font-weight: 500; }
+.badge-cyan { background: var(--info); color: white; }
+.badge-amber { background: var(--warning); color: white; }
+.badge-purple { background: #af52de; color: white; }
+.badge-medium { background: var(--bg-tertiary); color: var(--text-2); }
+.badge-completed { background: var(--success); color: white; }
+.badge-warn { background: var(--warning); color: white; }
+.badge-info { background: var(--info); color: white; }
+.badge-danger { background: var(--danger); color: white; }
 
-.btn--danger {
-  background: var(--rose-soft);
-  color: var(--rose);
-  border-color: var(--rose-glow);
-}
-.btn--danger:hover:not(:disabled) {
-  background: var(--rose);
-  color: var(--text-1);
-}
-
-.btn--icon {
-  padding: 6px;
-  width: 32px;
-  height: 32px;
-}
-.btn--icon-sm {
-  padding: 4px;
-  width: 24px;
-  height: 24px;
-}
-
-.btn--sm { padding: 4px 8px; font-size: var(--fs-kicker); }
-
-/* Chip / pill filter */
-.chip {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  background: oklch(1 0 0 / 0.04);
+/* ── Empty Hint (legacy) ────────────────────────────────────────────────── */
+.empty-hint {
   color: var(--text-3);
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
-}
-.chip:hover { color: var(--text-2); background: oklch(1 0 0 / 0.08); }
-.chip.active {
-  background: var(--cyan-soft);
-  color: var(--cyan);
-  border-color: var(--border-active);
-}
-
-/* Empty state with voice (P3 item 12) */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-6) var(--space-4);
+  font-size: 13px;
   text-align: center;
-  color: var(--text-3);
+  padding: var(--space-4);
 }
-.empty-state__icon { font-size: 32px; margin-bottom: var(--space-2); opacity: 0.5; }
-.empty-state__title { font-size: var(--fs-panel-title); font-weight: 600; color: var(--text-2); margin-bottom: var(--space-1); }
-.empty-state__desc { font-size: var(--fs-body); max-width: 280px; }
-.empty-state__action { margin-top: var(--space-3); }
 
-/* Toast container */
+/* ── Calendar Event ─────────────────────────────────────────────────────── */
+.calendar-event {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
+}
+
+/* ── Email Card ─────────────────────────────────────────────────────────── */
+.email-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.email-card.read { opacity: 0.6; }
+.email-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); }
+.email-subject { font-weight: 600; color: var(--text-1); margin: var(--space-1) 0; }
+
+/* ── Intention Card ─────────────────────────────────────────────────────── */
+.intention-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.intention-cue { font-size: 13px; color: var(--text-1); }
+.intention-action { font-size: 13px; color: var(--text-2); margin-top: var(--space-1); }
+
+/* ── Telemetry Block ────────────────────────────────────────────────────── */
+.telemetry-block {
+  margin-bottom: var(--space-4);
+}
+.telemetry-block h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  margin-bottom: var(--space-2);
+}
+
+/* ── Task Card ──────────────────────────────────────────────────────────── */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.task-card.completed { opacity: 0.5; text-decoration: line-through; }
+.task-checkbox { margin-top: 2px; }
+.task-details { flex: 1; }
+.task-title-line { display: flex; align-items: center; gap: var(--space-2); }
+.task-title { font-weight: 500; color: var(--text-1); }
+.task-meta-row { font-size: 11px; color: var(--text-3); display: flex; gap: var(--space-2); margin-top: var(--space-1); }
+
+/* ── Reminder Card ──────────────────────────────────────────────────────── */
+.reminder-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Project Card ───────────────────────────────────────────────────────── */
+.project-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Service Grid ───────────────────────────────────────────────────────── */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+.service-card {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.service-card__icon { font-size: 24px; margin-bottom: var(--space-1); }
+.service-card__name { font-weight: 500; font-size: 13px; }
+.service-card__status { font-size: 11px; margin-top: var(--space-1); }
+
+/* ── Media Grid ─────────────────────────────────────────────────────────── */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.media-card {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Queue List ─────────────────────────────────────────────────────────── */
+.queue-item {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Agent Grid ─────────────────────────────────────────────────────────── */
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+.agent-stat {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.agent-stat__label { font-size: 11px; color: var(--text-3); text-transform: uppercase; }
+.agent-stat__value { font-size: 20px; font-weight: 600; color: var(--text-1); }
+
+/* ── Cron Grid ──────────────────────────────────────────────────────────── */
+.cron-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.cron-job {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Graphify Grid ──────────────────────────────────────────────────────── */
+.graphify-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+.graphify-stat {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+/* ── Wiki Results ───────────────────────────────────────────────────────── */
+.wiki-result {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.wiki-result__title { font-weight: 600; color: var(--text-1); }
+.wiki-result__snippet { font-size: 12px; color: var(--text-2); margin-top: var(--space-1); }
+.wiki-result__tier { font-size: 10px; color: var(--text-3); margin-top: var(--space-1); }
+
+/* ── Toast Container ────────────────────────────────────────────────────── */
 .toast-container {
   position: fixed;
-  bottom: var(--space-4);
-  right: var(--space-4);
-  z-index: var(--z-toast);
+  bottom: var(--space-5);
+  right: var(--space-5);
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  pointer-events: none;
 }
 .toast {
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  background: var(--bg-2);
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-overlay);
-  min-width: 280px;
-  max-width: 420px;
-  animation: toast-in var(--motion-base) var(--ease-out);
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+  color: var(--text-1);
+  animation: slide-in-right var(--motion-base) ease-out;
 }
-.toast.removing { animation: toast-out var(--motion-fast) var(--ease-out) forwards; }
-.toast__icon { font-size: 18px; flex-shrink: 0; }
-.toast__content { flex: 1; min-width: 0; }
-.toast__title { font-weight: 600; font-size: var(--fs-body); color: var(--text-1); }
-.toast__desc { font-size: var(--fs-kicker); color: var(--text-2); margin-top: 2px; }
-.toast__action { flex-shrink: 0; }
-.toast--ok    { border-left: 3px solid var(--emerald); }
-.toast--warn  { border-left: 3px solid var(--amber); }
-.toast--info  { border-left: 3px solid var(--cyan); }
-.toast--danger{ border-left: 3px solid var(--rose); }
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
 
-/* ==========================================================================
-   COMMAND PALETTE (⌘K) — P1 Item 5
-   ========================================================================== */
-
-.command-palette {
+/* ── Drawer (legacy) ────────────────────────────────────────────────────── */
+.drawer {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(720px, 90vw);
-  max-height: 70vh;
-  background: var(--bg-1);
-  border: 1px solid var(--border-active);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-overlay);
-  z-index: var(--z-palette);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  animation: palette-in var(--motion-base) var(--ease-out);
-}
-.command-palette.open { display: flex; }
-
-.palette-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-0);
-}
-.palette-header kbd {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  background: var(--bg-2);
-  border: 1px solid var(--border-subtle);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  color: var(--text-2);
-}
-.palette-search {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text-1);
-  font-family: var(--font-sans);
-  font-size: var(--fs-panel-title);
-  width: 100%;
-  outline: none;
-}
-.palette-search::placeholder { color: var(--text-3); }
-
-.palette-results {
-  flex: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-subtle);
+  z-index: 150;
+  transform: translateX(100%);
+  transition: transform var(--motion-base);
   overflow-y: auto;
-  padding: var(--space-2);
 }
-.palette-group { margin-bottom: var(--space-3); }
-.palette-group:last-child { margin-bottom: 0; }
-.palette-group-label {
-  font-size: var(--fs-kicker);
-  font-weight: 600;
-  color: var(--text-3);
-  padding: var(--space-1) var(--space-2);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.palette-result {
+.drawer.open { transform: translateX(0); }
+
+/* ── Modal (legacy) ─────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: oklch(0 0 0 / 0.5);
+  z-index: 200;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-base);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  max-width: 500px;
+  width: 90vw;
+  box-shadow: var(--shadow-xl);
+}
+
+/* ── Spinner ────────────────────────────────────────────────────────────── */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Progress Bar ───────────────────────────────────────────────────────── */
+.progress-bar {
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-bar__fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  transition: width var(--motion-base);
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+.section-divider {
+  margin: var(--space-6) 0 var(--space-3);
+  display: flex;
+  align-items: center;
   gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  width: 100%;
-  text-align: left;
+  color: var(--text-3);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* ── Form Elements ──────────────────────────────────────────────────────── */
+input, select, textarea, button {
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .agent-grid { grid-template-columns: 1fr; }
+  .graphify-grid { grid-template-columns: 1fr; }
+  .cron-grid { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
   color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-.palette-result:hover,
-.palette-result.selected {
-  background: var(--bg-2);
-}
-.palette-result__label { flex: 1; }
-.palette-result__hint { font-size: var(--fs-kicker); color: var(--text-3); margin-left: var(--space-2); }
-.palette-result__shortcut {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  color: var(--text-3);
-  background: var(--bg-0);
-  padding: 1px 6px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-}
-.palette-empty {
-  padding: var(--space-6);
-  text-align: center;
-  color: var(--text-3);
-}
-
-/* ==========================================================================
-   SPARKLINE UTILITY — P2 Item 11 (~20 lines JS, inline SVG)
-   ========================================================================== */
-
-.sparkline {
-  display: inline-block;
-  vertical-align: middle;
-  width: 60px;
-  height: 16px;
-  margin-left: var(--space-2);
-  flex-shrink: 0;
-}
-.sparkline svg { width: 100%; height: 100%; display: block; }
-.sparkline path { fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.sparkline--ok    path { stroke: var(--emerald); }
-.sparkline--warn  path { stroke: var(--amber); }
-.sparkline--info  path { stroke: var(--cyan); }
-.sparkline--danger path { stroke: var(--rose); }
-.sparkline--neutral path { stroke: var(--text-3); }
-
-/* Freshness stamp */
-.freshness {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  color: var(--text-3);
-}
-.freshness__dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--emerald);
-  box-shadow: 0 0 6px var(--emerald);
-}
-.freshness--stale .freshness__dot {
-  background: var(--amber);
-  box-shadow: 0 0 6px var(--amber);
-}
-.freshness--dead .freshness__dot {
-  background: var(--rose);
-  box-shadow: 0 0 6px var(--rose);
-}
-
-/* Relative time */
-.rel-time {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  color: var(--text-2);
-}
-.rel-time--overdue { color: var(--amber); }
-.rel-time--due-soon { color: var(--cyan); }
-
-/* Panel header freshness stamp */
-.panel-freshness {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  color: var(--text-3);
-}
-.panel-freshness__dot {
-  width: 5px; height: 5px; border-radius: 50%;
-}
-.panel-freshness__dot--fresh { background: var(--emerald); box-shadow: 0 0 4px var(--emerald); }
-.panel-freshness__dot--stale { background: var(--amber); box-shadow: 0 0 4px var(--amber); }
-.panel-freshness__dot--dead { background: var(--rose); box-shadow: 0 0 4px var(--rose); }
-
-/* Semantic glow — used sparingly, only on 1-2 things demanding attention */
-.glow--ok      { box-shadow: 0 0 12px var(--emerald-glow), 0 0 24px var(--emerald-glow); }
-.glow--warn    { box-shadow: 0 0 12px var(--amber-glow),  0 0 24px var(--amber-glow); }
-.glow--info    { box-shadow: 0 0 12px var(--cyan-glow),   0 0 24px var(--cyan-glow); }
-.glow--danger  { box-shadow: 0 0 12px var(--rose-glow),   0 0 24px var(--rose-glow); }
