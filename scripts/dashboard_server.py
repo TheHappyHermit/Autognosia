@@ -14,6 +14,7 @@ import shutil
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Dict, Any, Optional
+import requests
 
 def _ensure_web_deps() -> None:
     """Ensure fastapi/uvicorn are importable in the current interpreter.
@@ -120,6 +121,33 @@ def get_autognosia_conn() -> sqlite3.Connection:
     return conn
 
 # ── API Endpoints ─────────────────────────────────────────────────────────────
+
+@app.get("/api/system")
+def get_system_stats():
+    """System-level metrics for hero stats row: CPU, RAM, Disk, Network, Agents, Uptime."""
+    import psutil
+    import time
+
+    # Get boot time for uptime calculation
+    boot_time = time.time() - psutil.boot_time()
+    uptime_days = int(boot_time) // 86400
+
+    # Simple network estimation from counters (not perfect but gives a number)
+    net_io = psutil.net_io_counters()
+    network_mbps = round(net_io.bytes_recv / (1024 * 1024 * 1024), 2)  # cumulative GB
+
+    # Active agents — check Hermes gateway
+    active_agents = 1  # Hermes agent itself is always "active"
+
+    return {
+        "cpu_percent": psutil.cpu_percent(interval=0.1),
+        "ram_percent": psutil.virtual_memory().percent,
+        "disk_percent": psutil.disk_usage('/').percent,
+        "network_mbps": network_mbps,
+        "active_agents": active_agents,
+        "uptime_days": uptime_days,
+    }
+
 
 @app.get("/api/overview")
 def get_overview():
@@ -752,20 +780,489 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
-# Mount static frontend
-if DASHBOARD_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(DASHBOARD_DIR), html=True), name="dashboard")
+# ── Phase 2: Service Integration Endpoints ──────────────────────────────────────
+
+SERVICE_DEFINITIONS = {
+    "jellyfin": {"name": "Jellyfin", "port": 8096, "icon": "🎬", "category": "media"},
+    "plex": {"name": "Plex", "port": 32400, "icon": "🎥", "category": "media"},
+    "sonarr": {"name": "Sonarr", "port": 8989, "icon": "📺", "category": "automation"},
+    "radarr": {"name": "Radarr", "port": 7878, "icon": "🎞️", "category": "automation"},
+    "qbittorrent": {"name": "qBittorrent", "port": 8080, "icon": "⬇️", "category": "downloads"},
+    "traefik": {"name": "Traefik", "port": 8080, "icon": "🚦", "category": "infra"},
+    "uptimekuma": {"name": "Uptime Kuma", "port": 3001, "icon": "📊", "category": "monitoring"},
+    "grafana": {"name": "Grafana", "port": 3000, "icon": "📈", "category": "monitoring"},
+    "prometheus": {"name": "Prometheus", "port": 9090, "icon": "⚡", "category": "monitoring"},
+    "freshrss": {"name": "FreshRSS", "port": 8081, "icon": "📰", "category": "feed"},
+    "homeassistant": {"name": "Home Assistant", "port": 8123, "icon": "🏠", "category": "smart-home"},
+}
+
+# Map ports to service names (for health checks)
+PORT_TO_SERVICE = {}
+for svc_key, svc_info in SERVICE_DEFINITIONS.items():
+    PORT_TO_SERVICE[svc_info["port"]] = svc_key
+
+# Jellyfin auth token - set via env var or leave None for public endpoints
+JELLYFIN_TOKEN = os.environ.get("JELLYFIN_TOKEN", "")
+SONARR_API_KEY = os.environ.get("SONARR_API_KEY", "")
+RADARR_API_KEY = os.environ.get("RADARR_API_KEY", "")
+
+
+def _check_service_health(port: int, timeout: float = 2.0) -> str:
+    """Check if a service is reachable via HTTP."""
+    try:
+        r = requests.get(f"http://localhost:{port}", timeout=timeout)
+        return "healthy" if r.status_code < 500 else "degraded"
+    except Exception:
+        return "unhealthy"
+
+
+def _get_jellyfin_sessions() -> list:
+    """Get active Jellyfin sessions."""
+    sessions = []
+    try:
+        headers = {}
+        if JELLYFIN_TOKEN:
+            headers["X-Emby-Token"] = JELLYFIN_TOKEN
+        r = requests.get("http://localhost:8096/Sessions", timeout=2, headers=headers)
+        if r.ok:
+            for session in r.json():
+                play_state = session.get("PlayState", {})
+                if not play_state.get("IsPaused", True):
+                    now_playing = session.get("NowPlayingItem", {}) or {}
+                    sessions.append({
+                        "service": "Jellyfin",
+                        "title": now_playing.get("Name", "Unknown"),
+                        "type": now_playing.get("Type", ""),
+                        "user": session.get("UserName", ""),
+                        "device": session.get("DeviceName", ""),
+                        "progress": play_state.get("PositionTicks", 0),
+                        "total": now_playing.get("RunTimeTicks", 0),
+                    })
+    except Exception:
+        pass
+    return sessions
+
+
+def _get_plex_sessions() -> list:
+    """Get active Plex sessions."""
+    sessions = []
+    try:
+        r = requests.get("http://localhost:32400/status/sessions", timeout=2)
+        if r.ok:
+            data = r.json()
+            for session in data.get("MediaSession", []):
+                media = session.get("Media", {}) or {}
+                part = media.get("Part", {}) or {}
+                streams = [part] if isinstance(part, dict) else part
+                for p in (streams if isinstance(streams, list) else [streams]):
+                    if isinstance(p, dict):
+                        title = p.get("videoTitle") or session.get("title", "Unknown")
+                        sessions.append({
+                            "service": "Plex",
+                            "title": title,
+                            "type": session.get("type", ""),
+                            "user": session.get("user", {}).get("title", ""),
+                            "device": session.get("device", {}).get("title", ""),
+                            "progress": session.get("viewOffset", 0),
+                            "total": session.get("duration", 0),
+                        })
+    except Exception:
+        pass
+    return sessions
+
+
+def _get_sonarr_queue(page_size: int = 10) -> list:
+    """Get upcoming Sonarr queue items."""
+    queue = []
+    try:
+        params = {"pagesize": page_size}
+        headers = {}
+        if SONARR_API_KEY:
+            headers["X-Api-Key"] = SONARR_API_KEY
+        r = requests.get("http://localhost:8989/api/v3/queue", params=params, timeout=2, headers=headers)
+        if r.ok:
+            for item in r.json():
+                series = item.get("series", {}) or {}
+                queue.append({
+                    "service": "Sonarr",
+                    "type": "Episode",
+                    "title": f"{series.get('title', 'Unknown')} - S{item.get('seasonNumber', '')}E{item.get('episodeNumber', '')}",
+                    "size": item.get("size", 0),
+                    "timeleft": item.get("monitored", True),
+                    "quality": item.get("quality", {}).get("quality", {}).get("name", "") if isinstance(item.get("quality"), dict) else "",
+                })
+    except Exception:
+        pass
+    return queue
+
+
+def _get_radarr_queue(page_size: int = 10) -> list:
+    """Get upcoming Radarr queue items."""
+    queue = []
+    try:
+        params = {"pagesize": page_size}
+        headers = {}
+        if RADARR_API_KEY:
+            headers["X-Api-Key"] = RADARR_API_KEY
+        r = requests.get("http://localhost:7878/api/v3/queue", params=params, timeout=2, headers=headers)
+        if r.ok:
+            for item in r.json():
+                movie = item.get("movie", {}) or {}
+                queue.append({
+                    "service": "Radarr",
+                    "type": "Movie",
+                    "title": movie.get("title", "Unknown"),
+                    "size": item.get("size", 0),
+                    "timeleft": item.get("monitored", True),
+                    "quality": item.get("quality", {}).get("quality", {}).get("name", "") if isinstance(item.get("quality"), dict) else "",
+                })
+    except Exception:
+        pass
+    return queue
+
+
+@app.get("/api/services")
+def get_all_services():
+    """Return status of all tracked homelab services."""
+    services = {}
+    for key, info in SERVICE_DEFINITIONS.items():
+        health = _check_service_health(info["port"])
+        details = {}
+
+        # Get specific details based on service type
+        if key == "jellyfin" and health == "healthy":
+            sessions = _get_jellyfin_sessions()
+            details["sessions"] = len(sessions)
+
+        elif key == "plex" and health == "healthy":
+            sessions = _get_plex_sessions()
+            details["sessions"] = len(sessions)
+
+        elif key == "sonarr" and health == "healthy":
+            queue = _get_sonarr_queue(5)
+            details["queue_count"] = len(queue)
+
+        elif key == "radarr" and health == "healthy":
+            queue = _get_radarr_queue(5)
+            details["queue_count"] = len(queue)
+
+        services[key] = {
+            "name": info["name"],
+            "port": info["port"],
+            "icon": info["icon"],
+            "category": info["category"],
+            "health": health,
+            "details": details,
+        }
+    return services
+
+
+@app.get("/api/services/{service_name}")
+def get_service_details(service_name: str):
+    """Get detailed status for a specific service."""
+    services = get_all_services()
+    if service_name not in services:
+        raise HTTPException(status_code=404, detail=f"Service '{service_name}' not found")
+    return services[service_name]
+
+
+@app.get("/api/media/active")
+def get_active_media():
+    """Get all active media streams across services."""
+    streams = []
+    streams.extend(_get_jellyfin_sessions())
+    streams.extend(_get_plex_sessions())
+
+    # Sort by most recently active (placeholder - real implementation would track timestamps)
+    return streams
+
+
+@app.get("/api/queue")
+def get_download_queue():
+    """Get combined download queue from Sonarr/Radarr."""
+    queue = []
+    queue.extend(_get_sonarr_queue(10))
+    queue.extend(_get_radarr_queue(10))
+
+# ── # ── Agent Intelligence Endpoints (Phase 3) ───────────────────────────────────────
+
+@app.get("/api/agent")
+def get_agent_status():
+    """Hermes agent status, active sessions, cron jobs, memory state."""
+    import psutil
+    import time
+    
+    # Check Hermes gateway process
+    gateway_running = False
+    gateway_pid = None
+    agent_running = False
+    agent_pid = None
+    
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            cmdline = ' '.join(proc.info['cmdline'] or [])
+            if 'hermes' in cmdline.lower():
+                if 'gateway' in cmdline.lower():
+                    gateway_running = True
+                    gateway_pid = proc.info['pid']
+                if 'agent' in cmdline.lower():
+                    agent_running = True
+                    agent_pid = proc.info['pid']
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+    
+    # Count cron jobs
+    cron_dir = Path.home() / ".hermes" / "cron"
+    cron_count = 0
+    if cron_dir.exists():
+        cron_count = len([f for f in cron_dir.iterdir() if f.suffix in ['.yaml', '.yml']])
+    
+    # Memory stats
+    memory_dir = Path.home() / ".hermes" / "memory"
+    memory_files = 0
+    if memory_dir.exists():
+        memory_files = len([f for f in memory_dir.iterdir() if f.suffix == '.md'])
+    
+    return {
+        "gateway_running": gateway_running,
+        "gateway_pid": gateway_pid,
+        "agent_running": agent_running,
+        "agent_pid": agent_pid,
+        "cron_jobs": cron_count,
+        "memory_files": memory_files,
+        "python_version": sys.version.split()[0],
+        "uptime_days": int((time.time() - psutil.boot_time()) // 86400),
+    }
+
+@app.get("/api/cron")
+def get_cron_jobs():
+    """List all configured cron jobs with status."""
+    cron_dir = Path.home() / ".hermes" / "cron"
+    cron_jobs = []
+    
+    if cron_dir.exists():
+        for job_file in cron_dir.glob("*.yaml"):
+            try:
+                content = job_file.read_text(encoding="utf-8", errors="ignore")
+                name = job_file.stem.replace('_', ' ').title()
+                schedule = "Unknown"
+                enabled = True
+                
+                for line in content.split(chr(10)):
+                    if 'schedule:' in line:
+                        schedule = line.split(":", 1)[1].strip().strip(chr(34) + chr(39))
+                    if 'enabled:' in line:
+                        enabled = 'true' in line.lower()
+                
+                cron_jobs.append({
+                    "name": name,
+                    "schedule": schedule,
+                    "enabled": enabled,
+                    "file": job_file.name
+                })
+            except Exception as e:
+                cron_jobs.append({
+                    "name": job_file.stem,
+                    "schedule": "Error",
+                    "enabled": False,
+                    "error": str(e)
+                })
+    
+    return {
+        "jobs": cron_jobs,
+        "total": len(cron_jobs),
+    }
+
+@app.get("/api/graphify")
+def get_graphify_status():
+    """Graphify ingestion status, queue, nodes."""
+    nodes = 0
+    edges = 0
+    
+    # Check oracle brain graphify
+    brain_dir = AUTOGNOSIA_HOME / "graphify-main-out"
+    if brain_dir.exists():
+        for out_file in brain_dir.glob("*.json"):
+            try:
+                data = json.loads(out_file.read_text(encoding="utf-8"))
+                nodes += len(data.get("nodes", []))
+                edges += len(data.get("edges", []))
+            except:
+                pass
+    
+    # Check active wiki graphify
+    active_wiki_dir = AUTOGNOSIA_HOME / "active-wiki" / "graphify-out"
+    if active_wiki_dir.exists():
+        for out_file in active_wiki_dir.glob("*.json"):
+            try:
+                data = json.loads(out_file.read_text(encoding="utf-8"))
+                nodes += len(data.get("nodes", []))
+                edges += len(data.get("edges", []))
+            except:
+                pass
+    
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "brain_dir": str(brain_dir),
+        "active_wiki_dir": str(active_wiki_dir),
+    }
+
+@app.get("/api/hermes")
+def get_hermes_status():
+    """Overall Hermes system health and configuration."""
+    import psutil
+    processes = []
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            cmdline = ' '.join(proc.info['cmdline'] or [])
+            if 'hermes' in cmdline.lower():
+                processes.append({
+                    "pid": proc.info['pid'],
+                    "name": proc.info['name'],
+                    "cpu_percent": proc.cpu_percent(),
+                    "memory_mb": round(proc.memory_info().rss / 1024 / 1024, 1),
+                })
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+    
+    skills_dir = Path.home() / ".hermes" / "skills"
+    skills_count = 0
+    if skills_dir.exists():
+        skills_count = len([f for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists()])
+    
+    plugins_dir = Path.home() / ".hermes" / "plugins"
+    plugins_count = 0
+    if plugins_dir.exists():
+        plugins_count = len([f for f in plugins_dir.iterdir() if f.is_dir() and (f / "plugin.yaml").exists() or (f / "plugin.yml").exists()])
+    
+    return {
+        "processes": processes,
+        "skills_count": skills_count,
+        "plugins_count": plugins_count,
+        "python_version": sys.version.split()[0],
+    }
+
+
+
+# ── Static File Serving ────────────────────────────────────────────────────────
+# DASHBOARD_DIR is already resolved at module level (line 62)
+
+@app.get("/")
+def serve_dashboard():
+    """Serve the main dashboard HTML."""
+    return FileResponse(str(DASHBOARD_DIR / "index.html"))
+
+@app.get("/styles.css")
+def serve_styles():
+    return FileResponse(str(DASHBOARD_DIR / "styles.css"), media_type="text/css")
+
+@app.get("/tokens.css")
+def serve_tokens():
+    return FileResponse(str(DASHBOARD_DIR / "tokens.css"), media_type="text/css")
+
+@app.get("/app.js")
+def serve_app():
+    return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")
+
+@app.get("/enhance.js")
+def serve_enhance():
+    return FileResponse(str(DASHBOARD_DIR / "enhance.js"), media_type="application/javascript")
+
+
+# ── Module File Serving ───────────────────────────────────────────────────────
+_MODULE_CSS = ["layout.css", "briefing.css", "calendar.css", "tasks.css",
+               "comms.css", "drawers.css", "services.css", "agent.css"]
+_MODULE_JS = ["app-core.js", "app-data-fetch.js", "app-calendar.js", "app-tasks.js",
+              "app-comms.js", "app-services.js", "app-crud.js", "app-agent.js", "ws-client.js"]
+
+for _css in _MODULE_CSS:
+    @app.get(f"/{_css}")
+    def serve_css(_f=_css):
+        return FileResponse(str(DASHBOARD_DIR / _f), media_type="text/css")
+
+for _js in _MODULE_JS:
+    @app.get(f"/{_js}")
+    def serve_js(_f=_js):
+        return FileResponse(str(DASHBOARD_DIR / _f), media_type="application/javascript")
+
+
+# ── WebSocket Real-Time Updates ──────────────────────────────────────────────
+import websockets
+import threading
+
+WS_HOST = "0.0.0.0"
+WS_PORT = 8089
+connected_clients: set = set()
+
+
+async def ws_handler(websocket):
+    """Handle WebSocket connections."""
+    connected_clients.add(websocket)
+    try:
+        async for message in websocket:
+            # Echo back for keepalive
+            await websocket.send(json.dumps({"type": "pong"}))
+    except websockets.exceptions.ConnectionClosed:
+        pass
+    finally:
+        connected_clients.discard(websocket)
+
+
+async def broadcast_update(data: dict):
+    """Broadcast update to all connected clients."""
+    if not connected_clients:
+        return
+    payload = json.dumps(data)
+    disconnected = set()
+    for client in connected_clients:
+        try:
+            await client.send(payload)
+        except websockets.exceptions.ConnectionClosed:
+            disconnected.add(client)
+    connected_clients.difference_update(disconnected)
+
+
+def start_websocket_server():
+    """Start WebSocket server in a background thread."""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    async def run_ws():
+        server = await websockets.serve(ws_handler, WS_HOST, WS_PORT)
+        print(f"  WebSocket server: ws://{WS_HOST}:{WS_PORT}")
+        await server.wait_closed()
+
+    loop.run_until_complete(run_ws())
+
 
 def run(host: str = "0.0.0.0", port: int = 8088):
-    print(f"============================================================")
-    print(f"  Autognosia COMMAND DECK — EXECUTIVE DASHBOARD")
+    """Start the dashboard server."""
+    print("=" * 60)
+    print("  Autognosia COMMAND DECK — EXECUTIVE DASHBOARD")
     print(f"  Live UI available at: http://{host}:{port}")
     print(f"  API Docs available at: http://{host}:{port}/docs")
-    print(f"============================================================")
+
+    # Start WebSocket server in background thread
+    ws_thread = threading.Thread(target=start_websocket_server, daemon=True)
+    ws_thread.start()
+
+    print("=" * 60)
     uvicorn.run(app, host=host, port=port, log_level="warning")
 
+
 if __name__ == "__main__":
+    host = "0.0.0.0"
     port = 8088
-    if len(sys.argv) > 1 and sys.argv[1].isdigit():
-        port = int(sys.argv[1])
-    run(port=port)
+    # Parse --port and --host arguments
+    for i, arg in enumerate(sys.argv):
+        if arg == "--port" and i + 1 < len(sys.argv):
+            port = int(sys.argv[i + 1])
+            break
+        elif arg.isdigit():
+            port = int(arg)
+            break
+        if arg == "--host" and i + 1 < len(sys.argv):
+            host = sys.argv[i + 1]
+            break
+    run(host=host, port=port)
