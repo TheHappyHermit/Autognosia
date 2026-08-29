@@ -45,7 +45,7 @@ DEER_FLOW_HOME=<absolute-path>
 ```
 
 ### 5. Divergent Git History Fix
-Local repo was cloned from fork (`<username>/deerflow-config`) with unrelated history. `git pull` refused. Fix: orphan branch + hard reset to origin/main.
+Local repo was cloned from fork (`openclaw434/deerflow-config`) with unrelated history. `git pull` refused. Fix: orphan branch + hard reset to origin/main.
 
 ```bash
 git branch -D main

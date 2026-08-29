@@ -18,4 +18,4 @@ User prefers the custom SQLite-based memory enhancement system (~/.hermes/memory
 Do not suggest migrating to Honcho unless specifically requested by the user.
 
 ## Context
-This preference was noted alongside the user's acknowledgment that Honcho is their primary memory system (running locally at http://127.0.0.1:8000, workspace <workspace>, mode hybrid, global session), but they have a clear preference for the SQLite enhancement when it comes to Hermes-specific memory operations.
+This preference was noted alongside the user's acknowledgment that Honcho is their primary memory system (running locally at http://127.0.0.1:8000, workspace josh-hermes, mode hybrid, global session), but they have a clear preference for the SQLite enhancement when it comes to Hermes-specific memory operations.

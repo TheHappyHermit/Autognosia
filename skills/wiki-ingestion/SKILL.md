@@ -15,7 +15,7 @@ Process raw content and ingest it into the Active Wiki with proper formatting, d
 
 ## Wiki Location
 
-- **Active Wiki**: `$HOME/.autognosia/active-wiki/`
+- **Active Wiki**: `~/.hermes-cortex/active-wiki/`
 - **Categories**: `projects/`, `reference/`, `system/`, `personal/`
 - **Metadata**: `.meta/` directory for ingestion logs and content hashes
 
@@ -133,7 +133,7 @@ Route content to the appropriate wiki category:
 
 ### 5. Write to Wiki
 
-Create the formatted page in the appropriate category under `$HOME/.autognosia/active-wiki/`.
+Create the formatted page in the appropriate category under `~/.hermes-cortex/active-wiki/`.
 
 ### 6. Log the Ingestion
 
@@ -142,7 +142,7 @@ Record the ingestion in the wiki log:
 YYYYMMDD-HHMMSS: Ingested [title] into [category]/[slug].md | Source: [source] | Mode: quick|standard|full
 ```
 
-Update `$HOME/.autognosia/active-wiki/.meta/ingestion-log.md`.
+Update `~/.hermes-cortex/active-wiki/.meta/ingestion-log.md`.
 
 ## Source Reference Standards
 

@@ -8,13 +8,13 @@ silent login failure. Always pass the password through an environment variable.
 ## Hash a password (safe — no shell interpolation)
 ```bash
 cd ~/.hermes/hermes-agent
-PW='<REDACTED-PASSWORD>' venv/bin/python -c \
+PW='J1234osh$' venv/bin/python -c \
   "from plugins.dashboard_auth.basic import hash_password, os; print(hash_password(os.environ['PW']))"
 ```
 
 ## Store it
 ```bash
-venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.username <username>
+venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.username josh434
 venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.password_hash "<hash above>"
 venv/bin/python -m hermes_cli.main plugins enable basic   # required; not enabled by default
 ```
@@ -29,7 +29,7 @@ def verify(password, encoded):
                             p=int(p_s), dklen=len(expected))
     return hmac.compare_digest(actual, expected)
 stored = "<password_hash from config>"
-print("matches:", verify("<REDACTED-PASSWORD>", stored))   # expect True
+print("matches:", verify("J1234osh$", stored))   # expect True
 print("wrong   :", verify("WRONG", stored))        # expect False
 ```
 

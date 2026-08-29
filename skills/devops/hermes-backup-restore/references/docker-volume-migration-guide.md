@@ -64,7 +64,7 @@ curl -H "Authorization: Bearer <MASTER_KEY>" http://localhost:7700/indexes
 
 ## Common Stacks on This Machine
 
-### the workspace app Stack
+### Paperclip Stack
 - **PostgreSQL (194 MB)**: 69 tables, ~60 issues, 14 agents, 5 projects — dev instance, disposable
 - **Qdrant (20 KB)**: Empty (0 collections) — discard
 - **Redis (16 KB)**: Empty (0 keys) — discard
@@ -72,8 +72,8 @@ curl -H "Authorization: Bearer <MASTER_KEY>" http://localhost:7700/indexes
 
 ### Honcho Stack
 - **PostgreSQL (66 MB)**: 35 messages, 3 peers, 3 sessions, 5 collections, 114 docs — moderate value (memory/preferences learned)
-  - Peers: <username>, hermes, telegram (<telegram-chat-id>)
-  - Sessions: global-session, <workspace>, agent-main-telegram-dm
+  - Peers: josh434, hermes, telegram (7791814261)
+  - Sessions: global-session, josh-hermes, agent-main-telegram-dm
   - Contains session summary with user preferences, model config, browser choice, Obsidian path
 
 ### Rebate Platform Stack
@@ -88,20 +88,20 @@ curl -H "Authorization: Bearer <MASTER_KEY>" http://localhost:7700/indexes
 docker compose -f /path/to/honcho/docker-compose.yml up -d database
 
 # Wait for readiness, then dump
-docker compose -f /path/to/honcho/docker-compose.yml exec database pg_dump -U <username> -d honcho > honcho-backup-$(date +%Y%m%d).sql
+docker compose -f /path/to/honcho/docker-compose.yml exec database pg_dump -U josh434 -d honcho > honcho-backup-$(date +%Y%m%d).sql
 ```
 
 ### Restore on New Server
 ```bash
 # Create database
-docker exec -i <new_pg_container> psql -U <username> -d postgres -c "CREATE DATABASE honcho;"
+docker exec -i <new_pg_container> psql -U josh434 -d postgres -c "CREATE DATABASE honcho;"
 
 # Restore
-cat honcho-backup-*.sql | docker exec -i <new_pg_container> psql -U <username> -d honcho
+cat honcho-backup-*.sql | docker exec -i <new_pg_container> psql -U josh434 -d honcho
 ```
 
 ### Minimal Export (Key Data Only)
 ```bash
 # Export only peers, sessions, messages (skip embeddings/documents if large)
-docker exec <container> pg_dump -U <username> -d honcho -t peers -t sessions -t messages > honcho-core-data.sql
+docker exec <container> pg_dump -U josh434 -d honcho -t peers -t sessions -t messages > honcho-core-data.sql
 ```

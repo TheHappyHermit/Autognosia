@@ -39,17 +39,17 @@ Handle all incoming content (Telegram messages, Discord messages, voice notes, i
    If all answers are no, do not write anything.
 
 4. **Route classified content**:
-   - **personal fact** → Update or create page in Active Wiki (`$HOME/.autognosia/active-wiki/personal/`)
+   - **personal fact** → Update or create page in Active Wiki (`~/.hermes-cortex/active-wiki/personal/`)
    - **preference** → Update `system/core-preferences.md` or relevant page
    - **decision** → Create page in `active-wiki/personal/decisions/` folder
    - **task/deadline/waiting item** → Add to `organizer.db` via `organizer-state` skill
    - **project update** → Update existing project page in `active-wiki/projects/`
    - **troubleshooting** → Update project page or create troubleshooting record
    - **purchase research** → Add to `active-wiki/personal/purchases/` folder with dated prices
-   - **raw source** → Save to `$HOME/.autognosia/exchange/raw/YYYY/MM/` with metadata frontmatter
+   - **raw source** → Save to `~/.hermes-cortex/exchange/raw/YYYY/MM/` with metadata frontmatter
    - **idea** → Add to `active-wiki/personal/ideas/` folder
    - **question** → Add to `active-wiki/personal/questions/` folder
-   - **specialist reference** (technical, factual, domain-specific) → Route to Oracle Vault (`$HOME/.autognosia/oracle/brain/`) via library-onboarding skill
+   - **specialist reference** (technical, factual, domain-specific) → Route to Oracle Vault (`~/.hermes-cortex/oracle/brain/`) via library-onboarding skill
 
 5. **Raw source captures** must include:
    ```yaml
@@ -86,7 +86,7 @@ Handle all incoming content (Telegram messages, Discord messages, voice notes, i
 
 ## Raw Source Processing
 
-1. Detect new raw files in `$HOME/.autognosia/exchange/raw/`
+1. Detect new raw files in `~/.hermes-cortex/exchange/raw/`
 2. Compute and store content hash
 3. Reject or flag duplicates
 4. Read Active Wiki schema, index, and recent log

@@ -75,8 +75,8 @@ volumes:
 ### 3. Create .env File
 ```bash
 MASTER_KEY=sk-your-master-key-here  # Generate a strong key
-OPENAI_API_KEY=<REDACTED_API_KEY>
-ANTHROPIC_API_KEY=<REDACTED_API_KEY>
+OPENAI_API_KEY=sk-your-openai-key-here
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-key-here
 # Add other API keys as needed
 ```
 
@@ -88,7 +88,7 @@ docker-compose up -d
 ### 5. Verify Installation
 - Check logs: `docker-compose logs -f litellm`
 - Verify it's running: `docker-compose ps`
-- Test the endpoint: `curl -X POST http://localhost:4000/v1/chat/completions -H "Authorization: Bearer <REDACTED>" -H "Content-Type: application/json" -d '{"model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "Hello"}]}'`
+- Test the endpoint: `curl -X POST http://localhost:4000/v1/chat/completions -H "Authorization: Bearer sk-your-master-key-here" -H "Content-Type: application/json" -d '{"model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "Hello"}]}'`
 
 ### 6. Configure OpenCode to Use LightLLM
 In OpenCode settings, set:

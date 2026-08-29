@@ -104,7 +104,7 @@ Or create a dedicated file:
 ```bash
 mkdir -p ~/.config/x-cli
 cat > ~/.config/x-cli/.env <<'EOF'
-X_API_KEY=<REDACTED_API_KEY>
+X_API_KEY=your_consumer_key
 X_API_SECRET=your_secret_key
 X_BEARER_TOKEN=your_bearer_token
 X_ACCESS_TOKEN=your_access_token

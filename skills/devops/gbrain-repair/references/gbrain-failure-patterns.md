@@ -89,7 +89,7 @@ For batch-fixing files within a category, use a Python script:
 ```python
 import os, re
 
-base = '$HOME/.autognosia/oracle/brain'
+base = '/home/josh434/.autognosia/oracle/brain'
 
 # For Class 2 (unquoted parentheticals):
 for root, dirs, files in os.walk(base):

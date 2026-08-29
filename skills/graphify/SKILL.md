@@ -670,13 +670,13 @@ The graph is the map. Your job after the pipeline is to be the guide.
 
 ## Environment: Terminal Gateway Timeout Pitfall
 
-When graphify operations take >60s (typical for corpora >20k nodes), the terminal gateway will kill the process. **Workaround:** use `execute_code()` with `subprocess.run()` and the correct Python interpreter path instead of `terminal()`. The graphifyy interpreter lives at `$HOME/.local/share/uv/tools/graphifyy/bin/python3` — use that as the subprocess command. This bypasses the terminal gateway's timeout on long-running scripts.
+When graphify operations take >60s (typical for corpora >20k nodes), the terminal gateway will kill the process. **Workaround:** use `execute_code()` with `subprocess.run()` and the correct Python interpreter path instead of `terminal()`. The graphifyy interpreter lives at `/home/josh434/.local/share/uv/tools/graphifyy/bin/python3` — use that as the subprocess command. This bypasses the terminal gateway's timeout on long-running scripts.
 
 Example:
 ```python
 import subprocess
 subprocess.run(
-    ['$HOME/.local/share/uv/tools/graphifyy/bin/python3', '-c', '...script...'],
+    ['/home/josh434/.local/share/uv/tools/graphifyy/bin/python3', '-c', '...script...'],
     capture_output=True, text=True, timeout=120, cwd='/path/to/corpus'
 )
 ```
@@ -762,6 +762,15 @@ Neither is part of the default build. When the user runs `/graphify add <url>` t
 When the user asks to install the post-commit auto-rebuild hook or wire graphify into a project's CLAUDE.md, see `references/hooks.md`.
 
 ---
+
+## Running `graphify extract` on the Oracle brain (V100)
+
+The `/graphify` slash pipeline above builds a graph from a folder you point it at. A separate, recurring
+operational task is running graphify's `extract` subcommand as a long-lived ingestion daemon against the
+fixed Autognosia Oracle brain on the local V100. That workflow (launch script, env vars, the
+`GRAPHIFY_MAX_OUTPUT_TOKENS` 48k→96k tradeoff, the NEVER-source-`.openai_keys` rule, and how to monitor
+progress by `chunk N/34 done`) is documented in **`references/oracle-brain-extract.md`**. Read it before
+starting, restarting, or debugging that job.
 
 ## Honesty Rules
 

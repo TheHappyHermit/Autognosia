@@ -36,7 +36,7 @@ Use this skill when you see warnings like:
 model:
   default: qwen/qwen3.6-35b-a3b
   provider: lmstudio
-  base_url: http://<DESKTOP_3090_LMSTUDIO_URL>/v1
+  base_url: http://10.1.1.151:1234/v1
   api_key_env: OPENROUTER_API_KEY  # <-- MISMATCH! LMStudio doesn't use this
 
 # PROBLEMATIC: OpenRouter provider but missing API key in environment
@@ -58,7 +58,7 @@ model:
 model:
   default: qwen/qwen3.6-35b-a3b
   provider: lmstudio
-  base_url: http://<DESKTOP_3090_LMSTUDIO_URL>/v1
+  base_url: http://10.1.1.151:1234/v1
   # No api_key_env needed for LMStudio
 
 # CORRECT: OpenRouter setup (requires API key)
@@ -150,7 +150,7 @@ pip3 install --break-system-packages pyyaml
 python3 -c "
 import yaml
 try:
-    with open('$HOME/.hermes/config.yaml', 'r') as f:
+    with open('/home/josh434/.hermes/config.yaml', 'r') as f:
         data = yaml.safe_load(f)
     print('✅ YAML is valid!')
     if data.get('mcp_servers'):
@@ -200,16 +200,16 @@ yamllint ~/.hermes/config.yaml
 ```yaml
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer YOUR_TOKEN_HERE"
     timeout: 180
     connect_timeout: 60
 
   home-assistant:
-    url: "http://<LAN_HOST>:8123/api/mcp"
+    url: "http://10.1.1.13:8123/api/mcp"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer YOUR_HA_TOKEN_HERE"
     timeout: 30
     connect_timeout: 10
 ```
@@ -221,7 +221,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://<LAN_HOST>:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"    timeout: 30    connect_timeout: 10
 ```
 (Notice how everything is on one line after the mcp_servers key - this is invalid YAML)
 
@@ -235,16 +235,16 @@ mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    
 # AFTER (fixed):
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"
     timeout: 180
     connect_timeout: 60
 
   home-assistant:
-    url: "http://<LAN_HOST>:8123/api/mcp"
+    url: "http://10.1.1.13:8123/api/mcp"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"
     timeout: 30
     connect_timeout: 10
 ```### Case 3: Missing Section Header
@@ -260,7 +260,7 @@ mcp_servers:
 **Example of what we fixed**:
 ```yaml
 # BEFORE (broken):
-mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://<LAN_HOST>:8123/api/mcp"    headers:      Authorization: "Bearer <REDACTED>"    timeout: 30    connect_timeout: 10
+mcp_servers:  n8n-mcp:    url: "https://n8n.wineandgecko.com/mcp-server/http"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"    timeout: 180    connect_timeout: 60  home-assistant:    url: "http://10.1.1.13:8123/api/mcp"    headers:      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"    timeout: 30    connect_timeout: 10
 ```
 
 **Solution**:
@@ -273,16 +273,16 @@ mcp_servers:  n8n-mcp:    url: "https://n8n.<oracle-server>/mcp-server/http"    
 # AFTER (fixed):
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"
     timeout: 180
     connect_timeout: 60
 
   home-assistant:
-    url: "http://<LAN_HOST>:8123/api/mcp"
+    url: "http://10.1.1.13:8123/api/mcp"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"
     timeout: 30
     connect_timeout: 10
 ```
@@ -304,16 +304,16 @@ cat > /tmp/mcp_fix.yaml << 'EOF'
 # MCP Servers Configuration
 mcp_servers:
   n8n-mcp:
-    url: "https://n8n.<oracle-server>/mcp-server/http"
+    url: "https://n8n.wineandgecko.com/mcp-server/http"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlY2YzNWViZC0wZjQwLTQ4MzgtOWE2MC1hZmM3NDQzMjM2Y2UiLCJpc3MiOiJuOG4iLCJhdWQiOiJtY3Atc2VydmVyLWFwaSIsImp0aSI6ImIyODBjNWM2LTcyZWEtNGVhYy1hYTg5LWIyMGY2ZmQ0YzRmMCIsImlhdCI6MTc3NTE2NDQwNX0.aa9hV8HD1IiT3wsCDD9d-mGMlt03QERbXIYtHcxGK4c"
     timeout: 180
     connect_timeout: 60
 
   home-assistant:
-    url: "http://<LAN_HOST>:8123/api/mcp"
+    url: "http://10.1.1.13:8123/api/mcp"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"
     timeout: 30
     connect_timeout: 10
 EOF
@@ -373,7 +373,7 @@ mcp_home_assistant_HassGetStates --domain "light"  # Should return your lights
 
 ### Validate YAML
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('$HOME/.hermes/config.yaml')); print('Valid YAML')"
+python3 -c "import yaml; yaml.safe_load(open('/home/josh434/.hermes/config.yaml')); print('Valid YAML')"
 ```
 
 ### List MCP Tools (to verify config is working)
@@ -501,6 +501,8 @@ If the config is severely corrupted and repair is taking too long:
 
 ## Related Skills
 - `native-mcp`: For understanding how Hermes connects to MCP servers
+- `n8n-mcp-integration`: For using the n8n MCP server once configured
+- `home-assistant-mcp-integration`: For using the Home Assistant MCP server once configured
 - `mcporter`: For manual testing of MCP connections
 - `obsidian-integration`: For creating and managing notes in Obsidian vault
 

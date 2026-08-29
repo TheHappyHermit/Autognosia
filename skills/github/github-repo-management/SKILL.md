@@ -501,70 +501,6 @@ for g in json.load(sys.stdin):
     print(f\"  {g['id']}  {g['description'] or '(no desc)':40}  {files}\")"
 ```
 
-## 11. Resetting to a Clean Initial State
-
-Use this when a repo has contaminated history (foreign authors, merged-in projects, too many commits) and you want it to look freshly initialized.
-
-### Shallow Re-Init (Single Initial Commit)
-
-```bash
-# 1. Clone the repo (or work inside it)
-git clone https://github.com/owner/repo.git
-cd repo
-
-# 2. Delete git history entirely
-rm -rf .git
-
-# 3. Re-initialize as a brand-new repo
-git init
-
-# 4. Add all current files as a single initial commit
-git add -A
-git -c user.name="YourName" -c user.email="YourName@users.noreply.github.com" \
-  commit -m "Initial commit: repo description"
-
-# 5. Rename branch if needed (new repos use 'main' by default)
-git branch -m master main
-
-# 6. Force-push to overwrite the remote
-# NOTE: deleting .git also wipes the remote URL — you must re-add it
-git remote add origin https://github.com/owner/repo.git
-git push -f origin main
-```
-
-**PITFALL (remote URL lost):** `rm -rf .git` removes the remote configuration. After re-init, the repo has no remote. You must `git remote add origin <url>` before pushing.
-
-**PITFALL (HTTPS auth after re-init):** Credential helpers live in `.git/config` — wiping `.git` also wipes them. If the terminal can't provide interactive credentials (no TTY prompt available), configure credentials beforehand:
-
-```bash
-# Option A: Pre-configure git credential store (persistent)
-git config --global credential.helper store
-printf "https://%s:%s@github.com\n" "username" "TOKEN" >> ~/.git-credentials
-
-# Option B: Embed token in remote URL
-git remote set-url origin https://username:TOKEN@github.com/owner/repo.git
-
-# Option C: Use SSH (if configured)
-git remote set-url origin git@github.com:owner/repo.git
-```
-
-**Before doing this: BACK UP the old history first!**
-```bash
-# Bare clone preserves all commits and branches
-git clone --mirror https://github.com/owner/repo.git /path/to/backup-repo
-# Or a full clone with all history
-git clone https://github.com/owner/repo.git /path/to/backup-repo
-```
-
-### Branch Renaming Only (No History Wipe)
-
-If you only need to change the default branch name:
-```bash
-git branch -m old-name new-name
-git push origin -u new-name
-gh repo edit --default-branch new-name   # update GitHub setting
-```
-
 ## Quick Reference Table
 
 | Action | gh | git + curl |
@@ -578,4 +514,3 @@ gh repo edit --default-branch new-name   # update GitHub setting
 | List workflows | `gh workflow list` | `curl GET /repos/o/r/actions/workflows` |
 | Rerun CI | `gh run rerun ID` | `curl POST /repos/o/r/actions/runs/ID/rerun` |
 | Set secret | `gh secret set KEY` | `curl PUT /repos/o/r/actions/secrets/KEY` (+ encryption) |
-| Clean reset | — | `rm -rf .git; git init; git add -A; git commit; git push -f` |

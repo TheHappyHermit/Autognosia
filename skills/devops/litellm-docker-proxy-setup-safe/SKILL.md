@@ -39,11 +39,11 @@ cd ~/litellm-proxy
 ```bash
 # === PRIMARY MODEL API KEYS ===
 # Get these from your secure storage (password manager, etc.)
-XIAOMI_API_KEY=<REDACTED_API_KEY>
-OPENROUTER_API_KEY=<REDACTED_API_KEY>
+XIAOMI_API_KEY=your_actual_xiaomi_key_here
+OPENROUTER_API_KEY=your_actual_openrouter_key_here
 
 # === ADDITIONAL PROVIDER KEYS (as needed) ===
-GLM_API_KEY=<REDACTED_API_KEY>
+GLM_API_KEY=your_actual_glm_key_here
 # KIMI_API_KEY=...
 # MINIMAX_API_KEY=...
 

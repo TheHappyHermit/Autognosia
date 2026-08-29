@@ -133,12 +133,12 @@ Packages installed via `docker exec ... pip install` are **ephemeral** — they 
 **Fix:** Always add packages to `requirements.txt` on the host, then rebuild:
 ```bash
 # On host
-echo "scipy>=1.12.0" >> /opt/the client platform-ai/backend/requirements.txt
-echo "mistralai>=1.0.0,<2.0.0" >> /opt/the client platform-ai/backend/requirements.txt
+echo "scipy>=1.12.0" >> /opt/wealthforge-ai/backend/requirements.txt
+echo "mistralai>=1.0.0,<2.0.0" >> /opt/wealthforge-ai/backend/requirements.txt
 
 # Rebuild (not just restart)
 docker stop wf-api && docker rm wf-api
-cd /opt/the client platform-ai && docker compose up -d api
+cd /opt/wealthforge-ai && docker compose up -d api
 ```
 
 **Quick fix (survives restarts but not rebuilds):**

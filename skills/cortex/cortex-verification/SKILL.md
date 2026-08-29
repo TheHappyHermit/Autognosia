@@ -3,7 +3,7 @@ name: cortex-verification
 description: Verification contracts — deterministic first, auditor last, reality over narration.
 ---
 
-# Autognosia Verification
+# Cortex Verification
 
 ## Verification Hierarchy
 

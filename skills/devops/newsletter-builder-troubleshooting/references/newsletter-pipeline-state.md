@@ -3,14 +3,14 @@
 *Last verified: 2026-06-09*
 
 ## Server
-- FreshRSS: <V100_HOST>:443, Host header: freshrss.<oracle-server>
+- FreshRSS: 10.1.1.10:443, Host header: freshrss.wineandgecko.com
 - Self-signed TLS (Traefik default cert), verify=False
 - DNS is NXDOMAIN on public internet, resolved via IP direct
 - Root page returns blank (normal), API endpoints work
 
 ## Auth
 - gReader ClientLogin at /api/greader.php/accounts/ClientLogin
-- Returns Auth=<username>/<token> on success
+- Returns Auth=josh434/<token> on success
 - Token lasts ~2 hours
 
 ## Script

@@ -21,7 +21,7 @@ restart counter climbs fast) with
    by a safety guard, so never `write_file`/`patch` it:
    ```bash
    cd ~/.hermes/hermes-agent
-   venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.username <username>
+   venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.username josh434
    venv/bin/python -m hermes_cli.main config set dashboard.basic_auth.password_hash "<scrypt-hash>"
    venv/bin/python -m hermes_cli.main plugins enable basic   # REQUIRED; not on by default
    ```
@@ -30,11 +30,11 @@ restart counter climbs fast) with
 
 ## CRITICAL pitfall: password-hash shell-escaping breaks login silently
 Hashing a password with a shell metacharacter (esp. `$`) by interpolating it
-into `python -c "hash_password('...')"` corrupts the value. `pw='<REDACTED-PASSWORD>\$'`
-in single quotes keeps the literal backslash → hash is for `<REDACTED-PASSWORD>\$`, NOT
-`<REDACTED-PASSWORD>` → login fails with NO error. ALWAYS pass via env var:
+into `python -c "hash_password('...')"` corrupts the value. `pw='J1234osh\$'`
+in single quotes keeps the literal backslash → hash is for `J1234osh\$`, NOT
+`J1234osh$` → login fails with NO error. ALWAYS pass via env var:
 ```bash
-PW='<REDACTED-PASSWORD>' venv/bin/python -c "from plugins.dashboard_auth.basic import hash_password, os; print(hash_password(os.environ['PW']))"
+PW='J1234osh$' venv/bin/python -c "from plugins.dashboard_auth.basic import hash_password, os; print(hash_password(os.environ['PW']))"
 ```
 Then verify the stored hash matches BEFORE declaring done (see `references/dashboard-password-hashing.md`).
 

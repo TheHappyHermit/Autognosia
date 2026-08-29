@@ -53,8 +53,8 @@ Two issues were fixed in `~/.hermes/scripts/refresh_graphify.py`:
    The correct invocation is:
 
    ```bash
-   cd $HOME/.autognosia/active-wiki
-   graphify update $HOME/.autognosia/active-wiki
+   cd /home/josh434/.autognosia/active-wiki
+   graphify update /home/josh434/.autognosia/active-wiki
    ```
 
    This re-extracts code files (AST, no LLM needed) and merges into the existing

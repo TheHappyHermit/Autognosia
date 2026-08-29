@@ -116,7 +116,7 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
    Key indicators:
    - `HERMES_SESSION_SOURCE=desktop` — the interface is the desktop GUI app (does NOT mean the GUI host = the execution host).
    - `HERMES_DESKTOP=1` — a desktop session is active (same caveat).
-   - `HERMES_REAL_HOME=$HOME` — the persistent home path. Compare this to the local filesystem layout.
+   - `HERMES_REAL_HOME=/home/josh434` — the persistent home path. Compare this to the local filesystem layout.
    - `_HERMES_GATEWAY=1` — the in-process gateway is active (could be the desktop's embedded gateway or a tunneled remote one).
 
 2. **Verify the execution host** directly:
@@ -125,8 +125,8 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
    hostname && uname -a && ip -4 addr show | grep inet
    ```
 
-   - If `hostname` returns a *server* name (e.g. `<hostname>`) while you're *looking at* a desktop GUI, you are remoted into the server.
-   - The IP returned (e.g. `<LAN_HOST>`) is the **execution host** — where all terminal/tool calls land — not necessarily the desktop machine.
+   - If `hostname` returns a *server* name (e.g. `JoshAgent`) while you're *looking at* a desktop GUI, you are remoted into the server.
+   - The IP returned (e.g. `10.1.1.37`) is the **execution host** — where all terminal/tool calls land — not necessarily the desktop machine.
 
 3. **Check for SSH tunneling indicators** — if the desktop app is remoted:
 
@@ -135,17 +135,17 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
    echo $SSH_CONNECTION $SSH_CLIENT         # set if tunneled
    ```
 
-4. **Confirm via filesystem** — if `$HOME` resolves to the same path on a remote Ubuntu host and the desktop is Windows, the tools execute on the remote Linux host.
+4. **Confirm via filesystem** — if `/home/josh434` resolves to the same path on a remote Ubuntu host and the desktop is Windows, the tools execute on the remote Linux host.
 
 ### Correct Mental Model
 
 ```
-[Windows desktop] —(GUI + SSH tunnel)→ [Ubuntu agent server <LAN_HOST>]
+[Windows desktop] —(GUI + SSH tunnel)→ [Ubuntu agent server 10.1.1.37]
    ↑ Hermes desktop app                 ↑ tools execute here
    ← profiles / sessions flow back
 ```
 
-The agent server at `<LAN_HOST>` is the persistent backend shared across frontends (desktop app, Telegram, etc.). The desktop app's profile list showing server profiles confirms the link is healthy. When you run `ip addr` from a tool call, the `<LAN_HOST>` address is the **agent server**, not the desktop.
+The agent server at `10.1.1.37` is the persistent backend shared across frontends (desktop app, Telegram, etc.). The desktop app's profile list showing server profiles confirms the link is healthy. When you run `ip addr` from a tool call, the `10.1.1.37` address is the **agent server**, not the desktop.
 
 ### Common Mistake to Avoid
 
@@ -161,7 +161,7 @@ Do NOT assume the IP returned by `ip addr` in a terminal call is the machine you
 
 2. **Script uses relative paths based on `__file__`** (e.g., `os.path.dirname(os.path.abspath(__file__))`). When Hermes copies the script to `~/.hermes/scripts/`, those relative paths resolve to the wrong location.
 
-3. **Script path drift (Autognosia migration):** Scripts were moved from `hermes-cortex/scripts/` to `.autognosia/scripts/` as part of the project rename from "Hermes Cortex" to "Autognosia". The cron job's `script` field may point to a missing path. If the script exists at `~/.autognosia/scripts/` but the job reports `Script not found`, set `workdir` to `$HOME/.autognosia/scripts`.
+3. **Script path drift (Autognosia migration):** Scripts were moved from `hermes-cortex/scripts/` to `.autognosia/scripts/` as part of the project rename from "Hermes Cortex" to "Autognosia". The cron job's `script` field may point to a missing path. If the script exists at `~/.autognosia/scripts/` but the job reports `Script not found`, set `workdir` to `/home/josh434/.autognosia/scripts`.
 
 ### Fix
 
@@ -201,7 +201,7 @@ If it works here, it will work as a cron job.
 
 After the project rename from "Hermes Cortex" to "Autognosia", verify:
 - [ ] All scripts in `.autognosia/scripts/` have no references to `hermes-cortex` paths
-- [ ] All cron jobs with `no_agent=True` and script references have `workdir` set to `$HOME/.autognosia/scripts` if the script lives there
+- [ ] All cron jobs with `no_agent=True` and script references have `workdir` set to `/home/josh434/.autognosia/scripts` if the script lives there
 - [ ] The script file `check_cortex_dbs.py` has been renamed to `check_autognosia_dbs.py` with all "cortex" references replaced with "autognosia"
 
 ## Cron Jobs Fail Closed After Changing Global Model

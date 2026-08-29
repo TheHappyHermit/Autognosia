@@ -68,7 +68,7 @@ git stash pop
 After update, the version output should show:
 ```
 Hermes Agent vX.X.X (YYYY.MM.DD)
-Project: $HOME/.hermes/hermes-agent
+Project: /home/josh434/.hermes/hermes-agent
 Python: X.X.X
 OpenAI SDK: X.X.X
 Up to date

@@ -4,7 +4,7 @@ Validated structure for bridge documents connecting two domains in the Oracle va
 
 ## File Location
 
-`$HOME/.autognosia/oracle/brain\Cross-Domain\DomainA-and-DomainB.md`
+`/home/josh434/.autognosia/oracle/brain\Cross-Domain\DomainA-and-DomainB.md`
 
 ## Structure (≤12KB)
 

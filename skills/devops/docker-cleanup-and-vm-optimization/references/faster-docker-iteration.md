@@ -27,7 +27,7 @@ docker compose up -d database
 ### 3. Run migrations using built image (NOT the db container!)
 ```bash
 docker run --rm --network honcho_default \
-  -e DB_CONNECTION_URI='postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho' \
+  -e DB_CONNECTION_URI='postgresql+psycopg://josh434:J1234osh$@database:5432/honcho' \
   honcho-deriver:latest alembic upgrade head
 # Takes ~5 sec
 ```

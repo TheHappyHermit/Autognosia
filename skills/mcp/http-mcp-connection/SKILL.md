@@ -30,20 +30,20 @@ Before attempting MCP-specific tests, verify basic network connectivity:
 
 ```bash
 # Test basic reachability
-ping n8n.<oracle-server>
+ping n8n.wineandgecko.com
 
 # Test HTTPS port accessibility  
-nc -z n8n.<oracle-server> 443 && echo "Port 443 open" || echo "Port 443 blocked"
+nc -z n8n.wineandgecko.com 443 && echo "Port 443 open" || echo "Port 443 blocked"
 ```
 
 ### 2. **Test with Proper MCP Headers (When Standard Tools Fail)**
 Many MCP servers require specific headers for SSE support. Use curl with proper headers:
 
 ```bash
-curl -N https://n8n.<oracle-server>/mcp-server/http \
+curl -N https://n8n.wineandgecko.com/mcp-server/http \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
-  -H "Authorization: Bearer <REDACTED>" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -d '{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test-client","version":"1.0.0"}},"id":1}'
 ```
 
@@ -56,9 +56,9 @@ When curl/mcporter approaches fail due to header parsing issues, use Python requ
 import json
 import requests
 
-url = "https://n8n.<oracle-server>/mcp-server/http"
+url = "https://n8n.wineandgecko.com/mcp-server/http"
 headers = {
-    "Authorization": "Bearer <REDACTED>",
+    "Authorization": "Bearer YOUR_TOKEN_HERE",
     "Content-Type": "application/json", 
     "Accept": "application/json, text/event-stream"
 }
@@ -114,7 +114,7 @@ mcp_servers:
   your-server-name:
     url: "https://your-mcp-server.com/mcp-endpoint"
     headers:
-      Authorization: "Bearer <REDACTED>"
+      Authorization: "Bearer YOUR_TOKEN_HERE"
       # Add other required headers as needed
     timeout: 180
     connect_timeout: 60
@@ -180,4 +180,4 @@ Consider these alternatives instead:
 - SSE (Server-Sent Events): https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
 - JSON-RPC 2.0: https://www.jsonrpc.org/specification
 
-This approach has been tested and proven effective with the n8n.<oracle-server> MCP server and should work with similar HTTP-based MCP servers requiring specific headers for SSE support.
+This approach has been tested and proven effective with the n8n.wineandgecko.com MCP server and should work with similar HTTP-based MCP servers requiring specific headers for SSE support.

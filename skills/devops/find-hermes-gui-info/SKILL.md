@@ -93,7 +93,7 @@ Plus restart-counter fires fast (`systemctl --user status` shows `activating aut
 - Verify gate is live: `curl http://127.0.0.1:9119/api/auth/me` → expect `401` (no session)
 - Unauthenticated `/` returns `302` (redirect to login) — that is HEALTHY, not broken.
 
-**Host-header validation:** when bound to `0.0.0.0`, the server accepts ANY Host header (accepts `hermes.<oracle-server>` from a reverse proxy/Traefik). Only loopback binds restrict to loopback names. No Host-header rewrites needed in the proxy for a 0.0.0.0 bind.
+**Host-header validation:** when bound to `0.0.0.0`, the server accepts ANY Host header (accepts `hermes.wineandgecko.com` from a reverse proxy/Traefik). Only loopback binds restrict to loopback names. No Host-header rewrites needed in the proxy for a 0.0.0.0 bind.
 
 **Verification**
 ```bash
@@ -131,8 +131,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=$HOME/.hermes/hermes-agent
-ExecStart=$HOME/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --host 0.0.0.0 --port 9119 --no-open --insecure
+WorkingDirectory=/home/josh434/.hermes/hermes-agent
+ExecStart=/home/josh434/.hermes/hermes-agent/venv/bin/python -m hermes_cli.main dashboard --host 0.0.0.0 --port 9119 --no-open --insecure
 Restart=on-failure
 RestartSec=5
 

@@ -176,4 +176,4 @@ Large GGUF downloads (20GB+) can appear complete but be corrupted — the downlo
 
 ## Notes on Orphaned GPU Processes
 
-Old Docker containers that are stopped/removed can leave orphaned `llama-server` processes running as root, holding VRAM. These don't show in `docker ps` but appear in `nvidia-smi`. Fix: `sudo kill -9 $(pgrep llama-server)` or reboot. Sudoers NOPASSWD configured at `/etc/sudoers.d/<username>-nogpass`.
+Old Docker containers that are stopped/removed can leave orphaned `llama-server` processes running as root, holding VRAM. These don't show in `docker ps` but appear in `nvidia-smi`. Fix: `sudo kill -9 $(pgrep llama-server)` or reboot. Sudoers NOPASSWD configured at `/etc/sudoers.d/josh434-nogpass`.

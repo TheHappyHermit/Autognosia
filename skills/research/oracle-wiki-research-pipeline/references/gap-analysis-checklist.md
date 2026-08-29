@@ -7,13 +7,13 @@ Run each category and record findings in `GAP-ANALYSIS-ROUND{N}.md`.
 
 ```bash
 # File count
-find $HOME/.autognosia/oracle/brain -name "*.md" -type f | wc -l
+find /home/josh434/.autognosia/oracle/brain -name "*.md" -type f | wc -l
 
 # Directory listing
-find $HOME/.autognosia/oracle/brain -maxdepth 1 -type d | sort
+find /home/josh434/.autognosia/oracle/brain -maxdepth 1 -type d | sort
 
 # Total size
-du -sh $HOME/.autognosia/oracle/brain
+du -sh /home/josh434/.autognosia/oracle/brain
 ```
 
 ## 2. Sample Core Files for Depth
@@ -29,10 +29,10 @@ Read 8-12 representative files across domains. Check:
 **Command pattern:**
 ```bash
 # Find which files mention a topic
-grep -rl -i "researcher_name" $HOME/.autognosia/oracle/brain --include="*.md"
+grep -rl -i "researcher_name" /home/josh434/.autognosia/oracle/brain --include="*.md"
 
 # Count mentions per file (assess depth)
-grep -c -i "researcher_name" $HOME/.autognosia/oracle/brain/path/to/file.md
+grep -c -i "researcher_name" /home/josh434/.autognosia/oracle/brain/path/to/file.md
 ```
 
 **Researchers to check (minimum set):**
@@ -46,7 +46,7 @@ grep -c -i "researcher_name" $HOME/.autognosia/oracle/brain/path/to/file.md
 
 **Command pattern:**
 ```bash
-grep -rl -i "domain_keyword" $HOME/.autognosia/oracle/brain --include="*.md"
+grep -rl -i "domain_keyword" /home/josh434/.autognosia/oracle/brain --include="*.md"
 ```
 
 **Domains to check:**
@@ -81,7 +81,7 @@ For each gap found:
 
 ## 7. Write Report
 
-Output to `$HOME/.autognosia/oracle/brain\GAP-ANALYSIS-ROUND{N}.md` with:
+Output to `/home/josh434/.autognosia/oracle/brain\GAP-ANALYSIS-ROUND{N}.md` with:
 - Executive summary
 - HIGH/MEDIUM/LOW priority gaps with justification
 - Suggested document scope for each gap

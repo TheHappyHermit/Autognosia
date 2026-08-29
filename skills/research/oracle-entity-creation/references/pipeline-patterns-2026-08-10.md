@@ -37,7 +37,7 @@ Validated 5-phase approach for wiki expansion:
 
 ### Cross-Domain Bridge Document Pattern
 
-Bridge documents connect two domains and live in `$HOME/.autognosia/oracle/brain\Cross-Domain\`. Each bridge:
+Bridge documents connect two domains and live in `/home/josh434/.autognosia/oracle/brain\Cross-Domain\`. Each bridge:
 - Maps concepts from Domain A to Domain B with explicit comparisons
 - Includes comparison tables and cross-references
 - Identifies what each field can learn from the other
