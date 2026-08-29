@@ -1186,9 +1186,45 @@ def serve_dashboard():
     """Serve the main dashboard HTML."""
     return FileResponse(str(DASHBOARD_DIR / "index.html"))
 
-@app.get("/styles.css")
-def serve_styles():
-    return FileResponse(str(DASHBOARD_DIR / "styles.css"), media_type="text/css")
+@app.get("/sidebar.css")
+def serve_sidebar():
+    return FileResponse(str(DASHBOARD_DIR / "sidebar.css"), media_type="text/css")
+
+@app.get("/header.css")
+def serve_header():
+    return FileResponse(str(DASHBOARD_DIR / "header.css"), media_type="text/css")
+
+@app.get("/layout.css")
+def serve_layout():
+    return FileResponse(str(DASHBOARD_DIR / "layout.css"), media_type="text/css")
+
+@app.get("/briefing.css")
+def serve_briefing():
+    return FileResponse(str(DASHBOARD_DIR / "briefing.css"), media_type="text/css")
+
+@app.get("/calendar.css")
+def serve_calendar():
+    return FileResponse(str(DASHBOARD_DIR / "calendar.css"), media_type="text/css")
+
+@app.get("/tasks.css")
+def serve_tasks():
+    return FileResponse(str(DASHBOARD_DIR / "tasks.css"), media_type="text/css")
+
+@app.get("/comms.css")
+def serve_comms():
+    return FileResponse(str(DASHBOARD_DIR / "comms.css"), media_type="text/css")
+
+@app.get("/drawers.css")
+def serve_drawers():
+    return FileResponse(str(DASHBOARD_DIR / "drawers.css"), media_type="text/css")
+
+@app.get("/services.css")
+def serve_services_css():
+    return FileResponse(str(DASHBOARD_DIR / "services.css"), media_type="text/css")
+
+@app.get("/agent.css")
+def serve_agent_css():
+    return FileResponse(str(DASHBOARD_DIR / "agent.css"), media_type="text/css")
 
 @app.get("/tokens.css")
 def serve_tokens():
