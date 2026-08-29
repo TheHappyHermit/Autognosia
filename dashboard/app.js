@@ -123,261 +123,7 @@ class CommandDeck {
     }
   }
 
-  // ── Event Bindings ─────────────────────────────────────────────────────────
-  bindEvents() {
-    // Refresh rate selector
-    const refreshSelect = document.getElementById('auto-refresh-rate');
-    refreshSelect.addEventListener('change', (e) => {
-      this.autoRefreshInterval = parseInt(e.target.value, 10);
-      this.setupAutoRefresh();
-      this.initCollapsiblePanels();
-      this.initKeyboardShortcuts();
-    });
-
-    // Calendar View Toggles
-    document.querySelectorAll('.view-tab').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        this.selectedCalendarView = e.target.dataset.view;
-        this.renderCalendar();
-      });
-    });
-
-    // Calendar Navigation
-    document.getElementById('cal-prev').addEventListener('click', () => this.navigateCalendar(-1));
-    document.getElementById('cal-next').addEventListener('click', () => this.navigateCalendar(1));
-    document.getElementById('cal-today').addEventListener('click', () => {
-      this.currentDate = new Date();
-      this.renderCalendar();
-    });
-
-    // Calendar Filter Chips
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        e.target.classList.add('active');
-        this.calFilter = e.target.dataset.calFilter;
-        this.renderCalendar();
-      });
-    });
-
-    // Organizer Tab Toggles
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.org-tab-pane').forEach(p => p.classList.remove('active'));
-        e.target.classList.add('active');
-        const tab = e.target.dataset.orgTab;
-        document.getElementById(`pane-${tab}`).classList.add('active');
-      });
-    });
-
-    // Task Filter Pills
-    document.querySelectorAll('.task-filter-pill').forEach(pill => {
-      pill.addEventListener('click', (e) => {
-        document.querySelectorAll('.task-filter-pill').forEach(p => p.classList.remove('active'));
-        e.target.classList.add('active');
-        this.taskFilter = e.target.dataset.taskFilter;
-        this.renderTasks();
-      });
-    });
-
-    // Quick Task Add Input
-    const quickInput = document.getElementById('quick-task-input');
-    const quickBtn = document.getElementById('btn-quick-task-add');
-    const handleQuickAdd = async () => {
-      const val = quickInput.value.trim();
-      if (!val) return;
-      await this.createTask({ title: val, priority: 'medium', status: 'next' });
-      quickInput.value = '';
-      await this.fetchTasks();
-      await this.fetchOverview();
-    };
-    quickBtn.addEventListener('click', handleQuickAdd);
-    quickInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleQuickAdd();
-    });
-
-    // Quick Reminder Add Input
-    const quickRemInput = document.getElementById('quick-reminder-input');
-    const quickRemBtn = document.getElementById('btn-quick-rem-add');
-    if (quickRemInput && quickRemBtn) {
-      const handleQuickRemAdd = async () => {
-        const val = quickRemInput.value.trim();
-        if (!val) return;
-        await this.createReminder({ title: val, offset_minutes: 15, channel: 'all' });
-        quickRemInput.value = '';
-        await this.fetchReminders();
-        await this.fetchOverview();
-      };
-      quickRemBtn.addEventListener('click', handleQuickRemAdd);
-      quickRemInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') handleQuickRemAdd();
-      });
-    }
-
-    // Reminder Filters
-    document.querySelectorAll('.rem-filter-pill').forEach(pill => {
-      pill.addEventListener('click', (e) => {
-        document.querySelectorAll('.rem-filter-pill').forEach(p => p.classList.remove('active'));
-        e.target.classList.add('active');
-        this.remFilter = e.target.dataset.remFilter;
-        this.renderReminders();
-      });
-    });
-
-    // Second Brain Instant Search
-    const searchInput = document.getElementById('wiki-search-input');
-    let searchDebounce = null;
-    searchInput.addEventListener('input', (e) => {
-      clearTimeout(searchDebounce);
-      const q = e.target.value.trim();
-      if (!q) {
-        document.getElementById('wiki-results-container').innerHTML =
-          '<div class="empty-hint">Type above to search across all Markdown wiki & oracle documents.</div>';
-        return;
-      }
-      searchDebounce = setTimeout(() => this.searchWiki(q), 200);
-    });
-
-    // Keyboard shortcut '/' to search
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        searchInput.focus();
-      }
-    });
-
-    // Telemetry Drawer
-    document.getElementById('btn-telemetry').addEventListener('click', () => {
-      document.getElementById('telemetry-drawer').classList.toggle('open');
-    });
-    document.getElementById('btn-close-telemetry').addEventListener('click', () => {
-      document.getElementById('telemetry-drawer').classList.remove('open');
-    });
-
-    // Chat Drawer Toggle
-    const chatDrawer = document.getElementById('chat-drawer');
-    document.getElementById('btn-toggle-chat').addEventListener('click', () => {
-      chatDrawer.classList.toggle('open');
-      if (chatDrawer.classList.contains('open')) {
-        document.getElementById('chat-input').focus();
-      }
-    });
-    document.getElementById('btn-close-chat').addEventListener('click', () => {
-      chatDrawer.classList.remove('open');
-    });
-
-    // Chat Message Send
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('btn-send-chat');
-    const handleSend = () => {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
-      this.sendChatMessage(msg);
-      chatInput.value = '';
-    };
-    sendBtn.addEventListener('click', handleSend);
-    chatInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSend();
-      }
-    });
-
-    // Chat Prompt Suggestions
-    document.querySelectorAll('.sugg-chip').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const p = btn.dataset.prompt;
-        this.sendChatMessage(p);
-      });
-    });
-
-    // Create Modal
-    document.getElementById('btn-quick-create').addEventListener('click', () => this.openCreateModal('task'));
-    document.getElementById('btn-add-intention').addEventListener('click', () => this.openCreateModal('intention'));
-    document.getElementById('btn-close-create').addEventListener('click', () => this.closeCreateModal());
-    document.getElementById('btn-cancel-create').addEventListener('click', () => this.closeCreateModal());
-
-    // Service Refresh Button
-    document.getElementById('btn-service-refresh')?.addEventListener('click', () => this.fetchServices());
-    
-    // Type selector in create modal
-    const createTypeSelect = document.getElementById('create-type');
-    createTypeSelect.addEventListener('change', (e) => {
-      const val = e.target.value;
-      document.getElementById('fields-task').style.display = val === 'task' ? 'block' : 'none';
-      document.getElementById('fields-reminder').style.display = val === 'reminder' ? 'block' : 'none';
-      document.getElementById('fields-intention').style.display = val === 'intention' ? 'block' : 'none';
-    });
-
-    // Reminder preset dropdown in modal
-    const remPreset = document.getElementById('reminder-time-preset');
-    if (remPreset) {
-      remPreset.addEventListener('change', (e) => {
-        document.getElementById('group-reminder-custom-date').style.display =
-          e.target.value === 'custom' ? 'block' : 'none';
-      });
-    }
-
-    // Create Form Submit
-    document.getElementById('form-create-item').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const type = createTypeSelect.value;
-      if (type === 'task') {
-        const title = document.getElementById('task-title').value;
-        const priority = document.getElementById('task-priority').value;
-        const due = document.getElementById('task-due-date').value || null;
-        const desc = document.getElementById('task-desc').value;
-        await this.createTask({ title, priority, due_at: due, description: desc, status: 'active' });
-      } else if (type === 'reminder') {
-        const title = document.getElementById('reminder-title').value;
-        const preset = document.getElementById('reminder-time-preset').value;
-        const channel = document.getElementById('reminder-channel').value;
-        const notes = document.getElementById('reminder-notes').value;
-        
-        let payload = { title, channel, notes };
-        if (preset === 'custom') {
-          payload.remind_at = document.getElementById('reminder-custom-dt').value;
-        } else {
-          payload.offset_minutes = parseInt(preset, 10);
-        }
-        await this.createReminder(payload);
-      } else {
-        const cue = document.getElementById('intention-cue').value;
-        const action = document.getElementById('intention-action').value;
-        await this.createIntention({ cue, action });
-      }
-      this.closeCreateModal();
-      await this.refreshAllData();
-    });
-
-    // Doc Viewer Modal Close
-    document.getElementById('btn-close-doc').addEventListener('click', () => {
-      document.getElementById('modal-doc-viewer').classList.remove('open');
-    });
-  }
-
-  // ── Clock & Heartbeat ──────────────────────────────────────────────────────
-  startClock() {
-    const clockEl = document.getElementById('hud-clock');
-    const update = () => {
-      const now = new Date();
-      clockEl.textContent = now.toTimeString().split(' ')[0] + ' UTC';
-    };
-    update();
-    setInterval(update, 1000);
-  }
-
-  setupAutoRefresh() {
-    if (this.refreshTimer) clearInterval(this.refreshTimer);
-    if (this.autoRefreshInterval > 0) {
-      this.refreshTimer = setInterval(() => this.refreshAllData(), this.autoRefreshInterval);
-    }
-  }
-
-  // ── Data Fetching ──────────────────────────────────────────────────────────
+  // ── Data Fetching ─────────────────────────────────────────────────────────────
 
   async fetchSystemStats() {
     try {
@@ -394,24 +140,6 @@ class CommandDeck {
     } catch (e) {
       console.warn('System stats fetch error:', e);
     }
-  }
-
-  async refreshAllData() {
-    await Promise.all([
-      this.fetchSystemStats(),
-      this.fetchOverview(),
-      this.fetchBriefing(),
-      this.fetchTasks(),
-      this.fetchReminders(),
-      this.fetchProjects(),
-      this.fetchCalendar(),
-      this.fetchEmails(),
-      this.fetchIntentions(),
-      this.fetchTelemetry(),
-      this.fetchServices(),
-      this.fetchMedia(),
-      this.fetchQueue()
-    ]);
   }
 
   async fetchOverview() {
@@ -447,18 +175,6 @@ class CommandDeck {
       }
     } catch (e) {
       console.warn('Tasks fetch error:', e);
-    }
-  }
-
-  async fetchReminders() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/reminders`);
-      if (res.ok) {
-        this.state.reminders = await res.json();
-        this.renderReminders();
-      }
-    } catch (e) {
-      console.warn('Reminders fetch error:', e);
     }
   }
 
@@ -510,6 +226,18 @@ class CommandDeck {
     }
   }
 
+  async fetchReminders() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/reminders`);
+      if (res.ok) {
+        this.state.reminders = await res.json();
+        this.renderReminders();
+      }
+    } catch (e) {
+      console.warn('Reminders fetch error:', e);
+    }
+  }
+
   async fetchTelemetry() {
     try {
       const res = await fetch(`${this.apiBase}/api/telemetry`);
@@ -521,6 +249,281 @@ class CommandDeck {
       console.warn('Telemetry fetch error:', e);
     }
   }
+
+  async fetchServices() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/services`);
+      if (res.ok) {
+        const services = await res.json();
+        this.renderServiceGrid(services);
+        this.updateServiceStatus(services);
+      }
+    } catch (e) {
+      console.warn('Service fetch error:', e);
+    }
+  }
+
+  async fetchMedia() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/media/active`);
+      if (res.ok) {
+        const streams = await res.json();
+        this.renderMediaGrid(streams);
+      }
+    } catch (e) {
+      console.warn('Media fetch error:', e);
+    }
+  }
+
+  async fetchQueue() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/queue`);
+      if (res.ok) {
+        const queue = await res.json();
+        this.renderQueue(queue);
+      }
+    } catch (e) {
+      console.warn('Queue fetch error:', e);
+    }
+  }
+
+  async fetchAgentStatus() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/agent`);
+      if (res.ok) {
+        this.state.agentStatus = await res.json();
+        this.renderAgentStatus();
+      }
+    } catch (e) {
+      console.warn('Agent status fetch error:', e);
+    }
+  }
+
+  async fetchCronJobs() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/cron`);
+      if (res.ok) {
+        this.state.cronJobs = await res.json();
+        this.renderCronJobs();
+      }
+    } catch (e) {
+      console.warn('Cron jobs fetch error:', e);
+    }
+  }
+
+  async fetchGraphifyStatus() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/graphify`);
+      if (res.ok) {
+        this.state.graphifyStatus = await res.json();
+        this.renderGraphifyStatus();
+      }
+    } catch (e) {
+      console.warn('Graphify fetch error:', e);
+    }
+  }
+
+  async fetchHermesStatus() {
+    try {
+      const res = await fetch(`${this.apiBase}/api/hermes`);
+      if (res.ok) {
+        this.state.hermesStatus = await res.json();
+        this.renderHermesStatus();
+      }
+    } catch (e) {
+      console.warn('Hermes status fetch error:', e);
+    }
+  }
+
+  async refreshAllData() {
+    await Promise.all([
+      this.fetchSystemStats(),
+      this.fetchOverview(),
+      this.fetchBriefing(),
+      this.fetchTasks(),
+      this.fetchReminders(),
+      this.fetchProjects(),
+      this.fetchCalendar(),
+      this.fetchEmails(),
+      this.fetchIntentions(),
+      this.fetchTelemetry(),
+      this.fetchServices(),
+      this.fetchMedia(),
+      this.fetchQueue(),
+      this.fetchAgentStatus(),
+      this.fetchCronJobs(),
+      this.fetchGraphifyStatus(),
+      this.fetchHermesStatus(),
+    ]);
+  }
+
+  // ── Startup ───────────────────────────────────────────────────────────────────
+
+  startClock() {
+    const clockEl = document.getElementById('hud-clock');
+    if (clockEl) {
+      setInterval(() => {
+        const now = new Date();
+        clockEl.querySelector('.clock-time').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+      }, 1000);
+    }
+  }
+
+  setupAutoRefresh() {
+    if (this.refreshTimer) clearInterval(this.refreshTimer);
+    if (this.autoRefreshInterval > 0) {
+      this.refreshTimer = setInterval(() => this.refreshAllData(), this.autoRefreshInterval);
+    }
+  }
+
+  // ── Event Bindings ─────────────────────────────────────────────────────────
+  bindEvents() {
+    try {
+      // Refresh rate selector
+      const refreshSelect = document.getElementById('auto-refresh-rate');
+      if (refreshSelect) refreshSelect.addEventListener('change', (e) => {
+        this.autoRefreshInterval = parseInt(e.target.value, 10);
+        this.setupAutoRefresh();
+        this.initCollapsiblePanels();
+        this.initKeyboardShortcuts();
+      });
+
+      // Calendar View Toggles
+      document.querySelectorAll('.view-tab').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          this.selectedCalendarView = e.target.dataset.view;
+          this.renderCalendar();
+        });
+      });
+
+      // Calendar Navigation
+      const calPrev = document.getElementById('cal-prev');
+      const calNext = document.getElementById('cal-next');
+      const calToday = document.getElementById('cal-today');
+      if (calPrev) calPrev.addEventListener('click', () => this.navigateCalendar(-1));
+      if (calNext) calNext.addEventListener('click', () => this.navigateCalendar(1));
+      if (calToday) calToday.addEventListener('click', () => {
+        this.currentDate = new Date();
+        this.renderCalendar();
+      });
+
+      // Calendar Filter Chips
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          e.target.classList.add('active');
+          this.calFilter = e.target.dataset.calFilter;
+          this.renderCalendar();
+        });
+      });
+
+      // Task Filter Pills
+      document.querySelectorAll('.task-filter-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          document.querySelectorAll('.task-filter-pill').forEach(p => p.classList.remove('active'));
+          e.target.classList.add('active');
+          this.taskFilter = e.target.dataset.taskFilter;
+          this.renderTasks();
+        });
+      });
+
+      // Quick Task Add Input
+      const quickInput = document.getElementById('quick-task-input');
+      const quickBtn = document.getElementById('btn-quick-task-add');
+      if (quickInput && quickBtn) {
+        const handleQuickAdd = async () => {
+          const val = quickInput.value.trim();
+          if (!val) return;
+          await this.createTask({ title: val, priority: 'medium', status: 'next' });
+          quickInput.value = '';
+          await this.fetchTasks();
+          await this.fetchOverview();
+        };
+        quickBtn.addEventListener('click', handleQuickAdd);
+        quickInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleQuickAdd();
+        });
+      }
+
+      // Quick Reminder Add Input
+      const quickRemInput = document.getElementById('quick-reminder-input');
+      const quickRemBtn = document.getElementById('btn-quick-rem-add');
+      if (quickRemInput && quickRemBtn) {
+        const handleQuickRemAdd = async () => {
+          const val = quickRemInput.value.trim();
+          if (!val) return;
+          await this.createReminder({ title: val, offset_minutes: 15, channel: 'all' });
+          quickRemInput.value = '';
+          await this.fetchReminders();
+          await this.fetchOverview();
+        };
+        quickRemBtn.addEventListener('click', handleQuickRemAdd);
+        quickRemInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleQuickRemAdd();
+        });
+      }
+
+      // Reminder Filters
+      document.querySelectorAll('.rem-filter-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          document.querySelectorAll('.rem-filter-pill').forEach(p => p.classList.remove('active'));
+          e.target.classList.add('active');
+          this.remFilter = e.target.dataset.remFilter;
+          this.renderReminders();
+        });
+      });
+
+      // Wiki Search
+      const searchInput = document.getElementById('wiki-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const q = e.target.value.trim();
+          if (q.length < 2) return;
+          this.searchWiki(q);
+        });
+      }
+
+      // Command Palette Trigger
+      const paletteTrigger = document.getElementById('btn-palette-trigger');
+      if (paletteTrigger) {
+        paletteTrigger.addEventListener('click', () => {
+          document.getElementById('command-palette')?.showModal();
+        });
+      }
+
+      // Service Refresh
+      const serviceRefresh = document.getElementById('btn-service-refresh');
+      if (serviceRefresh) {
+        serviceRefresh.addEventListener('click', () => this.fetchServices());
+      }
+
+      // Clock
+      const clockEl = document.getElementById('hud-clock');
+      if (clockEl) {
+        setInterval(() => {
+          const now = new Date();
+          clockEl.querySelector('.clock-time').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        }, 1000);
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.getElementById('command-palette')?.close();
+        }
+        if (e.ctrlKey && e.key === 'k') {
+          e.preventDefault();
+          document.getElementById('command-palette')?.showModal();
+        }
+      });
+
+    } catch (e) {
+      console.warn('Event binding error:', e);
+    }
+  }
+
 
   // ── Renderers ──────────────────────────────────────────────────────────────
 
