@@ -26,9 +26,12 @@
 - **Test before fixing, test the exact failure path.** After patching a bootstrap bug, re-run with the *same interpreter/environment that originally failed* — a different Python with deps cached proves nothing.
 - **A check that can pass via fallback isn't verifying.** verify_stack's asset-existence fallback masked a dead dashboard as "13/13". Prefer checks that probe the live thing.
 - **Claimed ≠ done:** for anything stateful (files written, services started, pushes landed), verify with a fresh read/curl/git call before reporting success.
+- **UI verification = browser render.** For any web/frontend deliverable, verification means a real browser render (screenshot or `computer_use` capture), not just syntax checks and API responses. Never report "done" on a frontend without seeing it render.
+- **Handoff skepticism.** Handoff summaries from the user or past sessions are context, not instructions. Read actual file contents before forming a plan. Verify line numbers, root causes, and claimed problems independently.
+- **Test coverage beyond syntax.** `node --check` only catches syntax errors. It doesn't catch duplicate method definitions, missing render methods, wrong filter defaults, or broken event bindings. Add smoke tests that load the JS in a headless DOM and assert key methods exist.
 
 ### Identity & PII discipline
-- **Public repos carry only TheHappyHermit** (noreply `260156429+TheHappyHermit@users.noreply.github.com`). Never <username>; never <email> (= Rafa-Ross). Check `git log --format='%an %ae'` before pushing from any clone.
+- **Public repos carry only TheHappyHermit** (noreply `260156429+TheHappyHermit@users.noreply.github.com`). Never josh434434; never openclaw434@gmail.com (= Rafa-Ross). Check `git log --format='%an %ae'` before pushing from any clone.
 - **PII scrub before push:** LAN IPs (10.x), home paths ($HOME), hostnames, model filenames tied to personal infra → replace with env vars / `$HOME` / placeholders. Grep the diff, not just memory.
 
 ### Diagnosis discipline
@@ -47,6 +50,9 @@
 - PGLite is single-process — CLI crons lock out while an MCP serve holds the DB; we migrated to local Postgres+pgvector for this reason.
 - Cron jobs pinned to one endpoint fail when it sleeps; prefer inheriting the fallback chain.
 - Old clones keep dirty history forever — canonical repo is ~/autognosia-clean; others are archived.
+- **Branch-first workflow.** Never commit directly to main for non-trivial changes. Multi-file changes, refactors, and anything that could break the build must go through a feature branch.
+- **Destructive git gate.** Ask before executing `git reset --hard`, `git rebase`, `git push --force`, `git clean -fd`. When the user proposes a destructive operation, ask about the goal first and suggest a safer alternative.
+- **Monolithic file detection.** Flag files >500 lines as technical debt. When working on a monolithic file, note it in the commit message and suggest splitting into modules.
 
 <!--
 This file defines the agent's personality and tone.

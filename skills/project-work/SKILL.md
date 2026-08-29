@@ -23,7 +23,7 @@ When a project reaches completion:
 
 ## Troubleshooting Records
 
-When troubleshooting hardware, software, infrastructure, or the Autognosia itself, preserve:
+When troubleshooting hardware, software, infrastructure, or the Cortex itself, preserve:
 
 - Observed symptom
 - Environment

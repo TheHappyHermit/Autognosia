@@ -37,7 +37,7 @@ pip install wandb
 wandb login
 
 # Or set API key programmatically
-export WANDB_API_KEY=<REDACTED_API_KEY>
+export WANDB_API_KEY=your_api_key_here
 ```
 
 ## Quick Start

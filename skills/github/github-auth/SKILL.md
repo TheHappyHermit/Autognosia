@@ -245,20 +245,7 @@ echo "<THEIR_TOKEN>" | gh auth login --with-token
 gh auth setup-git
 ```
 
-If `--with-token` hangs here (can happen with terminal tools that can't handle stdin-reading prompts), use the hosts.yml fallback from the pitfall above.
-
-> **PITFALL (corrupted hosts.yml):** if `gh auth status` reports "Failed to log in" and `gh auth login --with-token` fails with "failed to create root command / failed to read configuration / invalid config file", the `hosts.yml` file has been corrupted by a previous agent writing raw JSON (e.g. a GitHub API response) directly into it. The file is unfixable — YAML parsers can't recover from embedded JSON objects as keys. **Recovery: delete the file, then re-authenticate.**
->
-> ```bash
-> rm ~/.config/gh/hosts.yml
-> # Then either use --with-token or write hosts.yml directly:
-> ```
->
-> Always back up a corrupted file before deleting so you can extract a token if needed:
-> ```bash
-> cp ~/.config/gh/hosts.yml ~/.config/gh/hosts.yml.bak
-> rm ~/.config/gh/hosts.yml
-> ```
+If `--with-token` hangs here, use the hosts.yml fallback from the pitfall above.
 
 ### Verify
 

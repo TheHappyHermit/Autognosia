@@ -173,7 +173,7 @@ ls ~/.hermes/memory_enhancement/memories.db 2>/dev/null && echo "Memory DB prese
 - Remove them from backup so you only store custom/user-added skills
 - CRITICAL: When removing bundled skills, use `find` to target only the exact skill directory name - do NOT `rm -rf` parent category directories, as custom skills may live alongside bundled ones in the same category (e.g., `skills/mlops/rss-content-waterfall` vs `skills/mlops/training/axolotl`)
 
-## Extended Backup: OpenClaw & the workspace app
+## Extended Backup: OpenClaw & Paperclip
 
 ### OpenClaw Customizations (`~/.openclaw/`)
 ```bash
@@ -188,23 +188,23 @@ cp ~/.openclaw/openclaw.json .
 rsync -a ~/.openclaw/credentials/ agents/credentials/
 ```
 
-### the workspace app Customizations
+### Paperclip Customizations
 ```bash
-# Option A: Custom skills only (if using upstream the workspace app)
-gh repo create <user>/the workspace app-customizations --private --clone
-cd /tmp/the workspace app-customizations
+# Option A: Custom skills only (if using upstream Paperclip)
+gh repo create <user>/paperclip-customizations --private --clone
+cd /tmp/paperclip-customizations
 mkdir -p skills
-rsync -av ~/the workspace app/skills/the workspace app-board/ skills/
-rsync -av ~/the workspace app/skills/the workspace app-converting-plans-to-tasks/ skills/
-rsync -av ~/the workspace app/skills/the workspace app-create-agent/ skills/
-rsync -av ~/the workspace app/skills/para-memory-files/ skills/
+rsync -av ~/paperclip/skills/paperclip-board/ skills/
+rsync -av ~/paperclip/skills/paperclip-converting-plans-to-tasks/ skills/
+rsync -av ~/paperclip/skills/paperclip-create-agent/ skills/
+rsync -av ~/paperclip/skills/para-memory-files/ skills/
 
 # Option B: Full fork with Hermes adapters (current setup)
-# The feat/externalize-hermes-adapter branch was merged into master in <upstream-org>/the workspace app
+# The feat/externalize-hermes-adapter branch was merged into master in paperclipai/paperclip
 # Push master to your private fork:
-gh repo create <user>/the workspace app --private --clone
-cd /tmp/the workspace app
-git remote add myfork https://github.com/<user>/the workspace app.git
+gh repo create <user>/paperclip --private --clone
+cd /tmp/paperclip
+git remote add myfork https://github.com/<user>/paperclip.git
 git push myfork master
 ```
 
@@ -265,7 +265,7 @@ rm -rf /path/to/dir
 - Large media files (audio_cache, images) are excluded to keep repo small
 - When pruning bundled skills, NEVER remove entire category directories (e.g., `skills/mlops/`) - custom skills may live in the same category dirs. Use targeted deletion of specific skill subdirectories only.
 - OpenClaw agent workspaces have SQLite databases in `qmd/` - exclude these (regenerated on restore)
-- the workspace app fork: the Hermes adapter branch (`feat/externalize-hermes-adapter`) is already merged into master in upstream; push master to your fork instead of searching for the branch
+- Paperclip fork: the Hermes adapter branch (`feat/externalize-hermes-adapter`) is already merged into master in upstream; push master to your fork instead of searching for the branch
 - Use `gh auth token` in credential helper for non-interactive CI/scripted pushes
 - Permission issues with Obsidian/Syncthing directories: fix with `chmod -R u+w /path` before `rm -rf`
 - Docker volume migration: see `references/docker-volume-migration-guide.md` for decision framework and commands

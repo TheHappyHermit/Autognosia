@@ -10,7 +10,7 @@
 | **Bella** | `EXAVITQu4vr4xnSDxMaL` | Soft, friendly female |
 | **Domi** | `AZnzlk1XvdvUeBnXmlld` | Strong, confident female |
 | **Elli** | `MF3mGyEYCl7XYWbV9V6O` | Gentle, calm female |
-| **the user** | `TxGEqnHWrfWFTfGW9XjX` | Deep, resonant male |
+| **Josh** | `TxGEqnHWrfWFTfGW9XjX` | Deep, resonant male |
 | **Rachel** | `21m00Tcm4TlvDq8ikWAM` | Clear, professional female |
 | **Sam** | `yoZ06aMxZJJ28mfd3POQ` | Neutral, conversational male |
 

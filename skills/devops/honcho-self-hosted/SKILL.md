@@ -132,50 +132,9 @@ All DIALECTIC level defaults must be set to `"google"` provider (PATCH done). Th
 1. Edit `src/config.py` (all model references) AND `docker-compose.yml`
 2. `cd ~/honcho && docker compose up -d --build server deriver`
 3. Verify model: `docker exec honcho_deriver python -c "from src.config import settings; print(settings.DERIVER.MODEL)"`
-4. Check server: `docker compose logs --tail-10 server` (should show Uvicorn on :8000)
+4. Check server: `docker compose logs --tail=10 server` (should show Uvicorn on :8000)
 5. Check deriver: `docker compose logs --tail=30 deriver` (look for PERFORMANCE metrics or errors)
 6. Test ingestion: send message via API, watch deriver logs for observation generation and save results
-
-## Preflight: Is Honcho Actually Working?
-
-Containers running + API responding does NOT mean Honcho has data. Common state:
-healthy containers, healthy API, but ZERO workspaces/peers/conclusions. This happens when
-the system was installed but never initialized (no workspace created, no API key in env).
-
-**Diagnosis workflow:**
-```bash
-# 1. API health check
-curl -s http://127.0.0.1:8000/health
-
-# 2. Check workspaces (POST, not GET)
-curl -s -X POST http://127.0.0.1:8000/v3/workspaces/list -H "Content-Type: application/json" -d '{}'
-
-# 3. Check peers
-curl -s http://127.0.0.1:8000/v3/workspaces/WS-ID/peers/list -H "Content-Type: application/json" -d '{}'
-
-# 4. Check if any conclusions exist
-curl -s http://127.0.0.1:8000/v3/workspaces/WS-ID/peers/PEER-ID/conclusions -H "Content-Type: application/json" -d '{}'
-```
-
-If API returns "Not Found" for workspaces/peers/conclusions: the workspace was never
-created. Run: `curl -s -X POST http://127.0.0.1:8000/v3/workspaces -H "Content-Type: application/json" -d '{"name": "hermes-memory"}'`
-
-If API returns 404 on ALL endpoints: check `docker compose logs --tail=50` for startup
-errors. Common causes: missing API key, missing DB migrations, port conflict.
-
-## Data Population
-
-Honcho needs data to be useful. The deriver extracts observations from conversations
-and the API stores them. Data flows in via:
-- **Manual**: Send messages to sessions via the API (see "API Workflow" section)
-- **Cron consolidation**: The "Memory Consolidation Daily" cron job should feed Honcho
-  with extracted user preferences and patterns
-- **Workspace creation**: At minimum, create one workspace and one "user" peer
-  before expecting any conclusions
-
-**If Honcho is healthy but empty:** check that (a) workspace exists, (b) API key is set,
-(c) the deriver has something to process (sessions with messages), and (d) `config.yaml`
-has `memory.provider: honcho` set.
 
 ## Fresh Database Setup (July 2026)
 
@@ -244,7 +203,7 @@ ports:
 **Then update the healthcheck user to match `POSTGRES_USER`:**
 ```yaml
 healthcheck:
-  test: ["CMD-SHELL", "pg_isready -U <username> -d honcho"]
+  test: ["CMD-SHELL", "pg_isready -U josh434 -d honcho"]
 ```
 
-**CRITICAL**: The healthcheck `pg_isready -U honcho` will FAIL if `POSTGRES_USER=<username>`. The user in the healthcheck MUST match the `POSTGRES_USER` env var.
+**CRITICAL**: The healthcheck `pg_isready -U honcho` will FAIL if `POSTGRES_USER=josh434`. The user in the healthcheck MUST match the `POSTGRES_USER` env var.

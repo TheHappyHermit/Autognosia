@@ -18,7 +18,7 @@ deriver:
   container_name: honcho_deriver
   # Override the Dockerfile healthcheck
   healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U <username> -d honcho"]  # Test DB connectivity instead
+    test: ["CMD-SHELL", "pg_isready -U josh434 -d honcho"]  # Test DB connectivity instead
     interval: 30s
     timeout: 10s
     retries: 3
@@ -65,7 +65,7 @@ This session confirmed the deriver works correctly despite the "unhealthy" statu
 
 ### Verified Working (Despite "Unhealthy" Status)
 - API at `http://localhost:8000/docs` — ✅ Accessible
-- Peers: `<username>`, `hermes`, `<telegram-chat-id>` — ✅ Present
+- Peers: `josh434`, `hermes`, `7791814261` — ✅ Present
 - Message ingestion → deriver processing — ✅ Working
 - Peer representations — ✅ Retrievable
 - DB connectivity from deriver container — ✅ Returns 0

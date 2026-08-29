@@ -28,7 +28,7 @@ description: In-place Hermes upgrade + Desktop install preserving state.
 ```bash
 # Version and paths
 hermes --version
-echo "HERMES_HOME: ${HERMES_HOME:-$HOME/.hermes}"
+echo "HERMES_HOME: ${HERMES_HOME:-/home/josh434/.hermes}"
 ls -la ~/.hermes/
 
 # Check profiles
@@ -157,8 +157,8 @@ Type=Application
 Name=Hermes Desktop
 GenericName=Hermes Agent Desktop
 Comment=Launch Hermes Desktop
-Exec=$HOME/.hermes/hermes-agent/venv/bin/hermes desktop
-Icon=$HOME/.hermes/hermes-agent/apps/desktop/assets/icon.png
+Exec=/home/josh434/.hermes/hermes-agent/venv/bin/hermes desktop
+Icon=/home/josh434/.hermes/hermes-agent/apps/desktop/assets/icon.png
 Terminal=false
 Categories=Utility;
 StartupNotify=true
@@ -218,7 +218,7 @@ hermes cron list
 | Local skill modifications | `hermes skills list-modified` to review; they're preserved |
 | State.db still large after update | Run `hermes sessions optimize-storage` (reclaims ~60%) |
 | Cron sessions bloating state.db | Delete cron sessions from state.db: `DELETE FROM messages WHERE session_id IN (SELECT id FROM sessions WHERE source='cron'); DELETE FROM sessions WHERE source='cron'; VACUUM;` |
-| the workspace app agent runs bloating state.db | Delete Apr 2026 CLI sessions: `DELETE FROM messages WHERE session_id IN (SELECT id FROM sessions WHERE source='cli' AND started_at >= strftime('%s','2026-04-01') AND started_at < strftime('%s','2026-05-01')); DELETE FROM sessions WHERE source='cli' AND started_at >= strftime('%s','2026-04-01') AND started_at < strftime('%s','2026-05-01'); VACUUM;` |
+| Paperclip agent runs bloating state.db | Delete Apr 2026 CLI sessions: `DELETE FROM messages WHERE session_id IN (SELECT id FROM sessions WHERE source='cli' AND started_at >= strftime('%s','2026-04-01') AND started_at < strftime('%s','2026-05-01')); DELETE FROM sessions WHERE source='cli' AND started_at >= strftime('%s','2026-04-01') AND started_at < strftime('%s','2026-05-01'); VACUUM;` |
 
 ---
 
@@ -226,15 +226,15 @@ hermes cron list
 
 After upgrading, the `state.db` may contain historical agent runs that aren't user conversations. This session identified two major categories:
 
-### 1. the workspace app Agent Runs (April 2026)
+### 1. Paperclip Agent Runs (April 2026)
 - **2,562 sessions**, **842,025 messages**
-- Automated the workspace app agent executions (Web Engineer, CI/CD agents, etc.)
+- Automated Paperclip agent executions (Web Engineer, CI/CD agents, etc.)
 - Identified by: `source = 'cli'` AND `started_at` between `2026-04-01` and `2026-05-01`
-- Safe to delete: the workspace app removed from VM; these are orphaned execution logs
+- Safe to delete: Paperclip removed from VM; these are orphaned execution logs
 
-### 2. Cron Job Runs (the client platform Research)
+### 2. Cron Job Runs (WealthForge Research)
 - **22,699 sessions**, **368,040 messages** 
-- the client platform research runs (every 5-10 min) + newsletter runs
+- WealthForge research runs (every 5-10 min) + newsletter runs
 - Identified by: `source = 'cron'`
 - Safe to delete: Research output in `RESEARCH.md`; newsletter delivered to Telegram; configs in `cron/jobs.json` unaffected
 
@@ -263,7 +263,7 @@ FROM sessions WHERE source = 'cron';
 ### Deletion Commands (run in order, then VACUUM)
 
 ```sql
--- the workspace app sessions (April 2026 CLI runs)
+-- Paperclip sessions (April 2026 CLI runs)
 DELETE FROM messages WHERE session_id IN (
   SELECT id FROM sessions WHERE source='cli' 
   AND started_at >= strftime('%s','2026-04-01') 
@@ -288,7 +288,7 @@ VACUUM;
 | Initial `state.db` | 14.4 GB | — | — |
 | `hermes sessions optimize-storage` | 14.4 GB | 6.5 GB | **7.8 GB (55%)** |
 | Cron deletion + VACUUM | 6.5 GB | 4.4 GB | **2.0 GB (31%)** |
-| the workspace app deletion + VACUUM | 4.4 GB | 4.4 GB | **~0 GB** (index already compact) |
+| Paperclip deletion + VACUUM | 4.4 GB | 4.4 GB | **~0 GB** (index already compact) |
 | **Total** | **14.4 GB** | **4.4 GB** | **~10 GB (69%)** |
 
 This is the **single largest space recovery** available on a typical Hermes VM — larger than Docker cleanup or cache pruning.
@@ -299,7 +299,7 @@ This is the **single largest space recovery** available on a typical Hermes VM �
 
 - [ ] Old version recorded: `v0.19.0 (2026.7.20)`
 - [ ] New version: `v0.20.0 (2026.8.3)`
-- [ ] HERMES_HOME: `$HOME/.hermes`
+- [ ] HERMES_HOME: `/home/josh434/.hermes`
 - [ ] Backup location: `~/.hermes/backups/pre-update-2026-08-11-215142.zip`
 - [ ] Memories survived: ✅
 - [ ] Sessions/history survived: ✅ (842K CLI + 12K Telegram messages)

@@ -2,17 +2,21 @@
 
 When encountering problems or needing information, search before creating.
 
-## Search Priority Chain (MANDATORY)
+## Search Priority Chain (MANDATORY — Josh's explicit order)
 
-When searching the web, use this priority order. Tavily is **LAST RESORT** — it has limited API calls per month and must only be used when all self-hosted options fail.
+Use this EXACT priority order. This is Josh's mandated chain (corrected 2026-08-26 — he pushed back when curl was used as the default). Do not reorder, and do not substitute Playwright for curl.
 
-1. **CamoFox** (self-hosted Docker browser extraction) — primary, unlimited calls
-2. **Firecrawl** (self-hosted Docker) — unlimited
-3. **Playwright** (self-hosted Docker browser) — unlimited
-4. **SearXNG** (self-hosted, free, unlimited)
-5. **Tavily** — LAST RESORT only (limited API calls/month)
+1. **CamoFox** (self-hosted browser backend, `127.0.0.1:9377`) — **PRIMARY**. Navigate and READ pages with the browser tool.
+2. **Firecrawl** (self-hosted, `POST http://127.0.0.1:3002/v1/scrape` with `{"url":"U","formats":["markdown"]}`) — SECOND.
+3. **SearXNG** (self-hosted metasearch, `GET http://127.0.0.1:8080/search?q=Q&format=json`) — THIRD.
+4. **Tavily** — **DISABLED this month** (quota exhausted). DO NOT USE until explicitly re-enabled.
+5. **curl** raw page fetch — **LAST RESORT ONLY**.
 
-Tavily should be the final fallback, never the first choice.
+Key rules:
+- Camofox is FIRST, not curl. curl is the final fallback — never the default.
+- Do NOT use `web_search` / `web_extract` (external internet) when the self-hosted stack is available.
+- Because Tavily is out, the *effective* chain right now is: **Camofox → Firecrawl → SearXNG → curl**.
+- For the `desktop-researcher` profile, bake this chain into the profile SOUL.md so it is automatic — do not re-instruct it per task.
 
 ## General Search Process
 

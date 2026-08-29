@@ -48,8 +48,8 @@ cronjob action='list'      # tool equivalent (returns full JSON)
 **Removed (Aug 14, 2026):**
 | Job ID | Name | Schedule | Model | Status | Notes |
 |--------|------|----------|-------|--------|-------|
-| `f3a967f632f9` | the client platform Research Cron | `*/5 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | 10,848 runs; output 29 MB; deleted with output dirs |
-| `082b13bf66ea` | the client platform Research Cron | `*/10 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | Erroring (502); output 444 KB; deleted with output dirs |
+| `f3a967f632f9` | WealthForge Research Cron | `*/5 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | 10,848 runs; output 29 MB; deleted with output dirs |
+| `082b13bf66ea` | WealthForge Research Cron | `*/10 * * * *` | `nvidia/nemotron-3-ultra-550b-a55b:free` | **Removed** | Erroring (502); output 444 KB; deleted with output dirs |
 
 ## Model Update (Aug 14, 2026)
 
@@ -59,9 +59,9 @@ Both newsletter jobs were hardcoded to `nvidia/nemotron-3-ultra-550b-a55b:free` 
 
 The `cronjob` tool cannot update `model`/`provider` in isolation — requires full job spec or CLI workaround. Use `hermes cron edit <job_id> --model ... --provider ...` for changes.
 
-## the client platform Cron Cleanup
+## WealthForge Cron Cleanup
 
-The two paused the client platform cron jobs (`f3a967f632f9`, `082b13bf66ea`) were removed along with their output directories (Aug 14, 2026):
+The two paused WealthForge cron jobs (`f3a967f632f9`, `082b13bf66ea`) were removed along with their output directories (Aug 14, 2026):
 
 ```bash
 # Remove cron jobs
@@ -97,86 +97,6 @@ grep -A5 "^model:" ~/.hermes/config.yaml
 # Then set cron job to match
 hermes cron edit <job_id> --model "nvidia/nemotron-3-ultra-550b-a55b:free" --provider openrouter
 ```
-
-## Auto-Approval (Aug 2026)
-
-**Cron jobs are configured for auto-approval** (`approvals.mode: auto` in config.yaml). They run without user gating or manual approval gates. If a cron job fails, investigate the cause but don't expect the user to approve re-runs — they should just run automatically.
-
-## Script Path Resolution
-
-Cron jobs expect scripts in `~/.hermes/scripts/`. Scripts live in the project repo at `$HOME/autognosia-repo/scripts/`. If a `no_agent=True` cron job reports `Script not found`, copy it:
-
-```bash
-cp $HOME/autognosia-repo/scripts/<scriptname>.py ~/.hermes/scripts/<scriptname>.py
-chmod +x ~/.hermes/scripts/<scriptname>.py
-```
-
-**Common scripts:** `autognosia_backup.py`, `autognosia_health.py`, `verify_stack.py`, `gbrain_sync.py`
-
-**Important:** `verify_stack.py` must also exist at `~/.autognosia/scripts/verify_stack.py` because the health check script looks there first before falling back.
-
-## Cron Job Troubleshooting
-
-### Cron job fails: "Script not found"
-1. Check if the script exists in the repo: `ls $HOME/autognosia-repo/scripts/`
-2. Copy to `~/.hermes/scripts/` and make executable
-3. Update the cron job's `script` field via `jobs.json` edit if the filename doesn't match
-
-### Cron job fails: "Script exited with code 1"
-Run the script manually to see the output:
-```bash
-python3 ~/.hermes/scripts/<scriptname>.py
-```
-
-### Cron job references a missing skill
-When a cron job's prompt says "Use the X skill" but `X` skill is not installed, the agent **improvises** — creating temporary Python scripts in `/tmp` and deleting them. This produces stale file accumulation and the "file mutation verifier" warning.
-
-**Fix:** Create the missing skill in `~/.hermes/skills/` with inline procedures that do NOT write temp files. The skill must contain a "Critical Rule" section forbidding temporary script creation.
-
-### Cron job skills not attached
-When a cron job has `"skills": []` but references a skill in its prompt, the agent can't load it. Fix by editing `jobs.json`:
-```python
-import json
-with open('$HOME/.hermes/cron/jobs.json') as f:
-    data = json.load(f)
-for j in data.get('jobs', []):
-    if 'briefing' in j.get('name', '').lower():
-        j['skills'] = ['organizer-state']
-        break
-with open('$HOME/.hermes/cron/jobs.json', 'w') as f:
-    json.dump(data, f, indent=2)
-```
-
-## Docker Container Naming (Autognosia)
-
-Docker container names may differ between deployments. Health checks should detect multiple naming patterns. For example, Honcho containers may be named:
-- `autognosia-honcho-api-1`, `autognosia-honcho-database-1`, `autognosia-honcho-deriver-1`
-- `hermes-cortex-honcho-api-1`, `hermes-cortex-honcho-database-1`, `hermes-cortex-honcho-deriver-1`
-- `honcho_server`, `honcho_db`, `honcho_deriver` (legacy)
-
-When updating verification scripts, always check `docker ps --format '{{.Names}} {{.Status}}'` first to see actual container names.
-
-## Cron Auto-Approval Configuration
-
-Cron jobs are configured for auto-approval (`approvals.mode: auto` in config.yaml). They run without user gating or manual approval gates.
-
-**Set via CLI:**
-```bash
-hermes config set approvals.mode auto
-```
-
-If a cron job fails, investigate the cause but don't expect the user to approve re-runs — they should just run automatically.
-
-## Auto-Approval Configuration
-
-Cron jobs are configured for auto-approval (`approvals.mode: auto` in config.yaml). They run without user gating or manual approval gates.
-
-**Set via CLI:**
-```bash
-hermes config set approvals.mode auto
-```
-
-If a cron job fails, investigate the cause but don't expect the user to approve re-runs — they should just run automatically.
 
 ## References
 

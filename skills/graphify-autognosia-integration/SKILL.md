@@ -23,8 +23,8 @@ Patterns for integrating Graphify as a **derived relationship/connectivity index
 
 | Graph | Source Wiki | Temperature | Queried By | Refresh Cadence |
 |-------|-------------|-------------|------------|-----------------|
-| **Main Graph** | `$AUTOGNOSIA/active-wiki/` | Hot/current | Main Hermes, Planner | Frequent (days/weeks) |
-| **Oracle Graph** | `$AUTOGNOSIA/oracle/brain/` | Cold/historical | Oracle Profile | Infrequent (weeks/months) |
+| **Main Graph** | `/home/josh434/.autognosia/active-wiki/` | Hot/current | Main Hermes, Planner | Frequent (days/weeks) |
+| **Oracle Graph** | `/home/josh434/.autognosia/oracle/brain/` | Cold/historical | Oracle Profile | Infrequent (weeks/months) |
 
 **Critical**: Main and Oracle graphs are **logically separate** and **never automatically merged**. This preserves the hot vs cold knowledge hierarchy.
 
@@ -50,16 +50,16 @@ Patterns for integrating Graphify as a **derived relationship/connectivity index
 If Graphify is unavailable, stale, returning no result, or returning incorrect results:
 
 ### Main Graph Fallback Order
-1. Ordinary wiki search (`ripgrep $AUTOGNOSIA/active-wiki/`)
+1. Ordinary wiki search (`ripgrep /home/josh434/.autognosia/active-wiki/`)
 2. Direct Markdown/source inspection
 3. Oracle (if appropriate)
 4. Research Hermes
 
 ### Oracle Graph Fallback Order
-1. Ordinary wiki search (`ripgrep $AUTOGNOSIA/oracle/brain/`)
+1. Ordinary wiki search (`ripgrep /home/josh434/.autognosia/oracle/brain/`)
 2. Direct Markdown/source inspection
 3. GBrain semantic/hybrid retrieval (via Oracle profile)
-4. Raw evidence search (`$AUTOGNOSIA/oracle/raw/`)
+4. Raw evidence search (`/home/josh434/.autognosia/oracle/raw/`)
 5. Research Hermes
 
 **CRITICAL**: A Graphify failure or empty result MUST NOT be interpreted as proof that information does not exist. Never say "the knowledge does not exist" solely because Graphify failed to find it.
@@ -67,9 +67,9 @@ If Graphify is unavailable, stale, returning no result, or returning incorrect r
 ## Ingestion Pipeline (V100-only — NO OpenRouter, NO desktop 3090)
 
 > **HARD RULE (Josh, 2026-08-26):** Graphify runs ONLY on the local V100 at
-> `http://<V100_HOST>:8080/v1` (`/models/Qwen3.6-35B-A3B-Q4_K_M.gguf`). It must
+> `http://10.1.1.10:8080/v1` (`/models/Qwen3.6-35B-A3B-Q4_K_M.gguf`). It must
 > NEVER fall back to OpenRouter, and it must NEVER use the desktop 3090
-> (`<DESKTOP_3090_HOST>:1234` / `<DESKTOP_3090_HOST>`) — that GPU is reserved for OpenCode /
+> (`localhost:1234` / `10.1.1.151:1234`) — that GPU is reserved for OpenCode /
 > desktop-researcher. The launch scripts bake in this env and a 96k
 > (`GRAPHIFY_MAX_OUTPUT_TOKENS=98304`) client-side output cap (graphify's default
 > 8192 cap truncates JSON mid-object — bug #1365).
@@ -78,14 +78,14 @@ If Graphify is unavailable, stale, returning no result, or returning incorrect r
 ```bash
 # Full semantic run — uses the canonical script (V100-only, 96k cap)
 bash ~/.hermes/scripts/graphify_active_wiki.sh
-# Output lands in: $AUTOGNOSIA/active-wiki/graphify-out/
+# Output lands in: /home/josh434/.autognosia/active-wiki/graphify-out/
 ```
 
 ### Oracle Graph (Oracle Wiki)
 ```bash
 # Full semantic run — uses the canonical script (V100-only, 96k cap)
 bash ~/.hermes/scripts/graphify_oracle_brain.sh
-# Output lands in: $AUTOGNOSIA/oracle/brain/graphify-out/
+# Output lands in: /home/josh434/.autognosia/oracle/brain/graphify-out/
 ```
 
 **Do not** hand-run `graphify extract` with `--out .../graphify-main-out` or
@@ -97,13 +97,13 @@ correct backend, model, output dir, and token cap.
 
 ### Local V100 (REQUIRED for this deployment)
 ```bash
-export OPENAI_BASE_URL="http://<V100_HOST>:8080/v1"
+export OPENAI_BASE_URL="http://10.1.1.10:8080/v1"
 export OPENAI_API_KEY="sk-local"
 export OPENAI_MODEL="/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
 export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"   # 96k — avoids JSON truncation (bug #1365)
 ```
 This is the only supported backend for Autognosia graphify. There is intentionally
-**no OpenRouter fallback** and **no <DESKTOP_3090_HOST>:1234 (3090)** path — both are
+**no OpenRouter fallback** and **no localhost:1234 (3090)** path — both are
 forbidden for graphify.
 
 ## Verification Protocol (DISK CHECK — Exit Code 0 ≠ Success)
@@ -112,16 +112,16 @@ forbidden for graphify.
 
 ```bash
 # Active wiki graph
-OUT=$AUTOGNOSIA/active-wiki/graphify-out
+OUT=/home/josh434/.autognosia/active-wiki/graphify-out
 ls -la --time-style=full-iso "$OUT/GRAPH_REPORT.md"
 find "$OUT/cache/semantic" -type f | wc -l
-grep "semantic extraction on" $AUTOGNOSIA/logs/graphify-active-wiki.log
+grep "semantic extraction on" /home/josh434/.autognosia/logs/graphify-active-wiki.log
 
 # Oracle brain graph
-OUT=$AUTOGNOSIA/oracle/brain/graphify-out
+OUT=/home/josh434/.autognosia/oracle/brain/graphify-out
 ls -la --time-style=full-iso "$OUT/GRAPH_REPORT.md"
 find "$OUT/cache/semantic" -type f | wc -l
-grep "semantic extraction on" $AUTOGNOSIA/logs/graphify-oracle-brain.log
+grep "semantic extraction on" /home/josh434/.autognosia/logs/graphify-oracle-brain.log
 ```
 
 **Success indicators**: AMBIGUOUS > 0%, tokens > 0, INFERRED > 0%, node/edge counts > AST baseline
@@ -142,16 +142,16 @@ Use Hermes no-agent cron. No LLM needed for incremental.
 
 ### Main Graph (Main Hermes / Planner)
 ```bash
-graphify query "How does X connect to Y?" --graph $AUTOGNOSIA/graphify-main-out
-graphify explain "concept-name" --graph $AUTOGNOSIA/graphify-main-out
-graphify path "node-a" "node-b" --graph $AUTOGNOSIA/graphify-main-out
+graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/graphify-main-out
+graphify explain "concept-name" --graph /home/josh434/.autognosia/graphify-main-out
+graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/graphify-main-out
 ```
 
 ### Oracle Graph (Oracle Profile)
 ```bash
-graphify query "Trace compliance flow from A to B" --graph $AUTOGNOSIA/graphify-oracle-out
-graphify explain "historical-concept" --graph $AUTOGNOSIA/graphify-oracle-out
-graphify path "node-x" "node-y" --graph $AUTOGNOSIA/graphify-oracle-out
+graphify query "Trace compliance flow from A to B" --graph /home/josh434/.autognosia/graphify-oracle-out
+graphify explain "historical-concept" --graph /home/josh434/.autognosia/graphify-oracle-out
+graphify path "node-x" "node-y" --graph /home/josh434/.autognosia/graphify-oracle-out
 ```
 
 ## Related Skills

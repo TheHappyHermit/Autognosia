@@ -7,7 +7,7 @@ version: 1.0.0
 
 # GBrain Frontmatter Repair
 
-Diagnose and repair GBrain sink failures caused by YAML frontmatter corruption in `$HOME/.autognosia/oracle/brain/` Markdown wiki files.
+Diagnose and repair GBrain sink failures caused by YAML frontmatter corruption in `/home/josh434/.autognosia/oracle/brain/` Markdown wiki files.
 
 ## When to Use
 
@@ -21,7 +21,7 @@ Diagnose and repair GBrain sink failures caused by YAML frontmatter corruption i
 ```bash
 gbrain doctor
 gbrain sync --full
-gbrain frontmatter validate $HOME/.autognosia/oracle/brain
+gbrain frontmatter validate /home/josh434/.autognosia/oracle/brain
 ```
 
 The doctor output shows **sync_failures count** and **sink** errors. The validate output lists specific files with error classes.
@@ -66,7 +66,7 @@ For each category, write a targeted Python fixer script (see reference file for 
 ## Step 4: Verify
 
 ```bash
-gbrain frontmatter validate $HOME/.autognosia/oracle/brain
+gbrain frontmatter validate /home/josh434/.autognosia/oracle/brain
 gbrain sync --full
 ```
 

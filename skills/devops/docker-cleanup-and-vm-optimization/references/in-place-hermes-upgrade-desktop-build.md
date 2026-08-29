@@ -5,7 +5,7 @@ This reference documents the full process for performing an in-place Hermes Agen
 ## Overview
 
 - **Hermes version**: v0.19.0 → v0.20.0
-- **HERMES_HOME**: `$HOME/.hermes` (preserved throughout)
+- **HERMES_HOME**: `/home/josh434/.hermes` (preserved throughout)
 - **Desktop build**: Electron app built from source, auto-creates `.desktop` launcher
 - **State preservation**: 100% verified across all components
 
@@ -32,7 +32,7 @@ hermes update --backup
 
 **Result**: 
 - Version upgraded to v0.20.0 (2026.8.3)
-- Backup created at `$HOME/.hermes/backups/pre-update-2026-08-11-215142.zip`
+- Backup created at `/home/josh434/.hermes/backups/pre-update-2026-08-11-215142.zip`
 - Additional snapshots in `~/.hermes/state-snapshots/`
 
 ---
@@ -99,7 +99,7 @@ cd ~/.hermes/hermes-agent/apps/desktop && npm run build
 | Category | Items | Status |
 |----------|-------|--------|
 | **Memories** | MEMORY.md, USER.md | ✅ Intact |
-| **Sessions** | 2,150+ JSON request dumps | ✅ Intact (cleaned: the workspace app + cron removed) |
+| **Sessions** | 2,150+ JSON request dumps | ✅ Intact (cleaned: Paperclip + cron removed) |
 | **Skills** | 210 skills (10 hub, 66 builtin, 134 local) | ✅ Intact; 3 user-modified preserved |
 | **Provider/model** | Nemotron-3-Ultra via OpenRouter + fallback chain | ✅ Intact |
 | **API credentials** | OpenRouter, Z.ai, GitHub, Google, Qwen, NVIDIA, etc. | ✅ Intact |
@@ -116,8 +116,8 @@ During this upgrade session, non-user sessions were identified and removed from 
 
 | Source | Sessions Removed | Messages Removed | Rationale |
 |--------|-----------------|------------------|-----------|
-| **the workspace app agent runs** (Apr 2026) | 2,562 | 842,025 | Automated agent executions, not user conversations |
-| **Cron jobs** (the client platform research) | 22,699 | 368,040 | Output already in RESEARCH.md / Telegram |
+| **Paperclip agent runs** (Apr 2026) | 2,562 | 842,025 | Automated agent executions, not user conversations |
+| **Cron jobs** (WealthForge research) | 22,699 | 368,040 | Output already in RESEARCH.md / Telegram |
 
 **Remaining real sessions**: 33 CLI + 218 Telegram = 251 sessions, 12,592 messages
 
@@ -150,10 +150,10 @@ This cleanup + optimization reduced `state.db` from **14.4 GB → 4.4 GB** (~69%
 
 | Repo | Contents |
 |------|----------|
-| `<username>/hermes-customizations` | Hermes skills, profiles, cron, scripts, plugins, config, the client platform vault |
-| `<username>/openclaw-customizations` | 19 OpenClaw plugin skills, 8 agent workspaces, openclaw.json, Telegram credentials |
-| `<username>/the workspace app-customizations` | 4 custom the workspace app skills (board, converting-plans, create-agent, para-memory-files) |
-| `<username>/the workspace app` | Full the workspace app fork (master branch with Hermes adapters merged) |
+| `openclaw434/hermes-customizations` | Hermes skills, profiles, cron, scripts, plugins, config, WealthForge vault |
+| `openclaw434/openclaw-customizations` | 19 OpenClaw plugin skills, 8 agent workspaces, openclaw.json, Telegram credentials |
+| `openclaw434/paperclip-customizations` | 4 custom Paperclip skills (board, converting-plans, create-agent, para-memory-files) |
+| `openclaw434/paperclip` | Full Paperclip fork (master branch with Hermes adapters merged) |
 
 ---
 
@@ -161,12 +161,12 @@ This cleanup + optimization reduced `state.db` from **14.4 GB → 4.4 GB** (~69%
 
 | Cleanup | Space Freed |
 |---------|-------------|
-| the workspace app Docker stack (containers + volumes + images) | ~8 GB |
+| Paperclip Docker stack (containers + volumes + images) | ~8 GB |
 | Stale Hermes venv | 5.6 GB |
 | Old Hermes sessions (>30 days) | ~1.5 GB |
 | Rust build artifacts (`cel-ast-research/target`) | 1.3 GB |
 | pnpm store prune | ~1.5 GB |
 | uv cache clean | 437 MB |
 | OpenClaw directory (backed up) | 425 MB |
-| the workspace app directories (backed up) | 2.3 GB |
+| Paperclip directories (backed up) | 2.3 GB |
 | **Total** | **~65 GB** (133 GB → 68 GB) |

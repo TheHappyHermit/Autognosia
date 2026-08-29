@@ -135,13 +135,13 @@ This avoids OpenRouter embedding rate limits and costs.
 - [ ] Cross-session recall works in new Hermes session
 - [ ] No stray Graphify/LM Studio processes running
 
-## Autognosia Integration
+## Cortex Integration
 
-In Autognosia, Honcho runs as a Docker service (see `docker/docker-compose.honcho.yml` and `INSTALL.md` §4). The hybrid LLM configuration above is the recommended pattern for Autognosia deployments.
+In Hermes Cortex, Honcho runs as a Docker service (see `docker/docker-compose.honcho.yml` and `INSTALL.md` §4). The hybrid LLM configuration above is the recommended pattern for Cortex deployments.
 
 This skill is referenced by:
-- `autognosia-deployment` skill (for Docker service setup)
-- Autognosia `INSTALL.md` §6 (Hermes memory setup)
+- `hermes-cortex-deployment` skill (for Docker service setup)
+- Cortex `INSTALL.md` §6 (Hermes memory setup)
 
 ## References
 

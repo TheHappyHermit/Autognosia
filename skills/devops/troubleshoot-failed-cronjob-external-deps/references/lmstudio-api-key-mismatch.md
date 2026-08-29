@@ -41,7 +41,7 @@ Remove the `api_key_env` line from the default model in `~/.hermes/config.yaml`:
 model:
   default: qwen/qwen3.6-35b-a3b
   provider: lmstudio
-  base_url: http://<DESKTOP_3090_LMSTUDIO_URL>/v1
+  base_url: http://10.1.1.151:1234/v1
   # REMOVE: api_key_env: OPENROUTER_API_KEY
 ```
 

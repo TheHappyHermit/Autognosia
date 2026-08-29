@@ -165,7 +165,7 @@ pacman -R packagename   # Arch
 - Files that belong to other packages (check package ownership)
 
 **Examples of false positives encountered:**
-- SVG icon files from pdfjs-dist library (annotation-the workspace app.svg) - part of PDF.js, not the application
+- SVG icon files from pdfjs-dist library (annotation-paperclip.svg) - part of PDF.js, not the application
 - Log files in /tmp - safe to remove as they're temporary
 - Files in home directories that are user data or configs
 
@@ -183,27 +183,27 @@ pacman -R packagename   # Arch
 ✅ Application cleanup verification complete:
 
 SEARCHED:
-- Filesystem for "*the workspace app*" patterns
+- Filesystem for "*paperclip*" patterns
 - Running processes
 - Systemd services
 - Installed packages (pip, apt)
 - Docker containers
 
 FOUND:
-- /tmp/the workspace app.log (log file - safe to remove)
-- /tmp/the workspace app-startup.log (log file - safe to remove)
-- /home/linuxbrew/.linuxbrew/lib/node_modules/openclaw/node_modules/pdfjs-dist/*/annotation-the workspace app.svg (PDF.js icon asset - FALSE POSITIVE, part of legitimate dependency)
+- /tmp/paperclip.log (log file - safe to remove)
+- /tmp/paperclip-startup.log (log file - safe to remove)
+- /home/linuxbrew/.linuxbrew/lib/node_modules/openclaw/node_modules/pdfjs-dist/*/annotation-paperclip.svg (PDF.js icon asset - FALSE POSITIVE, part of legitimate dependency)
 - No running processes, services, or packages found
 
 REMOVED:
-- /tmp/the workspace app.log
-- /tmp/the workspace app-startup.log
+- /tmp/paperclip.log
+- /tmp/paperclip-startup.log
 
 LEFT IN PLACE:
-- PDF.js annotation-the workspace app.svg files (legitimate OpenClaw/pdfjs-dist dependency)
+- PDF.js annotation-paperclip.svg files (legitimate OpenClaw/pdfjs-dist dependency)
 - Reason: Removing would break PDF annotation functionality in OpenClaw or similar tools
 
-VERIFICATION: No remaining the workspace app application components detected.
+VERIFICATION: No remaining paperclip application components detected.
 ```
 
 ## Integration with Other Skills

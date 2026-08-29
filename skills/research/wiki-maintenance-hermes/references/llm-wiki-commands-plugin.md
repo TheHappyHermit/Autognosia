@@ -1,6 +1,6 @@
 # LLM Wiki Commands Plugin
 
-User plugin providing slash commands for the LLM Wiki at `$HOME/.autognosia/active-wiki`.
+User plugin providing slash commands for the LLM Wiki at `/home/josh434/.autognosia/active-wiki`.
 
 ## Location
 `~/.hermes/plugins/llm-wiki-commands/`

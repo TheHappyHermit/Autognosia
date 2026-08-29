@@ -17,7 +17,7 @@ Methodology for auditing competitor accessibility — dark mode support, WCAG co
 
 ## Competitive Gaps Identified
 
-1. **Zero competitors have published dark mode accessibility audits** — the client platform can own this space
+1. **Zero competitors have published dark mode accessibility audits** — WealthForge can own this space
 2. **Most lack dark mode entirely** — eMoney, Tamarack, MoneyGuidePro have no dark mode
 3. **No competitor addresses color blindness** for their financial visualizations
 4. **No competitor provides screen reader equivalents for data visualizations** (chart data tables)
@@ -48,7 +48,7 @@ Methodology for auditing competitor accessibility — dark mode support, WCAG co
 | contrast-check | Design token contrast | ✅ Yes | 100% of tokens |
 | Playwright a11y | Visual regression + a11y | ✅ Yes | ~65% of WCAG |
 
-## Key Takeaways for the client platform
+## Key Takeaways for WealthForge
 
 1. Dark mode accessibility is a **differentiator** — no competitor has published an audit
 2. Color-blind accessible financial visualizations are **uniquely underserved**

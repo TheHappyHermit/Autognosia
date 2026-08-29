@@ -1,6 +1,6 @@
 # FreshRSS API Endpoints - Real World Testing Notes
 
-Based on actual testing of FreshRSS instance at https://freshrss.<oracle-server>/api/
+Based on actual testing of FreshRSS instance at https://freshrss.wineandgecko.com/api/
 
 ## Working Endpoints (200 OK)
 
@@ -23,16 +23,16 @@ Based on actual testing of FreshRSS instance at https://freshrss.<oracle-server>
 ## Critical Requirements
 
 ### 1. Virtual Host Header
-**ALL requests MUST include**: `Host: freshrss.<oracle-server>`
+**ALL requests MUST include**: `Host: freshrss.wineandgecko.com`
 
 Without this header, you will get:
 - 301 redirect to HTTPS version (if accessing via IP)
 - 404 errors or wrong virtual host served
 
 ### 2. IP + Host Header Combination
-When accessing via IP address (<V100_HOST>):
+When accessing via IP address (10.1.1.10):
 ```bash
-curl -vk -H "Host: freshrss.<oracle-server>" https://<V100_HOST>/api/greader.php
+curl -vk -H "Host: freshrss.wineandgecko.com" https://10.1.1.10/api/greader.php
 ```
 
 ### 3. SSL Verification
@@ -45,11 +45,11 @@ The instance uses a self-signed certificate (TRAEFIK DEFAULT CERT), so:
 ```python
 import requests
 
-FRESHRSS_IP = "<V100_HOST>"
-FRESHRSS_HOST = "freshrss.<oracle-server>"
+FRESHRSS_IP = "10.1.1.10"
+FRESHRSS_HOST = "freshrss.wineandgecko.com"
 FRESHRSS_URL = f"https://{FRESHRSS_IP}/api/greader.php"
-USERNAME = "<username>"
-API_PASSWORD = "<REDACTED-PASSWORD>"
+USERNAME = "josh434"
+API_PASSWORD = "J1234osh$"
 
 def get_auth_token():
     resp = requests.post(

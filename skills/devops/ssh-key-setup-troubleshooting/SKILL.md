@@ -29,7 +29,9 @@ New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.ssh" | Out-Null
 ### 2. Save Private Key
 ```powershell
 @'
-[REDACTED PRIVATE KEY]
+-----BEGIN OPENSSH PRIVATE KEY-----
+[YOUR_PRIVATE_KEY_HERE]
+-----END OPENSSH PRIVATE KEY-----
 '@ | Set-Content "$env:USERPROFILE\.ssh\your_server_key" -Encoding ASCII
 ```
 
@@ -63,7 +65,9 @@ mkdir -p ~/.ssh
 
 # Save private key (paste key content)
 cat > ~/.ssh/your_server_key << 'EOF'
-[REDACTED PRIVATE KEY]
+-----BEGIN OPENSSH PRIVATE KEY-----
+[YOUR_PRIVATE_KEY_HERE]
+-----END OPENSSH PRIVATE KEY-----
 EOF
 
 # Set permissions (Linux/macOS requires 600)

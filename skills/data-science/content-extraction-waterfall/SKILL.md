@@ -45,7 +45,7 @@ A multi-stage fallback pipeline for extracting full article content from URLs. O
 - **Cost: $0, Speed: ~5-10s (two requests + processing)**
 
 ### Stage 6: FlareSolverr (FREE - bypasses Cloudflare)
-- If `FLARESOLVERR_URL` env var is set (deployed at `flaresolverr.<oracle-server>:8191`), call POST `{url}/v1` with `{"cmd": "request.get", "url": url, "maxTimeout": 30000}`
+- If `FLARESOLVERR_URL` env var is set (deployed at `flaresolverr.wineandgecko.com:8191`), call POST `{url}/v1` with `{"cmd": "request.get", "url": url, "maxTimeout": 30000}`
 - Parses returned HTML with BeautifulSoup, strips boilerplate (nav, header, footer, aside, script, style)
 - Returns text ≥ 200 words (or > 50 if close)
 - **Cost: $0, Speed: ~5-15s**
@@ -80,7 +80,7 @@ A multi-stage fallback pipeline for extracting full article content from URLs. O
 
 ### Tools That FAIL even with browser:
 - Cloudflare-protected sites (investing.com, some financial sites): "Just a moment..." blocks all approaches including browser + Playwright
-- **Solution**: Deploy FlareSolverr (`flaresolverr.<oracle-server>`) — handles Cloudflare challenges automatically
+- **Solution**: Deploy FlareSolverr (`flaresolverr.wineandgecko.com`) — handles Cloudflare challenges automatically
 - Until FlareSolverr is running, these fall to `rss_summary_short` — accept it
 
 ## What Percentage of Articles Need Each Stage (from real 20+ article samples):
@@ -89,7 +89,7 @@ A multi-stage fallback pipeline for extracting full article content from URLs. O
 - **Stage 3 (BS4)**: ~0% — rarely catches anything trafilatura misses
 - **Stage 4 (Playwright)**: ~5% — CBS News, some BBC articles — free but slow (~8s)
 - **Stage 5 (Wayback)**: ~0% — rarely triggers
-- **Stage 6 (FlareSolverr)**: ~10% — investing.com exclusively — confirmed working at `flaresolverr.<oracle-server>:8191`
+- **Stage 6 (FlareSolverr)**: ~10% — investing.com exclusively — confirmed working at `flaresolverr.wineandgecko.com:8191`
 - **Stage 7 (Jina)**: ~0% — only if RSS ≥500w AND all free methods fail
 - **Stage 8 (Fallback)**: ~5-10% — unrecoverable articles (Reddit cross-posts, title-only)
 
@@ -118,7 +118,7 @@ A multi-stage fallback pipeline for extracting full article content from URLs. O
 ## Key Implementation Notes
 
 ### FlareSolverr Integration:
-- Default URL: `http://flaresolverr.<oracle-server>:8191`
+- Default URL: `http://flaresolverr.wineandgecko.com:8191`
 - Set in env as `FLARESOLVERR_URL` with `/v1` appended for the API call
 - Response JSON: `{"status": "ok", "solution": {"url": "...", "status": 200, "response": "<html>..."}}`
 - Extract text from `solution.response` HTML with BeautifulSoup

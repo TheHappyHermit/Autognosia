@@ -25,7 +25,7 @@ lm = models.Anthropic("claude-sonnet-4-5-20250929")
 # Explicit API key
 lm = models.Anthropic(
     model="claude-sonnet-4-5-20250929",
-    api_key=<REDACTED_API_KEY>
+    api_key="your-api-key-here"
 )
 ```
 
@@ -92,7 +92,7 @@ lm = models.OpenAI("gpt-4o")
 # Explicit API key
 lm = models.OpenAI(
     model="gpt-4o",
-    api_key=<REDACTED_API_KEY>
+    api_key="your-api-key-here"
 )
 ```
 
@@ -152,7 +152,7 @@ from guidance import models
 lm = models.AzureOpenAI(
     model="gpt-4o",
     azure_endpoint="https://your-resource.openai.azure.com/",
-    api_key=<REDACTED_API_KEY>,
+    api_key="your-azure-api-key",
     api_version="2024-02-15-preview",
     deployment_name="your-deployment-name"
 )

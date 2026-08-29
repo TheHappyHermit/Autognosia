@@ -1,10 +1,10 @@
 ---
 name: prompt-me
-version: 3.0.0
+version: 2.0.0
 description: >
-  Execute a "getting to know you" learning protocol. Ask one targeted question
-  that helps build a model of the user's preferences, goals, and working style.
-  NOT for operational tasks — those go on his task list.
+  Execute an Active Learning protocol to eliminate future execution friction.
+  Analyze recent interactions, identify high-utility missing variables,
+  formulate hypotheses, and extract conditional logic to permanently optimize operations.
 trigger: /prompt.me
 ---
 
@@ -12,71 +12,73 @@ trigger: /prompt.me
 
 ## Purpose
 
-Ask one targeted question at a time to learn more about the user — his preferences, goals, working style, and how he wants things done. This is about building a long-term model of who he is, not generating operational tasks.
-
-## What the user DOESN'T Want
-
-- "What single unblocked operational task would yield the greatest leverage?"
-- "Which subscription should I cancel?"
-- "What task should I complete for you today?"
-- "Which tool should I fix next?"
-
-These are **operational tasks** — they go on his task list, not in prompt-me. the user is clear: he takes care of operational follow-ups himself when he's ready.
-
-## What the user DOES Want
-
-Questions that help you learn:
-- His preferences and working style
-- How he wants things done
-- His goals (short and long term)
-- What frustrates him
-- What he values
-- How he prefers to receive information
-- What assumptions he wants you to challenge
-- How he measures success
+Ask one targeted question at a time to sharpen plans, challenge thinking, and surface blind spots. After the exchange, archive the conversation to cold storage.
 
 ## Workflow
 
 ### Phase 1: Internal State Analysis (Silent)
 
-1. Scan recent sessions for the user correcting your assumptions or approach
-2. Identify a genuine gap in your understanding of him — not a task gap, a **person gap**
-3. If you can't find a real knowledge gap, **abort**. Don't ask filler.
+1. Scan recent episodic memories and task executions.
+2. Identify a "Friction Point." A friction point is defined as:
+   - A variable you had to guess (e.g., mapping a specific directory path).
+   - An inefficient hardware or network assumption.
+   - A formatting or execution preference you lacked.
+   - A recurring pattern where you lacked context.
+3. If no high-utility friction point exists, **abort the questioning protocol**. Do not ask trivia.
 
-### Phase 2: Formulate a Learning Question
+### Phase 2: Hypothesis Generation (Silent)
 
-Frame the question around understanding the user better:
+Instead of formulating an open-ended question, formulate a targeted hypothesis based on context clues.
 
-- **Poor:** "How do you want me to configure X?" (operational)
-- **Good:** "When you think about your ideal daily workflow, what's the one friction point that consistently slows you down?" (learning)
-- **Poor:** "What should I do about your subscriptions?" (operational)
-- **Good:** "Is there a tool or process you've tried that you wanted to work but couldn't get working — and what made you give up?" (learning)
+- **Poor:** "How do you want me to configure X?"
+- **Excellent:** "To maximize efficiency, I assume we should do X. Should I lock this as the default rule?"
 
-### Phase 3: The Engagement
+### Phase 3: The User Engagement
 
 Present your query using this strict structure:
 
-1. **The Context:** Briefly reference what triggered the question (a session observation, a correction he made, a gap you noticed)
-2. **The Question:** A single, specific, non-operational question about his preferences, goals, or working style
+1. **The Value Prop:** Briefly state exactly what future automated task you are trying to optimize.
+2. **The Hypothesis:** State your assumption and ask for confirmation or correction.
 
-### Phase 4: Save to Memory
+### Phase 4: Conditional Extraction & Memory Commit
 
-Once the user answers:
+Once the user answers, process the data using Conditional Ontology rules:
 
-1. Extract the core preference or goal
-2. Extract boundary conditions ("Yes, but only when...")
-3. If the answer conflicts with existing memory, **overwrite** the old memory
-4. Commit to the appropriate memory tier:
-   - Hot memory: active preferences referenced every session
-   - Warm memory (fact_store): environment facts, project context
-   - Cold (wiki): archived preferences, settled decisions
-5. Close with a brief acknowledgment — do not narrate database mechanics
+- Extract the core fact.
+- Extract the boundary conditions (e.g., "Yes, do X, but ONLY when condition Y is met").
+- If the user's answer conflicts with an existing memory, **OVERWRITE** the old memory. Do not append it as a duplicate.
+- Silently commit this structured rule to long-term memory.
+- Close the interaction with a brief, non-robotic acknowledgment (e.g., "Got it. Rule locked in for future tasks."). Do not narrate your database mechanics.
+
+## Archive to Cold Storage
+
+When the exchange is complete, archive the question and answer to the wiki:
+
+```markdown
+---
+id: system/memory-archive/prompt-me/YYYYMMDD-topic
+title: prompt-me - Topic
+type: system
+tags: [prompt-me, archive]
+created: YYYY-MM-DD
+---
+
+# Question: [the question asked]
+
+## Response
+[user's answer]
+
+## Outcome
+[what changed as a result]
+
+Source: session:YYYYMMDD_HHMMSS
+```
 
 ## Consolidation
 
-When hot memory exceeds 80% capacity, cascade cooled entries to warm/cold tiers following wiki ingestion standards. Always preserve source references so there's a road back to evidence.
+When hot memory exceeds 80% capacity, archive old prompt-me entries to cold storage following the wiki ingestion standards (frontmatter, headings, source field).
 
 ## Wiki Location
 
-- **Active Wiki:** `$HOME/.autognosia/active-wiki/`
-- **prompt-me archive:** `$HOME/.autognosia/active-wiki/system/memory-archive/prompt-me/`
+- **Active Wiki:** `~/.hermes-cortex/active-wiki/`
+- **prompt-me archive:** `~/.hermes-cortex/active-wiki/system/memory-archive/prompt-me/`

@@ -15,9 +15,28 @@ metadata:
 
 Use [OpenCode](https://opencode.ai) as an autonomous coding worker orchestrated by Hermes terminal/process tools. OpenCode is a provider-agnostic, open-source AI coding agent with a TUI and CLI.
 
+## Verification Rule (MANDATORY)
+
+**Never trust OpenCode's self-report.** After every OpenCode run:
+
+1. **Read the files it claims to have written** — `cat` them, don't just `ls`
+2. **Run syntax checks** — `node --check`, `python -m py_compile`, etc.
+3. **For UI changes: verify in browser** — use `computer_use` capture to see the rendered page
+4. **Test the actual functionality** — click buttons, check API responses, verify state
+
+OpenCode said "verified it runs correctly" on a smoke test before, and it was technically true — but the actual feature was broken. Self-report is a claim, not evidence.
+
+## Handoff Skepticism
+
+When receiving a handoff summary (from the user or past sessions), treat it as **context, not ground truth**. Verify:
+- File contents match what the handoff claims
+- Line numbers are accurate
+- No additional problems exist beyond what's listed
+- The described root cause is actually correct
+
 ## ⛔ NEVER GIVE OPENCODE THE ORIGINAL FILES
 
-**the user's hard rule (2026-08-25): OpenCode works on a COPY. Always. No exceptions.**
+**Josh's hard rule (2026-08-25): OpenCode works on a COPY. Always. No exceptions.**
 
 Agents go off-base. OpenCode has been observed reading files it was explicitly told
 not to touch. It cannot be trusted not to wreck a working tree.
@@ -45,35 +64,7 @@ If OpenCode destroys the scratch dir, that costs nothing — that is the entire 
 cd <real repo> && git status --short    # must be clean unless YOU copied files back
 ```
 
-## the user's setup — OpenCode FIRST for all coding
 
-**Standing rule (2026-08-25): when the user asks for code, try OpenCode first.**
-The desktop dense model produces better code than writing it inline, and it frees
-me to act as reviewer — a genuine second pair of eyes on every change.
-
-Configured at `~/.config/opencode/opencode.json`:
-
-| | |
-|---|---|
-| Default model | `desktop-lmstudio/qwen3.8-27b` (dense, 27B) |
-| Endpoint | desktop LM Studio, RTX 3090 (LAN IP, port 1234) |
-| Fallbacks in config | `qwen/qwen3.6-35b-a3b`, `qwen/qwen3.6-27b` |
-
-**The desktop is only intermittently on.** If it's asleep, OpenCode fails to
-connect — then write the code inline myself. Check the endpoint first with a
-short-timeout curl against `/v1/models` before dispatching.
-
-### The two-stage workflow (this is the point)
-
-1. **OpenCode writes** — `opencode run '<task>'` in the target workdir.
-2. **I review** — never trust its self-report. Independently:
-   - `ls -la` the files it claims to have written
-   - `cat` and actually read the code
-   - Run it myself; run the tests myself
-   - Probe edge cases it didn't test (empty input, boundaries, error paths)
-
-Stage 2 is not optional. OpenCode said "verified it runs correctly" on the smoke
-test and it was true — but a self-report is a claim, not evidence.
 
 ### Verified working (2026-08-25)
 
@@ -88,7 +79,7 @@ code task, then independently re-verified by me.
 
 ## When to Use
 
-- **Any coding request from the user** — this is the default path, try it first
+- **Any coding request from Josh** — this is the default path, try it first
 - User explicitly asks to use OpenCode
 - You want an external coding agent to implement/refactor/review code
 - You need long-running coding sessions with progress checks

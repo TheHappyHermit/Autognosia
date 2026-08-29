@@ -1,21 +1,20 @@
 ---
 name: docker-cleanup-and-vm-optimization
-description: Clean Docker stacks, free VM disk, fix deriver healthcheck, troubleshoot Firecrawl/SearXNG stacks.
-version: "1.1"
+description: Clean Docker stacks, free VM disk, fix deriver healthcheck.
+version: "1.0"
 ---
 
 # Docker Cleanup & VM Optimization
 
-Comprehensive patterns for cleaning up Docker environments, freeing VM disk space, deploying Honcho, and troubleshooting Firecrawl/SearXNG stacks.
+Comprehensive patterns for cleaning up Docker environments, freeing VM disk space, and deploying Honcho correctly.
 
 ## When to Use
 
 - VM disk usage >80% and you need to identify/remove large Docker artifacts
-- Removing entire application stacks (the workspace app, OpenClaw, etc.) completely
+- Removing entire application stacks (Paperclip, OpenClaw, etc.) completely
 - Fixing Honcho deriver "unhealthy" status when it's actually working
 - Handling special characters in PostgreSQL passwords
 - Faster Honcho iteration without repeated docker compose builds
-- Firecrawl search hanging, SearXNG crashing, duplicate Docker networks
 
 ---
 
@@ -67,7 +66,7 @@ deriver:
   container_name: honcho_deriver
   # Override the Dockerfile healthcheck
   healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U <username> -d honcho"]  # Or just use database healthcheck
+    test: ["CMD-SHELL", "pg_isready -U josh434 -d honcho"]  # Or just use database healthcheck
     interval: 30s
     timeout: 10s
     retries: 3
@@ -88,16 +87,16 @@ docker exec honcho_deriver python3 -c "import socket; s = socket.socket(); s.set
 ## 3. Special Characters in PostgreSQL Passwords
 
 ### The Problem
-The `$` character in passwords (e.g., `<REDACTED-PASSWORD>`) is interpreted by shell as variable expansion.
+The `$` character in passwords (e.g., `J1234osh$`) is interpreted by shell as variable expansion.
 
-**Error**: `ValueError: invalid literal for int() with base 10: '<REDACTED-PASSWORD>database:5432'` — the `$` was stripped and password merged with host.
+**Error**: `ValueError: invalid literal for int() with base 10: 'J1234oshdatabase:5432'` — the `$` was stripped and password merged with host.
 
 ### Correct Patterns
 
 **Using `docker run` with `-e`:**
 ```bash
 # Single quotes prevent shell expansion
-docker run -e DB_CONNECTION_URI='postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho' ...
+docker run -e DB_CONNECTION_URI='postgresql+psycopg://josh434:J1234osh$@database:5432/honcho' ...
 ```
 
 **Using `--env-file` with `docker run`:**
@@ -115,7 +114,7 @@ services:
 ```
 The `.env` file should have:
 ```
-DB_CONNECTION_URI=postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho
+DB_CONNECTION_URI=postgresql+psycopg://josh434:J1234osh$@database:5432/honcho
 ```
 **Note**: `docker compose` with `env_file:` can still have issues. Verified working: `--env-file` with `docker run`.
 
@@ -134,7 +133,7 @@ docker compose up -d database
 
 # 3. Run migrations using built image (not db container!)
 docker run --rm --network honcho_default \
-  -e DB_CONNECTION_URI='postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho' \
+  -e DB_CONNECTION_URI='postgresql+psycopg://josh434:J1234osh$@database:5432/honcho' \
   honcho-deriver:latest alembic upgrade head
 
 # 4. Start server and deriver manually (instant, no rebuild)
@@ -147,7 +146,7 @@ The deriver image contains both the FastAPI server AND the deriver worker — ju
 
 ---
 
-## 5. VM Disk Audit & Cleanup Commands
+### 5. VM Disk Audit & Cleanup Commands
 
 ### Find Largest Directories
 ```bash
@@ -158,11 +157,11 @@ du -h / --max-depth=1 2>/dev/null | sort -hr | head -30
 du -h /home --max-depth=2 2>/dev/null | sort -hr | head -40
 
 # Specific problematic paths
-du -h $HOME/.hermes --max-depth=2 2>/dev/null | sort -hr
-du -h $HOME/.cache --max-depth-2 2>/dev/null | sort -hr
-du -h $HOME/.local --max-depth-2 2>/dev/null | sort -hr
-du -h /snap --max-depth=2 2>/dev/null | sort -hr
-du -h /var --max-depth=2 2>/dev/null | sort -hr
+du -h /home/josh434/.hermes --max-depth=2 2>/dev/null | sort -hr
+du -h /home/josh434/.cache --max-depth-2 2>/dev/null | sort -hr
+du -h /home/josh434/.local --max-depth-2 2>/dev/null | sort -hr
+du -h /snap --max-depth-2 2>/dev/null | sort -hr
+du -h /var --max-depth-2 2>/dev/null | sort -hr
 ```
 
 ### Safe High-Impact Cleanups
@@ -186,7 +185,7 @@ du -h /var --max-depth=2 2>/dev/null | sort -hr
 ### Requires sudo (run as separate step)
 ```bash
 # Bazel cache
-sudo rm -rf $HOME/.cache/bazel
+sudo rm -rf /home/josh434/.cache/bazel
 
 # apt cache
 sudo apt clean
@@ -288,54 +287,13 @@ hermes --version
 
 ---
 
-## 7. Docker Image Audit Workflow
-
-Before deleting unused Docker images, **cross-reference** three sources to avoid removing something needed:
-
-1. **Running containers** — `docker ps --format "{{.Names}}\t{{.Image}}"`
-2. **Compose/Dockerfile references** — `grep -r "image:" docker/ --include="*.yml"` and `grep -r "FROM " docker/ --include="Dockerfile"`
-3. **Images on disk** — `docker images --format "{{.Repository}}:{{.Tag}}\t{{.Size}}"`
-
-Keep images that appear in (1) or (2). Delete only those in (3) but not (1) or (2).
-
-**Common false positives:**
-- Old honcho builds (`honcho-server`, `honcho-deriver`) — replaced by `ghcr.io/plastic-labs/honcho:latest`. Safe to delete; data is in volumes, not images.
-- Old PGvector versions — check which version the running compose stack uses (e.g., `pg15` not `pg17`).
-- Python base images (`python:3.11-slim`) — check if Dockerfiles still reference them; if upgraded to 3.12, old version is orphaned.
-
-**Pitfall:** Docker images share layers. Deleting one image may not free the full reported size if layers overlap with other kept images.
-
-See `references/docker-image-audit-workflow.md` for the full step-by-step procedure.
-
----
-
-## 8. Firecrawl + SearXNG Integration Troubleshooting
-
-Comprehensive troubleshooting for the Firecrawl web stack (Firecrawl API, CamoFox browser, SearXNG search engine).
-
-See `references/firecrawl-searxng-troubleshooting.md` for diagnosis paths, common failure modes, and full recovery procedures.
-
----
-
-## 9. Docker Compose Startup Pitfalls
-
-Quick reference for the most common Docker Compose failure modes in multi-stack environments.
-
-See `references/docker-compose-startup-pitfalls.md` for the full procedure covering:
-- Stale container name conflicts
-- Duplicate networks (ENOTFOUND)
-- Silent `env_file:` defaults (requires `--env-file` on CLI)
-- Container name collisions across stacks
-
----
-
-## 9. Session Summary: What Was Done This Session
+## 7. Session Summary: What Was Done This Session
 
 **Disk freed: 133 GB → 68 GB (~65 GB recovered)**
 
 | Component | Action | Freed |
 |-----------|--------|-------|
-| the workspace app Docker stack | Stop, rm containers, rm volumes, rmi images | ~8 GB |
+| Paperclip Docker stack | Stop, rm containers, rm volumes, rmi images | ~8 GB |
 | Rebate platform volumes | rm volumes | ~8 KB |
 | Stale Hermes venv | rm -rf | 5.6 GB |
 | Old Hermes sessions | find -mtime +30 -delete | ~1.5 GB |
@@ -343,7 +301,7 @@ See `references/docker-compose-startup-pitfalls.md` for the full procedure cover
 | pnpm store | pnpm store prune | ~1.5 GB |
 | uv cache | uv cache clean | 437 MB |
 | OpenClaw dir | rm -rf (backed up to GH) | 425 MB |
-| the workspace app dirs | rm -rf (backed up to GH) | 2.3 GB |
+| Paperclip dirs | rm -rf (backed up to GH) | 2.3 GB |
 
 **Honcho stack now running:**
 - `honcho_db` (pgvector) — healthy, port 5433
@@ -351,7 +309,7 @@ See `references/docker-compose-startup-pitfalls.md` for the full procedure cover
 - `honcho_deriver` (worker) — "unhealthy" (healthcheck bug), but working
 
 **Backups created (private GitHub repos):**
-- `<username>/hermes-customizations` — Hermes skills, profiles, cron, vault
-- `<username>/openclaw-customizations` — 19 skills, 8 agents, config, creds
-- `<username>/the workspace app-customizations` — 4 custom the workspace app skills
-- `<username>/the workspace app` — Full fork with Hermes adapter branch
+- `openclaw434/hermes-customizations` — Hermes skills, profiles, cron, vault
+- `openclaw434/openclaw-customizations` — 19 skills, 8 agents, config, creds
+- `openclaw434/paperclip-customizations` — 4 custom Paperclip skills
+- `openclaw434/paperclip` — Full fork with Hermes adapter branch

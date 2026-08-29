@@ -2,30 +2,30 @@
 
 ## The Problem
 
-The `$` character in passwords (e.g., `<REDACTED-PASSWORD>`) is interpreted by shell as variable expansion. This causes the password to be truncated and merged with the hostname.
+The `$` character in passwords (e.g., `J1234osh$`) is interpreted by shell as variable expansion. This causes the password to be truncated and merged with the hostname.
 
-**Error**: `ValueError: invalid literal for int() with base 10: '<REDACTED-PASSWORD>database:5432'` — the `$` was stripped and password merged with host.
+**Error**: `ValueError: invalid literal for int() with base 10: 'J1234oshdatabase:5432'` — the `$` was stripped and password merged with host.
 
 ## Root Cause
 
 When the URI is:
 ```
-postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho
+postgresql+psycopg://josh434:J1234osh$@database:5432/honcho
 ```
 
 The shell sees `$@database` as a variable expansion, so it becomes:
 ```
-postgresql+psycopg://<username>:<REDACTED-PASSWORD>database:5432/honcho
+postgresql+psycopg://josh434:J1234oshdatabase:5432/honcho
 ```
 
-The port parsing then fails because `<REDACTED-PASSWORD>database:5432` is not a valid port number.
+The port parsing then fails because `J1234oshdatabase:5432` is not a valid port number.
 
 ## Verified Working Patterns
 
 ### 1. Single Quotes with `docker run -e`
 ```bash
 # Single quotes prevent shell expansion
-docker run -e DB_CONNECTION_URI='postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho' ...
+docker run -e DB_CONNECTION_URI='postgresql+psycopg://josh434:J1234osh$@database:5432/honcho' ...
 ```
 
 ### 2. `--env-file` with `docker run`
@@ -36,7 +36,7 @@ docker run --env-file .env ...
 
 The `.env` file should have:
 ```
-DB_CONNECTION_URI=postgresql+psycopg://<username>:<REDACTED-PASSWORD>@database:5432/honcho
+DB_CONNECTION_URI=postgresql+psycopg://josh434:J1234osh$@database:5432/honcho
 ```
 
 ### 3. `docker-compose.yml` with `env_file:`

@@ -13,7 +13,7 @@ Write from domain knowledge only — no web search.
 
 **Goal:**
 ```
-Write [Name] entity profile to $HOME/.autognosia/oracle/brain\Entities\[Name].md.
+Write [Name] entity profile to /home/josh434/.autognosia/oracle/brain\Entities\[Name].md.
 Cover: [3-6 key topics]. 20-30KB.
 ```
 
@@ -47,7 +47,7 @@ All content files ≥10KB (specialist-grade). Index files are naturally smaller 
 
 After async completion, verify on disk:
 ```bash
-stat -c"%s filename" $HOME/.autognosia/oracle/brain/Entities/filename.md
+stat -c"%s filename" /home/josh434/.autognosia/oracle/brain/Entities/filename.md
 ```
 
 If file missing despite "completed" status, re-dispatch with "keep it focused" directive.
