@@ -61,10 +61,12 @@ import uvicorn
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DASHBOARD_DIR = REPO_ROOT / "dashboard"
 AUTOGNOSIA_HOME = Path(os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia")))
-ORGANIZER_DB = Path(os.environ.get("ORGANIZER_DB", str(AUTOGNOSIA_HOME / "personal-organizer" / "data" / "organizer.db")))
+ORGANIZER_DB = Path(os.environ.get("ORGANIZER_DB_PATH", str(AUTOGNOSIA_HOME / "personal-organizer" / "data" / "organizer.db")))
 AUTOGNOSIA_DB = AUTOGNOSIA_HOME / "autognosia.db"
 ACTIVE_WIKI = AUTOGNOSIA_HOME / "active-wiki"
 ORACLE_BRAIN = AUTOGNOSIA_HOME / "oracle" / "brain"
+DOCKER_SOCKET = os.environ.get("DOCKER_SOCKET", "/var/run/docker.sock")
+CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "/config/services.yaml"))
 
 # Import local helper bridges
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
@@ -98,15 +100,32 @@ async def start_reminder_background_worker():
 
     asyncio.create_task(reminder_loop())
 
+def _initialize_demo_databases():
+    """Generate demo databases with sample data if they don't exist."""
+    try:
+        from demo_data import initialize_organizer_db, initialize_autognosia_db
+        initialize_organizer_db(ORGANIZER_DB)
+        initialize_autognosia_db(AUTOGNOSIA_DB)
+    except Exception as e:
+        print(f"[WARN] Demo data generation failed: {e}")
+
+
 def get_organizer_conn() -> sqlite3.Connection:
     if not ORGANIZER_DB.exists():
+        # Demo mode: generate sample data
+        _initialize_demo_databases()
+    if not ORGANIZER_DB.exists():
+        # Fallback: create empty schema
         ORGANIZER_DB.parent.mkdir(parents=True, exist_ok=True)
-        # Initialize if missing
-        import init_db
-        init_db.ensure_directories()
         conn = sqlite3.connect(str(ORGANIZER_DB))
-        conn.executescript(init_db.SCHEMA)
-        conn.commit()
+        conn.executescript("""
+            CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', created_at TEXT);
+            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
+            CREATE TABLE IF NOT EXISTS intentions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, cue TEXT, action TEXT, status TEXT DEFAULT 'dormant', created_at TEXT);
+            CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remind_at TEXT, channel TEXT DEFAULT 'all', notes TEXT DEFAULT '', status TEXT DEFAULT 'pending', sent_at TEXT, created_at TEXT);
+            CREATE TABLE IF NOT EXISTS important_dates (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT, description TEXT);
+            CREATE TABLE IF NOT EXISTS subscriptions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL, currency TEXT, next_billing_date TEXT, billing_cycle TEXT, status TEXT DEFAULT 'active');
+        """)
         return conn
     conn = sqlite3.connect(str(ORGANIZER_DB))
     conn.row_factory = sqlite3.Row
@@ -147,6 +166,19 @@ def get_system_stats():
         "active_agents": active_agents,
         "uptime_days": uptime_days,
     }
+
+
+@app.get("/api/health")
+def healthcheck():
+    """Healthcheck endpoint for Docker and monitoring."""
+    docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
+    db_ok = ORGANIZER_DB.exists()
+    return JSONResponse({
+        "status": "ok",
+        "docker": docker_ok,
+        "database": db_ok,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
 
 
 @app.get("/api/overview")
@@ -780,6 +812,90 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
+
+
+# ── Bot Management Endpoints ───────────────────────────────────────────────────
+
+@app.get("/api/bots")
+def get_bots():
+    """List all configured bots/agents."""
+    import psutil
+    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    profiles_dir = hermes_home / "profiles"
+    bots = []
+
+    if profiles_dir.exists():
+        for profile_dir in sorted(profiles_dir.iterdir()):
+            if not profile_dir.is_dir():
+                continue
+            profile_name = profile_dir.name
+            config_file = profile_dir / "config.yaml"
+            agent_name = profile_name.replace("-", " ").title()
+            model = "unknown"
+            if config_file.exists():
+                try:
+                    import yaml
+                    with open(config_file) as f:
+                        cfg = yaml.safe_load(f) or {}
+                    model = cfg.get("model", "unknown")
+                except Exception:
+                    pass
+
+            status = "idle"
+            for proc in psutil.process_iter(['pid', 'cmdline']):
+                try:
+                    cmdline = ' '.join(proc.info['cmdline'] or [])
+                    if profile_name in cmdline and 'hermes' in cmdline.lower():
+                        status = "online"
+                        break
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+
+            bots.append({
+                "id": profile_name,
+                "name": agent_name,
+                "role": f"{profile_name.replace('-', ' ')} agent",
+                "model": model,
+                "provider": "Nous Research",
+                "status": status,
+                "current_task": None,
+                "last_activity": datetime.now(timezone.utc).isoformat(),
+                "avatar": "🤖" if profile_name == "default" else "🧠"
+            })
+
+    if not bots:
+        bots.append({
+            "id": "demo",
+            "name": "Demo Assistant",
+            "role": "Sample bot for UI testing",
+            "model": "demo-model",
+            "provider": "Demo",
+            "status": "idle",
+            "current_task": None,
+            "last_activity": datetime.now(timezone.utc).isoformat(),
+            "avatar": "🤖"
+        })
+
+    return {"bots": bots}
+
+
+@app.get("/api/bots/{bot_id}/history")
+def get_bot_history(bot_id: str):
+    """Get conversation history for a bot."""
+    return {"messages": []}
+
+
+@app.post("/api/bots/{bot_id}/message")
+def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
+    """Send a message to a specific bot."""
+    message = (payload.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+    return {
+        "reply": f"Echo from {bot_id}: {message}",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
 # ── Phase 2: Service Integration Endpoints ──────────────────────────────────────
 
 SERVICE_DEFINITIONS = {
@@ -1154,9 +1270,49 @@ def serve_dashboard():
     """Serve the main dashboard HTML."""
     return FileResponse(str(DASHBOARD_DIR / "index.html"))
 
-@app.get("/styles.css")
-def serve_styles():
-    return FileResponse(str(DASHBOARD_DIR / "styles.css"), media_type="text/css")
+@app.get("/sidebar.css")
+def serve_sidebar():
+    return FileResponse(str(DASHBOARD_DIR / "sidebar.css"), media_type="text/css")
+
+@app.get("/header.css")
+def serve_header():
+    return FileResponse(str(DASHBOARD_DIR / "header.css"), media_type="text/css")
+
+@app.get("/layout.css")
+def serve_layout():
+    return FileResponse(str(DASHBOARD_DIR / "layout.css"), media_type="text/css")
+
+@app.get("/briefing.css")
+def serve_briefing():
+    return FileResponse(str(DASHBOARD_DIR / "briefing.css"), media_type="text/css")
+
+@app.get("/calendar.css")
+def serve_calendar():
+    return FileResponse(str(DASHBOARD_DIR / "calendar.css"), media_type="text/css")
+
+@app.get("/tasks.css")
+def serve_tasks():
+    return FileResponse(str(DASHBOARD_DIR / "tasks.css"), media_type="text/css")
+
+@app.get("/comms.css")
+def serve_comms():
+    return FileResponse(str(DASHBOARD_DIR / "comms.css"), media_type="text/css")
+
+@app.get("/drawers.css")
+def serve_drawers():
+    return FileResponse(str(DASHBOARD_DIR / "drawers.css"), media_type="text/css")
+
+@app.get("/services.css")
+def serve_services_css():
+    return FileResponse(str(DASHBOARD_DIR / "services.css"), media_type="text/css")
+
+@app.get("/agent.css")
+def serve_agent_css():
+    return FileResponse(str(DASHBOARD_DIR / "agent.css"), media_type="text/css")
+
+@app.get("/bots.css")
+def serve_bots_css():
+    return FileResponse(str(DASHBOARD_DIR / "bots.css"), media_type="text/css")
 
 @app.get("/tokens.css")
 def serve_tokens():
@@ -1165,6 +1321,10 @@ def serve_tokens():
 @app.get("/app.js")
 def serve_app():
     return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")
+
+@app.get("/app-bots.js")
+def serve_app_bots():
+    return FileResponse(str(DASHBOARD_DIR / "app-bots.js"), media_type="application/javascript")
 
 @app.get("/enhance.js")
 def serve_enhance():

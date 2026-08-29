@@ -4,817 +4,263 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Autognosia // Command Deck</title>
-
-  <!-- Design Token System (OKLCH) — MUST LOAD FIRST -->
   <link rel="stylesheet" href="tokens.css" />
-  <!-- Component Styles -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+  <link rel="stylesheet" href="header.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="briefing.css" />
+  <link rel="stylesheet" href="calendar.css" />
+  <link rel="stylesheet" href="tasks.css" />
+  <link rel="stylesheet" href="comms.css" />
+  <link rel="stylesheet" href="drawers.css" />
+  <link rel="stylesheet" href="services.css" />
+  <link rel="stylesheet" href="agent.css" />
+  <link rel="stylesheet" href="bots.css" />
 </head>
 <body>
-  <!-- Skip link for keyboard accessibility -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-logo" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠</a>
+        <a href="#" class="sidebar-link" data-view="system" aria-label="System" title="System">📊</a>
+        <a href="#" class="sidebar-link" data-view="bots" aria-label="Bots" title="Bots">🤖</a>
+        <a href="#" class="sidebar-link" data-view="media" aria-label="Media" title="Media">🎬</a>
+        <a href="#" class="sidebar-link" data-view="downloads" aria-label="Downloads" title="Downloads">📥</a>
+        <a href="#" class="sidebar-link" data-view="settings" aria-label="Settings" title="Settings">⚙️</a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
+    </nav>
 
-  <!-- ARIA Live Region for background updates (polite) [14] -->
-  <div id="live-region" aria-live="polite" aria-atomic="true" class="sr-only"></div>
-
-  <!-- Toast Container for optimistic mutations + undo [12] -->
-  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- Command Palette (⌘K) — P1 Item 5 -->
-  <dialog id="command-palette" class="command-palette" role="dialog" aria-modal="true" aria-label="Command Palette">
-    <div class="palette-header">
-      <kbd>⌘K</kbd>
-      <input type="search" class="palette-search" id="palette-search" placeholder="Type a command or search..." autocomplete="off" spellcheck="false" />
-      <kbd>⎋</kbd>
-    </div>
-    <div class="palette-results" id="palette-results" role="listbox">
-      <!-- Populated dynamically -->
-    </div>
-  </dialog>
-
-  <main id="main-content" class="deck-container" role="main">
-    
-    <!-- ── 1. HUD HEADER — Top metrics + clock + controls (span 12) ───────────── -->
-    <header class="hud-header panel" role="banner">
-      <div class="hud-brand">
-        <div class="hud-logo-icon" aria-hidden="true">
+    <!-- Header -->
+    <header class="app-header" role="banner">
+      <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">☰</button>
+      <div class="header-brand">
+        <span class="header-brand-icon" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
-        </div>
-        <div class="hud-title-group">
-          <span class="hud-system-title">Autognosia</span>
-          <span class="hud-system-subtitle">EXECUTIVE COMMAND DECK</span>
-        </div>
+        </span>
+        <span>Autognosia</span>
       </div>
-
-      <div class="hud-metrics-ribbon" role="status" aria-label="System metrics">
-        <div class="metric-chip">
-          <span class="metric-dot metric-dot--ok" aria-hidden="true"></span>
-          <span class="metric-label">TASKS</span>
-          <span class="metric-val text-tabular" id="stat-active-tasks" data-numeric>--</span>
-        </div>
-        <div class="metric-chip">
-          <span class="metric-dot metric-dot--warn" aria-hidden="true"></span>
-          <span class="metric-label">CRITICAL</span>
-          <span class="metric-val text-tabular" id="stat-critical-tasks" data-numeric>--</span>
-        </div>
-        <div class="metric-chip">
-          <span class="metric-dot metric-dot--purple" aria-hidden="true"></span>
-          <span class="metric-label">REMINDERS</span>
-          <span class="metric-val text-tabular" id="stat-reminders" data-numeric>--</span>
-        </div>
-        <div class="metric-chip">
-          <span class="metric-dot metric-dot--info" aria-hidden="true"></span>
-          <span class="metric-label">SCHEDULE</span>
-          <span class="metric-val text-tabular" id="stat-today-events" data-numeric>--</span>
-        </div>
-        <div class="metric-chip">
-          <span class="metric-dot metric-dot--purple" aria-hidden="true"></span>
-          <span class="metric-label">INBOX</span>
-          <span class="metric-val text-tabular" id="stat-unread-emails" data-numeric>--</span>
-        </div>
-        <div class="metric-chip">
-          <span class="metric-dot metric-dot--info" aria-hidden="true"></span>
-          <span class="metric-label">INTENTIONS</span>
-          <span class="metric-val text-tabular" id="stat-intentions" data-numeric>--</span>
-        </div>
+      <div class="header-search">
+        <span class="header-search-icon" aria-hidden="true">🔍</span>
+        <input type="search" id="global-search" placeholder="Search..." aria-label="Search" />
+        <span class="header-search-hint">⌘K</span>
       </div>
-
-      <div class="hud-controls">
-        <div class="clock-display" id="hud-clock" role="timer" aria-live="off">
-          <span class="clock-time">00:00:00</span>
-          <span class="clock-colon" aria-hidden="true">:</span>
-          <span class="clock-suffix">UTC</span>
+      <div class="header-actions">
+        <button class="header-btn" aria-label="Notifications" title="Notifications">
+          🔔
+          <span class="badge-dot" aria-hidden="true"></span>
+        </button>
+        <div class="system-status" aria-label="System status">
+          <span class="status-dot status-dot--ok" aria-hidden="true"></span>
+          <span>Healthy</span>
         </div>
-
-        <div class="refresh-selector">
-          <span class="refresh-icon" aria-hidden="true">⟳</span>
-          <select id="auto-refresh-rate" aria-label="Auto refresh interval">
-            <option value="15000">15s</option>
-            <option value="30000" selected>30s</option>
-            <option value="60000">60s</option>
-            <option value="0">Manual</option>
-          </select>
+        <div class="ws-indicator" id="ws-indicator" aria-label="Connection status">
+          <span class="ws-dot" aria-hidden="true"></span>
+          <span>LIVE</span>
         </div>
-
-        <button class="btn btn--secondary btn--icon btn--sm" id="btn-telemetry" title="View System Telemetry (T)" aria-label="Open telemetry drawer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
-          <span class="visually-hidden">Telemetry</span>
-        </button>
-
-        <button class="btn btn--primary btn--sm" id="btn-toggle-chat" title="Talk with Hermes Assistant (C)" aria-label="Open chat drawer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-          <span class="visually-hidden">Chat with Hermes</span>
-        </button>
-
-        <button class="btn btn--secondary btn--sm" id="btn-quick-create" title="Create new item (N)" aria-label="Open create modal">
-          <span aria-hidden="true">+</span> New Item
-        </button>
-
-        <button class="btn btn--ghost btn--icon btn--sm" id="btn-palette-trigger" title="Open Command Palette (⌘K)" aria-label="Open command palette" aria-keyshortcuts="Meta+K">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <span class="visually-hidden">Command Palette</span>
-        </button>
       </div>
     </header>
 
-    <!-- ── HERO STATS — System overview (span 12) ─────────────────────────────────── -->
-    <section class="hero-stats" role="region" aria-label="System overview">
-      <div class="hero-stat">
-        <span class="hero-stat__label">CPU</span>
-        <span class="hero-stat__value text-tabular" id="stat-cpu" data-numeric>--</span>
-        <span class="hero-stat__unit">%</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat__label">RAM</span>
-        <span class="hero-stat__value text-tabular" id="stat-ram" data-numeric>--</span>
-        <span class="hero-stat__unit">%</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat__label">DISK</span>
-        <span class="hero-stat__value text-tabular" id="stat-disk" data-numeric>--</span>
-        <span class="hero-stat__unit">%</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat__label">NETWORK</span>
-        <span class="hero-stat__value text-tabular" id="stat-network" data-numeric>--</span>
-        <span class="hero-stat__unit">Mbps</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat__label">AGENTS</span>
-        <span class="hero-stat__value text-tabular" id="stat-agents" data-numeric>--</span>
-        <span class="hero-stat__unit">active</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-stat__label">UPTIME</span>
-        <span class="hero-stat__value text-tabular" id="stat-uptime" data-numeric>--</span>
-        <span class="hero-stat__unit">days</span>
-      </div>
-    </section>
+    <!-- Main Content -->
+    <main class="content-area" id="main-content" role="main">
+      <!-- Hero Stats Row -->
+      <section class="hero-stats" aria-label="System metrics">
+        <div class="hero-stat">
+          <span class="hero-stat__label">CPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-cpu">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">RAM</span>
+          <span class="hero-stat__value text-tabular" id="stat-ram">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">DISK</span>
+          <span class="hero-stat__value text-tabular" id="stat-disk">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">NETWORK</span>
+          <span class="hero-stat__value text-tabular" id="stat-network">--</span>
+          <span class="hero-stat__unit">Mbps</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">AGENTS</span>
+          <span class="hero-stat__value text-tabular" id="stat-agents">--</span>
+          <span class="hero-stat__unit">active</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">UPTIME</span>
+          <span class="hero-stat__value text-tabular" id="stat-uptime">--</span>
+          <span class="hero-stat__unit">days</span>
+        </div>
+      </section>
 
-    <!-- ── 2. BRIEFING BAR — HERO TILE (span 12) [7] ───────────────────────────── -->
-    <section class="briefing-bar panel" aria-labelledby="briefing-heading" aria-live="polite" aria-atomic="true">
-      <div class="briefing-header">
-        <div class="briefing-tag" id="briefing-heading">DAILY EXECUTIVE SYNTHESIS</div>
-        <div class="briefing-date" id="briefing-date">Loading date...</div>
-      </div>
-      <div class="briefing-content">
-        <div class="briefing-summary" id="briefing-summary">
-          <div class="skeleton skeleton-text"></div>
-        </div>
-        <div class="briefing-priorities">
-          <span class="priority-title">TOP FOCUS</span>
-          <ul id="briefing-priorities-list" aria-label="Top priorities">
-            <li><div class="skeleton skeleton-text short"></div></li>
-            <li><div class="skeleton skeleton-text short"></div></li>
-            <li><div class="skeleton skeleton-text short"></div></li>
-          </ul>
-        </div>
-        <div class="briefing-prompt">
-          <span class="prompt-icon" aria-hidden="true">💡</span>
-          <div class="prompt-text">
-            <span class="prompt-label">PROMPT-ME QUESTION</span>
-            <span id="briefing-prompt-text"><div class="skeleton skeleton-text"></div></span>
+      <!-- Briefing Bar -->
+      <section class="panel" aria-label="Daily briefing">
+        <div class="panel-header">
+          <div class="panel-title">📋 Daily Executive Synthesis</div>
+          <div class="panel-footer" style="margin:0;padding:0;border:none">
+            <span id="briefing-date" style="color:var(--text-3);font-size:12px;">Loading date...</span>
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:12px;margin-left:8px;">just now</span>
           </div>
         </div>
-      </div>
-      <div class="panel-freshness" id="briefing-freshness" aria-hidden="true">
-        <span class="panel-freshness__dot panel-freshness__dot--fresh" aria-hidden="true"></span>
-        <span>updated just now</span>
-      </div>
-    </section>
-
-    <!-- ── 3. CALENDAR PANEL — CO-HERO (span 5, row-span 2) [7] ────────────────── -->
-    <section class="panel panel-calendar collapsible-panel" data-collapsed="false" aria-labelledby="cal-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <h2>Schedule & Calendar</h2>
-        </div>
-        <div class="panel-actions">
-          <div class="panel-status" id="cal-status" aria-live="polite">
-            <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
-            <span>Live</span>
+        <div class="panel-body">
+          <div id="briefing-summary">Loading...</div>
+          <div id="briefing-priorities" style="margin-top:var(--space-3)">
+            <ul id="briefing-priorities-list" aria-label="Top priorities"></ul>
           </div>
-          <div class="calendar-view-toggles" role="tablist" aria-label="Calendar view">
-            <button class="view-tab active" role="tab" aria-selected="true" data-view="day" aria-controls="cal-day">Day</button>
-            <button class="view-tab" role="tab" aria-selected="false" data-view="week" aria-controls="cal-week">Week</button>
-            <button class="view-tab" role="tab" aria-selected="false" data-view="month" aria-controls="cal-month">Month</button>
-          </div>
-        </div>
-      </header>
-
-      <div class="calendar-nav-bar" role="navigation" aria-label="Calendar navigation">
-        <div class="calendar-nav-controls">
-          <button class="btn btn--icon btn--sm" id="cal-prev" aria-label="Previous period"><</button>
-          <button class="btn btn--secondary btn--sm" id="cal-today" aria-label="Go to today">Today</button>
-          <button class="btn btn--icon btn--sm" id="cal-next" aria-label="Next period">></button>
-          <span class="cal-current-label" id="cal-heading">Today</span>
-        </div>
-        <div class="cal-filters" role="group" aria-label="Event filters">
-          <span class="filter-chip active" data-cal-filter="all" role="button" tabindex="0" aria-pressed="true">All</span>
-          <span class="filter-chip" data-cal-filter="meeting" role="button" tabindex="0" aria-pressed="false">Meetings</span>
-          <span class="filter-chip" data-cal-filter="task" role="button" tabindex="0" aria-pressed="false">Deadlines</span>
-          <span class="filter-chip" data-cal-filter="subscription" role="button" tabindex="0" aria-pressed="false">Renewals</span>
-        </div>
-      </div>
-
-      <div class="panel-body calendar-stage" id="calendar-stage" role="region" aria-label="Calendar events">
-        <!-- Skeleton for initial load -->
-        <div class="skeleton skeleton-card" style="height: 120px;"></div>
-        <div class="skeleton skeleton-card" style="height: 80px;"></div>
-        <div class="skeleton skeleton-card" style="height: 80px;"></div>
-      </div>
-
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="cal-freshness">
-          <span class="panel-freshness__dot panel-freshness__dot--fresh" aria-hidden="true"></span>
-          <span id="cal-freshness-text">updated just now</span>
-        </div>
-      </footer>
-    </section>
-
-    <!-- ── 4. TASKS PANEL — Action Pipeline (span 4) ───────────────────────────── -->
-    <section class="panel panel-tasks collapsible-panel" data-collapsed="false" aria-labelledby="tasks-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M9 11l3 3L22 4"/>
-            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-          </svg>
-          <h2 id="tasks-heading">Action Pipeline</h2>
-        </div>
-        <div class="panel-actions">
-          <div class="panel-status" id="tasks-status" aria-live="polite">
-            <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
-            <span>Synced</span>
-          </div>
-        </div>
-      </header>
-
-      <div class="task-quick-add-bar" role="search" aria-label="Quick add task">
-        <input type="text" id="quick-task-input" placeholder="Quick add task… (e.g. 'Review paper draft tomorrow high')" aria-label="Task title" />
-        <button class="btn btn--primary btn--sm" id="btn-quick-task-add" aria-label="Add task">Add</button>
-      </div>
-
-      <div class="task-filter-subbar" role="tablist" aria-label="Task filters">
-        <button class="task-filter-pill chip active" role="tab" aria-selected="true" data-task-filter="all" aria-controls="tasks-all">All Active</button>
-        <button class="task-filter-pill chip" role="tab" aria-selected="false" data-task-filter="critical" aria-controls="tasks-critical">Critical</button>
-        <button class="task-filter-pill chip" role="tab" aria-selected="false" data-task-filter="next" aria-controls="tasks-next">Next</button>
-        <button class="task-filter-pill chip" role="tab" aria-selected="false" data-task-filter="in_progress" aria-controls="tasks-progress">In Progress</button>
-        <button class="task-filter-pill chip" role="tab" aria-selected="false" data-task-filter="completed" aria-controls="tasks-done">Completed</button>
-      </div>
-
-      <div class="panel-body task-list-stream" id="task-list-container" role="tabpanel" aria-label="Task list">
-        <div class="empty-state" id="tasks-empty" hidden>
-          <div class="empty-state__icon" aria-hidden="true">✓</div>
-          <div class="empty-state__title">No active tasks</div>
-          <div class="empty-state__desc">Pipeline clear. Use quick add above or press ⌘K → "New Task" to create one.</div>
-          <button class="btn btn--primary btn--sm empty-state__action" data-palette-cmd="new-task">Create First Task</button>
-        </div>
-        <!-- Skeleton rows for initial load -->
-        <div class="skeleton skeleton-row" aria-hidden="true">
-          <div class="skeleton skeleton-avatar"></div>
-          <div class="flex flex-col">
-            <div class="skeleton skeleton-title"></div>
-            <div class="skeleton skeleton-text short"></div>
-          </div>
-        </div>
-        <div class="skeleton skeleton-row" aria-hidden="true">
-          <div class="skeleton skeleton-avatar"></div>
-          <div class="flex flex-col">
-            <div class="skeleton skeleton-title"></div>
-            <div class="skeleton skeleton-text short"></div>
-          </div>
-        </div>
-        <div class="skeleton skeleton-row" aria-hidden="true">
-          <div class="skeleton skeleton-avatar"></div>
-          <div class="flex flex-col">
-            <div class="skeleton skeleton-title"></div>
-            <div class="skeleton skeleton-text short"></div>
-          </div>
-        </div>
-      </div>
-
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="tasks-freshness">
-          <span class="panel-freshness__dot panel-freshness__dot--fresh" aria-hidden="true"></span>
-          <span id="tasks-freshness-text">updated just now</span>
-        </div>
-        <button class="btn btn--ghost btn--sm" data-palette-cmd="view-all-tasks">View all →</button>
-      </footer>
-    </section>
-
-    <!-- ── 5. TELEMETRY PANEL — Metrics grid (span 3) ──────────────────────────── -->
-    <section class="panel panel-telemetry collapsible-panel" data-collapsed="false" aria-labelledby="telemetry-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
-          <h2 id="telemetry-heading">Telemetry</h2>
-        </div>
-        <div class="panel-actions">
-          <div class="panel-status" id="telemetry-status" aria-live="polite">
-            <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
-            <span>Live</span>
-          </div>
-        </div>
-      </header>
-
-      <div class="panel-body telemetry-grid" id="telemetry-grid" role="region" aria-label="System metrics">
-        <!-- Skeleton metrics -->
-        <div class="telemetry-metric skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="telemetry-metric skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="telemetry-metric skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="telemetry-metric skeleton skeleton-card" aria-hidden="true"></div>
-      </div>
-
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="telemetry-freshness">
-          <span class="panel-freshness__dot panel-freshness__dot--fresh" aria-hidden="true"></span>
-          <span id="telemetry-freshness-text">updated just now</span>
-        </div>
-      </footer>
-    </section>
-
-    <!-- ── 6. COMMUNICATIONS PANEL — 3 sub-panels in grid (span 12) ───────────── -->
-    <section class="panel panel-comms collapsible-panel" data-collapsed="false" aria-labelledby="comms-heading" role="region" aria-label="Communications & Knowledge">
-      <header class="panel-header" style="grid-column: 1 / -1;">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-          <h2 id="comms-heading">Communications & Knowledge</h2>
-        </div>
-        <div class="panel-actions">
-          <div class="panel-status" id="comms-status" aria-live="polite">
-            <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
-            <span>Synced</span>
-          </div>
-        </div>
-      </header>
-
-      <!-- Email Radar Sub-panel -->
-      <section class="sub-panel email-radar" aria-labelledby="email-heading">
-        <header class="sub-header">
-          <div class="panel-title-group">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-            <h3 id="email-heading">Email Radar</h3>
-          </div>
-          <span class="badge badge--warn" id="email-unread-badge" aria-live="polite">0 Pending</span>
-        </header>
-        <div class="panel-body email-stream" id="email-stream-container" role="list" aria-label="Email triage">
-          <div class="empty-state" id="email-empty" hidden>
-            <div class="empty-state__icon" aria-hidden="true">✉</div>
-            <div class="empty-state__title">Inbox clear</div>
-            <div class="empty-state__desc">Nothing hunting you right now.</div>
-          </div>
-          <div class="skeleton skeleton-row" aria-hidden="true">
-            <div class="skeleton skeleton-avatar"></div>
-            <div class="flex flex-col">
-              <div class="skeleton skeleton-title"></div>
-              <div class="skeleton skeleton-text short"></div>
-            </div>
-          </div>
-          <div class="skeleton skeleton-row" aria-hidden="true">
-            <div class="skeleton skeleton-avatar"></div>
-            <div class="flex flex-col">
-              <div class="skeleton skeleton-title"></div>
-              <div class="skeleton skeleton-text short"></div>
-            </div>
+          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);">
+            <span id="briefing-prompt-text"></span>
           </div>
         </div>
       </section>
 
-      <!-- Intentions Radar Sub-panel -->
-      <section class="sub-panel intentions-radar" aria-labelledby="intentions-heading">
-        <header class="sub-header">
-          <div class="panel-title-group">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            <h3 id="intentions-heading">Prospective Intentions</h3>
+      <div class="section-title">System Overview</div>
+
+      <!-- Panels Grid -->
+      <div class="panels-grid">
+        <!-- Calendar Panel -->
+        <section class="panel" aria-label="Calendar & Schedule">
+          <div class="panel-header">
+            <div class="panel-title">📅 Schedule & Calendar</div>
           </div>
-          <button class="btn btn--icon btn--icon-sm" id="btn-add-intention" title="Add Future Intention" aria-label="Add intention">+</button>
-        </header>
-        <div class="panel-body intentions-stream" id="intentions-stream-container" role="list" aria-label="Active intentions">
-          <div class="empty-state" id="intentions-empty" hidden>
-            <div class="empty-state__icon" aria-hidden="true">⏱</div>
-            <div class="empty-state__title">No active intentions</div>
-            <div class="empty-state__desc">Prospective memory is quiet. Press ⌘K → "New Intention" to set an IF/THEN rule.</div>
-            <button class="btn btn--primary btn--sm empty-state__action" data-palette-cmd="new-intention">Create Intention</button>
-          </div>
-          <div class="skeleton skeleton-row" aria-hidden="true">
-            <div class="flex flex-col">
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-text short"></div>
+          <div class="panel-body" id="calendar-stage">
+            <div class="empty-state">
+              <div class="empty-state__icon">📅</div>
+              <div class="empty-state__title">No events today</div>
+              <div class="empty-state__desc">Your schedule is clear.</div>
             </div>
           </div>
-          <div class="skeleton skeleton-row" aria-hidden="true">
-            <div class="flex flex-col">
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-text short"></div>
+        </section>
+
+        <!-- Tasks Panel -->
+        <section class="panel" aria-label="Action Pipeline">
+          <div class="panel-header">
+            <div class="panel-title">✅ Action Pipeline</div>
+          </div>
+          <div class="panel-body" id="task-list-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">✓</div>
+              <div class="empty-state__title">No active tasks</div>
+              <div class="empty-state__desc">Pipeline clear.</div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Second Brain Wiki Search Sub-panel -->
-      <section class="sub-panel second-brain-radar" aria-labelledby="wiki-heading">
-        <header class="sub-header">
-          <div class="panel-title-group">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            <h3 id="wiki-heading">Second Brain</h3>
+        <!-- Telemetry Panel -->
+        <section class="panel" aria-label="System Telemetry">
+          <div class="panel-header">
+            <div class="panel-title">📊 Telemetry</div>
           </div>
-          <span class="badge badge--info">Active Wiki + Oracle</span>
-        </header>
-        <div class="wiki-search-box" role="search" aria-label="Search knowledge vault">
-          <input type="text" id="wiki-search-input" placeholder="Search knowledge vault… (Press / to focus)" aria-label="Search query" autocomplete="off" spellcheck="false" />
-        </div>
-        <div class="panel-body wiki-results-stream" id="wiki-results-container" role="region" aria-label="Search results" aria-live="polite">
-          <div class="empty-state" id="wiki-empty">
-            <div class="empty-state__icon" aria-hidden="true">🔍</div>
-            <div class="empty-state__title">Search your knowledge vault</div>
-            <div class="empty-state__desc">Type above to search across all Markdown wiki & Oracle documents. Press <kbd>/</kbd> to focus instantly.</div>
+          <div class="panel-body" id="telemetry-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
           </div>
-        </div>
-      </section>
-    </section>
+        </section>
 
-  </main>
-
-  <!-- ── 8. AGENT INTELLIGENCE — Hermes, Graphify, Cron ──────────────────────── -->
-  <div class="section-divider" role="separator" aria-label="Agent intelligence section">
-    <div class="section-title">🧠 Agent Intelligence</div>
-  </div>
-  <div class="deck-container section-grid" role="region" aria-label="Agent intelligence">
-    
-    <!-- Hermes Status Panel -->
-    <section class="panel" style="grid-column: span 4;" aria-labelledby="agent-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
-          <h2 id="agent-heading">Hermes Agent</h2>
-        </div>
-        <div class="panel-status" id="agent-status" aria-live="polite">
-          <span class="panel-status__dot" aria-hidden="true"></span>
-          <span>Checking…</span>
-        </div>
-      </header>
-      <div class="panel-body agent-grid" id="agent-grid" role="list">
-        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="agent-stat skeleton skeleton-card" aria-hidden="true"></div>
-      </div>
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="agent-freshness">
-          <span class="panel-status__dot" aria-hidden="true"></span>
-          <span id="agent-freshness-text">updated just now</span>
-        </div>
-      </footer>
-    </section>
-
-    <!-- Graphify Status Panel -->
-    <section class="panel" style="grid-column: span 4;" aria-labelledby="graphify-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="5" cy="5" r="2"/>
-            <circle cx="19" cy="5" r="2"/>
-            <circle cx="12" cy="19" r="2"/>
-            <line x1="5" y1="5" x2="12" y2="19"/>
-            <line x1="19" y1="5" x2="12" y2="19"/>
-          </svg>
-          <h2 id="graphify-heading">Graphify</h2>
-        </div>
-        <div class="panel-status" id="graphify-status" aria-live="polite">
-          <span class="panel-status__dot" aria-hidden="true"></span>
-          <span>Checking…</span>
-        </div>
-      </header>
-      <div class="panel-body graphify-grid" id="graphify-grid" role="list">
-        <div class="graphify-stat skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="graphify-stat skeleton skeleton-card" aria-hidden="true"></div>
-        <div class="graphify-stat skeleton skeleton-card" aria-hidden="true"></div>
-      </div>
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="graphify-freshness">
-          <span class="panel-status__dot" aria-hidden="true"></span>
-          <span id="graphify-freshness-text">updated just now</span>
-        </div>
-      </footer>
-    </section>
-
-    <!-- Cron Jobs Panel -->
-    <section class="panel" style="grid-column: span 4;" aria-labelledby="cron-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
-          </svg>
-          <h2 id="cron-heading">Scheduled Jobs</h2>
-        </div>
-        <div class="panel-status" id="cron-status" aria-live="polite">
-          <span class="panel-status__dot" aria-hidden="true"></span>
-          <span>Loading…</span>
-        </div>
-      </header>
-      <div class="panel-body cron-list" id="cron-list" role="list">
-        <div class="skeleton skeleton-row" aria-hidden="true"></div>
-        <div class="skeleton skeleton-row" aria-hidden="true"></div>
-        <div class="skeleton skeleton-row" aria-hidden="true"></div>
-      </div>
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="cron-freshness">
-          <span class="panel-status__dot" aria-hidden="true"></span>
-          <span id="cron-freshness-text">updated just now</span>
-        </div>
-      </footer>
-    </section>
-
-  </div>
-
-  <!-- ── 7. SERVICE GRID — homelab services overview ──────────────────────────── -->
-  <div class="section-divider" role="separator" aria-label="Service grid section">
-    <div class="section-title">🖥️ Homelab Services</div>
-  </div>
-  <div class="deck-container section-grid" role="region" aria-label="Homelab services">
-    <section class="panel" style="grid-column: span 12;" aria-labelledby="services-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
-          </svg>
-          <h2 id="services-heading">Homelab Services</h2>
-        </div>
-        <div class="panel-actions">
-          <div class="panel-status" id="services-status" aria-live="polite">
-            <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
-            <span>Scanning…</span>
+        <!-- Email Panel -->
+        <section class="panel" aria-label="Email Radar">
+          <div class="panel-header">
+            <div class="panel-title">✉️ Email Radar</div>
           </div>
-          <button class="btn btn--ghost btn--sm" id="btn-service-refresh" aria-label="Refresh services">
-            <span aria-hidden="true">⟳</span> Refresh
-          </button>
-        </div>
-      </header>
-      <div class="panel-body service-grid" id="service-grid" role="list" aria-label="Service health cards">
-        <!-- Skeleton loading cards -->
-        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
-        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
-        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
-        <div class="service-card skeleton" aria-hidden="true" style="height: 100px;"></div>
-      </div>
-      <footer class="panel-footer">
-        <div class="panel-freshness" id="services-freshness">
-          <span class="panel-freshness__dot panel-freshness__dot--fresh" aria-hidden="true"></span>
-          <span id="services-freshness-text">updated just now</span>
-        </div>
-      </footer>
-    </section>
-  </div>
-
-  <!-- ── 8. MEDIA & DOWNLOADS — what's playing + queue ───────────────────────── -->
-  <div class="section-divider" role="separator" aria-label="Media and downloads section">
-    <div class="section-title">🎬 Media & Downloads</div>
-  </div>
-  <div class="deck-container section-grid" role="region" aria-label="Media playback and download queue">
-    <!-- Media panel — spans 8 columns -->
-    <section class="panel" style="grid-column: span 8;" aria-labelledby="media-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <polygon points="5 3 19 12 5 21 5 3"/>
-          </svg>
-          <h2 id="media-heading">What's Playing</h2>
-        </div>
-        <span class="panel-subtitle" id="media-count" aria-live="polite">0 active streams</span>
-      </header>
-      <div class="panel-body media-grid" id="media-grid" role="list" aria-label="Active media streams">
-        <div class="media-placeholder">No active streams</div>
-      </div>
-    </section>
-
-    <!-- Download queue — spans 4 columns -->
-    <section class="panel" style="grid-column: span 4;" aria-labelledby="queue-heading">
-      <header class="panel-header">
-        <div class="panel-title-group">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          <h2 id="queue-heading">Download Queue</h2>
-        </div>
-        <span class="panel-subtitle" id="queue-count" aria-live="polite">0 pending</span>
-      </header>
-      <div class="panel-body queue-list" id="queue-list" role="list" aria-label="Download queue">
-        <div class="queue-placeholder">Queue is empty</div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ── TELEMETRY DRAWER (slide-over) ───────────────────────────────────────── -->
-  <aside class="drawer telemetry-drawer" id="telemetry-drawer" role="dialog" aria-modal="false" aria-label="System Telemetry">
-    <header class="drawer-header">
-      <h3>System Telemetry</h3>
-      <button class="btn btn--icon" id="btn-close-telemetry" aria-label="Close telemetry">&times;</button>
-    </header>
-    <div class="drawer-body" id="telemetry-body">
-      <div class="skeleton skeleton-card" style="height: 100px;"></div>
-      <div class="skeleton skeleton-card" style="height: 100px;"></div>
-      <div class="skeleton skeleton-card" style="height: 100px;"></div>
-    </div>
-  </aside>
-
-  <!-- ── HERMES AI CHAT DRAWER ───────────────────────────────────────────────── -->
-  <aside class="drawer chat-drawer" id="chat-drawer" role="dialog" aria-modal="false" aria-label="Hermes Cognitive Copilot">
-    <header class="drawer-header chat-header">
-      <div class="chat-title-group">
-        <div class="chat-avatar" aria-hidden="true">🤖</div>
-        <div>
-          <div class="chat-name">HERMES COGNITIVE COPILOT</div>
-          <div class="chat-status"><span class="pulse-dot" aria-hidden="true"></span> Online & Listening</div>
-        </div>
-      </div>
-      <button class="btn btn--icon" id="btn-close-chat" aria-label="Close chat">&times;</button>
-    </header>
-
-    <div class="chat-suggestions" role="group" aria-label="Quick prompts">
-      <button class="sugg-chip" data-prompt="What are my top tasks?" type="button">📋 My Tasks</button>
-      <button class="sugg-chip" data-prompt="What is on my schedule today?" type="button">📅 Today's Agenda</button>
-      <button class="sugg-chip" data-prompt="Search oracle for recent research" type="button">🔍 Search Oracle</button>
-      <button class="sugg-chip" data-prompt="Show system status" type="button">⚡ System Telemetry</button>
-    </div>
-
-    <div class="chat-messages" id="chat-messages-container" role="log" aria-live="polite" aria-label="Conversation">
-      <div class="chat-msg bot">
-        <div class="msg-author">Autognosia Copilot</div>
-        <div class="msg-bubble">Greetings! I am your Autognosia Copilot. Talk to me directly to create tasks, check your calendar, search the second brain vault, set prospective intentions, or give any standard Hermes commands without leaving your dashboard.</div>
-        <div class="msg-time">Just now</div>
-      </div>
-    </div>
-
-    <div class="chat-input-bar">
-      <textarea id="chat-input" rows="2" placeholder="Tell Hermes to do something… (e.g. 'Add task review paper by Friday high priority')" aria-label="Chat message"></textarea>
-      <button class="btn btn--primary" id="btn-send-chat" aria-label="Send message">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13"/>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
-      </button>
-    </div>
-  </aside>
-
-  <!-- ── DOCUMENT VIEWER MODAL ───────────────────────────────────────────────── -->
-  <div class="modal-backdrop" id="modal-doc-viewer" role="dialog" aria-modal="true" aria-labelledby="modal-doc-title">
-    <div class="modal-box modal-lg">
-      <header class="modal-header">
-        <h3 id="modal-doc-title">Document Title</h3>
-        <button class="btn btn--icon" id="btn-close-doc" aria-label="Close document">&times;</button>
-      </header>
-      <div class="modal-body markdown-rendered" id="modal-doc-content">
-        Loading document…
-      </div>
-    </div>
-  </div>
-
-  <!-- ── CREATE ITEM MODAL ───────────────────────────────────────────────────── -->
-  <div class="modal-backdrop" id="modal-create-item" role="dialog" aria-modal="true" aria-labelledby="create-modal-title">
-    <div class="modal-box">
-      <header class="modal-header">
-        <h3 id="create-modal-title">New Entry</h3>
-        <button class="btn btn--icon" id="btn-close-create" aria-label="Close">&times;</button>
-      </header>
-      <div class="modal-body">
-        <form id="form-create-item">
-          <div class="form-group">
-            <label for="create-type">Entry Type</label>
-            <select id="create-type">
-              <option value="task">Task</option>
-              <option value="reminder">Timed Reminder</option>
-              <option value="intention">Prospective Intention (IF/THEN)</option>
-            </select>
-          </div>
-
-          <!-- Task Fields -->
-          <div id="fields-task">
-            <div class="form-group">
-              <label for="task-title">Task Title</label>
-              <input type="text" id="task-title" placeholder="What needs to be done?" required />
+          <div class="panel-body" id="email-stream-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">✉️</div>
+              <div class="empty-state__title">Inbox clear</div>
+              <div class="empty-state__desc">Nothing hunting you right now.</div>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="task-priority">Priority</label>
-                <select id="task-priority">
-                  <option value="critical">Critical</option>
-                  <option value="high">High</option>
-                  <option value="medium" selected>Medium</option>
-                  <option value="low">Low</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="task-due-date">Due Date</label>
-                <input type="date" id="task-due-date" />
+          </div>
+        </section>
+
+        <!-- Intentions Panel -->
+        <section class="panel" aria-label="Prospective Intentions">
+          <div class="panel-header">
+            <div class="panel-title">⏱ Prospective Intentions</div>
+          </div>
+          <div class="panel-body" id="intentions-stream-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">⏱</div>
+              <div class="empty-state__title">No active intentions</div>
+              <div class="empty-state__desc">Prospective memory is quiet.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Wiki Search Panel -->
+        <section class="panel" aria-label="Knowledge Vault">
+          <div class="panel-header">
+            <div class="panel-title">🧠 Knowledge Vault</div>
+          </div>
+          <div class="panel-body">
+            <input type="search" id="wiki-search-input" placeholder="Search knowledge vault…" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-tertiary);color:var(--text-1);margin-bottom:var(--space-3)" />
+            <div id="wiki-results-container">
+              <div class="empty-state">
+                <div class="empty-state__icon">🔍</div>
+                <div class="empty-state__title">Search your knowledge vault</div>
+                <div class="empty-state__desc">Type above to search across all documents.</div>
               </div>
             </div>
-            <div class="form-group">
-              <label for="task-desc">Description / Notes</label>
-              <textarea id="task-desc" rows="2" placeholder="Optional details, links or dependencies…"></textarea>
-            </div>
           </div>
+        </section>
+      </div>
 
-          <!-- Reminder Fields -->
-          <div id="fields-reminder" hidden>
-            <div class="form-group">
-              <label for="reminder-title">Reminder Title</label>
-              <input type="text" id="reminder-title" placeholder="What should Hermes remind you about?" required />
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="reminder-time-preset">Time Offset</label>
-                <select id="reminder-time-preset">
-                  <option value="15">In 15 minutes</option>
-                  <option value="30">In 30 minutes</option>
-                  <option value="60">In 1 hour</option>
-                  <option value="180">In 3 hours</option>
-                  <option value="1440">Tomorrow morning</option>
-                  <option value="custom">Specific Date & Time</option>
-                </select>
-              </div>
-              <div class="form-group" id="group-reminder-custom-date" hidden>
-                <label for="reminder-custom-dt">Date & Time</label>
-                <input type="datetime-local" id="reminder-custom-dt" />
-              </div>
-              <div class="form-group">
-                <label for="reminder-channel">Notification Channel</label>
-                <select id="reminder-channel">
-                  <option value="all">All (Telegram, Discord, Email, SMS, Desktop)</option>
-                  <option value="telegram">Telegram Bot</option>
-                  <option value="discord">Discord Webhook</option>
-                  <option value="email">Email</option>
-                  <option value="sms">SMS / Phone</option>
-                  <option value="desktop">Local Desktop Only</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="reminder-notes">Notes / Details</label>
-              <textarea id="reminder-notes" rows="2" placeholder="Optional context or instructions…"></textarea>
-            </div>
+      <div class="section-title">Agent Intelligence</div>
+
+      <!-- Agent Panels -->
+      <div class="panels-grid">
+        <section class="panel" aria-label="Hermes Agent">
+          <div class="panel-header">
+            <div class="panel-title">🤖 Hermes Agent</div>
           </div>
-
-          <!-- Intention Fields -->
-          <div id="fields-intention" hidden>
-            <div class="form-group">
-              <label for="intention-cue">IF Cue (Condition / Keyword)</label>
-              <input type="text" id="intention-cue" placeholder="e.g. When discussing Mac Studio hardware…" required />
-            </div>
-            <div class="form-group">
-              <label for="intention-action">THEN Action (Intended Goal)</label>
-              <input type="text" id="intention-action" placeholder="e.g. Remind to verify M4 Max memory bandwidth" required />
-            </div>
+          <div class="panel-body" id="agent-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
           </div>
+        </section>
 
-          <footer class="modal-footer">
-            <button type="button" class="btn btn--secondary" id="btn-cancel-create">Cancel</button>
-            <button type="submit" class="btn btn--primary">Save Entry</button>
-          </footer>
-        </form>
+        <section class="panel" aria-label="Cron Jobs">
+          <div class="panel-header">
+            <div class="panel-title">⏰ Scheduled Jobs</div>
+          </div>
+          <div class="panel-body" id="cron-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Graphify">
+          <div class="panel-header">
+            <div class="panel-title">🕸️ Knowledge Graph</div>
+          </div>
+          <div class="panel-body" id="graphify-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Bots View (hidden by default) -->
+    <div id="view-bots" class="view-section" style="padding:var(--space-5);max-width:calc(100vw - var(--sidebar-width))">
+      <div id="bots-container">
+        <!-- Populated by app-bots.js -->
       </div>
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
   <script src="app.js"></script>
+  <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
 </body>
 </html>

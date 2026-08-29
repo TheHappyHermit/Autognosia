@@ -3,9 +3,15 @@
 Launcher script for the Autognosia Command Deck Dashboard.
 
 Usage:
-  python3 scripts/run_dashboard.py [--port 8088] [--host 127.0.0.1]
+  python3 run_dashboard.py [--port 8088] [--host 0.0.0.0]
+
+Environment variables:
+  DASHBOARD_PORT (default: 8088)
+  WS_PORT (default: 8089)
+  DASHBOARD_HOST (default: 0.0.0.0)
 """
 
+import os
 import sys
 import argparse
 from pathlib import Path
@@ -18,8 +24,8 @@ import dashboard_server
 
 def main():
     parser = argparse.ArgumentParser(description="Launch Autognosia Command Deck")
-    parser.add_argument("--port", type=int, default=8088, help="Port to bind dashboard (default: 8088)")
-    parser.add_argument("--host", type=str, default="127.0.0.1", help="Host interface (default: 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=int(os.environ.get("DASHBOARD_PORT", 8088)), help="Dashboard port")
+    parser.add_argument("--host", type=str, default=os.environ.get("DASHBOARD_HOST", "0.0.0.0"), help="Host interface")
     args = parser.parse_args()
 
     dashboard_server.run(host=args.host, port=args.port)

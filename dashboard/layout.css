@@ -1,450 +1,250 @@
 /* ==========================================================================
-   Autognosia Command Deck — Component Styles
-   Bento grid layout with enforced hierarchy (max 2 hero tiles) [7]
-   DOM order = visual order for accessibility [7]
-   Container queries for per-panel responsiveness [18]
+   Main Content Area & Panel Layout
    ========================================================================== */
 
-
-/* ──────────────────────────────────────────────────────────────────────────
-   DECK CONTAINER — CSS Grid bento layout
-   12-column grid, panels placed by grid-area
-   Hero tiles: briefing (span 12), calendar (span 5, row-span 2)
-   ────────────────────────────────────────────────────────────────────────── */
-
-.deck-container {
+.app-layout {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: minmax(120px, auto);
-  gap: var(--space-3);
-  padding: var(--space-3);
-  max-width: 1920px;
-  margin: 0 auto;
+  grid-template-columns: var(--sidebar-width) 1fr;
   min-height: 100vh;
-  height: auto; /* allow content to grow */
 }
 
-/* Named grid areas — DOM ORDER = PRIORITY ORDER (accessibility) [7]
-   1. hud-header        — top metrics + clock (span 12)
-   2. briefing-bar      — HERO: executive synthesis (span 12)
-   3. panel-calendar    — CO-HERO: schedule (span 5, row-span 2)
-   4. panel-tasks       — action pipeline (span 4)
-   5. panel-telemetry   — metrics (span 3)
-   6. panel-comms       — email + intentions + wiki (span 12, grid sub-layout)
-*/
-
-.hud-header           { grid-column: span 12; }
-.briefing-bar         { grid-column: span 12; }
-.panel-calendar       { grid-column: span 5; grid-row: span 2; }
-.panel-tasks          { grid-column: span 4; }
-.panel-telemetry      { grid-column: span 3; }
-.panel-comms          { grid-column: span 12; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
-
-/* Container queries — panels respond to THEIR box, not viewport [18] */
-.panel { container-type: inline-size; }
-
-/* Responsive: ≤ 1280px — compress to 2-col, comms spans 2 */
-@media (max-width: 1280px) {
-  .deck-container { grid-template-columns: repeat(8, 1fr); }
-  .panel-calendar       { grid-column: span 4; grid-row: span 2; }
-  .panel-tasks          { grid-column: span 4; }
-  .panel-telemetry      { grid-column: span 4; grid-row: span 1; }
-  .panel-comms          { grid-column: span 8; grid-template-columns: 1fr 1fr; }
+.content-area {
+  grid-column: 2;
+  margin-top: var(--header-height);
+  padding: var(--space-5);
+  overflow-y: auto;
+  max-width: calc(100vw - var(--sidebar-width));
 }
 
-/* Responsive: ≤ 860px — single column stack */
-@media (max-width: 860px) {
-  .deck-container { grid-template-columns: 1fr; }
-  .panel-calendar,
-  .panel-tasks,
-  .panel-telemetry,
-  .panel-comms { grid-column: span 1; grid-row: auto; }
-  .panel-comms { grid-template-columns: 1fr; }
-  .hud-metrics-ribbon { display: none; }
+/* Hero Stats Row */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
-
-/* ──────────────────────────────────────────────────────────────────────────
-   PANEL ENTRANCE ANIMATIONS — scroll-driven (Chrome 115+, FF 115+) [7]
-   Panels fade/slide in as they enter viewport. Graceful degradation for
-   browsers that don't support animation-timeline.
-   ────────────────────────────────────────────────────────────────────────── */
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .panel {
-      animation: panel-enter linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 30%;
-    }
-
-    @keyframes panel-enter {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Hero tiles enter from left */
-    .briefing-bar,
-    .hud-header {
-      animation: hero-enter linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 20%;
-    }
-
-    @keyframes hero-enter {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  }
-
-  /* Fallback: CSS transition on load (no scroll-driven) */
-  @supports not (animation-timeline: view()) {
-    .panel {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity var(--motion-base) var(--ease-out),
-                  transform var(--motion-base) var(--ease-out);
-    }
-    .panel.loaded {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .briefing-bar,
-    .hud-header {
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity var(--motion-base) var(--ease-out),
-                  transform var(--motion-base) var(--ease-out);
-    }
-    .briefing-bar.loaded,
-    .hud-header.loaded {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-
-/* ──────────────────────────────────────────────────────────────────────────
-   PANEL CHROME — identical shell, content varies [unverified]
-   header: kicker label + live status dot + inline actions (right)
-   body: content, clipped with subtle bottom fade if scrollable
-   footer (optional): freshness stamp + "view all →"
-   ────────────────────────────────────────────────────────────────────────── */
-
-.panel {
+.hero-stat {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  background: var(--bg-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px oklch(0 0 0 / 0.3);
-  overflow: hidden;
-  min-height: 0; /* critical for flex children with overflow */
-  /* Glassmorphism enhancement — frosted glass effect [7] */
-  backdrop-filter: var(--glass-blur, blur(12px));
-  -webkit-backdrop-filter: var(--glass-blur, blur(12px));
-  /* State-based borders via :has() — panels with error/warning children get colored borders [7] */
-  transition: border-color var(--motion-fast) var(--ease-out),
-              box-shadow var(--motion-fast) var(--ease-out),
-              transform var(--motion-fast) var(--ease-out);
+  gap: var(--space-1);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--motion-fast);
 }
 
-/* :has() selector — panels with error states get red glow [7] */
-.panel:has(.status-error),
-.panel:has([data-error="true"]) {
-  border-color: var(--rose);
-  box-shadow: var(--shadow-glow-error, 0 0 15px oklch(0.65 0.19 25 / 0.1));
-}
-
-/* :has() selector — panels with warning states get amber glow */
-.panel:has(.status-warning),
-.panel:has([data-warning="true"]) {
-  border-color: var(--amber);
-  box-shadow: var(--shadow-glow-warning, 0 0 15px oklch(0.80 0.13 80 / 0.1));
-}
-
-/* :has() selector — panels with healthy states get green glow */
-.panel:has(.status-ok),
-.panel:has([data-ok="true"]) {
-  box-shadow: var(--shadow-glow-healthy, 0 0 15px oklch(0.78 0.13 160 / 0.1));
-}
-
-/* Hover effect — lift with accent glow */
-.panel:hover {
-  border-color: var(--border-active);
-  box-shadow: var(--shadow-glow-accent, 0 0 20px oklch(0.78 0.12 210 / 0.15)),
-              0 2px 8px oklch(0 0 0 / 0.3);
+.hero-stat:hover {
+  box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+}
+
+.hero-stat__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+}
+
+.hero-stat__value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1;
+}
+
+.hero-stat__unit {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Section Headings */
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  margin: var(--space-6) 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Panels Grid */
+.panels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+
+.panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--motion-fast);
+}
+
+.panel:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-2) var(--space-3);
-  background: oklch(1 0 0 / 0.02);
-  border-bottom: 1px solid var(--border-subtle);
-  flex-shrink: 0;
+  margin-bottom: var(--space-4);
 }
 
-.panel-title-group {
+.panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--cyan);
 }
 
-.panel-title-group h2,
-.panel-title-group h3 {
-  font-family: var(--font-sans);
-  font-size: var(--fs-panel-title);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--text-1);
-}
-
-.panel-header .panel-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
+.panel-title svg {
+  color: var(--accent);
 }
 
 .panel-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  /* Subtle bottom fade for scrollable content */
-  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  min-height: 100px;
 }
 
 .panel-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-2) var(--space-3);
-  background: oklch(1 0 0 / 0.02);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--border-subtle);
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
+  font-size: 12px;
   color: var(--text-3);
 }
 
-.panel-footer .btn { font-size: var(--fs-kicker); }
-
-/* Panel status dot — semantic color, live region */
-.panel-status {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  color: var(--text-3);
-}
-.panel-status__dot {
-  width: 6px; height: 6px; border-radius: 50%;
-}
-.panel-status__dot--ok      { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
-.panel-status__dot--warn    { background: var(--amber);  box-shadow: 0 0 6px var(--amber); }
-.panel-status__dot--info    { background: var(--cyan);   box-shadow: 0 0 6px var(--cyan); }
-.panel-status__dot--danger  { background: var(--rose);   box-shadow: 0 0 6px var(--rose); }
-.panel-status__dot--neutral { background: var(--text-3); }
-
-
-/* ──────────────────────────────────────────────────────────────────────────
-   HUD HEADER — metrics ribbon + clock + controls
-   ────────────────────────────────────────────────────────────────────────── */
-
-.hud-header {
+/* Empty State */
+.empty-state {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-2) var(--space-3);
-  background: var(--bg-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-}
-
-.hud-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.hud-logo-icon {
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 28px; height: 28px;
-  background: var(--cyan-soft);
-  border: 1px solid var(--border-active);
-  border-radius: var(--radius-sm);
-  color: var(--cyan);
-}
-
-.hud-title-group { display: flex; flex-direction: column; }
-
-.hud-system-title {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: var(--fs-panel-title);
-  letter-spacing: 1px;
-  color: var(--text-1);
-}
-
-.hud-system-subtitle {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  letter-spacing: 1px;
-  color: var(--cyan);
-  text-transform: uppercase;
-}
-
-/* Metrics Ribbon */
-.hud-metrics-ribbon {
-  display: flex;
-  align-items: center;
+  text-align: center;
+  padding: var(--space-6);
   gap: var(--space-2);
-  flex-wrap: wrap;
 }
 
-.metric-chip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  background: oklch(1 0 0 / 0.03);
-  border: 1px solid var(--border-subtle);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
+.empty-state__icon {
+  font-size: 32px;
+  margin-bottom: var(--space-2);
+  opacity: 0.6;
 }
 
-.metric-dot { width: 6px; height: 6px; border-radius: 50%; }
-.metric-dot--ok      { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
-.metric-dot--warn    { background: var(--amber);  box-shadow: 0 0 6px var(--amber); }
-.metric-dot--info    { background: var(--cyan);   box-shadow: 0 0 6px var(--cyan); }
-.metric-dot--purple  { background: var(--purple); box-shadow: 0 0 6px var(--purple); }
-
-.metric-label { color: var(--text-3); font-size: 9px; }
-.metric-val { font-weight: 600; color: var(--text-1); }
-
-/* Clock — breathing colon pulse (P3) */
-.clock-display {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-  color: var(--text-2);
-  background: oklch(0 0 0 / 0.2);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  white-space: nowrap;
-}
-.clock-colon { display: inline-block; }
-
-/* Refresh selector */
-.refresh-selector {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  background: var(--bg-1);
-  border: 1px solid var(--border-subtle);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
-}
-.refresh-selector select {
-  background: transparent;
-  border: none;
-  color: var(--text-2);
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-  cursor: pointer;
-}
-
-/* Hero stats row — 6 key metrics at top of dashboard [7] */
-.hero-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
-  border: 1px solid var(--border-active);
-  border-left: 3px solid var(--cyan);
-  border-radius: var(--radius-md);
-}
-
-.hero-stat {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  background: oklch(0 0 0 / 0.15);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  min-width: 120px;
-  flex: 1;
-}
-
-.hero-stat__label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+.empty-state__title {
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-3);
-}
-
-.hero-stat__value {
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xl);
-  font-weight: 700;
   color: var(--text-1);
-  line-height: 1;
 }
 
-.hero-stat__unit {
-  font-family: var(--font-mono);
-  font-size: var(--fs-kicker);
+.empty-state__desc {
+  font-size: 13px;
+  color: var(--text-3);
+  max-width: 240px;
+}
+
+.empty-state__action {
+  margin-top: var(--space-3);
+}
+
+/* Tab Navigation */
+.tab-group {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--bg-tertiary);
+  padding: 2px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  width: fit-content;
+}
+
+.tab-btn {
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-2);
+  cursor: pointer;
+  transition: all var(--motion-fast);
 }
 
-/* Hero stat hover glow */
-.hero-stat:hover {
-  background: oklch(0 0 0 / 0.2);
-  border-color: var(--border-active);
-  box-shadow: var(--shadow-glow-accent);
+.tab-btn:hover {
+  color: var(--text-1);
 }
 
-/* Responsive: compress hero stats on smaller screens */
-@media (max-width: 1024px) {
-  .hero-stats { gap: var(--space-2); padding: var(--space-2); }
-  .hero-stat { min-width: 100px; padding: var(--space-1) var(--space-2); }
-  .hero-stat__value { font-size: var(--fs-xl); }
+.tab-btn.active {
+  background: var(--bg-secondary);
+  color: var(--text-1);
+  box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 640px) {
-  .hero-stats { flex-direction: column; }
-  .hero-stat { min-width: auto; }
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
 }
 
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
+.skeleton-text { height: 12px; margin: 4px 0; border-radius: 4px; }
+.skeleton-text.short { width: 60%; }
+.skeleton-title { height: 14px; width: 40%; margin: 4px 0; border-radius: 4px; }
+.skeleton-card { height: 80px; border-radius: var(--radius-md); }
+.skeleton-row { height: 48px; margin: 4px 0; border-radius: var(--radius-md); }
+.skeleton-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .content-area {
+    grid-column: 1;
+    max-width: 100vw;
+    padding: var(--space-3);
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panels-grid {
+    grid-template-columns: 1fr;
+  }
+}
