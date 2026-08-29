@@ -111,13 +111,18 @@
         <div class="panel-header">
           <div class="panel-title">📋 Daily Executive Synthesis</div>
           <div class="panel-footer" style="margin:0;padding:0;border:none">
-            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:12px;">just now</span>
+            <span id="briefing-date" style="color:var(--text-3);font-size:12px;">Loading date...</span>
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:12px;margin-left:8px;">just now</span>
           </div>
         </div>
         <div class="panel-body">
           <div id="briefing-summary">Loading...</div>
-          <div id="briefing-priorities" style="margin-top:var(--space-3)"></div>
-          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);"></div>
+          <div id="briefing-priorities" style="margin-top:var(--space-3)">
+            <ul id="briefing-priorities-list" aria-label="Top priorities"></ul>
+          </div>
+          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);">
+            <span id="briefing-prompt-text"></span>
+          </div>
         </div>
       </section>
 

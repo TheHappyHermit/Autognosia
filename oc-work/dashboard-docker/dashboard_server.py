@@ -1322,6 +1322,10 @@ def serve_tokens():
 def serve_app():
     return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")
 
+@app.get("/app-bots.js")
+def serve_app_bots():
+    return FileResponse(str(DASHBOARD_DIR / "app-bots.js"), media_type="application/javascript")
+
 @app.get("/enhance.js")
 def serve_enhance():
     return FileResponse(str(DASHBOARD_DIR / "enhance.js"), media_type="application/javascript")

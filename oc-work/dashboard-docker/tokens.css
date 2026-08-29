@@ -32,6 +32,16 @@
   --danger: light-dark(#ff3b30, #ff453a);
   --info: light-dark(#5ac8fa, #64d2ff);
 
+  /* ── Legacy Aliases ──────────────────────────────────────────────────── */
+  --text-muted: var(--text-3);
+  --text-secondary: var(--text-2);
+  --accent-emerald: var(--success);
+  --accent-cyan: var(--info);
+  --accent-amber: var(--warning);
+  --accent-red: var(--danger);
+  --accent-purple: #af52de;
+  --accent-orange: var(--warning);
+
   /* ── Typography ───────────────────────────────────────────────────────── */
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
@@ -103,6 +113,308 @@
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* ── Badge Classes (legacy) ─────────────────────────────────────────────── */
+.badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: 11px; font-weight: 500; }
+.badge-cyan { background: var(--info); color: white; }
+.badge-amber { background: var(--warning); color: white; }
+.badge-purple { background: #af52de; color: white; }
+.badge-medium { background: var(--bg-tertiary); color: var(--text-2); }
+.badge-completed { background: var(--success); color: white; }
+.badge-warn { background: var(--warning); color: white; }
+.badge-info { background: var(--info); color: white; }
+.badge-danger { background: var(--danger); color: white; }
+
+/* ── Empty Hint (legacy) ────────────────────────────────────────────────── */
+.empty-hint {
+  color: var(--text-3);
+  font-size: 13px;
+  text-align: center;
+  padding: var(--space-4);
+}
+
+/* ── Calendar Event ─────────────────────────────────────────────────────── */
+.calendar-event {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
+}
+
+/* ── Email Card ─────────────────────────────────────────────────────────── */
+.email-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.email-card.read { opacity: 0.6; }
+.email-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); }
+.email-subject { font-weight: 600; color: var(--text-1); margin: var(--space-1) 0; }
+
+/* ── Intention Card ─────────────────────────────────────────────────────── */
+.intention-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.intention-cue { font-size: 13px; color: var(--text-1); }
+.intention-action { font-size: 13px; color: var(--text-2); margin-top: var(--space-1); }
+
+/* ── Telemetry Block ────────────────────────────────────────────────────── */
+.telemetry-block {
+  margin-bottom: var(--space-4);
+}
+.telemetry-block h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  margin-bottom: var(--space-2);
+}
+
+/* ── Task Card ──────────────────────────────────────────────────────────── */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.task-card.completed { opacity: 0.5; text-decoration: line-through; }
+.task-checkbox { margin-top: 2px; }
+.task-details { flex: 1; }
+.task-title-line { display: flex; align-items: center; gap: var(--space-2); }
+.task-title { font-weight: 500; color: var(--text-1); }
+.task-meta-row { font-size: 11px; color: var(--text-3); display: flex; gap: var(--space-2); margin-top: var(--space-1); }
+
+/* ── Reminder Card ──────────────────────────────────────────────────────── */
+.reminder-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Project Card ───────────────────────────────────────────────────────── */
+.project-card {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Service Grid ───────────────────────────────────────────────────────── */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+.service-card {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.service-card__icon { font-size: 24px; margin-bottom: var(--space-1); }
+.service-card__name { font-weight: 500; font-size: 13px; }
+.service-card__status { font-size: 11px; margin-top: var(--space-1); }
+
+/* ── Media Grid ─────────────────────────────────────────────────────────── */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.media-card {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Queue List ─────────────────────────────────────────────────────────── */
+.queue-item {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Agent Grid ─────────────────────────────────────────────────────────── */
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+.agent-stat {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.agent-stat__label { font-size: 11px; color: var(--text-3); text-transform: uppercase; }
+.agent-stat__value { font-size: 20px; font-weight: 600; color: var(--text-1); }
+
+/* ── Cron Grid ──────────────────────────────────────────────────────────── */
+.cron-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.cron-job {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+/* ── Graphify Grid ──────────────────────────────────────────────────────── */
+.graphify-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+.graphify-stat {
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+/* ── Wiki Results ───────────────────────────────────────────────────────── */
+.wiki-result {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+.wiki-result__title { font-weight: 600; color: var(--text-1); }
+.wiki-result__snippet { font-size: 12px; color: var(--text-2); margin-top: var(--space-1); }
+.wiki-result__tier { font-size: 10px; color: var(--text-3); margin-top: var(--space-1); }
+
+/* ── Toast Container ────────────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.toast {
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+  color: var(--text-1);
+  animation: slide-in-right var(--motion-base) ease-out;
+}
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ── Drawer (legacy) ────────────────────────────────────────────────────── */
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-subtle);
+  z-index: 150;
+  transform: translateX(100%);
+  transition: transform var(--motion-base);
+  overflow-y: auto;
+}
+.drawer.open { transform: translateX(0); }
+
+/* ── Modal (legacy) ─────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: oklch(0 0 0 / 0.5);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-base);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  max-width: 500px;
+  width: 90vw;
+  box-shadow: var(--shadow-xl);
+}
+
+/* ── Spinner ────────────────────────────────────────────────────────────── */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Progress Bar ───────────────────────────────────────────────────────── */
+.progress-bar {
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-bar__fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  transition: width var(--motion-base);
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+.section-divider {
+  margin: var(--space-6) 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-3);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* ── Form Elements ──────────────────────────────────────────────────────── */
+input, select, textarea, button {
+  font-family: var(--font-sans);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .agent-grid { grid-template-columns: 1fr; }
+  .graphify-grid { grid-template-columns: 1fr; }
+  .cron-grid { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 * {
