@@ -290,5 +290,21 @@
   <script src="app.js"></script>
   <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
+
+  <!-- Task Detail Modal -->
+  <div class="task-detail-modal" id="task-detail-modal">
+    <div class="task-detail-modal__backdrop" id="task-detail-backdrop"></div>
+    <div class="task-detail-modal__panel">
+      <div class="task-detail-modal__header">
+        <h3>Task Details</h3>
+        <button class="task-detail-modal__close" id="task-detail-close">×</button>
+      </div>
+      <div class="task-detail-modal__body" id="task-detail-body"></div>
+      <div class="task-detail-modal__footer">
+        <button class="btn btn--ghost" id="task-detail-cancel">Cancel</button>
+        <button class="btn btn--primary" id="task-detail-save">Save Changes</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

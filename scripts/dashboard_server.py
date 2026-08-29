@@ -61,10 +61,12 @@ import uvicorn
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DASHBOARD_DIR = REPO_ROOT / "dashboard"
 AUTOGNOSIA_HOME = Path(os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia")))
-ORGANIZER_DB = Path(os.environ.get("ORGANIZER_DB", str(AUTOGNOSIA_HOME / "personal-organizer" / "data" / "organizer.db")))
+ORGANIZER_DB = Path(os.environ.get("ORGANIZER_DB_PATH", str(AUTOGNOSIA_HOME / "personal-organizer" / "data" / "organizer.db")))
 AUTOGNOSIA_DB = AUTOGNOSIA_HOME / "autognosia.db"
 ACTIVE_WIKI = AUTOGNOSIA_HOME / "active-wiki"
 ORACLE_BRAIN = AUTOGNOSIA_HOME / "oracle" / "brain"
+DOCKER_SOCKET = os.environ.get("DOCKER_SOCKET", "/var/run/docker.sock")
+CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "/config/services.yaml"))
 
 # Import local helper bridges
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
@@ -98,15 +100,32 @@ async def start_reminder_background_worker():
 
     asyncio.create_task(reminder_loop())
 
+def _initialize_demo_databases():
+    """Generate demo databases with sample data if they don't exist."""
+    try:
+        from demo_data import initialize_organizer_db, initialize_autognosia_db
+        initialize_organizer_db(ORGANIZER_DB)
+        initialize_autognosia_db(AUTOGNOSIA_DB)
+    except Exception as e:
+        print(f"[WARN] Demo data generation failed: {e}")
+
+
 def get_organizer_conn() -> sqlite3.Connection:
     if not ORGANIZER_DB.exists():
+        # Demo mode: generate sample data
+        _initialize_demo_databases()
+    if not ORGANIZER_DB.exists():
+        # Fallback: create empty schema
         ORGANIZER_DB.parent.mkdir(parents=True, exist_ok=True)
-        # Initialize if missing
-        import init_db
-        init_db.ensure_directories()
         conn = sqlite3.connect(str(ORGANIZER_DB))
-        conn.executescript(init_db.SCHEMA)
-        conn.commit()
+        conn.executescript("""
+            CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', created_at TEXT);
+            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
+            CREATE TABLE IF NOT EXISTS intentions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, cue TEXT, action TEXT, status TEXT DEFAULT 'dormant', created_at TEXT);
+            CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remind_at TEXT, channel TEXT DEFAULT 'all', notes TEXT DEFAULT '', status TEXT DEFAULT 'pending', sent_at TEXT, created_at TEXT);
+            CREATE TABLE IF NOT EXISTS important_dates (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT, description TEXT);
+            CREATE TABLE IF NOT EXISTS subscriptions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL, currency TEXT, next_billing_date TEXT, billing_cycle TEXT, status TEXT DEFAULT 'active');
+        """)
         return conn
     conn = sqlite3.connect(str(ORGANIZER_DB))
     conn.row_factory = sqlite3.Row
@@ -147,6 +166,19 @@ def get_system_stats():
         "active_agents": active_agents,
         "uptime_days": uptime_days,
     }
+
+
+@app.get("/api/health")
+def healthcheck():
+    """Healthcheck endpoint for Docker and monitoring."""
+    docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
+    db_ok = ORGANIZER_DB.exists()
+    return JSONResponse({
+        "status": "ok",
+        "docker": docker_ok,
+        "database": db_ok,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
 
 
 @app.get("/api/overview")
@@ -304,11 +336,12 @@ def create_task(payload: Dict[str, Any] = Body(...)):
     conn = get_organizer_conn()
     cur = conn.cursor()
     cur.execute("""
-        INSERT INTO tasks (title, description, status, priority, due_at, project_id, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+        INSERT INTO tasks (title, description, notes, status, priority, due_at, project_id, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'))
     """, (
         title,
         payload.get("description", ""),
+        payload.get("notes", ""),
         status,
         payload.get("priority", "medium"),
         payload.get("due_at"),
@@ -324,7 +357,7 @@ def update_task(task_id: int, payload: Dict[str, Any] = Body(...)):
     conn = get_organizer_conn()
     cur = conn.cursor()
     
-    allowed = ["title", "description", "status", "priority", "due_at", "completed_at", "project_id"]
+    allowed = ["title", "description", "notes", "status", "priority", "due_at", "completed_at", "project_id"]
     updates = []
     params = []
     
@@ -583,14 +616,33 @@ def get_telemetry():
     except Exception:
         pass
 
-    # Profile configs — check both repo root and ${HOME}/.hermes for profile configs
+    # Profile configs — check mounted host profiles, then REPO_ROOT, then $HOME/.hermes
     profiles = ["default", "oracle", "researcher", "planner", "auditor", "personal-organizer"]
     profile_status = {}
+    host_profiles = Path("/host-profiles")
+    host_hermes = Path("/host-hermes")
     for p in profiles:
-        # Check repo root first (for dev setups), then ${HOME}/.hermes (for production)
         prof_dir = REPO_ROOT / "profiles" / p
         hermes_dir = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes"))) / "profiles" / p
-        profile_status[p] = "configured" if prof_dir.exists() or hermes_dir.exists() else "missing"
+        host_dir = host_profiles / p if host_profiles.exists() else None
+        # "default" profile lives at ~/.hermes/ root, not in profiles/
+        if p == "default":
+            host_default = host_hermes if host_hermes.exists() else None
+            hermes_default = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+            if host_default and (host_default / "config.yaml").exists():
+                profile_status[p] = "configured"
+            elif (hermes_default / "config.yaml").exists():
+                profile_status[p] = "configured"
+            elif (prof_dir / "config.yaml").exists():
+                profile_status[p] = "configured"
+            else:
+                profile_status[p] = "missing"
+        elif host_dir and host_dir.exists():
+            profile_status[p] = "configured"
+        elif prof_dir.exists() or hermes_dir.exists():
+            profile_status[p] = "configured"
+        else:
+            profile_status[p] = "missing"
 
     # Database sizes
     db_stats = {}
@@ -777,6 +829,90 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
         "reply": response_text,
         "actions_taken": actions_taken,
         "refresh_needed": refresh_needed,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+
+
+# ── Bot Management Endpoints ───────────────────────────────────────────────────
+
+@app.get("/api/bots")
+def get_bots():
+    """List all configured bots/agents."""
+    import psutil
+    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    profiles_dir = hermes_home / "profiles"
+    bots = []
+
+    if profiles_dir.exists():
+        for profile_dir in sorted(profiles_dir.iterdir()):
+            if not profile_dir.is_dir():
+                continue
+            profile_name = profile_dir.name
+            config_file = profile_dir / "config.yaml"
+            agent_name = profile_name.replace("-", " ").title()
+            model = "unknown"
+            if config_file.exists():
+                try:
+                    import yaml
+                    with open(config_file) as f:
+                        cfg = yaml.safe_load(f) or {}
+                    model = cfg.get("model", "unknown")
+                except Exception:
+                    pass
+
+            status = "idle"
+            for proc in psutil.process_iter(['pid', 'cmdline']):
+                try:
+                    cmdline = ' '.join(proc.info['cmdline'] or [])
+                    if profile_name in cmdline and 'hermes' in cmdline.lower():
+                        status = "online"
+                        break
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+
+            bots.append({
+                "id": profile_name,
+                "name": agent_name,
+                "role": f"{profile_name.replace('-', ' ')} agent",
+                "model": model,
+                "provider": "Nous Research",
+                "status": status,
+                "current_task": None,
+                "last_activity": datetime.now(timezone.utc).isoformat(),
+                "avatar": "🤖" if profile_name == "default" else "🧠"
+            })
+
+    if not bots:
+        bots.append({
+            "id": "demo",
+            "name": "Demo Assistant",
+            "role": "Sample bot for UI testing",
+            "model": "demo-model",
+            "provider": "Demo",
+            "status": "idle",
+            "current_task": None,
+            "last_activity": datetime.now(timezone.utc).isoformat(),
+            "avatar": "🤖"
+        })
+
+    return {"bots": bots}
+
+
+@app.get("/api/bots/{bot_id}/history")
+def get_bot_history(bot_id: str):
+    """Get conversation history for a bot."""
+    return {"messages": []}
+
+
+@app.post("/api/bots/{bot_id}/message")
+def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
+    """Send a message to a specific bot."""
+    message = (payload.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+    return {
+        "reply": f"Echo from {bot_id}: {message}",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
@@ -1146,16 +1282,57 @@ def get_hermes_status():
 
 
 # ── Static File Serving ────────────────────────────────────────────────────────
-# DASHBOARD_DIR is already resolved at module level (line 62)
+
+DASHBOARD_DIR = Path(__file__).resolve().parent
 
 @app.get("/")
 def serve_dashboard():
     """Serve the main dashboard HTML."""
     return FileResponse(str(DASHBOARD_DIR / "index.html"))
 
-@app.get("/styles.css")
-def serve_styles():
-    return FileResponse(str(DASHBOARD_DIR / "styles.css"), media_type="text/css")
+@app.get("/sidebar.css")
+def serve_sidebar():
+    return FileResponse(str(DASHBOARD_DIR / "sidebar.css"), media_type="text/css")
+
+@app.get("/header.css")
+def serve_header():
+    return FileResponse(str(DASHBOARD_DIR / "header.css"), media_type="text/css")
+
+@app.get("/layout.css")
+def serve_layout():
+    return FileResponse(str(DASHBOARD_DIR / "layout.css"), media_type="text/css")
+
+@app.get("/briefing.css")
+def serve_briefing():
+    return FileResponse(str(DASHBOARD_DIR / "briefing.css"), media_type="text/css")
+
+@app.get("/calendar.css")
+def serve_calendar():
+    return FileResponse(str(DASHBOARD_DIR / "calendar.css"), media_type="text/css")
+
+@app.get("/tasks.css")
+def serve_tasks():
+    return FileResponse(str(DASHBOARD_DIR / "tasks.css"), media_type="text/css")
+
+@app.get("/comms.css")
+def serve_comms():
+    return FileResponse(str(DASHBOARD_DIR / "comms.css"), media_type="text/css")
+
+@app.get("/drawers.css")
+def serve_drawers():
+    return FileResponse(str(DASHBOARD_DIR / "drawers.css"), media_type="text/css")
+
+@app.get("/services.css")
+def serve_services_css():
+    return FileResponse(str(DASHBOARD_DIR / "services.css"), media_type="text/css")
+
+@app.get("/agent.css")
+def serve_agent_css():
+    return FileResponse(str(DASHBOARD_DIR / "agent.css"), media_type="text/css")
+
+@app.get("/bots.css")
+def serve_bots_css():
+    return FileResponse(str(DASHBOARD_DIR / "bots.css"), media_type="text/css")
 
 @app.get("/tokens.css")
 def serve_tokens():
@@ -1165,75 +1342,13 @@ def serve_tokens():
 def serve_app():
     return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")
 
+@app.get("/app-bots.js")
+def serve_app_bots():
+    return FileResponse(str(DASHBOARD_DIR / "app-bots.js"), media_type="application/javascript")
+
 @app.get("/enhance.js")
 def serve_enhance():
     return FileResponse(str(DASHBOARD_DIR / "enhance.js"), media_type="application/javascript")
-
-
-# ── Module File Serving ───────────────────────────────────────────────────────
-_MODULE_CSS = ["layout.css", "briefing.css", "calendar.css", "tasks.css",
-               "comms.css", "drawers.css", "services.css", "agent.css"]
-_MODULE_JS = ["app-core.js", "app-data-fetch.js", "app-calendar.js", "app-tasks.js",
-              "app-comms.js", "app-services.js", "app-crud.js", "app-agent.js", "ws-client.js"]
-
-for _css in _MODULE_CSS:
-    @app.get(f"/{_css}")
-    def serve_css(_f=_css):
-        return FileResponse(str(DASHBOARD_DIR / _f), media_type="text/css")
-
-for _js in _MODULE_JS:
-    @app.get(f"/{_js}")
-    def serve_js(_f=_js):
-        return FileResponse(str(DASHBOARD_DIR / _f), media_type="application/javascript")
-
-
-# ── WebSocket Real-Time Updates ──────────────────────────────────────────────
-import websockets
-import threading
-
-WS_HOST = "0.0.0.0"
-WS_PORT = 8089
-connected_clients: set = set()
-
-
-async def ws_handler(websocket):
-    """Handle WebSocket connections."""
-    connected_clients.add(websocket)
-    try:
-        async for message in websocket:
-            # Echo back for keepalive
-            await websocket.send(json.dumps({"type": "pong"}))
-    except websockets.exceptions.ConnectionClosed:
-        pass
-    finally:
-        connected_clients.discard(websocket)
-
-
-async def broadcast_update(data: dict):
-    """Broadcast update to all connected clients."""
-    if not connected_clients:
-        return
-    payload = json.dumps(data)
-    disconnected = set()
-    for client in connected_clients:
-        try:
-            await client.send(payload)
-        except websockets.exceptions.ConnectionClosed:
-            disconnected.add(client)
-    connected_clients.difference_update(disconnected)
-
-
-def start_websocket_server():
-    """Start WebSocket server in a background thread."""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    async def run_ws():
-        server = await websockets.serve(ws_handler, WS_HOST, WS_PORT)
-        print(f"  WebSocket server: ws://{WS_HOST}:{WS_PORT}")
-        await server.wait_closed()
-
-    loop.run_until_complete(run_ws())
 
 
 def run(host: str = "0.0.0.0", port: int = 8088):
@@ -1242,11 +1357,6 @@ def run(host: str = "0.0.0.0", port: int = 8088):
     print("  Autognosia COMMAND DECK — EXECUTIVE DASHBOARD")
     print(f"  Live UI available at: http://{host}:{port}")
     print(f"  API Docs available at: http://{host}:{port}/docs")
-
-    # Start WebSocket server in background thread
-    ws_thread = threading.Thread(target=start_websocket_server, daemon=True)
-    ws_thread.start()
-
     print("=" * 60)
     uvicorn.run(app, host=host, port=port, log_level="warning")
 

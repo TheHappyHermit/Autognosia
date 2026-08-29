@@ -512,12 +512,24 @@ class CommandDeck {
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           document.getElementById('command-palette')?.close();
+          this.closeTaskDetailModal();
         }
         if (e.ctrlKey && e.key === 'k') {
           e.preventDefault();
           document.getElementById('command-palette')?.showModal();
         }
       });
+      
+      // Task detail modal events
+      const modalClose = document.getElementById('task-detail-close');
+      const modalCancel = document.getElementById('task-detail-cancel');
+      const modalSave = document.getElementById('task-detail-save');
+      const modalBackdrop = document.getElementById('task-detail-backdrop');
+      
+      if (modalClose) modalClose.addEventListener('click', () => this.closeTaskDetailModal());
+      if (modalCancel) modalCancel.addEventListener('click', () => this.closeTaskDetailModal());
+      if (modalSave) modalSave.addEventListener('click', () => this.saveTaskDetail());
+      if (modalBackdrop) modalBackdrop.addEventListener('click', () => this.closeTaskDetailModal());
 
     } catch (e) {
       console.warn('Event binding error:', e);
@@ -741,14 +753,24 @@ class CommandDeck {
       }
     }
 
-    // Bind checkboxes
+    // Bind checkboxes and task card clicks
     container.querySelectorAll('.task-checkbox').forEach(cb => {
       cb.addEventListener('change', async (e) => {
+        e.stopPropagation();
         const id = e.target.dataset.taskId;
         const newStatus = e.target.checked ? 'completed' : 'next';
         await this.updateTask(id, { status: newStatus });
         await this.fetchTasks();
         await this.fetchOverview();
+      });
+    });
+    
+    container.querySelectorAll('.task-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.task-checkbox')) return;
+        const taskId = card.dataset.taskId;
+        const task = this.state.tasks.find(t => t.id == taskId);
+        if (task) this.renderTaskDetailModal(task);
       });
     });
   }
@@ -771,6 +793,97 @@ class CommandDeck {
         </div>
       </div>
     `;
+  }
+
+  // ── Task Detail Modal ─────────────────────────────────────────────────────
+  renderTaskDetailModal(task) {
+    const modal = document.getElementById('task-detail-modal');
+    if (!modal) return;
+    
+    const body = document.getElementById('task-detail-body');
+    if (!body) return;
+    
+    body.innerHTML = `
+      <div class="task-detail-field">
+        <label>Title</label>
+        <input type="text" id="task-detail-title" value="${escapeHtml(task.title)}" />
+      </div>
+      <div class="task-detail-field">
+        <label>Description</label>
+        <textarea id="task-detail-description" rows="3">${escapeHtml(task.description || '')}</textarea>
+      </div>
+      <div class="task-detail-field">
+        <label>Notes</label>
+        <textarea id="task-detail-notes" rows="6" placeholder="Add notes, steps, references...">${escapeHtml(task.notes || '')}</textarea>
+      </div>
+      <div class="task-detail-row">
+        <div class="task-detail-field">
+          <label>Status</label>
+          <select id="task-detail-status">
+            <option value="active" ${task.status === 'active' ? 'selected' : ''}>Active</option>
+            <option value="next" ${task.status === 'next' ? 'selected' : ''}>Next</option>
+            <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+            <option value="blocked" ${task.status === 'blocked' ? 'selected' : ''}>Blocked</option>
+            <option value="waiting" ${task.status === 'waiting' ? 'selected' : ''}>Waiting</option>
+            <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+            <option value="cancelled" ${task.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+          </select>
+        </div>
+        <div class="task-detail-field">
+          <label>Priority</label>
+          <select id="task-detail-priority">
+            <option value="critical" ${task.priority === 'critical' ? 'selected' : ''}>Critical</option>
+            <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+            <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+            <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="task-detail-field">
+        <label>Due Date</label>
+        <input type="datetime-local" id="task-detail-due" value="${task.due_at ? task.due_at.slice(0, 16) : ''}" />
+      </div>
+      <div class="task-detail-meta">
+        ${task.project_name ? `<span>📁 ${escapeHtml(task.project_name)}</span>` : ''}
+        <span>Created: ${escapeHtml(task.created_at || 'Unknown')}</span>
+      </div>
+    `;
+    
+    modal.classList.add('open');
+    modal.dataset.taskId = task.id;
+  }
+  
+  closeTaskDetailModal() {
+    const modal = document.getElementById('task-detail-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.dataset.taskId = '';
+    }
+  }
+  
+  async saveTaskDetail() {
+    const modal = document.getElementById('task-detail-modal');
+    if (!modal) return;
+    const taskId = modal.dataset.taskId;
+    if (!taskId) return;
+    
+    const payload = {
+      title: document.getElementById('task-detail-title')?.value || '',
+      description: document.getElementById('task-detail-description')?.value || '',
+      notes: document.getElementById('task-detail-notes')?.value || '',
+      status: document.getElementById('task-detail-status')?.value || 'active',
+      priority: document.getElementById('task-detail-priority')?.value || 'medium',
+    };
+    
+    const dueEl = document.getElementById('task-detail-due');
+    if (dueEl?.value) {
+      payload.due_at = new Date(dueEl.value).toISOString();
+    }
+    
+    await this.updateTask(taskId, payload);
+    this.closeTaskDetailModal();
+    await this.fetchTasks();
+    await this.fetchOverview();
   }
 
   // ── Reminders ──────────────────────────────────────────────────────────────
