@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autognosia // Command Deck</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+  <link rel="stylesheet" href="header.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="briefing.css" />
+  <link rel="stylesheet" href="calendar.css" />
+  <link rel="stylesheet" href="tasks.css" />
+  <link rel="stylesheet" href="comms.css" />
+  <link rel="stylesheet" href="drawers.css" />
+  <link rel="stylesheet" href="services.css" />
+  <link rel="stylesheet" href="agent.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-logo" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠</a>
+        <a href="#" class="sidebar-link" data-view="system" aria-label="System" title="System">📊</a>
+        <a href="#" class="sidebar-link" data-view="bots" aria-label="Bots" title="Bots">🤖</a>
+        <a href="#" class="sidebar-link" data-view="media" aria-label="Media" title="Media">🎬</a>
+        <a href="#" class="sidebar-link" data-view="downloads" aria-label="Downloads" title="Downloads">📥</a>
+        <a href="#" class="sidebar-link" data-view="settings" aria-label="Settings" title="Settings">⚙️</a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
+    </nav>
+
+    <!-- Header -->
+    <header class="app-header" role="banner">
+      <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">☰</button>
+      <div class="header-brand">
+        <span class="header-brand-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </span>
+        <span>Autognosia</span>
+      </div>
+      <div class="header-search">
+        <span class="header-search-icon" aria-hidden="true">🔍</span>
+        <input type="search" id="global-search" placeholder="Search..." aria-label="Search" />
+        <span class="header-search-hint">⌘K</span>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" aria-label="Notifications" title="Notifications">
+          🔔
+          <span class="badge-dot" aria-hidden="true"></span>
+        </button>
+        <div class="system-status" aria-label="System status">
+          <span class="status-dot status-dot--ok" aria-hidden="true"></span>
+          <span>Healthy</span>
+        </div>
+        <div class="ws-indicator" id="ws-indicator" aria-label="Connection status">
+          <span class="ws-dot" aria-hidden="true"></span>
+          <span>LIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-area" id="main-content" role="main">
+      <!-- Hero Stats Row -->
+      <section class="hero-stats" aria-label="System metrics">
+        <div class="hero-stat">
+          <span class="hero-stat__label">CPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-cpu">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">RAM</span>
+          <span class="hero-stat__value text-tabular" id="stat-ram">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">DISK</span>
+          <span class="hero-stat__value text-tabular" id="stat-disk">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">NETWORK</span>
+          <span class="hero-stat__value text-tabular" id="stat-network">--</span>
+          <span class="hero-stat__unit">Mbps</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">AGENTS</span>
+          <span class="hero-stat__value text-tabular" id="stat-agents">--</span>
+          <span class="hero-stat__unit">active</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">UPTIME</span>
+          <span class="hero-stat__value text-tabular" id="stat-uptime">--</span>
+          <span class="hero-stat__unit">days</span>
+        </div>
+      </section>
+
+      <!-- Briefing Bar -->
+      <section class="panel" aria-label="Daily briefing">
+        <div class="panel-header">
+          <div class="panel-title">📋 Daily Executive Synthesis</div>
+          <div class="panel-footer" style="margin:0;padding:0;border:none">
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:12px;">just now</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="briefing-summary">Loading...</div>
+          <div id="briefing-priorities" style="margin-top:var(--space-3)"></div>
+          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);"></div>
+        </div>
+      </section>
+
+      <div class="section-title">System Overview</div>
+
+      <!-- Panels Grid -->
+      <div class="panels-grid">
+        <!-- Calendar Panel -->
+        <section class="panel" aria-label="Calendar & Schedule">
+          <div class="panel-header">
+            <div class="panel-title">📅 Schedule & Calendar</div>
+          </div>
+          <div class="panel-body" id="calendar-stage">
+            <div class="empty-state">
+              <div class="empty-state__icon">📅</div>
+              <div class="empty-state__title">No events today</div>
+              <div class="empty-state__desc">Your schedule is clear.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tasks Panel -->
+        <section class="panel" aria-label="Action Pipeline">
+          <div class="panel-header">
+            <div class="panel-title">✅ Action Pipeline</div>
+          </div>
+          <div class="panel-body" id="task-list-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">✓</div>
+              <div class="empty-state__title">No active tasks</div>
+              <div class="empty-state__desc">Pipeline clear.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Telemetry Panel -->
+        <section class="panel" aria-label="System Telemetry">
+          <div class="panel-header">
+            <div class="panel-title">📊 Telemetry</div>
+          </div>
+          <div class="panel-body" id="telemetry-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <!-- Email Panel -->
+        <section class="panel" aria-label="Email Radar">
+          <div class="panel-header">
+            <div class="panel-title">✉️ Email Radar</div>
+          </div>
+          <div class="panel-body" id="email-stream-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">✉️</div>
+              <div class="empty-state__title">Inbox clear</div>
+              <div class="empty-state__desc">Nothing hunting you right now.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Intentions Panel -->
+        <section class="panel" aria-label="Prospective Intentions">
+          <div class="panel-header">
+            <div class="panel-title">⏱ Prospective Intentions</div>
+          </div>
+          <div class="panel-body" id="intentions-stream-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">⏱</div>
+              <div class="empty-state__title">No active intentions</div>
+              <div class="empty-state__desc">Prospective memory is quiet.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Wiki Search Panel -->
+        <section class="panel" aria-label="Knowledge Vault">
+          <div class="panel-header">
+            <div class="panel-title">🧠 Knowledge Vault</div>
+          </div>
+          <div class="panel-body">
+            <input type="search" id="wiki-search-input" placeholder="Search knowledge vault…" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-tertiary);color:var(--text-1);margin-bottom:var(--space-3)" />
+            <div id="wiki-results-container">
+              <div class="empty-state">
+                <div class="empty-state__icon">🔍</div>
+                <div class="empty-state__title">Search your knowledge vault</div>
+                <div class="empty-state__desc">Type above to search across all documents.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="section-title">Agent Intelligence</div>
+
+      <!-- Agent Panels -->
+      <div class="panels-grid">
+        <section class="panel" aria-label="Hermes Agent">
+          <div class="panel-header">
+            <div class="panel-title">🤖 Hermes Agent</div>
+          </div>
+          <div class="panel-body" id="agent-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Cron Jobs">
+          <div class="panel-header">
+            <div class="panel-title">⏰ Scheduled Jobs</div>
+          </div>
+          <div class="panel-body" id="cron-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Graphify">
+          <div class="panel-header">
+            <div class="panel-title">🕸️ Knowledge Graph</div>
+          </div>
+          <div class="panel-body" id="graphify-grid">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script src="enhance.js"></script>
+</body>
+</html>
