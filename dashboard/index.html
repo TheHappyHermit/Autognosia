@@ -249,6 +249,7 @@
         <section class="panel" aria-label="Hermes Agent">
           <div class="panel-header">
             <div class="panel-title">🤖 Hermes Agent</div>
+            <div class="panel-status" id="agent-status"></div>
           </div>
           <div class="panel-body" id="agent-grid">
             <div class="skeleton skeleton-card" style="height:80px"></div>
@@ -258,9 +259,31 @@
         <section class="panel" aria-label="Cron Jobs">
           <div class="panel-header">
             <div class="panel-title">⏰ Scheduled Jobs</div>
+            <div class="panel-status" id="cron-status"></div>
           </div>
-          <div class="panel-body" id="cron-grid">
+          <div class="panel-body" id="cron-list">
             <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Projects">
+          <div class="panel-header">
+            <div class="panel-title">📁 Active Projects</div>
+          </div>
+          <div class="panel-body" id="projects-list-container">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Service Grid">
+          <div class="panel-header">
+            <div class="panel-title">🔧 Service Grid</div>
+            <div class="panel-status" id="services-status"></div>
+          </div>
+          <div class="panel-body">
+            <div class="service-grid" id="service-grid">
+              <div class="skeleton skeleton-card" style="height:80px"></div>
+            </div>
           </div>
         </section>
 

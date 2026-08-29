@@ -604,7 +604,28 @@ class CommandDeck {
     }
 
     if (heading) heading.textContent = this.currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-    stage.innerHTML = events.map(e => `<div class="calendar-event"><strong>${escapeHtml(e.title || 'Untitled')}</strong><br><small>${escapeHtml(e.start)}</small></div>`).join('');
+    
+    stage.innerHTML = events.slice(0, 5).map(e => {
+      const date = e.start?.includes('T') 
+        ? new Date(e.start).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        : e.start;
+      const icon = e.type === 'renewal' ? '🔄' : e.type === 'important_date' ? '📌' : '⏰';
+      return `
+        <div class="calendar-event" style="border-left-color: ${e.color || 'var(--accent)'}">
+          <div style="display:flex; justify-content:space-between; align-items:start;">
+            <div>
+              <strong>${escapeHtml(e.title)}</strong>
+              <div style="font-size:11px; color:var(--text-3);">${escapeHtml(date)}</div>
+            </div>
+            <span class="badge ${e.priority === 'critical' ? 'badge-danger' : e.priority === 'high' ? 'badge-warn' : 'badge-medium'}">${escapeHtml(e.priority || e.category)}</span>
+          </div>
+          ${e.notes ? `<div style="font-size:11px; color:var(--text-secondary); margin-top:var(--space-1);">${escapeHtml(e.notes)}</div>` : ''}
+        </div>`;
+    }).join('');
+    
+    if (events.length > 5) {
+      stage.innerHTML += `<div style="font-size:11px; color:var(--text-3); text-align:center; padding:var(--space-2);">${events.length - 5} more events</div>`;
+    }
   }
 
   renderDayView(stage, heading, events) {

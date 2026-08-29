@@ -120,7 +120,7 @@ def get_organizer_conn() -> sqlite3.Connection:
         conn = sqlite3.connect(str(ORGANIZER_DB))
         conn.executescript("""
             CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', created_at TEXT);
-            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
+            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', notes TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
             CREATE TABLE IF NOT EXISTS intentions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, cue TEXT, action TEXT, status TEXT DEFAULT 'dormant', created_at TEXT);
             CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remind_at TEXT, channel TEXT DEFAULT 'all', notes TEXT DEFAULT '', status TEXT DEFAULT 'pending', sent_at TEXT, created_at TEXT);
             CREATE TABLE IF NOT EXISTS important_dates (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT, description TEXT);
@@ -838,13 +838,23 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
 
 @app.get("/api/bots")
 def get_bots():
-    """List all configured bots/agents."""
+    """List all configured bots/agents from host profiles mount."""
     import psutil
-    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-    profiles_dir = hermes_home / "profiles"
     bots = []
-
-    if profiles_dir.exists():
+    
+    # Check /host-profiles first (mounted from host), then fall back to HERMES_HOME
+    profile_sources = [
+        Path("/host-profiles"),
+        Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes"))) / "profiles",
+    ]
+    
+    profiles_dir = None
+    for src in profile_sources:
+        if src.exists():
+            profiles_dir = src
+            break
+    
+    if profiles_dir and profiles_dir.exists():
         for profile_dir in sorted(profiles_dir.iterdir()):
             if not profile_dir.is_dir():
                 continue
@@ -857,7 +867,12 @@ def get_bots():
                     import yaml
                     with open(config_file) as f:
                         cfg = yaml.safe_load(f) or {}
-                    model = cfg.get("model", "unknown")
+                    raw_model = cfg.get("model", "unknown")
+                    # Handle both string and dict formats
+                    if isinstance(raw_model, dict):
+                        model = raw_model.get("default", "unknown")
+                    else:
+                        model = raw_model
                 except Exception:
                     pass
 
@@ -882,19 +897,6 @@ def get_bots():
                 "last_activity": datetime.now(timezone.utc).isoformat(),
                 "avatar": "🤖" if profile_name == "default" else "🧠"
             })
-
-    if not bots:
-        bots.append({
-            "id": "demo",
-            "name": "Demo Assistant",
-            "role": "Sample bot for UI testing",
-            "model": "demo-model",
-            "provider": "Demo",
-            "status": "idle",
-            "current_task": None,
-            "last_activity": datetime.now(timezone.utc).isoformat(),
-            "avatar": "🤖"
-        })
 
     return {"bots": bots}
 
@@ -1119,6 +1121,7 @@ def get_download_queue():
     queue = []
     queue.extend(_get_sonarr_queue(10))
     queue.extend(_get_radarr_queue(10))
+    return queue
 
 # ── # ── Agent Intelligence Endpoints (Phase 3) ───────────────────────────────────────
 
@@ -1148,13 +1151,24 @@ def get_agent_status():
             pass
     
     # Count cron jobs
-    cron_dir = Path.home() / ".hermes" / "cron"
+    host_hermes = Path("/host-hermes") if Path("/host-hermes").exists() else Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
     cron_count = 0
-    if cron_dir.exists():
-        cron_count = len([f for f in cron_dir.iterdir() if f.suffix in ['.yaml', '.yml']])
+    jobs_file = host_hermes / "cron" / "jobs.json"
+    if jobs_file.exists():
+        try:
+            data = json.loads(jobs_file.read_text(encoding="utf-8", errors="ignore"))
+            cron_count = len(data.get("jobs", []))
+        except Exception:
+            cron_yaml_dir = host_hermes / "cron"
+            if cron_yaml_dir.exists():
+                cron_count = len([f for f in cron_yaml_dir.iterdir() if f.suffix in ['.yaml', '.yml']])
+    else:
+        cron_dir = host_hermes / "cron"
+        if cron_dir.exists():
+            cron_count = len([f for f in cron_dir.iterdir() if f.suffix in ['.yaml', '.yml'] and f.name != 'jobs.json'])
     
     # Memory stats
-    memory_dir = Path.home() / ".hermes" / "memory"
+    memory_dir = host_hermes / "memory"
     memory_files = 0
     if memory_dir.exists():
         memory_files = len([f for f in memory_dir.iterdir() if f.suffix == '.md'])
@@ -1173,41 +1187,62 @@ def get_agent_status():
 @app.get("/api/cron")
 def get_cron_jobs():
     """List all configured cron jobs with status."""
-    cron_dir = Path.home() / ".hermes" / "cron"
     cron_jobs = []
     
-    if cron_dir.exists():
-        for job_file in cron_dir.glob("*.yaml"):
+    # Hermes stores cron jobs in ~/.hermes/cron/jobs.json (JSON, not YAML)
+    host_hermes = Path("/host-hermes") if Path("/host-hermes").exists() else Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    jobs_file = host_hermes / "cron" / "jobs.json"
+    
+    if jobs_file.exists():
+        try:
+            data = json.loads(jobs_file.read_text(encoding="utf-8", errors="ignore"))
+            file_jobs = data.get("jobs", [])
+            for job in file_jobs:
+                cron_jobs.append({
+                    "name": job.get("name", "Untitled"),
+                    "schedule": job.get("schedule_display") or job.get("schedule", {}).get("display") or "Unknown",
+                    "enabled": job.get("enabled", True),
+                    "state": job.get("state", "scheduled"),
+                    "last_status": job.get("last_status"),
+                    "file": "jobs.json",
+                })
+        except Exception as e:
+            cron_jobs.append({
+                "name": "Error parsing jobs.json",
+                "schedule": "Error",
+                "enabled": False,
+                "error": str(e),
+            })
+    
+    # Also check for YAML-based cron jobs (legacy)
+    yaml_dir = host_hermes / "cron"
+    if yaml_dir.exists():
+        for job_file in yaml_dir.glob("*.yaml"):
             try:
                 content = job_file.read_text(encoding="utf-8", errors="ignore")
-                name = job_file.stem.replace('_', ' ').title()
+                name = job_file.stem.replace("_", " ").title()
                 schedule = "Unknown"
                 enabled = True
-                
                 for line in content.split(chr(10)):
-                    if 'schedule:' in line:
+                    if "schedule:" in line:
                         schedule = line.split(":", 1)[1].strip().strip(chr(34) + chr(39))
-                    if 'enabled:' in line:
-                        enabled = 'true' in line.lower()
-                
+                    if "enabled:" in line:
+                        enabled = "true" in line.lower()
                 cron_jobs.append({
                     "name": name,
                     "schedule": schedule,
                     "enabled": enabled,
-                    "file": job_file.name
+                    "file": job_file.name,
                 })
             except Exception as e:
                 cron_jobs.append({
                     "name": job_file.stem,
                     "schedule": "Error",
                     "enabled": False,
-                    "error": str(e)
+                    "error": str(e),
                 })
-    
-    return {
-        "jobs": cron_jobs,
-        "total": len(cron_jobs),
-    }
+
+    return {"jobs": cron_jobs, "total": len(cron_jobs)}
 
 @app.get("/api/graphify")
 def get_graphify_status():
@@ -1262,12 +1297,13 @@ def get_hermes_status():
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
     
-    skills_dir = Path.home() / ".hermes" / "skills"
+    host_hermes = Path("/host-hermes") if Path("/host-hermes").exists() else Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    skills_dir = host_hermes / "skills"
     skills_count = 0
     if skills_dir.exists():
         skills_count = len([f for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists()])
     
-    plugins_dir = Path.home() / ".hermes" / "plugins"
+    plugins_dir = host_hermes / "plugins"
     plugins_count = 0
     if plugins_dir.exists():
         plugins_count = len([f for f in plugins_dir.iterdir() if f.is_dir() and (f / "plugin.yaml").exists() or (f / "plugin.yml").exists()])
