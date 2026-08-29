@@ -1,0 +1,14 @@
+# Planner — Strategic task decomposition and dependency planning
+#
+# MCP access: personal-organizer (to read task/project state)
+# Excluded: SearXNG, honcho, gbrain (Planner doesn't search, access memory, or query knowledge)
+#
+# Planner generates plans with verifiable acceptance criteria.
+# It reads current state but execution is handled by other profiles.
+
+model:
+  main: default
+
+mcp_servers:
+  personal-organizer:
+    url: "http://127.0.0.1:8001"

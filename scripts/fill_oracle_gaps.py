@@ -86,6 +86,21 @@ def analyze_topics(topics):
     return gaps
 
 
+def get_next_sequence():
+    """Find the next available sequence number from existing request files."""
+    EXCHANGE_DIR.mkdir(parents=True, exist_ok=True)
+    max_seq = 0
+    for f in EXCHANGE_DIR.glob("oracle-gap-*.json"):
+        try:
+            parts = f.stem.split("-")
+            seq = int(parts[-1])
+            if seq > max_seq:
+                max_seq = seq
+        except (ValueError, IndexError):
+            continue
+    return max_seq + 1
+
+
 def create_research_request(gap, sequence_num):
     """Create a research request package in the exchange directory."""
     EXCHANGE_DIR.mkdir(parents=True, exist_ok=True)
@@ -93,11 +108,14 @@ def create_research_request(gap, sequence_num):
     request_id = f"oracle-gap-{sequence_num:03d}"
     request_file = EXCHANGE_DIR / f"{request_id}.json"
 
-    # Skip if already created
+    # Skip if already created with completed/processing status
     if request_file.exists():
-        existing = json.loads(request_file.read_text())
-        if existing.get("status") in ("completed", "processing"):
-            return None
+        try:
+            existing = json.loads(request_file.read_text())
+            if existing.get("status") in ("completed", "processing"):
+                return None
+        except (json.JSONDecodeError, KeyError):
+            pass  # corrupted file, recreate
 
     request = {
         "id": request_id,
@@ -164,11 +182,14 @@ def main():
         )
         sys.exit(0)
 
+    # Use the global gap index for stable numbering (across batches)
+    base_seq = args.batch + 1
     requests_created = 0
     requests_skipped = 0
 
-    for gap in selected:
-        request_id = create_research_request(gap, len(gaps))
+    for i, gap in enumerate(selected):
+        # Each gap gets a unique seq: batch0→1, batch1→2, etc.
+        request_id = create_research_request(gap, base_seq + i)
         if request_id:
             requests_created += 1
             print(f"[oracle-expand] Created: {request_id}")
