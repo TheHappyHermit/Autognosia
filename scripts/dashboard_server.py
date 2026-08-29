@@ -756,7 +756,7 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
 if DASHBOARD_DIR.exists():
     app.mount("/", StaticFiles(directory=str(DASHBOARD_DIR), html=True), name="dashboard")
 
-def run(host: str = "127.0.0.1", port: int = 8088):
+def run(host: str = "0.0.0.0", port: int = 8088):
     print(f"============================================================")
     print(f"  Autognosia COMMAND DECK — EXECUTIVE DASHBOARD")
     print(f"  Live UI available at: http://{host}:{port}")

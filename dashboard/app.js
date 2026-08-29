@@ -4,6 +4,30 @@
  * prospective intentions, second brain search, and cognitive telemetry.
  */
 
+// ── Helper Utility Functions (must be defined before class) ─────────────────
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function strToDateStr(str) {
+  if (!str) return '';
+  return str.split('T')[0];
+}
+
+function formatTime(isoStr) {
+  if (!isoStr || !isoStr.includes('T')) return '';
+  const time = isoStr.split('T')[1];
+  return time.substring(0, 5);
+}
+
+function getCategoryBadge(cat) {
+  if (cat === 'meeting') return 'badge-cyan';
+  if (cat === 'task_deadline') return 'badge-amber';
+  if (cat === 'subscription') return 'badge-purple';
+  return 'badge-medium';
+}
+
 class CommandDeck {
   constructor() {
     this.apiBase = window.location.origin;
@@ -11,7 +35,7 @@ class CommandDeck {
     this.selectedCalendarView = 'day'; // 'day' | 'week' | 'month'
     this.calFilter = 'all';
     this.taskFilter = 'all';
-    this.remFilter = 'pending';
+    this.remFilter = 'all';
     this.autoRefreshInterval = 30000;
     this.refreshTimer = null;
 
@@ -46,8 +70,8 @@ class CommandDeck {
     refreshSelect.addEventListener('change', (e) => {
       this.autoRefreshInterval = parseInt(e.target.value, 10);
       this.setupAutoRefresh();
-    this.initCollapsiblePanels();
-    this.initKeyboardShortcuts();
+      this.initCollapsiblePanels();
+      this.initKeyboardShortcuts();
     });
 
     // Calendar View Toggles
@@ -122,7 +146,6 @@ class CommandDeck {
       const handleQuickRemAdd = async () => {
         const val = quickRemInput.value.trim();
         if (!val) return;
-        // Check if user typed "in X mins" or similar, or default to 15m
         await this.createReminder({ title: val, offset_minutes: 15, channel: 'all' });
         quickRemInput.value = '';
         await this.fetchReminders();
@@ -581,7 +604,7 @@ class CommandDeck {
         </div>
       `;
     }
-
+    
     html += '</div>';
     stage.innerHTML = html;
   }
@@ -620,7 +643,7 @@ class CommandDeck {
         </div>
       `;
     }
-
+    
     html += '</div>';
     stage.innerHTML = html;
   }
@@ -851,52 +874,6 @@ class CommandDeck {
         <div class="intention-action"><strong>THEN:</strong> ${escapeHtml(i.action)}</div>
       </div>
     `).join('');
-  }
-
-  // ── Second Brain Instant Search ────────────────────────────────────────────
-  async searchWiki(query) {
-    const container = document.getElementById('wiki-results-container');
-    try {
-      const res = await fetch(`${this.apiBase}/api/wiki/search?q=${encodeURIComponent(query)}`);
-      if (res.ok) {
-        const results = await res.json();
-        if (results.length === 0) {
-          container.innerHTML = '<div class="empty-hint">No matching documents found in knowledge vault.</div>';
-          return;
-        }
-
-        container.innerHTML = results.map(r => `
-          <div class="wiki-result-card" data-wiki-path="${escapeHtml(r.path)}">
-            <div class="wiki-res-title">
-              <span>${escapeHtml(r.title)}</span>
-              <span class="badge badge-cyan">${escapeHtml(r.tier)}</span>
-            </div>
-            <div class="wiki-res-snippet">${escapeHtml(r.snippet)}</div>
-          </div>
-        `).join('');
-
-        // Bind click to open doc viewer
-        container.querySelectorAll('.wiki-result-card').forEach(card => {
-          card.addEventListener('click', () => this.openDocViewer(card.dataset.wikiPath));
-        });
-      }
-    } catch (e) {
-      console.warn('Wiki search error:', e);
-    }
-  }
-
-  async openDocViewer(relPath) {
-    try {
-      const res = await fetch(`${this.apiBase}/api/wiki/page?path=${encodeURIComponent(relPath)}`);
-      if (res.ok) {
-        const data = await res.json();
-        document.getElementById('modal-doc-title').textContent = data.title;
-        document.getElementById('modal-doc-content').textContent = data.content;
-        document.getElementById('modal-doc-viewer').classList.add('open');
-      }
-    } catch (e) {
-      alert('Failed to load document content.');
-    }
   }
 
   // ── Telemetry Drawer ───────────────────────────────────────────────────────
@@ -1247,30 +1224,6 @@ class CommandDeck {
     document.getElementById('modal-create-item').classList.remove('open');
     document.getElementById('form-create-item').reset();
   }
-}
-
-// Helper utility functions
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function strToDateStr(str) {
-  if (!str) return '';
-  return str.split('T')[0];
-}
-
-function formatTime(isoStr) {
-  if (!isoStr || !isoStr.includes('T')) return '';
-  const time = isoStr.split('T')[1];
-  return time.substring(0, 5);
-}
-
-function getCategoryBadge(cat) {
-  if (cat === 'meeting') return 'badge-cyan';
-  if (cat === 'task_deadline') return 'badge-amber';
-  if (cat === 'subscription') return 'badge-purple';
-  return 'badge-medium';
 
   // ── Phase 3: Agent Intelligence ──────────────────────────────────────────────
 
@@ -1438,8 +1391,6 @@ function getCategoryBadge(cat) {
     `).join('');
   }
 
-
-
   // ── Phase 4: Collapsible Panels ──────────────────────────────────────────────
 
   initCollapsiblePanels() {
@@ -1555,8 +1506,6 @@ function getCategoryBadge(cat) {
       }
     });
   }
-
-
 }
 
 // Bootstrap application on DOM ready
