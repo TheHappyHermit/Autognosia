@@ -1,16 +1,14 @@
 model:
-  default: qwen3.8-27b
-  provider: openai
-  base_url: http://10.1.1.151:1234/v1
-  context_length: 110000
+  default: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
+  provider: llamaCPP
+  base_url: http://10.1.1.10:8080/v1
+  context_length: 262144
 providers:
-  openai:
-    api: http://10.1.1.151:1234/v1
-    default_model: qwen3.8-27b
+  llamaCPP:
+    api: http://10.1.1.10:8080/v1
+    default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
     transport: chat_completions
 fallback_providers:
-  - provider: openrouter
-    model: nvidia/nemotron-3-ultra-550b-a55b:free
 credential_pool_strategies:
   openrouter: fill_first
   zai: fill_first
