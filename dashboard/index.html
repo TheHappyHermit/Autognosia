@@ -27,12 +27,8 @@
         </svg>
       </div>
       <div class="sidebar-nav">
-        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠</a>
-        <a href="#" class="sidebar-link" data-view="system" aria-label="System" title="System">📊</a>
-        <a href="#" class="sidebar-link" data-view="bots" aria-label="Bots" title="Bots">🤖</a>
-        <a href="#" class="sidebar-link" data-view="media" aria-label="Media" title="Media">🎬</a>
-        <a href="#" class="sidebar-link" data-view="downloads" aria-label="Downloads" title="Downloads">📥</a>
-        <a href="#" class="sidebar-link" data-view="settings" aria-label="Settings" title="Settings">⚙️</a>
+        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠<span class="sidebar-label">Dashboard</span></a>
+        <a href="#" class="sidebar-link" data-view="bots" aria-label="Bots" title="Bots">🤖<span class="sidebar-label">Agents</span></a>
       </div>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
@@ -70,8 +66,8 @@
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="content-area" id="main-content" role="main">
+    <!-- Main Content Area (Dashboard View) -->
+    <main class="content-area" id="main-content" role="main" data-current-view="dashboard">
       <!-- Hero Stats Row -->
       <section class="hero-stats" aria-label="System metrics">
         <div class="hero-stat">
@@ -298,10 +294,41 @@
       </div>
     </main>
 
-    <!-- Bots View (hidden by default) -->
-    <div id="view-bots" class="view-section" style="padding:var(--space-5);max-width:calc(100vw - var(--sidebar-width))">
-      <div id="bots-container">
-        <!-- Populated by app-bots.js -->
+    <!-- Bots View (hidden by default) — Grokbot-style vertical stripe + chat panel -->
+    <div id="view-bots" class="view-section bots-view" role="region" aria-label="Agent Command Center">
+      <div class="bots-sidebar" id="bots-sidebar">
+        <div class="bots-sidebar-header">
+          <h3>Agents</h3>
+          <span class="bots-count" id="bots-count">0</span>
+        </div>
+        <div class="bots-stripe" id="bots-stripe">
+          <!-- Agent stripe populated by app-bots.js -->
+        </div>
+      </div>
+      <div class="bots-chat-panel" id="bots-chat-panel">
+        <div class="bots-chat-empty" id="bots-chat-empty">
+          <div class="bots-chat-empty-icon">🤖</div>
+          <div class="bots-chat-empty-title">Select an agent to chat</div>
+          <div class="bots-chat-empty-desc">Click on any agent in the stripe to open a conversation.</div>
+        </div>
+        <div class="bots-chat-active" id="bots-chat-active" style="display:none">
+          <div class="bots-chat-header">
+            <div class="bot-avatar" id="chat-bot-avatar">🤖</div>
+            <div class="bots-chat-header-info">
+              <div class="bots-chat-header-name" id="chat-bot-name">Agent Name</div>
+              <div class="bots-chat-header-model" id="chat-bot-model">Model • Provider</div>
+            </div>
+            <div class="bots-chat-header-status">
+              <span class="bot-status-dot" id="chat-bot-status-dot"></span>
+              <span id="chat-bot-status-text">idle</span>
+            </div>
+          </div>
+          <div class="bots-chat-messages" id="bot-chat-messages"></div>
+          <div class="bots-chat-input-bar">
+            <input type="text" class="bots-chat-input" id="bot-chat-input" placeholder="Message agent…" aria-label="Message" />
+            <button class="bots-chat-send" id="bot-chat-send" aria-label="Send">➤</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -310,7 +337,7 @@
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Scripts -->
-  <script src="app.js"></script>
+  <script src="app-core.js"></script>
   <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
 

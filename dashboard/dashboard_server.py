@@ -1318,6 +1318,10 @@ def serve_bots_css():
 def serve_tokens():
     return FileResponse(str(DASHBOARD_DIR / "tokens.css"), media_type="text/css")
 
+@app.get("/app-core.js")
+def serve_app_core():
+    return FileResponse(str(DASHBOARD_DIR / "app-core.js"), media_type="application/javascript")
+
 @app.get("/app.js")
 def serve_app():
     return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")

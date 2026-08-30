@@ -1,12 +1,12 @@
 /**
  * Bot Management Page — Grokbot-style interface
- * Handles bot grid rendering, chat modal, and message sending.
+ * Vertical stripe of agents on left, chat panel on right.
+ * Inline chat (no modal).
  */
 class BotsPage {
   constructor() {
     this.bots = [];
     this.currentBot = null;
-    this.chatOpen = false;
   }
 
   async init() {
@@ -27,156 +27,113 @@ class BotsPage {
   }
 
   render() {
-    const container = document.getElementById('bots-container');
-    if (!container) return;
+    const stripe = document.getElementById('bots-stripe');
+    const countEl = document.getElementById('bots-count');
+    if (!stripe) return;
+
+    if (countEl) countEl.textContent = this.bots.length;
 
     if (this.bots.length === 0) {
-      container.innerHTML = this.renderEmptyState();
+      stripe.innerHTML = `
+        <div class="bot-empty">
+          <div class="bot-empty-icon">🤖</div>
+          <div class="bot-empty-title">No Agents Configured</div>
+          <div class="bot-empty-desc">Add your first bot to get started.</div>
+        </div>
+      `;
       return;
     }
 
-    container.innerHTML = `
-      <div class="section-title">Configured Agents</div>
-      <div class="bot-grid">
-        ${this.bots.map(bot => this.renderBotCard(bot)).join('')}
-      </div>
-    `;
+    stripe.innerHTML = this.bots.map(bot => this.renderStripeItem(bot)).join('');
   }
 
-  renderBotCard(bot) {
-    const statusClass = `bot-status-dot--${bot.status || 'idle'}`;
-    const lastActivity = this.formatTime(bot.last_activity);
+  renderStripeItem(bot) {
+    const statusClass = `bot-stripe-status--${bot.status || 'idle'}`;
+    const isActive = this.currentBot && this.currentBot.id === bot.id ? ' active' : '';
     return `
-      <div class="bot-card" data-bot-id="${bot.id}" tabindex="0" role="button" aria-label="Open chat with ${bot.name}">
-        <div class="bot-card-header">
-          <div class="bot-avatar">${bot.avatar || '🤖'}</div>
-          <div class="bot-info">
-            <div class="bot-name">${this.escapeHtml(bot.name)}</div>
-            <div class="bot-role">${this.escapeHtml(bot.role)}</div>
-          </div>
-          <div class="bot-status-dot ${statusClass}" aria-label="Status: ${bot.status}"></div>
+      <div class="bot-stripe-item${isActive}" data-bot-id="${bot.id}" tabindex="0" role="button" aria-label="Chat with ${this.escapeHtml(bot.name)}">
+        <div class="bot-stripe-avatar">${bot.avatar || '🤖'}</div>
+        <div class="bot-stripe-info">
+          <div class="bot-stripe-name">${this.escapeHtml(bot.name)}</div>
+          <div class="bot-stripe-role">${this.escapeHtml(bot.role)}</div>
         </div>
-        <div class="bot-meta">
-          <span class="bot-model-badge">${this.escapeHtml(bot.model)}</span>
-          <span>${this.escapeHtml(bot.provider)}</span>
-          <span class="bot-last-activity">${lastActivity}</span>
-        </div>
-        <div class="bot-actions">
-          <button class="bot-action-btn" data-action="chat" data-bot-id="${bot.id}">💬 Chat</button>
-          <button class="bot-action-btn" data-action="history" data-bot-id="${bot.id}">📜 History</button>
-          <button class="bot-action-btn" data-action="config" data-bot-id="${bot.id}">⚙️ Config</button>
-        </div>
-      </div>
-    `;
-  }
-
-  renderEmptyState() {
-    return `
-      <div class="bot-empty">
-        <div class="bot-empty-icon">🤖</div>
-        <div class="bot-empty-title">No Agents Configured</div>
-        <div class="bot-empty-desc">Add your first bot to get started. Connect your Hermes profiles or add a custom agent.</div>
-        <button class="btn btn--primary" onclick="document.getElementById('add-bot-modal')?.showModal()">+ Add Bot</button>
+        <div class="bot-stripe-status ${statusClass}" aria-label="Status: ${bot.status || 'idle'}"></div>
       </div>
     `;
   }
 
   bindEvents() {
-    // Bot card clicks
-    document.querySelectorAll('.bot-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        const botId = card.dataset.botId;
-        const action = e.target.dataset.action;
-        if (action === 'chat') {
-          this.openChat(botId);
-        } else if (action === 'history') {
-          this.viewHistory(botId);
-        } else if (action === 'config') {
-          this.configureBot(botId);
-        } else {
+    const stripe = document.getElementById('bots-stripe');
+    if (!stripe) return;
+
+    stripe.querySelectorAll('.bot-stripe-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const botId = item.dataset.botId;
+        this.openChat(botId);
+      });
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const botId = item.dataset.botId;
           this.openChat(botId);
         }
       });
     });
+
+    // Send button
+    const sendBtn = document.getElementById('bot-chat-send');
+    const input = document.getElementById('bot-chat-input');
+    if (sendBtn && input) {
+      const send = () => this.sendMessage();
+      sendBtn.addEventListener('click', send);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') send();
+      });
+    }
   }
 
-  async openChat(botId) {
+  openChat(botId) {
     const bot = this.bots.find(b => b.id === botId);
     if (!bot) return;
     this.currentBot = bot;
-    this.chatOpen = true;
 
-    // Create modal
-    const modal = document.createElement('div');
-    modal.className = 'bot-chat-overlay open';
-    modal.id = 'bot-chat-overlay';
-    modal.innerHTML = `
-      <div class="bot-chat" role="dialog" aria-modal="true" aria-label="Chat with ${this.escapeHtml(bot.name)}">
-        <div class="bot-chat-header">
-          <div class="bot-avatar">${bot.avatar || '🤖'}</div>
-          <div class="bot-chat-header-info">
-            <div class="bot-chat-header-name">${this.escapeHtml(bot.name)}</div>
-            <div class="bot-chat-header-model">${this.escapeHtml(bot.model)} • ${this.escapeHtml(bot.provider)}</div>
-          </div>
-          <button class="bot-chat-close" aria-label="Close chat">✕</button>
-        </div>
-        <div class="bot-chat-messages" id="bot-chat-messages">
-          <div class="bot-message bot-message--bot">
-            Hello! I'm ${this.escapeHtml(bot.name)}. How can I help you today?
-            <div class="bot-message-time">Just now</div>
-          </div>
-        </div>
-        <div class="bot-token-counter">0 tokens</div>
-        <div class="bot-quick-prompts">
-          <button class="bot-quick-prompt" data-prompt="What can you do?">What can you do?</button>
-          <button class="bot-quick-prompt" data-prompt="Help me with a task">Help with task</button>
-          <button class="bot-quick-prompt" data-prompt="Tell me a joke">Tell me a joke</button>
-        </div>
-        <div class="bot-chat-input-bar">
-          <input type="text" class="bot-chat-input" id="bot-chat-input" placeholder="Type a message..." aria-label="Message" />
-          <button class="bot-chat-send" id="bot-chat-send" aria-label="Send">➤</button>
-        </div>
-      </div>
-    `;
+    // Update stripe active state
+    document.querySelectorAll('.bot-stripe-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.botId === botId);
+    });
 
-    document.body.appendChild(modal);
+    // Show chat panel
+    const emptyEl = document.getElementById('bots-chat-empty');
+    const activeEl = document.getElementById('bots-chat-active');
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (activeEl) activeEl.style.display = 'flex';
+
+    // Set header info
+    const avatarEl = document.getElementById('chat-bot-avatar');
+    const nameEl = document.getElementById('chat-bot-name');
+    const modelEl = document.getElementById('chat-bot-model');
+    const statusDot = document.getElementById('chat-bot-status-dot');
+    const statusText = document.getElementById('chat-bot-status-text');
+
+    if (avatarEl) avatarEl.textContent = bot.avatar || '🤖';
+    if (nameEl) nameEl.textContent = bot.name;
+    if (modelEl) modelEl.textContent = `${bot.model} • ${bot.provider}`;
+    if (statusDot) statusDot.className = `bot-status-dot bot-status-dot--${bot.status || 'idle'}`;
+    if (statusText) statusText.textContent = bot.status || 'idle';
+
+    // Render initial greeting
+    const messagesContainer = document.getElementById('bot-chat-messages');
+    if (messagesContainer) {
+      messagesContainer.innerHTML = `
+        <div class="bot-message bot-message--bot">
+          Hello! I'm ${this.escapeHtml(bot.name)}. How can I help you today?
+          <div class="bot-message-time">Just now</div>
+        </div>
+      `;
+    }
 
     // Focus input
-    setTimeout(() => document.getElementById('bot-chat-input')?.focus(), 100);
-
-    // Close handlers
-    modal.querySelector('.bot-chat-close').addEventListener('click', () => this.closeChat());
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) this.closeChat();
-    });
-
-    // Send handler
-    const sendBtn = document.getElementById('bot-chat-send');
-    const input = document.getElementById('bot-chat-input');
-
-    const send = () => this.sendMessage();
-    sendBtn.addEventListener('click', send);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') send();
-    });
-
-    // Quick prompts
-    modal.querySelectorAll('.bot-quick-prompt').forEach(btn => {
-      btn.addEventListener('click', () => {
-        input.value = btn.dataset.prompt;
-        this.sendMessage();
-      });
-    });
-  }
-
-  closeChat() {
-    const modal = document.getElementById('bot-chat-overlay');
-    if (modal) {
-      modal.classList.remove('open');
-      setTimeout(() => modal.remove(), 250);
-    }
-    this.chatOpen = false;
-    this.currentBot = null;
+    setTimeout(() => document.getElementById('bot-chat-input')?.focus(), 50);
   }
 
   async sendMessage() {
@@ -209,10 +166,8 @@ class BotsPage {
       });
       const data = await res.json();
 
-      // Remove typing
       typing.remove();
 
-      // Add bot response
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-message bot-message--bot';
       botMsg.innerHTML = `${this.escapeHtml(data.reply)}<div class="bot-message-time">${this.formatTime(data.timestamp)}</div>`;
@@ -221,24 +176,10 @@ class BotsPage {
     } catch (e) {
       typing.remove();
       console.error('Failed to send message:', e);
-    }
-  }
-
-  async viewHistory(botId) {
-    try {
-      const res = await fetch(`/api/bots/${botId}/history`);
-      const data = await res.json();
-      // For now, just open chat (history is empty)
-      this.openChat(botId);
-    } catch (e) {
-      console.error('Failed to load history:', e);
-    }
-  }
-
-  configureBot(botId) {
-    // Placeholder: show toast
-    if (window.showToast) {
-      window.showToast(`Configure ${botId} — coming soon`);
+      const errMsg = document.createElement('div');
+      errMsg.className = 'bot-message bot-message--bot';
+      errMsg.innerHTML = `<span style="color:var(--accent-rose)">Error: Could not reach agent.</span>`;
+      messagesContainer.appendChild(errMsg);
     }
   }
 

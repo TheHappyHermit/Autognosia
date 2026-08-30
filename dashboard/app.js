@@ -50,7 +50,7 @@ class CommandDeck {
     this.calFilter = 'all';
     this.taskFilter = 'all';
     this.remFilter = 'all';
-    this.autoRefreshInterval = 30000;
+    this.autoRefreshInterval = 60000;
     this.refreshTimer = null;
 
     this.state = {
@@ -249,92 +249,6 @@ class CommandDeck {
       console.warn('Telemetry fetch error:', e);
     }
   }
-
-  async fetchServices() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/services`);
-      if (res.ok) {
-        const services = await res.json();
-        this.renderServiceGrid(services);
-        this.updateServiceStatus(services);
-      }
-    } catch (e) {
-      console.warn('Service fetch error:', e);
-    }
-  }
-
-  async fetchMedia() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/media/active`);
-      if (res.ok) {
-        const streams = await res.json();
-        this.renderMediaGrid(streams);
-      }
-    } catch (e) {
-      console.warn('Media fetch error:', e);
-    }
-  }
-
-  async fetchQueue() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/queue`);
-      if (res.ok) {
-        const queue = await res.json();
-        this.renderQueue(queue);
-      }
-    } catch (e) {
-      console.warn('Queue fetch error:', e);
-    }
-  }
-
-  async fetchAgentStatus() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/agent`);
-      if (res.ok) {
-        this.state.agentStatus = await res.json();
-        this.renderAgentStatus();
-      }
-    } catch (e) {
-      console.warn('Agent status fetch error:', e);
-    }
-  }
-
-  async fetchCronJobs() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/cron`);
-      if (res.ok) {
-        this.state.cronJobs = await res.json();
-        this.renderCronJobs();
-      }
-    } catch (e) {
-      console.warn('Cron jobs fetch error:', e);
-    }
-  }
-
-  async fetchGraphifyStatus() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/graphify`);
-      if (res.ok) {
-        this.state.graphifyStatus = await res.json();
-        this.renderGraphifyStatus();
-      }
-    } catch (e) {
-      console.warn('Graphify fetch error:', e);
-    }
-  }
-
-  async fetchHermesStatus() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/hermes`);
-      if (res.ok) {
-        this.state.hermesStatus = await res.json();
-        this.renderHermesStatus();
-      }
-    } catch (e) {
-      console.warn('Hermes status fetch error:', e);
-    }
-  }
-
   async refreshAllData() {
     await Promise.all([
       this.fetchSystemStats(),
@@ -348,12 +262,9 @@ class CommandDeck {
       this.fetchIntentions(),
       this.fetchTelemetry(),
       this.fetchServices(),
-      this.fetchMedia(),
-      this.fetchQueue(),
       this.fetchAgentStatus(),
       this.fetchCronJobs(),
       this.fetchGraphifyStatus(),
-      this.fetchHermesStatus(),
     ]);
   }
 
@@ -499,26 +410,6 @@ class CommandDeck {
         serviceRefresh.addEventListener('click', () => this.fetchServices());
       }
 
-      // Clock
-      const clockEl = document.getElementById('hud-clock');
-      if (clockEl) {
-        setInterval(() => {
-          const now = new Date();
-          clockEl.querySelector('.clock-time').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-        }, 1000);
-      }
-
-      // Keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          document.getElementById('command-palette')?.close();
-          this.closeTaskDetailModal();
-        }
-        if (e.ctrlKey && e.key === 'k') {
-          e.preventDefault();
-          document.getElementById('command-palette')?.showModal();
-        }
-      });
       
       // Task detail modal events
       const modalClose = document.getElementById('task-detail-close');
@@ -1207,227 +1098,6 @@ class CommandDeck {
       if (dot) dot.className = 'panel-freshness__dot panel-freshness__dot--fresh';
     }
   }
-
-  async fetchMedia() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/media/active`);
-      if (res.ok) {
-        const streams = await res.json();
-        this.renderMediaGrid(streams);
-      }
-    } catch (e) {
-      console.warn('Media fetch error:', e);
-    }
-  }
-
-  renderMediaGrid(streams) {
-    const grid = document.getElementById('media-grid');
-    if (!grid) return;
-
-    const countEl = document.getElementById('media-count');
-    if (countEl) countEl.textContent = `${streams.length} active stream${streams.length !== 1 ? 's' : ''}`;
-
-    if (streams.length === 0) {
-      grid.innerHTML = '<div class="media-placeholder">No active streams</div>';
-      return;
-    }
-
-    grid.innerHTML = streams.map(s => {
-      const progress = s.total ? (s.progress / s.total) * 100 : 0;
-      return `
-        <div class="media-card">
-          <div class="media-card__info">
-            <span class="media-card__service">${s.service}</span>
-            <h3 class="media-card__title">${s.title || 'Unknown'}</h3>
-            <span class="media-card__user">${s.user || '?'} on ${s.device || 'unknown'}</span>
-          </div>
-          <div class="media-card__progress">
-            <div class="media-card__progress-bar" style="width: ${progress}%"></div>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  async fetchQueue() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/queue`);
-      if (res.ok) {
-        const queue = await res.json();
-        this.renderQueue(queue);
-      }
-    } catch (e) {
-      console.warn('Queue fetch error:', e);
-    }
-  }
-
-  renderQueue(queue) {
-    const list = document.getElementById('queue-list');
-    if (!list) return;
-
-    const countEl = document.getElementById('queue-count');
-    if (countEl) countEl.textContent = `${queue.length} pending`;
-
-    if (queue.length === 0) {
-      list.innerHTML = '<div class="queue-placeholder">Queue is empty</div>';
-      return;
-    }
-
-    list.innerHTML = queue.map(item => `
-      <div class="queue-item" data-service="${item.service}">
-        <span class="queue-item__service queue-badge queue-badge--${item.service.toLowerCase()}">${item.service}</span>
-        <span class="queue-item__title">${item.title}</span>
-        <span class="queue-item__size">${this.formatSize(item.size)}</span>
-      </div>
-    `).join('');
-  }
-
-  // ── Task, Reminder & Intention CRUD Operations ────────────────────────────
-  async createTask(data) {
-    await fetch(`${this.apiBase}/api/tasks`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  }
-
-  async updateTask(id, data) {
-    await fetch(`${this.apiBase}/api/tasks/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  }
-
-  async createReminder(data) {
-    await fetch(`${this.apiBase}/api/reminders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  }
-
-  async snoozeReminder(remId, minutes = 10) {
-    await fetch(`${this.apiBase}/api/reminders/${remId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'snooze', snooze_minutes: minutes })
-    });
-  }
-
-  async dismissReminder(remId) {
-    await fetch(`${this.apiBase}/api/reminders/${remId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'sent' })
-    });
-  }
-
-  async createIntention(data) {
-    await fetch(`${this.apiBase}/api/intentions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  }
-
-  // ── Hermes AI Copilot Chat ────────────────────────────────────────────────
-  async sendChatMessage(text) {
-    const container = document.getElementById('chat-messages-container');
-    const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    // 1. Append User Bubble
-    const userMsgEl = document.createElement('div');
-    userMsgEl.className = 'chat-msg user';
-    userMsgEl.innerHTML = `
-      <div class="msg-author">YOU</div>
-      <div class="msg-bubble">${escapeHtml(text)}</div>
-      <div class="msg-time">${nowStr}</div>
-    `;
-    container.appendChild(userMsgEl);
-    container.scrollTop = container.scrollHeight;
-
-    // 2. Append Typing Indicator
-    const typingEl = document.createElement('div');
-    typingEl.className = 'chat-msg bot';
-    typingEl.id = 'chat-typing-indicator';
-    typingEl.innerHTML = `
-      <div class="msg-author">Autognosia Copilot</div>
-      <div class="msg-bubble" style="color:var(--text-muted); font-style:italic;">Processing cognitive instruction...</div>
-    `;
-    container.appendChild(typingEl);
-    container.scrollTop = container.scrollHeight;
-
-    // 3. Send API Request
-    try {
-      const res = await fetch(`${this.apiBase}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
-      });
-
-      typingEl.remove();
-
-      if (res.ok) {
-        const data = await res.json();
-        const botMsgEl = document.createElement('div');
-        botMsgEl.className = 'chat-msg bot';
-        
-        // Render simple markdown formatted reply
-        let formattedReply = escapeHtml(data.reply)
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em>$1</em>')
-          .replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,0.3); padding:2px 4px; border-radius:3px; font-family:var(--font-mono);">$1</code>')
-          .replace(/\n/g, '<br>');
-
-        botMsgEl.innerHTML = `
-          <div class="msg-author">Autognosia Copilot</div>
-          <div class="msg-bubble">${formattedReply}</div>
-          <div class="msg-time">${nowStr}</div>
-        `;
-        container.appendChild(botMsgEl);
-        container.scrollTop = container.scrollHeight;
-
-        // Auto-refresh dashboard data if action was taken
-        if (data.refresh_needed) {
-          await this.refreshAllData();
-        }
-      } else {
-        const errEl = document.createElement('div');
-        errEl.className = 'chat-msg bot';
-        errEl.innerHTML = `
-          <div class="msg-author">Autognosia Copilot</div>
-          <div class="msg-bubble" style="color:var(--accent-rose);">Error connecting to Hermes agent.</div>
-        `;
-        container.appendChild(errEl);
-      }
-    } catch (e) {
-      if (typingEl) typingEl.remove();
-      const errEl = document.createElement('div');
-      errEl.className = 'chat-msg bot';
-      errEl.innerHTML = `
-        <div class="msg-author">Autognosia Copilot</div>
-        <div class="msg-bubble" style="color:var(--accent-rose);">Network error communicating with dashboard server.</div>
-      `;
-      container.appendChild(errEl);
-    }
-  }
-
-  // ── Modals ─────────────────────────────────────────────────────────────────
-  openCreateModal(defaultType = 'task') {
-    const select = document.getElementById('create-type');
-    select.value = defaultType;
-    document.getElementById('fields-task').style.display = defaultType === 'task' ? 'block' : 'none';
-    document.getElementById('fields-intention').style.display = defaultType === 'task' ? 'none' : 'block';
-    document.getElementById('modal-create-item').classList.add('open');
-  }
-
-  closeCreateModal() {
-    document.getElementById('modal-create-item').classList.remove('open');
-    document.getElementById('form-create-item').reset();
-  }
-
-  // ── Phase 3: Agent Intelligence ──────────────────────────────────────────────
-
   async fetchAgentStatus() {
     try {
       const res = await fetch(`${this.apiBase}/api/agent`);
@@ -1467,18 +1137,6 @@ class CommandDeck {
     }
   }
 
-  async fetchHermesStatus() {
-    try {
-      const res = await fetch(`${this.apiBase}/api/hermes`);
-      if (res.ok) {
-        const data = await res.json();
-        this.state.hermesStatus = data;
-        this.renderHermesStatus();
-      }
-    } catch (e) {
-      console.warn('Hermes status fetch error:', e);
-    }
-  }
 
   renderAgentStatus() {
     const data = this.state.agentStatus || {};
@@ -1518,17 +1176,6 @@ class CommandDeck {
     `;
   }
 
-  renderHermesStatus() {
-    const data = this.state.hermesStatus || {};
-    const statusEl = document.getElementById('agent-status');
-    if (statusEl) {
-      const count = (data.processes || []).length;
-      statusEl.innerHTML = `
-        <span class="panel-status__dot panel-status__dot--ok" aria-hidden="true"></span>
-        <span>${count} process(es)</span>
-      `;
-    }
-  }
 
   renderGraphifyStatus() {
     const data = this.state.graphifyStatus || {};
@@ -1658,19 +1305,6 @@ class CommandDeck {
 
   // ── Phase 4: Toast Notifications ─────────────────────────────────────────────
 
-  showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast toast--${type}`;
-    toast.textContent = message;
-    container.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
 
   // ── Phase 4: Keyboard Shortcuts ──────────────────────────────────────────────
 
@@ -1680,29 +1314,10 @@ class CommandDeck {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       
       switch(e.key.toLowerCase()) {
-        case 'c':
-          // Toggle chat drawer
-          document.getElementById('chat-drawer').classList.toggle('open');
-          break;
-        case 't':
-          // Toggle telemetry drawer
-          document.getElementById('telemetry-drawer').classList.toggle('open');
-          break;
-        case 'n':
-          // Open create modal
-          this.openCreateModal('task');
-          break;
-        case 'k':
-          // Open command palette (Ctrl+K or Cmd+K)
-          if (e.ctrlKey || e.metaKey) {
-            e.preventDefault();
-            document.getElementById('command-palette').showModal();
-          }
-          break;
         case '/':
           // Focus wiki search
           e.preventDefault();
-          document.getElementById('wiki-search-input').focus();
+          document.getElementById('wiki-search-input')?.focus();
           break;
       }
     });
