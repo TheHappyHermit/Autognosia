@@ -53,10 +53,10 @@ def refresh_graph(name, source, graph_file):
 
     if not os.path.isfile(graph_file):
         log(f"  {name}: graph.json not found at {graph_file}, running initial extract")
-        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "600"]
+        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "3600"]
     else:
         log(f"  {name}: graph.json found, running semantic extract (additive, in-place)")
-        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "600"]
+        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "3600"]
 
     log(f"  Refreshing {name} from {source}...")
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=source, env=env, timeout=3600)
