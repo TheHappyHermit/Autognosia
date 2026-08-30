@@ -256,25 +256,41 @@ print("SessionDB FTS table created and populated.")
 EOF
 ```
 
-### 7. Set Up GBrain
+### 7. Set Up Brain Search (Postgres + pgvector)
 
-GBrain is the historical retrieval layer. It runs in PGLite mode by default (no Docker needed):
+Brain Search is the knowledge base search layer — hybrid BM25 + vector search with RRF fusion:
 
 ```bash
-# Install bun if not already installed
-curl -fsSL https://bun.sh/install | bash
-export PATH="$HOME/.bun/bin:$PATH"
+cd docker/
 
-# Install and initialize GBrain
-bun install -g gbrain
-gbrain init --pglite
-gbrain doctor --fast  # Verify health
+# Start brain-postgres (separate from Honcho)
+docker compose -f docker-compose.brain.yml up -d
 
-# Install retrieval-reflex (teaches agent when to retrieve from brain)
-gbrain integrations install retrieval-reflex --target $(cd "$(dirname "$0")/.." && pwd)
+# Wait for health
+sleep 5
+
+# Initialize schema
+python3 scripts/brain_sync.py --init
+
+# Sync your knowledge bases (Active Wiki + Oracle Brain)
+python3 scripts/brain_sync.py
 ```
 
-For PostgreSQL backend (advanced), see `docker/docker-compose.gbrain-postgres.yml` — requires Docker and the gbrain repo cloned locally.
+Brain Search requires:
+- Ollama running with `qwen3-embedding:8b` (or compatible embedding model)
+- PostgreSQL + pgvector (handled by docker-compose.brain.yml)
+- Python packages: `pg8000` (install via `pip install pg8000`)
+
+Test search:
+```bash
+python3 scripts/brain_query.py "memory architecture"
+```
+
+For scheduled syncing, register the cron job:
+```bash
+# Every 5 minutes
+python3 scripts/brain_sync_cron.py
+```
 
 ### 8. Verify Everything Works
 
@@ -293,8 +309,7 @@ python3 scripts/generate_views.py
 python3 scripts/integrity_check.py
 python3 scripts/backup_databases.py
 python3 scripts/autognosia_health.py
-python3 scripts/gbrain_sync.py
-python3 scripts/gbrain_weekly_doctor.py
+python3 scripts/brain_sync_cron.py
 ```
 
 ### 9. Launch the Command Deck (Personal Assistant Dashboard)

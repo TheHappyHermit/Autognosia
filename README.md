@@ -92,7 +92,7 @@ Autognosia gives each class of cognitive question a dedicated, authoritative hom
 1. **Main Hermes NEVER searches the internet directly.** ALL web research is delegated to the Researcher profile via `delegate_task()`. This is an absolute prohibition.
 2. **Warm memory has two domains:** Honcho (autobiographical — who is this user?) and Graphify (knowledge relationships — how does my knowledge connect?).
 3. **Cold memory** is the Markdown wiki (Active Wiki for current knowledge, Oracle Wiki for long-term knowledge).
-4. **GBrain** is the historical index layer over the Oracle Wiki (optional, deployed separately).
+4. **Brain Search** is the knowledge base search layer — hybrid BM25 + vector search with RRF fusion (Postgres + pgvector).
 5. **SearXNG** is the private search engine that the Researcher profile uses for web queries.
 
 ---
@@ -112,7 +112,7 @@ Autognosia adds **Graphify** as a derived relationship/navigation index over the
 
 - A replacement for the Main Wiki, Oracle Wiki, or Obsidian
 - A source of truth or canonical knowledge store
-- Another memory database (Honcho, GBrain, Personal Organizer remain authoritative for their domains)
+- Another memory database (Honcho, Brain Search, Personal Organizer remain authoritative for their domains)
 - A mandatory gate for all retrieval — Hermes decides when graph traversal is useful
 - A distillation process whose output becomes the only surviving copy
 
@@ -310,7 +310,7 @@ When task A is finished, activate task B.
 The next time we're talking about Mac Studio hardware,
 remind me about the memory-bandwidth question.
 
-If GBrain fixes this retrieval bug, let me know.
+If Brain Search fixes this retrieval bug, let me know.
 
 Three days before this renewal, remind me to cancel it.
 ```
@@ -391,68 +391,45 @@ It lets the long-term corpus grow without requiring the primary model to carry t
 
 ---
 
-# GBrain — Historical Retrieval Infrastructure
+# Brain Search — Knowledge Base Search Infrastructure
 
-[GBrain](https://github.com/garrytan/gbrain), created by Garry Tan, provides Autognosia's scalable historical retrieval layer.
+Brain Search is Autognosia's knowledge base search layer, built on **PostgreSQL + pgvector**. It provides:
 
-It contributes:
+* semantic/vector search (cosine similarity);
+* full-text search (BM25 via tsvector);
+* hybrid ranking with Reciprocal Rank Fusion (RRF);
+* provenance (source, path, chunk text);
+* conversation history for "what did I search" recall.
 
-* semantic/vector search;
-* lexical/full-text search;
-* hybrid ranking;
-* embedded vector and semantic search (PGLite);
-* graph relationships;
-* entity retrieval;
-* provenance;
-* MCP access.
-
-**Deployment: Local Embedded PGLite (zero external database or Docker needed).**
+**Deployment: Docker Compose (Postgres + pgvector, separate from Honcho).**
 
 Quick start:
 ```bash
-bun install -g gbrain          # Install the CLI
-gbrain init --pglite           # Initialize embedded database
-gbrain doctor                  # Verify health
+cd docker/
+docker compose -f docker-compose.brain.yml up -d
+python3 scripts/brain_sync.py --init
+python3 scripts/brain_sync.py
+python3 scripts/brain_query.py "your query here"
 ```
 
-Project:
-
-https://github.com/garrytan/gbrain
-
-Architecture:
-
-https://github.com/garrytan/gbrain/blob/master/docs/ENGINES.md
-
-MCP deployment:
-
-https://github.com/garrytan/gbrain/blob/master/docs/mcp/DEPLOY.md
-
-Hermes Agent integration (including the Bun/PATH pitfall that breaks stdio
-launch):
-
-[`docs/GBRAIN-MCP.md`](docs/GBRAIN-MCP.md)
+Brain Search uses:
+- Ollama embedding model (`qwen3-embedding:8b` by default)
+- PostgreSQL + pgvector (HNSW index for vectors, GIN for full-text)
+- Python scripts (`brain_sync.py`, `brain_query.py`)
 
 ---
 
-# GBrain Is an Index, Not the Sole Brain
+# Brain Search Is an Index, Not the Sole Brain
 
-Autognosia deliberately treats the GBrain database as **rebuildable infrastructure**.
+Autognosia deliberately treats the Brain Search database as **rebuildable infrastructure**.
 
-<p align="center">
-  <img src="assets/durable_vs_rebuildable.jpg" alt="Durable Knowledge vs Rebuildable Index Architecture" width="100%" />
-</p>
-
-If the GBrain database breaks, it can be rebuilt from the canonical Markdown corpus. The underlying knowledge remains intact.
+If the Brain Search database breaks, it can be rebuilt from the canonical Markdown corpus. The underlying knowledge remains intact.
 
 ---
 
-# Why Autognosia Disables GBrain Dream
+# Architecture
 
-The standard full-agent GBrain architecture includes a nightly dream cycle and extensive autonomous brain maintenance.
-
-Autognosia does **not** enable that mode by default.
-
-This is deliberate.
+Brain Search is a derived index over the same canonical Markdown corpus used by Active Wiki and Oracle Brain. It does not transform or delete source material.
 
 Autognosia distinguishes:
 
@@ -965,11 +942,11 @@ Historical knowledge remains permanently grounded and immutable in the Oracle Va
 
 Autognosia assumes every component can fail.
 
-## GBrain search misses something
+## Brain search misses something
 
 Use literal Markdown search.
 
-## GBrain database breaks
+## Brain database breaks
 
 Rebuild it from canonical knowledge.
 
@@ -1118,11 +1095,11 @@ python3 scripts/run_dashboard.py
 | Current semantic knowledge         | Active LLM-Wiki                                   |
 | Historical synthesized knowledge   | Oracle Brain                                      |
 | Raw historical/research evidence   | Oracle Raw                                        |
-| Long-term retrieval/indexing       | GBrain                                            |
+| Long-term retrieval/indexing       | Brain Search (Postgres + pgvector)                |
 | Exact conversation/tool history    | Hermes SessionDB                                  |
 | Reusable procedures                | Hermes Skills                                     |
 | Execution outcome metadata         | Autognosia Experience Index                           |
-| Epistemic state                    | GBrain provenance/facts + Autognosia control metadata |
+| Epistemic state                    | Brain Search provenance/facts + Autognosia control metadata |
 | Fresh external evidence            | Research Hermes                                   |
 | Complex planning                   | Planner                                           |
 | Ambiguous evaluation               | Auditor                                           |
@@ -1301,9 +1278,9 @@ https://github.com/plastic-labs/honcho
 
 https://honcho.dev/
 
-## GBrain — Garry Tan
+## Brain Search
 
-https://github.com/garrytan/gbrain
+Built on PostgreSQL + pgvector. Inspired by the rebuildable index philosophy originally established with GBrain.
 
 ## LLM-Wiki Pattern — Andrej Karpathy
 
