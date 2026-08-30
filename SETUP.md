@@ -14,7 +14,7 @@ When you tell Hermes to set up the Autognosia from the repository, Hermes follow
 4. **Initialize databases** by running `scripts/init_db.py` and `scripts/init_autognosia_db.py` with `--yes`
 5. **Copy** `docker/.env.example` to `docker/.env` and auto-fill Honcho LLM settings from Hermes's own provider config
 6. **Generate** `SEARXNG_SECRET` using `openssl rand -hex 32`
-7. **Start** Docker services in order: SearXNG → Honcho → Personal Organizer → GBrain
+7. **Start** Docker services in order: SearXNG → Honcho → Personal Organizer → Brain Search
 8. **Verify** each service with health check endpoints
 9. **Register** cron jobs from `cron-jobs/definitions.md`
 10. **Run** acceptance tests (`tests/run_tests.sh`)
@@ -34,7 +34,7 @@ Autognosia implements cognitive division of labor across specialized profiles.
 
 ### Oracle
 - **Role:** Long-term reference librarian, historian, and retrieval specialist.
-- **Memory:** Queries GBrain graph/hybrid vector index and Oracle historical vault.
+- **Memory:** Queries Brain Search (Postgres + pgvector hybrid search) and Oracle historical vault.
 - **Rule:** Read-only for Personal Organizer tasks; returns compressed evidence packages with citations.
 
 ### Researcher

@@ -22,4 +22,4 @@ exec graphify extract . \
   --backend openai \
   --max-concurrency 1 \
   --token-budget 24000 \
-  --api-timeout 1800 >> "$LOG" 2>&1
+  --api-timeout 3600 >> "$LOG" 2>&1

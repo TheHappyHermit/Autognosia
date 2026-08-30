@@ -246,15 +246,78 @@ def check_profiles_config():
             return False, f"{profile} still has Honcho enabled"
     return True, "Specialist profiles configured (Honcho isolated)"
 
-# ── GBrain brain repo ────────────────────────────────────────────────────
+# ── Brain Search (Postgres + pgvector) ──────────────────────────────────
 
-def check_gbrain_repo():
-    brain = AUTOGNOSIA_HOME / "oracle" / "brain"
-    if (brain / ".git").exists():
-        return True, "Brain repo initialized"
-    if (REPO_ROOT / ".git").exists():
-        return True, "Autognosia repository git-initialized"
-    return False, "Git repository structure not initialized"
+def check_brain_postgres():
+    """Check brain-postgres Docker container."""
+    try:
+        import urllib.request
+        req = urllib.request.urlopen("http://127.0.0.1:5433", timeout=3)
+        # Postgres won't return 200 on root, but a connection means it's up
+        return True, "brain-postgres reachable on port 5433"
+    except Exception:
+        pass
+    # Check if container exists
+    try:
+        result = subprocess.run(
+            ["docker", "inspect", "-f", "{{.State.Running}}", "brain-postgres"],
+            capture_output=True, text=True, timeout=10
+        )
+        if result.returncode == 0 and "true" in result.stdout:
+            return True, "brain-postgres container running"
+    except Exception:
+        pass
+    return False, "brain-postgres not running (docker compose -f docker/docker-compose.brain.yml up -d)"
+
+def check_brain_schema():
+    """Check brain schema has required tables."""
+    try:
+        import pg8000
+        conn = pg8000.connect(host="127.0.0.1", port=5433, user="brain", password="brain", database="brain")
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM pages")
+        count = cur.fetchone()[0]
+        conn.close()
+        return True, f"Brain schema ready ({count} pages indexed)"
+    except Exception as e:
+        return False, f"Brain schema check failed: {str(e)[:100]}"
+
+def check_brain_search():
+    """Check brain search function works."""
+    try:
+        import pg8000, json, urllib.request
+        # Embed test query
+        data = json.dumps({"model": "qwen3-embedding:8b", "input": "test", "dimensions": 2000}).encode()
+        req = urllib.request.Request("http://10.1.1.10:11434/api/embed", data=data, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            result = json.loads(resp.read())
+            emb = result["embeddings"][0]
+        # Run search
+        conn = pg8000.connect(host="127.0.0.1", port=5433, user="brain", password="brain", database="brain")
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM brain_search(%s, 'test', 1)", (str(emb),))
+        count = cur.fetchone()[0]
+        conn.close()
+        if count > 0:
+            return True, "Brain search function working"
+        return True, "Brain search function available (no results for 'test')"
+    except Exception as e:
+        return False, f"Brain search check failed: {str(e)[:100]}"
+
+def check_brain_sync_recent():
+    """Check brain sync ran recently."""
+    try:
+        import pg8000
+        conn = pg8000.connect(host="127.0.0.1", port=5433, user="brain", password="brain", database="brain")
+        cur = conn.cursor()
+        cur.execute("SELECT MAX(last_run_at) FROM sync_state WHERE status = 'success'")
+        row = cur.fetchone()
+        conn.close()
+        if row and row[0]:
+            return True, f"Last sync: {row[0]}"
+        return False, "No successful sync recorded"
+    except Exception as e:
+        return False, f"Sync state check failed: {str(e)[:100]}"
 
 def check_schema_conformance():
     """Run the schema guard: WAL mode, expected indexes, FK orphans,
@@ -297,8 +360,10 @@ if __name__ == "__main__":
     check("Hermes", check_hermes)
     check("Profiles", check_profiles)
     check("Honcho", check_honcho)
-    check("GBrain CLI", check_gbrain)
-    check("GBrain Health", check_gbrain_health)
+    check("Brain Postgres", check_brain_postgres)
+    check("Brain Schema", check_brain_schema)
+    check("Brain Search", check_brain_search)
+    check("Brain Sync", check_brain_sync_recent)
     check("Directories", check_dirs)
     check("Secrets Dir", check_secrets_dir)
     check("Personal Organizer", check_personal_organizer)
@@ -306,7 +371,6 @@ if __name__ == "__main__":
     check("Skills", check_skills)
     check("Plugin", check_plugin)
     check("Profiles Config", check_profiles_config)
-    check("GBrain Repo", check_gbrain_repo)
     check("Schema Conformance", check_schema_conformance)
     
     total = len(results)
