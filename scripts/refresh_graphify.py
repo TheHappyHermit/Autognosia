@@ -49,7 +49,7 @@ def refresh_graph(name, source, graph_file):
     env["OPENAI_BASE_URL"] = "http://10.1.1.10:11434/v1"
     env["OPENAI_MODEL"] = "qwen3.5:9b"
     env["GRAPHIFY_DISABLE_THINKING"] = "1"
-    env["GRAPHIFY_MAX_OUTPUT_TOKENS"] = "32768"
+    env["GRAPHIFY_MAX_OUTPUT_TOKENS"] = "98304"
 
     if not os.path.isfile(graph_file):
         log(f"  {name}: graph.json not found at {graph_file}, running initial extract")

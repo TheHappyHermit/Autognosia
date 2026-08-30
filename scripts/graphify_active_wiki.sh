@@ -16,7 +16,7 @@ export OPENAI_BASE_URL="http://10.1.1.10:11434/v1"
 export OPENAI_API_KEY="sk-local"
 export OPENAI_MODEL="qwen3.5:9b"
 export GRAPHIFY_DISABLE_THINKING="1"
-export GRAPHIFY_MAX_OUTPUT_TOKENS="32768"
+export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"
 
 exec graphify extract . \
   --backend openai \
