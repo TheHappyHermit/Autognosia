@@ -1682,27 +1682,28 @@ class CommandDeck {
       switch(e.key.toLowerCase()) {
         case 'c':
           // Toggle chat drawer
-          document.getElementById('chat-drawer').classList.toggle('open');
+          document.getElementById('chat-drawer')?.classList.toggle('open');
           break;
         case 't':
           // Toggle telemetry drawer
-          document.getElementById('telemetry-drawer').classList.toggle('open');
+          document.getElementById('telemetry-drawer')?.classList.toggle('open');
           break;
         case 'n':
           // Open create modal
           this.openCreateModal('task');
           break;
         case 'k':
-          // Open command palette (Ctrl+K or Cmd+K)
+          // Open Knowledge Vault search (Ctrl+K or Cmd+K)
           if (e.ctrlKey || e.metaKey) {
             e.preventDefault();
-            document.getElementById('command-palette').showModal();
+            const search = document.getElementById('global-search');
+            if (search) search.focus();
           }
           break;
         case '/':
           // Focus wiki search
           e.preventDefault();
-          document.getElementById('wiki-search-input').focus();
+          document.getElementById('wiki-search-input')?.focus();
           break;
       }
     });

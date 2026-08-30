@@ -1,36 +1,38 @@
 /* ==========================================================================
-   Autognosia Command Deck — Design Tokens
-   Apple/Microsoft Fluent hybrid design system
+   Autognosia Command Deck — Design Tokens (Cockpit IA, Dark-Locked)
    ========================================================================== */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
   /* ── Surfaces ─────────────────────────────────────────────────────────── */
-  --bg-primary: light-dark(#f5f5f7, #0d0d0f);
-  --bg-secondary: light-dark(#ffffff, #1c1c1e);
-  --bg-tertiary: light-dark(#f0f0f2, #2c2c2e);
-  --bg-elevated: light-dark(#ffffff, #3a3a3c);
+  --bg-base: oklch(0.13 0.02 265);
+  --bg-primary: oklch(0.13 0.02 265);
+  --bg-secondary: oklch(0.17 0.015 265);
+  --bg-tertiary: oklch(0.20 0.015 265);
+  --bg-elevated: oklch(0.23 0.015 265);
+  --surface-card: oklch(0.17 0.015 265 / 0.85);
+  --surface-glass: oklch(0.16 0.015 265 / 0.60);
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
-  --border-subtle: light-dark(oklch(0 0 0 / 0.08), oklch(1 0 0 / 0.08));
-  --border-active: light-dark(oklch(0.55 0.15 250 / 0.4), oklch(0.7 0.15 250 / 0.4));
+  --border-subtle: oklch(1 0 0 / 0.08);
+  --border-active: oklch(1 0 0 / 0.14);
 
   /* ── Text ─────────────────────────────────────────────────────────────── */
-  --text-1: light-dark(oklch(0.15 0.01 250), oklch(0.95 0.01 250));
-  --text-2: light-dark(oklch(0.45 0.01 250), oklch(0.72 0.01 250));
-  --text-3: light-dark(oklch(0.65 0.01 250), oklch(0.50 0.01 250));
+  --text-1: oklch(0.95 0.01 265);
+  --text-2: oklch(0.74 0.01 265);
+  --text-3: oklch(0.60 0.01 265);
 
   /* ── Accents ──────────────────────────────────────────────────────────── */
-  --accent: light-dark(#007aff, #0a84ff);
-  --accent-soft: light-dark(oklch(0.55 0.15 250 / 0.1), oklch(0.7 0.15 250 / 0.15));
+  --accent: oklch(0.63 0.19 253);
+  --accent-soft: oklch(0.63 0.19 253 / 0.15);
   --accent-contrast: #ffffff;
 
   /* ── Status ───────────────────────────────────────────────────────────── */
-  --success: light-dark(#34c759, #30d158);
-  --warning: light-dark(#ff9500, #ff9f0a);
-  --danger: light-dark(#ff3b30, #ff453a);
-  --info: light-dark(#5ac8fa, #64d2ff);
+  --success: oklch(0.74 0.19 155);
+  --warning: oklch(0.78 0.16 72);
+  --danger: oklch(0.63 0.22 25);
+  --info: oklch(0.80 0.11 220);
 
   /* ── Legacy Aliases ──────────────────────────────────────────────────── */
   --text-muted: var(--text-3);
@@ -39,11 +41,11 @@
   --accent-cyan: var(--info);
   --accent-amber: var(--warning);
   --accent-red: var(--danger);
-  --accent-purple: #af52de;
+  --accent-purple: oklch(0.65 0.20 290);
   --accent-orange: var(--warning);
 
   /* ── Typography ───────────────────────────────────────────────────────── */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'SF Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
 
   /* ── Spacing (4pt grid) ───────────────────────────────────────────────── */
@@ -64,15 +66,16 @@
   --radius-full: 9999px;
 
   /* ── Shadows ──────────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04);
-  --shadow-md: 0 2px 8px oklch(0 0 0 / 0.06);
-  --shadow-lg: 0 8px 24px oklch(0 0 0 / 0.08);
-  --shadow-xl: 0 16px 48px oklch(0 0 0 / 0.12);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
+  --shadow-md: 0 2px 8px oklch(0 0 0 / 0.25);
+  --shadow-lg: 0 8px 24px oklch(0 0 0 / 0.30);
+  --shadow-xl: 0 16px 48px oklch(0 0 0 / 0.40);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.30), 0 8px 24px oklch(0 0 0 / 0.20);
 
   /* ── Glassmorphism ────────────────────────────────────────────────────── */
-  --glass-bg: light-dark(oklch(1 0 0 / 0.72), oklch(0.15 0.01 250 / 0.72));
-  --glass-border: light-dark(oklch(1 0 0 / 0.2), oklch(1 0 0 / 0.1));
-  --glass-blur: blur(20px) saturate(180%);
+  --glass-bg: oklch(0.16 0.015 265 / 0.60);
+  --glass-border: oklch(1 0 0 / 0.10);
+  --glass-blur: blur(24px) saturate(160%);
 
   /* ── Motion ───────────────────────────────────────────────────────────── */
   --motion-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -84,7 +87,34 @@
   --header-height: 56px;
 }
 
-/* ── Status Dots (panel headers) ───────────────────────────────────────── */
+/* ── Base ──────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-base);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Ambient Layer (L0) ────────────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at top left, oklch(0.63 0.19 253 / 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom right, oklch(0.80 0.11 220 / 0.04), transparent 50%),
+    linear-gradient(180deg, oklch(0.13 0.02 265), oklch(0.10 0.02 265));
+}
+
+/* ── Status Dots ───────────────────────────────────────────────────────── */
 .panel-status {
   display: flex;
   align-items: center;
@@ -134,186 +164,30 @@
   outline-offset: 2px;
 }
 
-/* ── Badge Classes (legacy) ─────────────────────────────────────────────── */
-.badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: 11px; font-weight: 500; }
+/* ── Badge Classes ─────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 500;
+}
 .badge-cyan { background: var(--info); color: white; }
 .badge-amber { background: var(--warning); color: white; }
-.badge-purple { background: #af52de; color: white; }
+.badge-purple { background: oklch(0.65 0.20 290); color: white; }
 .badge-medium { background: var(--bg-tertiary); color: var(--text-2); }
 .badge-completed { background: var(--success); color: white; }
 .badge-warn { background: var(--warning); color: white; }
 .badge-info { background: var(--info); color: white; }
 .badge-danger { background: var(--danger); color: white; }
 
-/* ── Empty Hint (legacy) ────────────────────────────────────────────────── */
+/* ── Empty Hint ─────────────────────────────────────────────────────────── */
 .empty-hint {
   color: var(--text-3);
   font-size: 13px;
   text-align: center;
   padding: var(--space-4);
 }
-
-/* ── Calendar Event ─────────────────────────────────────────────────────── */
-.calendar-event {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--accent);
-}
-
-/* ── Email Card ─────────────────────────────────────────────────────────── */
-.email-card {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-.email-card.read { opacity: 0.6; }
-.email-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-3); }
-.email-subject { font-weight: 600; color: var(--text-1); margin: var(--space-1) 0; }
-
-/* ── Intention Card ─────────────────────────────────────────────────────── */
-.intention-card {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-.intention-cue { font-size: 13px; color: var(--text-1); }
-.intention-action { font-size: 13px; color: var(--text-2); margin-top: var(--space-1); }
-
-/* ── Telemetry Block ────────────────────────────────────────────────────── */
-.telemetry-block {
-  margin-bottom: var(--space-4);
-}
-.telemetry-block h4 {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-3);
-  margin-bottom: var(--space-2);
-}
-
-/* ── Task Card ──────────────────────────────────────────────────────────── */
-.task-card {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-.task-card.completed { opacity: 0.5; text-decoration: line-through; }
-.task-checkbox { margin-top: 2px; }
-.task-details { flex: 1; }
-.task-title-line { display: flex; align-items: center; gap: var(--space-2); }
-.task-title { font-weight: 500; color: var(--text-1); }
-.task-meta-row { font-size: 11px; color: var(--text-3); display: flex; gap: var(--space-2); margin-top: var(--space-1); }
-
-/* ── Reminder Card ──────────────────────────────────────────────────────── */
-.reminder-card {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-/* ── Project Card ───────────────────────────────────────────────────────── */
-.project-card {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-/* ── Service Grid ───────────────────────────────────────────────────────── */
-.service-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: var(--space-3);
-}
-.service-card {
-  padding: var(--space-3);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-.service-card__icon { font-size: 24px; margin-bottom: var(--space-1); }
-.service-card__name { font-weight: 500; font-size: 13px; }
-.service-card__status { font-size: 11px; margin-top: var(--space-1); }
-
-/* ── Media Grid ─────────────────────────────────────────────────────────── */
-.media-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--space-3);
-}
-.media-card {
-  padding: var(--space-3);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-/* ── Queue List ─────────────────────────────────────────────────────────── */
-.queue-item {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-/* ── Agent Grid ─────────────────────────────────────────────────────────── */
-.agent-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
-}
-.agent-stat {
-  padding: var(--space-3);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-.agent-stat__label { font-size: 11px; color: var(--text-3); text-transform: uppercase; }
-.agent-stat__value { font-size: 20px; font-weight: 600; color: var(--text-1); }
-
-/* ── Cron Grid ──────────────────────────────────────────────────────────── */
-.cron-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--space-3);
-}
-.cron-job {
-  padding: var(--space-3);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-
-/* ── Graphify Grid ──────────────────────────────────────────────────────── */
-.graphify-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-}
-.graphify-stat {
-  padding: var(--space-3);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-
-/* ── Wiki Results ───────────────────────────────────────────────────────── */
-.wiki-result {
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-}
-.wiki-result__title { font-weight: 600; color: var(--text-1); }
-.wiki-result__snippet { font-size: 12px; color: var(--text-2); margin-top: var(--space-1); }
-.wiki-result__tier { font-size: 10px; color: var(--text-3); margin-top: var(--space-1); }
 
 /* ── Toast Container ────────────────────────────────────────────────────── */
 .toast-container {
@@ -327,8 +201,8 @@
 }
 .toast {
   padding: var(--space-3) var(--space-4);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  background: var(--surface-glass);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   font-size: 13px;
@@ -340,15 +214,15 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* ── Drawer (legacy) ────────────────────────────────────────────────────── */
+/* ── Drawer ─────────────────────────────────────────────────────────────── */
 .drawer {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   width: 400px;
-  background: var(--bg-secondary);
-  border-left: 1px solid var(--border-subtle);
+  background: var(--surface-glass);
+  border-left: 1px solid var(--glass-border);
   z-index: 150;
   transform: translateX(100%);
   transition: transform var(--motion-base);
@@ -356,7 +230,7 @@
 }
 .drawer.open { transform: translateX(0); }
 
-/* ── Modal (legacy) ─────────────────────────────────────────────────────── */
+/* ── Modal ──────────────────────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -371,7 +245,7 @@
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal {
-  background: var(--bg-secondary);
+  background: var(--surface-card);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   max-width: 500px;
@@ -448,19 +322,10 @@
   color: var(--accent-contrast);
   border-color: var(--accent);
 }
-.btn--primary:hover {
-  filter: brightness(1.1);
-}
-.btn--ghost {
-  background: transparent;
-}
-.btn--ghost:hover {
-  background: var(--bg-tertiary);
-}
-.btn--sm {
-  padding: var(--space-1) var(--space-2);
-  font-size: 12px;
-}
+.btn--primary:hover { filter: brightness(1.1); }
+.btn--ghost { background: transparent; }
+.btn--ghost:hover { background: var(--bg-tertiary); }
+.btn--sm { padding: var(--space-1) var(--space-2); font-size: 12px; }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
@@ -468,20 +333,4 @@
   .graphify-grid { grid-template-columns: 1fr; }
   .cron-grid { grid-template-columns: 1fr; }
   .service-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg-primary);
-  color: var(--text-1);
-  font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
