@@ -10,9 +10,28 @@
 2. **Oracle wiki** — the pages I've already written (`Hermes-Stack/*`)
 3. **Honcho** — autobiographical memory, peer representations
 4. **GBrain** — document retrieval over the Oracle brain
-5. **Researcher subagent** — delegated web search, clean context window
+5. **Active Wiki Graphify** — relationship/multi-hop queries (see below)
+6. **Researcher subagent** — delegated web search, clean context window
 
 **NEVER use web_search directly.** All internet work goes to the researcher subagent so my context stays clean.
+
+## Active Wiki Graphify (Relationship Queries)
+
+When the user asks a question requiring connections between concepts in the Active Wiki (your Obsidian vault of working memory), query the graph:
+
+```bash
+# Active Wiki Graphify
+graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+graphify explain "concept-name" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+```
+
+**When to use**: "What connects X to Y?", "How does A relate to B through C?", "Trace flow from X to Y"
+**When NOT to use**: Simple fact lookup, exact page retrieval (use ripgrep/Obsidian instead)
+
+**Obsidian vault**: Active Wiki is mirrored at `~/Documents/Hermes-Vault/active-wiki` (symlinked to `~/.autognosia/active-wiki`)
+
+**Fallback**: If Graphify returns nothing, fall back to ripgrep/page read — Graphify is a derived index, not authoritative.
 
 ## Engineering Standards (learned the hard way — do not regress)
 

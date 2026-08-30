@@ -1,22 +1,26 @@
 model:
-  default: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
-  provider: llamaCPP
-  base_url: http://10.1.1.10:8080/v1
-  context_length: 262144
+  default: meituan/longcat-2.0:free
+  provider: nous
+  base_url: ''
+providers:
+  llamaCPP:
+    api: http://10.1.1.10:8080/v1
+    default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
+    transport: chat_completions
 fallback_providers:
-- provider: openrouter
-  model: nvidia/nemotron-3-ultra-550b-a55b:free
+  - provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
 credential_pool_strategies:
   openrouter: fill_first
   zai: fill_first
 toolsets:
-- hermes-cli
+  - hermes-cli
 agent:
   max_turns: 200
   tool_use_enforcement: auto
-  verify_on_stop: auto
   verify_guidance: true
   max_verify_nudges: 3
+  verify_on_stop: auto
   reasoning_effort: high
 terminal:
   backend: local
@@ -60,12 +64,6 @@ auxiliary:
     api_key: ''
     timeout: 30
     download_timeout: 30
-  web_extract:
-    provider: auto
-    model: ''
-    base_url: ''
-    api_key: ''
-    timeout: 30
   compression:
     provider: auto
     model: ''
@@ -85,6 +83,12 @@ auxiliary:
     api_key: ''
     timeout: 30
   mcp:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  web_extract:
     provider: auto
     model: ''
     base_url: ''
@@ -139,11 +143,11 @@ tts:
     device: cpu
 stt:
   enabled: true
-  provider: local
   local:
     model: base
   openai:
     model: whisper-1
+  provider: local
 voice:
   record_key: ctrl+b
   max_recording_seconds: 120
@@ -165,11 +169,34 @@ delegation:
   provider: ''
   base_url: ''
   api_key: ''
-  max_iterations: 50
+  max_iterations: 250
 prefill_messages_file: ''
 skills:
-  write_approval: true
   guard_agent_created: true
+  write_approval: true
+  disabled:
+    - pokemon-player
+    - minecraft-modpack-server
+    - touchdesigner-mcp
+    - pixel-art
+    - ascii-video
+    - axolotl
+    - unsloth
+    - peft-fine-tuning
+    - modal-serverless-gpu
+    - weights-and-biases
+    - evaluating-llms-harness
+    - competitor-news-monitor
+    - ml-paper-writing
+    - box
+curator:
+  enabled: true
+  interval_hours: 168
+  min_idle_hours: 2
+  stale_after_days: 90
+  archive_after_days: 365
+  consolidate: false
+  prune_builtins: false
 timezone: ''
 discord:
   require_mention: true
@@ -181,9 +208,19 @@ approvals:
   timeout: 60
   destructive_slash_confirm: false
 command_allowlist:
-- hermes update (restarts gateway, kills running agents)
-- docker restart/stop/kill (container lifecycle)
-- docker compose restart/stop/kill/down (container lifecycle)
+  - delete in root path
+  - in-place edit of Hermes config/env
+  - docker compose restart/stop/kill/down (container lifecycle)
+  - recursive delete
+  - script execution via -e/-c flag
+  - hermes update (restarts gateway, kills running agents)
+  - shell command via -c/-lc flag
+  - execute_code
+  - docker restart/stop/kill (container lifecycle)
+plugins:
+  enabled:
+    - dashboard_auth/basic
+  disabled: []
 security:
   redact_secrets: true
   tirith_enabled: true
@@ -200,7 +237,7 @@ onboarding:
   seen:
     openclaw_residue_cleanup: true
     busy_input_prompt: true
-_config_version: 35
+_config_version: 39
 smart_model_routing:
   enabled: false
   max_simple_chars: 160
@@ -213,20 +250,25 @@ session_reset:
   fallback_model:
     provider: zai
     model: glm-4.7-flash
-plugins:
-  enabled:
-  - dashboard_auth/basic
-  disabled: []
-providers:
-  llamaCPP:
-    api: http://10.1.1.10:8080/v1
-    default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
-    transport: chat_completions
-curator:
-  enabled: true
-  interval_hours: 168
-  min_idle_hours: 2
-  stale_after_days: 90
-  archive_after_days: 365
-  consolidate: false
-  prune_builtins: false
+
+# ── Fallback Model ────────────────────────────────────────────────────
+# Automatic provider failover when primary is unavailable.
+# Uncomment and configure to enable. Triggers on rate limits (429),
+# overload (529), service errors (503), or connection failures.
+#
+# Supported providers:
+#   openrouter   (OPENROUTER_API_KEY)  — routes to any model
+#   openai-codex (OAuth — hermes auth) — OpenAI Codex
+#   nous         (OAuth — hermes auth) — Nous Portal
+#   zai          (ZAI_API_KEY)         — Z.AI / GLM
+#   kimi-coding  (KIMI_API_KEY)        — Kimi / Moonshot
+#   kimi-coding-cn (KIMI_CN_API_KEY)   — Kimi / Moonshot (China)
+#   minimax      (MINIMAX_API_KEY)     — MiniMax
+#   minimax-cn   (MINIMAX_CN_API_KEY)  — MiniMax (China)
+#   bedrock      (AWS IAM / boto3)     — AWS Bedrock (Converse API)
+#
+# For custom OpenAI-compatible endpoints, add base_url and key_env.
+#
+# fallback_model:
+#   provider: openrouter
+#   model: anthropic/claude-sonnet-4
