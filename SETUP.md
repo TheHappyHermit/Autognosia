@@ -59,6 +59,23 @@ Autognosia implements cognitive division of labor across specialized profiles.
 
 See [`cron-jobs/definitions.md`](cron-jobs/definitions.md) for canonical specifications and [`cron-jobs/setup-instructions.md`](cron-jobs/setup-instructions.md) for registration commands.
 
+### Coder / OpenCode Setup
+
+When setting up Autognosia, Hermes must bootstrap the **Coder Agent** profile which delegates all coding to OpenCode CLI. See **[`OPENCODE.md`](OPENCODE.md)** for the complete specification including:
+
+- Required skills to link into `~/.hermes/profiles/coder/skills/`
+- Model config (Qwen3.8-27B via LM Studio)
+- Verification rules and scratch workspace pattern
+- Consultation and escalation rules
+
+Quick summary of Coder profile location:
+```
+~/.hermes/profiles/coder/
+├── SOUL.md          # Agent personality (copy from this repo)
+├── config.yaml      # Pinned to desktop LM Studio (10.1.1.151:1234)
+└── skills/          # Symlinks to ~/.hermes/skills/ entries
+```
+
 | # | Time | Job | Type | Purpose |
 |---|------|-----|------|---------|
 | 1 | 01:00 | Config backup | Script | Git backup of config, profiles, skills |
