@@ -3,7 +3,7 @@
 Refresh Graphify knowledge graphs for Autognosia.
 
 This script refreshes both Main Graph (from Active Wiki) and Oracle Graph
-(from Oracle Brain) in-place using graphify update.
+(from Oracle Brain) in-place using graphify extract (semantic, additive).
 Run via cron job weekly after wiki lint.
 
 Prerequisites:
@@ -46,15 +46,17 @@ def refresh_graph(name, source, graph_file):
 
     env = os.environ.copy()
     env["OPENAI_API_KEY"] = "sk-local"
-    env["OPENAI_BASE_URL"] = "http://10.1.1.10:8080/v1"
-    env["OPENAI_MODEL"] = "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
+    env["OPENAI_BASE_URL"] = "http://10.1.1.10:11434/v1"
+    env["OPENAI_MODEL"] = "qwen3.5:9b"
+    env["GRAPHIFY_DISABLE_THINKING"] = "1"
+    env["GRAPHIFY_MAX_OUTPUT_TOKENS"] = "32768"
 
     if not os.path.isfile(graph_file):
         log(f"  {name}: graph.json not found at {graph_file}, running initial extract")
-        cmd = ["graphify", "extract", source, "--max-concurrency", "1", "--api-timeout", "600"]
+        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "600"]
     else:
-        log(f"  {name}: graph.json found, running update (in-place)")
-        cmd = ["graphify", "update", source]
+        log(f"  {name}: graph.json found, running semantic extract (additive, in-place)")
+        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "600"]
 
     log(f"  Refreshing {name} from {source}...")
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=source, env=env, timeout=3600)
