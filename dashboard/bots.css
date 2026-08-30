@@ -129,6 +129,14 @@
   font-size: 12px;
   cursor: pointer;
   transition: all var(--motion-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.bot-action-icon {
+  width: 14px;
+  height: 14px;
 }
 
 .bot-action-btn:hover {
@@ -203,7 +211,9 @@
   border-radius: 50%;
   color: var(--text-3);
   cursor: pointer;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bot-chat-close:hover {
@@ -303,7 +313,6 @@
   background: var(--accent);
   color: white;
   cursor: pointer;
-  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;

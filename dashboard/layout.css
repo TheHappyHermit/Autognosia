@@ -219,6 +219,7 @@
 
 /* ── View Sections ────────────────────────────────────────────────────── */
 .view-section {
+  display: none;
   padding: var(--space-5);
   max-width: calc(100vw - var(--sidebar-width));
 }

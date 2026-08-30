@@ -85,8 +85,9 @@
       </div>
       <div class="header-search">
         <span class="header-search-icon" aria-hidden="true"><svg class="header-icon-sm"><use href="#icon-search"/></svg></span>
-        <input type="search" id="global-search" placeholder="Search..." aria-label="Search" />
+        <input type="search" id="global-search" placeholder="Search..." aria-label="Search" aria-expanded="false" aria-controls="global-search-results" />
         <span class="header-search-hint">⌘K</span>
+        <div class="header-search-results" id="global-search-results" role="listbox" aria-label="Search results" hidden></div>
       </div>
       <div class="header-actions">
         <button class="header-btn" aria-label="Notifications" title="Notifications">

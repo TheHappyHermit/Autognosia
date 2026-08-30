@@ -110,16 +110,24 @@ class CommandDeck {
       target.style.display = 'block';
     }
 
-    // Initialize view-specific content
-    if (viewName === 'bots' && window.botsPage) {
-      window.botsPage.init();
-    }
-
     // For dashboard view, show the main content
     if (viewName === 'dashboard') {
       document.querySelector('.content-area').style.display = 'block';
     } else {
       document.querySelector('.content-area').style.display = 'none';
+    }
+
+    // Initialize view-specific content
+    if (viewName === 'system') {
+      // Re-fetch system data to ensure panels are populated
+      this.fetchTelemetry();
+      this.fetchServices();
+      this.fetchCronJobs();
+      this.fetchProjects();
+      this.fetchGraphifyStatus();
+    }
+    if (viewName === 'bots' && window.botsPage) {
+      window.botsPage.init();
     }
   }
 
@@ -475,13 +483,29 @@ class CommandDeck {
         });
       });
 
-      // Wiki Search
+      // Wiki Search (in-content)
       const searchInput = document.getElementById('wiki-search-input');
       if (searchInput) {
         searchInput.addEventListener('input', (e) => {
           const q = e.target.value.trim();
           if (q.length < 2) return;
           this.searchWiki(q);
+        });
+      }
+
+      // Global Search (⌘K) — header search triggers Knowledge Vault
+      const globalSearch = document.getElementById('global-search');
+      if (globalSearch) {
+        globalSearch.addEventListener('input', (e) => {
+          const q = e.target.value.trim();
+          if (q.length < 2) return;
+          this.searchWiki(q);
+        });
+        globalSearch.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            globalSearch.value = '';
+            globalSearch.blur();
+          }
         });
       }
 
@@ -1635,14 +1659,45 @@ class CommandDeck {
 
   renderWikiResults(results, query) {
     const container = document.getElementById('wiki-results-container');
-    
+    const flyout = document.getElementById('global-search-results');
+    const globalSearch = document.getElementById('global-search');
+
+    // Render in-flyout if ⌘K is active
+    if (flyout && globalSearch && document.activeElement === globalSearch) {
+      if (results.length === 0) {
+        flyout.innerHTML = `<div class="global-search-empty">No results for "${escapeHtml(query)}"</div>`;
+      } else {
+        flyout.innerHTML = results.map((r, i) => `
+          <div class="global-search-item" role="option" aria-selected="${i === 0}" data-wiki-path="${escapeHtml(r.path)}">
+            <div class="global-search-item__icon"><svg class="header-icon-sm"><use href="#icon-search"/></svg></div>
+            <div class="global-search-item__body">
+              <div class="global-search-item__title">${this.highlightSearchTerm(r.title, query)}</div>
+              <div class="global-search-item__tier">${escapeHtml(r.tier)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      flyout.hidden = false;
+      if (globalSearch) globalSearch.setAttribute('aria-expanded', 'true');
+
+      // Click handler
+      flyout.querySelectorAll('.global-search-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const path = item.dataset.wikiPath;
+          if (path && window.commandDeck) window.commandDeck.navigateToWiki(path);
+        });
+      });
+      return;
+    }
+
+    if (!container) return;
+
     if (results.length === 0) {
       container.innerHTML = `<div class="empty-hint">No results found for "${escapeHtml(query)}"</div>`;
       return;
     }
 
     const countEl = `<div class="search-results-count">${results.length} result(s)</div>`;
-    
     const items = results.map(r => `
       <div class="wiki-result-card" data-wiki-path="${escapeHtml(r.path)}">
         <div class="wiki-result-header">
@@ -1652,7 +1707,6 @@ class CommandDeck {
         <div class="wiki-res-snippet">${this.highlightSearchTerm(r.snippet, query)}</div>
       </div>
     `).join('');
-
     container.innerHTML = countEl + items;
   }
 
@@ -1670,6 +1724,21 @@ class CommandDeck {
       toast.style.transform = 'translateY(10px)';
       setTimeout(() => toast.remove(), 300);
     }, 3000);
+  }
+
+  // ── Phase 4: Keyboard Shortcuts ──────────────────────────────────────────────
+
+  navigateToWiki(path) {
+    // Navigate to a wiki page — open in a drawer or new tab
+    const flyout = document.getElementById('global-search-results');
+    const globalSearch = document.getElementById('global-search');
+    if (flyout) flyout.hidden = true;
+    if (globalSearch) {
+      globalSearch.value = '';
+      globalSearch.setAttribute('aria-expanded', 'false');
+    }
+    // Open page in new tab for now
+    window.open(`/wiki/page?path=${encodeURIComponent(path)}`, '_blank');
   }
 
   // ── Phase 4: Keyboard Shortcuts ──────────────────────────────────────────────

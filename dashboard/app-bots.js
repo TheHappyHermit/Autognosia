@@ -62,9 +62,9 @@ class BotsPage {
           <span class="bot-last-activity">${lastActivity}</span>
         </div>
         <div class="bot-actions">
-          <button class="bot-action-btn" data-action="chat" data-bot-id="${bot.id}">💬 Chat</button>
-          <button class="bot-action-btn" data-action="history" data-bot-id="${bot.id}">📜 History</button>
-          <button class="bot-action-btn" data-action="config" data-bot-id="${bot.id}">⚙️ Config</button>
+          <button class="bot-action-btn" data-action="chat" data-bot-id="${bot.id}"><svg class="bot-action-icon"><use href="#icon-bot"/></svg> Chat</button>
+          <button class="bot-action-btn" data-action="history" data-bot-id="${bot.id}"><svg class="bot-action-icon"><use href="#icon-clock"/></svg> History</button>
+          <button class="bot-action-btn" data-action="config" data-bot-id="${bot.id}"><svg class="bot-action-icon"><use href="#icon-settings"/></svg> Config</button>
         </div>
       </div>
     `;
@@ -118,7 +118,7 @@ class BotsPage {
             <div class="bot-chat-header-name">${this.escapeHtml(bot.name)}</div>
             <div class="bot-chat-header-model">${this.escapeHtml(bot.model)} • ${this.escapeHtml(bot.provider)}</div>
           </div>
-          <button class="bot-chat-close" aria-label="Close chat">✕</button>
+          <button class="bot-chat-close" aria-label="Close chat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-x"/></svg></button>
         </div>
         <div class="bot-chat-messages" id="bot-chat-messages">
           <div class="bot-message bot-message--bot">
