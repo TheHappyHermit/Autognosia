@@ -17,7 +17,7 @@ import sys
 import shutil
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.path.expanduser("${HOME}/.autognosia")
+AUTOGNOSIA_HOME = os.path.expanduser("~/.autognosia")
 ACTIVE_WIKI = os.path.join(AUTOGNOSIA_HOME, "active-wiki")
 ORACLE_BRAIN = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
 LOG_FILE = os.path.join(AUTOGNOSIA_HOME, "logs", "graphify-refresh.log")
@@ -45,8 +45,8 @@ def refresh_graph(name, source, graph_file):
         return True
 
     env = os.environ.copy()
-    env["OPENAI_API_KEY"] = "x"
-    env["OPENAI_BASE_URL"] = "http://<V100_INFERENCE_URL>/v1"
+    env["OPENAI_API_KEY"] = "sk-local"
+    env["OPENAI_BASE_URL"] = "http://10.1.1.10:8080/v1"
     env["OPENAI_MODEL"] = "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
 
     if not os.path.isfile(graph_file):
