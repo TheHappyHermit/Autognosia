@@ -824,7 +824,7 @@ class CommandDeck {
     const isDone = t.status === 'completed';
     return `
       <div class="task-card ${isDone ? 'completed' : ''}" data-task-id="${t.id}">
-        <input type="checkbox" class="task-checkbox" data-task-id="${t.id}" ${isDone ? 'checked' : ''} />
+        <input type="checkbox" class="task-checkbox" data-task-id="${t.id}" aria-label="Mark ${escapeHtml(t.title)} as ${isDone ? 'active' : 'completed'}" ${isDone ? 'checked' : ''} />
         <div class="task-details">
           <div class="task-title-line">
             <span class="task-title">${escapeHtml(t.title)}</span>

@@ -100,7 +100,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 11px;
-  color: var(--text-3);
+  color: var(--text-2);
   background: var(--bg-elevated);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
@@ -285,4 +285,11 @@
   text-align: center;
   font-size: 13px;
   color: var(--text-3);
+}
+
+/* Fix axe: label inputs and aria on search */
+.task-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
 }

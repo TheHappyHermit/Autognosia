@@ -1263,7 +1263,7 @@ def get_hermes_status():
 
 # ── Static File Serving ────────────────────────────────────────────────────────
 
-DASHBOARD_DIR = Path(__file__).resolve().parent
+DASHBOARD_DIR = REPO_ROOT / "dashboard"
 
 @app.get("/")
 def serve_dashboard():
