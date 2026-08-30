@@ -68,6 +68,16 @@ CHUNK_OVERLAP = int(os.environ.get("BRAIN_CHUNK_OVERLAP", "50"))
 # Approximate chars per token for markdown text
 CHARS_PER_TOKEN = 3.5
 
+# Embedding batch size — smaller = more reliable, larger = faster
+# For files with many chunks, the embedder falls back to smaller batches on timeout
+BATCH_SIZE = 8
+# Per-text timeout scales with batch size: base 60s + 5s per text in batch
+EMBED_TIMEOUT_BASE = 60
+EMBED_TIMEOUT_PER_TEXT = 5
+# Retry configuration
+MAX_RETRIES = 3
+RETRY_BACKOFF = 2.0  # exponential backoff multiplier
+
 # ── Database helpers ────────────────────────────────────────────────────
 
 def get_db():
@@ -190,29 +200,12 @@ def chunk_markdown(text: str, source: str, slug: str) -> list[dict]:
     return chunks
 
 
-# ── Embedding ───────────────────────────────────────────────────────────
+# ── Embedding with retry and fallback ───────────────────────────────────
 
-def get_embedding_dimension() -> int:
-    """Get the embedding dimension by probing Ollama."""
-    try:
-        data = json.dumps({
-            "model": EMBED_MODEL,
-            "input": "test"
-        }).encode()
-        req = urllib.request.Request(
-            f"{OLLAMA_URL}/api/embed",
-            data=data,
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            result = json.loads(resp.read())
-            return len(result["embeddings"][0])
-    except Exception:
-        return 4096  # Default fallback
-
-
-def embed_texts(texts: list[str], dim: int = 2000) -> list[list[float]]:
+def embed_texts(texts: list[str], dim: int = 2000, timeout: int = None) -> list[list[float]]:
     """Embed a batch of texts via Ollama /api/embed with dimension truncation."""
+    if timeout is None:
+        timeout = EMBED_TIMEOUT_BASE + len(texts) * EMBED_TIMEOUT_PER_TEXT
     data = json.dumps({
         "model": EMBED_MODEL,
         "input": texts,
@@ -223,9 +216,53 @@ def embed_texts(texts: list[str], dim: int = 2000) -> list[list[float]]:
         data=data,
         headers={"Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(req, timeout=120) as resp:
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
         result = json.loads(resp.read())
         return result["embeddings"]
+
+
+def embed_texts_with_retry(texts: list[str], dim: int = 2000) -> list[list[float]]:
+    """
+    Embed texts with automatic retry, backoff, and single-text fallback.
+    
+    On failure:
+    1. Retry the full batch up to MAX_RETRIES with exponential backoff
+    2. On persistent failure, halve the batch size and retry each half
+    3. As last resort, embed one text at a time
+    
+    This handles large files (90+ chunks) gracefully — if a batch of 8 fails,
+    we fall back to batches of 4, then 2, then 1.
+    """
+    if not texts:
+        return []
+    
+    timeout = EMBED_TIMEOUT_BASE + len(texts) * EMBED_TIMEOUT_PER_TEXT
+    
+    # Try the full batch first, with retries
+    for attempt in range(MAX_RETRIES):
+        try:
+            return embed_texts(texts, dim=dim, timeout=timeout)
+        except Exception as e:
+            wait = RETRY_BACKOFF ** attempt
+            print(f"    [retry {attempt+1}/{MAX_RETRIES}] batch of {len(texts)} failed ({str(e)[:60]}), waiting {wait:.1f}s")
+            time.sleep(wait)
+            # Increase timeout for retry
+            timeout = int(timeout * 1.5)
+    
+    # If batch still fails and it's more than 1 text, try splitting
+    if len(texts) > 1:
+        mid = len(texts) // 2
+        left = texts[:mid]
+        right = texts[mid:]
+        print(f"    [fallback] splitting batch of {len(texts)} into {len(left)}+{len(right)}")
+        result = []
+        result.extend(embed_texts_with_retry(left, dim=dim))
+        result.extend(embed_texts_with_retry(right, dim=dim))
+        return result
+    
+    # Last resort: single text failed even after retries
+    print(f"    [error] single text embedding failed after {MAX_RETRIES} retries: {texts[0][:80]}...")
+    raise Exception(f"Failed to embed single text after {MAX_RETRIES} retries")
 
 
 # ── File scanning ───────────────────────────────────────────────────────
@@ -286,14 +323,12 @@ def scan_source(source_name: str, source_dir: Path) -> list[dict]:
 def ensure_hnsw_index(conn, dim: int):
     """Ensure the HNSW index exists for the correct dimension."""
     cur = conn.cursor()
-    # Check if index exists
     cur.execute("""
         SELECT indexname FROM pg_indexes 
         WHERE indexname = 'idx_embeddings_hnsw' AND tablename = 'embeddings'
     """)
     if cur.fetchone() is None:
         print(f"  Creating HNSW index for dim={dim}...")
-        # Ensure the vector column has the correct dimension
         cur.execute(f"ALTER TABLE embeddings ALTER COLUMN embedding TYPE vector({dim});")
         cur.execute(f"""
             CREATE INDEX idx_embeddings_hnsw ON embeddings
@@ -327,14 +362,14 @@ def upsert_page(conn, source: str, slug: str, title: str, content: str,
 
 
 def delete_embeddings(conn, page_id: int):
-    """Delete all embeddings for a page (before re-inserting)."""
+    """Delete all embeddings for a page."""
     cur = conn.cursor()
     cur.execute("DELETE FROM embeddings WHERE page_id = %s", (page_id,))
 
 
 def insert_embedding(conn, page_id: int, chunk_index: int, chunk_text: str,
                      embedding: list[float], token_count: int):
-    """Insert a single embedding row."""
+    """Insert or update a single embedding row."""
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO embeddings (page_id, chunk_index, chunk_text, embedding, token_count, created_at)
@@ -381,7 +416,6 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
     print(f"  Scanned {len(files)} .md files")
 
     # Embedding dimension is fixed at 2000 (pgvector HNSW max)
-    # Ollama truncates server-side via "dimensions" parameter
     dim = 2000
     print(f"  Embedding dimension: {dim}")
 
@@ -412,54 +446,71 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
         if not chunks:
             continue
 
-        # Embed chunks (batch)
+        # Embed chunks incrementally with retry
         embeddings = []
-        batch_size = 16
-        for i in range(0, len(chunks), batch_size):
-            batch = [c["text"] for c in chunks[i:i + batch_size]]
+        embed_errors = 0
+        for i in range(0, len(chunks), BATCH_SIZE):
+            batch = chunks[i:i + BATCH_SIZE]
+            texts = [c["text"] for c in batch]
             try:
-                batch_embeddings = embed_texts(batch)
+                batch_embeddings = embed_texts_with_retry(texts, dim=dim)
                 embeddings.extend(batch_embeddings)
             except Exception as e:
-                print(f"  [error] Embed failed for {slug} batch {i}: {e}")
-                stats["errors"] += 1
-                continue
+                print(f"  [error] All retries failed for {slug} batch {i}: {str(e)[:80]}")
+                embed_errors += 1
+                # Continue with partial embeddings rather than skipping the file
+                # Fill remaining slots with None to track gaps
+                embeddings.extend([None] * len(batch))
 
-        if len(embeddings) != len(chunks):
-            print(f"  [error] Embedding count mismatch for {slug}: {len(embeddings)} vs {len(chunks)}")
+        # Check if we got any embeddings at all
+        valid_embeddings = [e for e in embeddings if e is not None]
+        if not valid_embeddings:
+            print(f"  [error] No embeddings generated for {slug}")
             stats["errors"] += 1
             continue
 
         if dry_run:
-            stats["chunks"] += len(chunks)
+            stats["chunks"] += len(valid_embeddings)
             continue
 
-        # Upsert page
+        # Upsert page and embeddings incrementally
         try:
             # Parse frontmatter if present
             metadata = {}
             if file_info["content"].startswith("---"):
                 parts = file_info["content"].split("---", 2)
                 if len(parts) >= 3:
-                    # Simple YAML-ish parse (good enough for metadata)
                     for line in parts[1].split("\n"):
                         if ":" in line:
                             key, val = line.split(":", 1)
                             metadata[key.strip()] = val.strip()
 
+            # Use upsert for page — preserves existing record if present
             page_id = upsert_page(
                 conn, source_name, slug, file_info["title"],
                 file_info["content"], file_hash, metadata, len(chunks), EMBED_MODEL
             )
 
-            # Delete old embeddings and insert new
-            delete_embeddings(conn, page_id)
+            # Insert embeddings one by one using upsert (ON CONFLICT UPDATE)
+            # This preserves existing embeddings if new ones fail
+            inserted = 0
             for chunk, embedding in zip(chunks, embeddings):
+                if embedding is None:
+                    continue  # Skip failed embeddings
                 insert_embedding(conn, page_id, chunk["index"], chunk["text"], embedding, chunk["token_count"])
-
+                inserted += 1
+            
+            # Delete any embeddings that weren't updated (e.g., if chunk count decreased)
+            cur = conn.cursor()
+            cur.execute("DELETE FROM embeddings WHERE page_id = %s AND chunk_index >= %s", (page_id, len(chunks)))
+            
             conn.commit()
-            stats["chunks"] += len(chunks)
-            print(f"  [ok] {slug}: {len(chunks)} chunks")
+            stats["chunks"] += inserted
+            
+            if embed_errors > 0:
+                print(f"  [partial] {slug}: {inserted}/{len(chunks)} chunks embedded ({embed_errors} batch failures)")
+            else:
+                print(f"  [ok] {slug}: {len(chunks)} chunks")
 
         except Exception as e:
             print(f"  [error] Upsert failed for {slug}: {e}")
@@ -505,8 +556,7 @@ def main():
 
     # Init mode
     if args.init:
-        dim = get_embedding_dimension()
-        ensure_hnsw_index(conn, dim)
+        ensure_hnsw_index(conn, 2000)
         print("Schema initialized.")
         conn.close()
         return
