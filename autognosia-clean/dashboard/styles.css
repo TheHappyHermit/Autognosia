@@ -1,0 +1,13 @@
+/* ==========================================================================
+   Autognosia Command Deck — Component Styles (Module Entry)
+   This file imports all CSS modules. Do not add rules here.
+   ========================================================================== */
+
+@import "layout.css";
+@import "briefing.css";
+@import "calendar.css";
+@import "tasks.css";
+@import "comms.css";
+@import "drawers.css";
+@import "services.css";
+@import "agent.css";

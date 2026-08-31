@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.venv
+venv
+.env
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.md
+
+# Logs
+*.log
+
+# Local data (mounted via volumes)
+data/
+config/
+
+# Documentation
+*.md
+LICENSE
+.github/
