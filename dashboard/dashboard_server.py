@@ -1100,7 +1100,149 @@ def get_download_queue():
     queue.extend(_get_sonarr_queue(10))
     queue.extend(_get_radarr_queue(10))
 
-# ── # ── Agent Intelligence Endpoints (Phase 3) ───────────────────────────────────────
+# ── # ── Home Lab Monitoring Endpoints ───────────────────────────────────────────
+
+HOME_LAB_SERVERS = {
+    "main": {
+        "ip": "10.1.1.10",
+        "name": "Main",
+        "role": "LLM inference, graph processing",
+        "services": {
+            "llama-server": {"port": 8080, "path": "/health"},
+            "ollama": {"port": 11434, "path": "/api/tags"},
+            "graphify": {"port": 8081, "path": "/health"},
+        },
+        "gpu": {"name": "V100", "memory_mb": 32768, "type": "nvidia"},
+    },
+    "agent": {
+        "ip": "10.1.1.37",
+        "name": "Agent",
+        "role": "Hermes gateway, paperclip, memory systems",
+        "services": {
+            "hermes-gateway": {"port": 8642, "path": "/health"},
+            "paperclip": {"port": 3000, "path": "/"},
+            "honcho": {"port": 3100, "path": "/health"},
+            "meilisearch": {"port": 7700, "path": "/health"},
+            "qdrant": {"port": 6333, "path": "/collections"},
+            "redis": {"port": 6379, "path": None},
+            "postgres": {"port": 5432, "path": None},
+        },
+    },
+    "agent_zero": {
+        "ip": "10.1.1.18",
+        "name": "Agent Zero",
+        "role": "Autonomous agent, data brokering",
+        "services": {
+            "agent-zero": {"port": 80, "path": "/"},
+            "shadowbroker": {"port": 9000, "path": "/health"},
+            "mariadb": {"port": 3306, "path": None},
+        },
+    },
+}
+
+
+def _check_remote_service(host: str, port: int, path: str = None, timeout: float = 2.0) -> dict:
+    """Check health of a remote service on the home lab network."""
+    url = f"http://{host}:{port}"
+    if path:
+        url += path
+    try:
+        r = requests.get(url, timeout=timeout)
+        return {
+            "healthy": r.status_code < 500,
+            "status_code": r.status_code,
+            "response_ms": round((r.elapsed.total_seconds() * 1000), 1) if hasattr(r, 'elapsed') else None,
+        }
+    except requests.exceptions.Timeout:
+        return {"healthy": False, "status_code": 0, "response_ms": None, "error": "timeout"}
+    except Exception as e:
+        return {"healthy": False, "status_code": 0, "response_ms": None, "error": str(e)}
+
+
+def _get_nvidia_smi(host: str = "localhost") -> dict:
+    """Get GPU metrics via nvidia-smi (local only; remote needs ssh)."""
+    result = {"available": False, "gpus": []}
+    try:
+        if host not in ("localhost", "127.0.0.1"):
+            # Remote GPU check would require SSH — skip for now
+            return result
+        r = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name,utilization.gpu,memory.used,memory.total", "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5
+        )
+        if r.returncode == 0:
+            result["available"] = True
+            for line in r.stdout.strip().split("\n"):
+                if line.strip():
+                    parts = [p.strip() for p in line.split(",")]
+                    if len(parts) >= 4:
+                        result["gpus"].append({
+                            "name": parts[0],
+                            "utilization": int(parts[1]),
+                            "memory_used_mb": int(parts[2]),
+                            "memory_total_mb": int(parts[3]),
+                        })
+    except Exception:
+        pass
+    return result
+
+
+@app.get("/api/homelab")
+def get_homelab_status():
+    """Return full home lab status: servers, services, GPU."""
+    # Local GPU
+    gpu_info = _get_nvidia_smi("localhost")
+
+    result = {
+        "servers": {},
+        "gpu": gpu_info,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    for key, server in HOME_LAB_SERVERS.items():
+        is_local = server["ip"] in ("127.0.0.1", "localhost")
+        host = "localhost" if is_local else server["ip"]
+
+        server_result = {
+            "ip": server["ip"],
+            "name": server["name"],
+            "role": server["role"],
+            "online": True,
+            "services": {},
+        }
+
+        for svc_name, svc_info in server.get("services", {}).items():
+            if is_local:
+                health = _check_remote_service(host, svc_info["port"], svc_info.get("path"))
+            else:
+                health = _check_remote_service(host, svc_info["port"], svc_info.get("path"))
+            server_result["services"][svc_name] = {
+                "port": svc_info["port"],
+                **health,
+            }
+            if not health.get("healthy"):
+                server_result["online"] = False
+
+        # Add GPU info for main server
+        if key == "main" and gpu_info["available"]:
+            server_result["gpu"] = gpu_info["gpus"][0] if gpu_info["gpus"] else None
+
+        result["servers"][key] = server_result
+
+    return result
+
+
+@app.get("/api/health")
+def healthcheck():
+    """Healthcheck endpoint for Docker and monitoring."""
+    docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
+    db_ok = ORGANIZER_DB.exists()
+    return JSONResponse({
+        "status": "ok",
+        "docker": docker_ok,
+        "database": db_ok,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
 
 @app.get("/api/agent")
 def get_agent_status():
@@ -1317,6 +1459,10 @@ def serve_bots_css():
 @app.get("/tokens.css")
 def serve_tokens():
     return FileResponse(str(DASHBOARD_DIR / "tokens.css"), media_type="text/css")
+
+@app.get("/home-lab.css")
+def serve_home_lab_css():
+    return FileResponse(str(DASHBOARD_DIR / "home-lab.css"), media_type="text/css")
 
 @app.get("/app-core.js")
 def serve_app_core():

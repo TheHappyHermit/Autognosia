@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,19 +16,20 @@
   <link rel="stylesheet" href="services.css" />
   <link rel="stylesheet" href="agent.css" />
   <link rel="stylesheet" href="bots.css" />
+  <link rel="stylesheet" href="home-lab.css" />
 </head>
 <body>
   <div class="app-layout">
     <!-- Sidebar Navigation -->
     <nav class="sidebar" role="navigation" aria-label="Main navigation">
       <div class="sidebar-logo" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
       </div>
       <div class="sidebar-nav">
         <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠<span class="sidebar-label">Dashboard</span></a>
-        <a href="#" class="sidebar-link" data-view="bots" aria-label="Bots" title="Bots">🤖<span class="sidebar-label">Agents</span></a>
+        <a href="#" class="sidebar-link" data-view="bots" aria-label="Agents" title="Agents">🤖<span class="sidebar-label">Agents</span></a>
       </div>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
@@ -39,7 +40,7 @@
       <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">☰</button>
       <div class="header-brand">
         <span class="header-brand-icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
         </span>
@@ -55,6 +56,9 @@
           🔔
           <span class="badge-dot" aria-hidden="true"></span>
         </button>
+        <div class="hud-clock" id="hud-clock" aria-label="UTC time">
+          <span class="clock-time">00:00:00</span>
+        </div>
         <div class="system-status" aria-label="System status">
           <span class="status-dot status-dot--ok" aria-hidden="true"></span>
           <span>Healthy</span>
@@ -86,19 +90,19 @@
           <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat__label">NETWORK</span>
+          <span class="hero-stat__label">NET</span>
           <span class="hero-stat__value text-tabular" id="stat-network">--</span>
-          <span class="hero-stat__unit">Mbps</span>
+          <span class="hero-stat__unit">MB</span>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat__label">AGENTS</span>
-          <span class="hero-stat__value text-tabular" id="stat-agents">--</span>
-          <span class="hero-stat__unit">active</span>
+          <span class="hero-stat__label">GPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-gpu">--</span>
+          <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">UPTIME</span>
           <span class="hero-stat__value text-tabular" id="stat-uptime">--</span>
-          <span class="hero-stat__unit">days</span>
+          <span class="hero-stat__unit">d</span>
         </div>
       </section>
 
@@ -117,11 +121,11 @@
           <span class="hud-metric__value text-tabular" id="stat-reminders">--</span>
         </div>
         <div class="hud-metric">
-          <span class="hud-metric__label">Today's Events</span>
+          <span class="hud-metric__label">Events</span>
           <span class="hud-metric__value text-tabular" id="stat-today-events">--</span>
         </div>
         <div class="hud-metric">
-          <span class="hud-metric__label">Unread Emails</span>
+          <span class="hud-metric__label">Unread</span>
           <span class="hud-metric__value text-tabular" id="stat-unread-emails">--</span>
         </div>
         <div class="hud-metric">
@@ -130,13 +134,80 @@
         </div>
       </section>
 
+      <!-- Home Lab Server Cards -->
+      <section class="server-grid" aria-label="Home lab servers">
+        <div class="server-card" id="server-main">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🖥️ 10.1.1.10
+              <span class="server-card__ip">Main</span>
+            </div>
+            <span class="server-card__status online" id="server-main-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-main-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>llama-server</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Ollama</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Graphify</span>
+            </div>
+            <div class="gpu-meter">
+              <div class="gpu-meter__label">
+                <span>V100 GPU</span>
+                <span class="gpu-meter__value" id="gpu-main-util">0%</span>
+              </div>
+              <div class="gpu-meter__bar">
+                <div class="gpu-meter__fill" id="gpu-main-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-card" id="server-agent">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🤖 10.1.1.37
+              <span class="server-card__ip">Agent</span>
+            </div>
+            <span class="server-card__status online" id="server-agent-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-agent-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Hermes</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Paperclip</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Honcho</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Meilisearch</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Qdrant</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Redis</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Postgres</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-card" id="server-agent-zero">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              ⚡ 10.1.1.18
+              <span class="server-card__ip">Agent Zero</span>
+            </div>
+            <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-agent-zero-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Agent Zero</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>ShadowBroker</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>MariaDB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Briefing Bar -->
       <section class="panel" aria-label="Daily briefing">
         <div class="panel-header">
           <div class="panel-title">📋 Daily Executive Synthesis</div>
           <div class="panel-footer" style="margin:0;padding:0;border:none">
-            <span id="briefing-date" style="color:var(--text-3);font-size:12px;">Loading date...</span>
-            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:12px;margin-left:8px;">just now</span>
+            <span id="briefing-date" style="color:var(--text-3);font-size:var(--fs-sm);">Loading date...</span>
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:var(--fs-sm);margin-left:8px;">just now</span>
           </div>
         </div>
         <div class="panel-body">
@@ -144,7 +215,7 @@
           <div id="briefing-priorities" style="margin-top:var(--space-3)">
             <ul id="briefing-priorities-list" aria-label="Top priorities"></ul>
           </div>
-          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);">
+          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);border:1px solid var(--glass-border);">
             <span id="briefing-prompt-text"></span>
           </div>
         </div>
@@ -187,8 +258,10 @@
           <div class="panel-header">
             <div class="panel-title">📊 Telemetry</div>
           </div>
-          <div class="panel-body" id="telemetry-grid">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+          <div class="panel-body">
+            <div class="telemetry-grid" id="telemetry-grid">
+              <div class="skeleton skeleton-card" style="height:60px"></div>
+            </div>
           </div>
         </section>
 
@@ -248,7 +321,7 @@
             <div class="panel-status" id="agent-status"></div>
           </div>
           <div class="panel-body" id="agent-grid">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
 
@@ -258,7 +331,7 @@
             <div class="panel-status" id="cron-status"></div>
           </div>
           <div class="panel-body" id="cron-list">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
 
@@ -267,7 +340,7 @@
             <div class="panel-title">📁 Active Projects</div>
           </div>
           <div class="panel-body" id="projects-list-container">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
 
@@ -278,7 +351,7 @@
           </div>
           <div class="panel-body">
             <div class="service-grid" id="service-grid">
-              <div class="skeleton skeleton-card" style="height:80px"></div>
+              <div class="skeleton skeleton-card" style="height:60px"></div>
             </div>
           </div>
         </section>
@@ -288,7 +361,7 @@
             <div class="panel-title">🕸️ Knowledge Graph</div>
           </div>
           <div class="panel-body" id="graphify-grid">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
       </div>
