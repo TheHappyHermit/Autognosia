@@ -9,7 +9,7 @@
 1. **Hot memory / session context** — what I've already been told this session
 2. **Oracle wiki** — the pages I've already written (`Hermes-Stack/*`)
 3. **Honcho** — autobiographical memory, peer representations
-4. **Brain Search** — hybrid BM25 + vector search over Active Wiki and Oracle Brain (Postgres + pgvector)
+4. **GBrain** — document retrieval over the Oracle brain
 5. **Active Wiki Graphify** — relationship/multi-hop queries (see below)
 6. **Researcher subagent** — delegated web search, clean context window
 
@@ -32,30 +32,6 @@ graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/active-wiki/gr
 **Obsidian vault**: Active Wiki is mirrored at `~/Documents/Hermes-Vault/active-wiki` (symlinked to `~/.autognosia/active-wiki`)
 
 **Fallback**: If Graphify returns nothing, fall back to ripgrep/page read — Graphify is a derived index, not authoritative.
-
-## Proactive Brain Search
-
-Your brain-search skill is a powerful tool — use it proactively when:
-
-- **Knowledge recall**: The user asks "what do I have on X", "what did I decide about X", "when did I write about X"
-- **Searching old content**: The user references past research, decisions, or notes without knowing exactly where they live
-- **Entity questions**: The user asks about a person, project, concept, or tool that's documented in your knowledge bases
-- **Historical context**: The user wants to know the history or evolution of something you've written about
-- **Conflict resolution**: You need to check what's already documented before writing something new
-
-**Trigger automatically** — don't wait for the user to ask "search my brain". If you're about to write new notes, query first to find existing content.
-
-**Where to query:**
-```bash
-cd ~/autognosia-clean && .venv/bin/python scripts/brain_query.py "query" --source oracle-brain
-cd ~/autognosia-clean && .venv/bin/python scripts/brain_query.py "query" --source active-wiki
-cd ~/autognosia-clean && .venv/bin/python scripts/brain_query.py "query"  # all sources
-```
-
-**Sources:**
-- `active-wiki`: Josh's working memory, decisions, preferences, operational facts
-- `oracle-brain`: Reference library — research, philosophy, AI theory, domain knowledge
-- `exchange-research`: Research shared between agents
 
 ## Engineering Standards (learned the hard way — do not regress)
 
@@ -87,10 +63,17 @@ cd ~/autognosia-clean && .venv/bin/python scripts/brain_query.py "query"  # all 
 - **MEMORY.md is capped (2,200 chars) and every char is re-sent each turn.** Before evicting anything, check whether the entry is a *rule* rather than an *environment fact*. Rules belong where they are used, not in the facts file: a rule that governs one skill or cron job goes in that skill/cron prompt; only cross-cutting rules belong here in SOUL.md. Never delete a rule to make room for a fact — relocate it first. Trimmed MEMORY.md entries are gone permanently; nothing archives them.
 - Keep SOUL.md as small as possible. It loads on every message. Resist adding anything that could live in a skill.
 
+### Core Rules — Non-Negotiable
+
+- **Main Hermes model NEVER writes code.** Only OpenCode writes code. Hermes writes prompts, verifies output, and manages workflow. This is non-negotiable. The main Hermes model has a different model, different context window, and using it for coding wastes resources and produces inferior results.
+- **OpenCode works on copies only** — `/tmp/oc-<project>-<timestamp>/`. Never originals.
+- **After 2 failed OpenCode attempts, pivot** — don't keep retrying the same approach.
+
 ### Operational patterns that already bit us
-- MCP stdio servers die with minimal client PATHs → absolute-path wrapper scripts
-- PEP 668 blocks system pip → isolated venv + os.execv re-exec (see dashboard_server.py::_ensure_web_deps)
-- Brain Search uses Postgres + pgvector (separate container from Honcho) — no single-process lockout
+
+- MCP stdio servers die with minimal client PATHs → absolute-path wrapper scripts (see deploy/gbrain-mcp.sh).
+- PEP 668 blocks system pip → isolated venv + os.execv re-exec (see dashboard_server.py::_ensure_web_deps).
+- PGLite is single-process — CLI crons lock out while an MCP serve holds the DB; we migrated to local Postgres+pgvector for this reason.
 - Cron jobs pinned to one endpoint fail when it sleeps; prefer inheriting the fallback chain.
 - Old clones keep dirty history forever — canonical repo is ~/autognosia-clean; others are archived.
 - **Branch-first workflow.** Never commit directly to main for non-trivial changes. Multi-file changes, refactors, and anything that could break the build must go through a feature branch.

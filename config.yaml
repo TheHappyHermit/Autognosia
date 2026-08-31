@@ -1,20 +1,21 @@
 model:
   default: meituan/longcat-2.0:free
   provider: nous
-  base_url: ''
 providers:
   llamaCPP:
     api: http://10.1.1.10:8080/v1
     default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
     transport: chat_completions
 fallback_providers:
-  - provider: openrouter
-    model: nvidia/nemotron-3-ultra-550b-a55b:free
+- provider: llamaCPP
+  model: Qwen3.6-35B-A3B-Q4_K_M.gguf
+- provider: openrouter
+  model: nvidia/nemotron-3-ultra-550b-a55b:free
 credential_pool_strategies:
   openrouter: fill_first
   zai: fill_first
 toolsets:
-  - hermes-cli
+- hermes-cli
 agent:
   max_turns: 200
   tool_use_enforcement: auto
@@ -175,20 +176,20 @@ skills:
   guard_agent_created: true
   write_approval: true
   disabled:
-    - pokemon-player
-    - minecraft-modpack-server
-    - touchdesigner-mcp
-    - pixel-art
-    - ascii-video
-    - axolotl
-    - unsloth
-    - peft-fine-tuning
-    - modal-serverless-gpu
-    - weights-and-biases
-    - evaluating-llms-harness
-    - competitor-news-monitor
-    - ml-paper-writing
-    - box
+  - pokemon-player
+  - minecraft-modpack-server
+  - touchdesigner-mcp
+  - pixel-art
+  - ascii-video
+  - axolotl
+  - unsloth
+  - peft-fine-tuning
+  - modal-serverless-gpu
+  - weights-and-biases
+  - evaluating-llms-harness
+  - competitor-news-monitor
+  - ml-paper-writing
+  - box
 curator:
   enabled: true
   interval_hours: 168
@@ -208,18 +209,22 @@ approvals:
   timeout: 60
   destructive_slash_confirm: false
 command_allowlist:
-  - delete in root path
-  - in-place edit of Hermes config/env
-  - docker compose restart/stop/kill/down (container lifecycle)
-  - recursive delete
-  - script execution via -e/-c flag
-  - hermes update (restarts gateway, kills running agents)
-  - shell command via -c/-lc flag
-  - execute_code
-  - docker restart/stop/kill (container lifecycle)
+- execute_code
+- shell command via -c/-lc flag
+- docker compose restart/stop/kill/down (container lifecycle)
+- docker restart/stop/kill (container lifecycle)
+- SQL DROP
+- delete in root path
+- hermes update (restarts gateway, kills running agents)
+- force kill processes
+- recursive delete
+- script execution via -e/-c flag
+- command parser limit or malformed executable payload
+- in-place edit of Hermes config/env
+- script execution via heredoc
 plugins:
   enabled:
-    - dashboard_auth/basic
+  - dashboard_auth/basic
   disabled: []
 security:
   redact_secrets: true
@@ -250,25 +255,3 @@ session_reset:
   fallback_model:
     provider: zai
     model: glm-4.7-flash
-
-# ── Fallback Model ────────────────────────────────────────────────────
-# Automatic provider failover when primary is unavailable.
-# Uncomment and configure to enable. Triggers on rate limits (429),
-# overload (529), service errors (503), or connection failures.
-#
-# Supported providers:
-#   openrouter   (OPENROUTER_API_KEY)  — routes to any model
-#   openai-codex (OAuth — hermes auth) — OpenAI Codex
-#   nous         (OAuth — hermes auth) — Nous Portal
-#   zai          (ZAI_API_KEY)         — Z.AI / GLM
-#   kimi-coding  (KIMI_API_KEY)        — Kimi / Moonshot
-#   kimi-coding-cn (KIMI_CN_API_KEY)   — Kimi / Moonshot (China)
-#   minimax      (MINIMAX_API_KEY)     — MiniMax
-#   minimax-cn   (MINIMAX_CN_API_KEY)  — MiniMax (China)
-#   bedrock      (AWS IAM / boto3)     — AWS Bedrock (Converse API)
-#
-# For custom OpenAI-compatible endpoints, add base_url and key_env.
-#
-# fallback_model:
-#   provider: openrouter
-#   model: anthropic/claude-sonnet-4
