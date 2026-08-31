@@ -106,6 +106,34 @@
         </div>
       </section>
 
+      <!-- HUD Metrics Row -->
+      <section class="hud-metrics" aria-label="Task and intention metrics">
+        <div class="hud-metric">
+          <span class="hud-metric__label">Active Tasks</span>
+          <span class="hud-metric__value text-tabular" id="stat-active-tasks">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Critical</span>
+          <span class="hud-metric__value text-tabular" id="stat-critical-tasks">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Reminders</span>
+          <span class="hud-metric__value text-tabular" id="stat-reminders">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Today's Events</span>
+          <span class="hud-metric__value text-tabular" id="stat-today-events">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Unread Emails</span>
+          <span class="hud-metric__value text-tabular" id="stat-unread-emails">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Intentions</span>
+          <span class="hud-metric__value text-tabular" id="stat-intentions">--</span>
+        </div>
+      </section>
+
       <!-- Briefing Bar -->
       <section class="panel" aria-label="Daily briefing">
         <div class="panel-header">
@@ -221,6 +249,7 @@
         <section class="panel" aria-label="Hermes Agent">
           <div class="panel-header">
             <div class="panel-title">🤖 Hermes Agent</div>
+            <div class="panel-status" id="agent-status"></div>
           </div>
           <div class="panel-body" id="agent-grid">
             <div class="skeleton skeleton-card" style="height:80px"></div>
@@ -230,9 +259,31 @@
         <section class="panel" aria-label="Cron Jobs">
           <div class="panel-header">
             <div class="panel-title">⏰ Scheduled Jobs</div>
+            <div class="panel-status" id="cron-status"></div>
           </div>
-          <div class="panel-body" id="cron-grid">
+          <div class="panel-body" id="cron-list">
             <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Projects">
+          <div class="panel-header">
+            <div class="panel-title">📁 Active Projects</div>
+          </div>
+          <div class="panel-body" id="projects-list-container">
+            <div class="skeleton skeleton-card" style="height:80px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Service Grid">
+          <div class="panel-header">
+            <div class="panel-title">🔧 Service Grid</div>
+            <div class="panel-status" id="services-status"></div>
+          </div>
+          <div class="panel-body">
+            <div class="service-grid" id="service-grid">
+              <div class="skeleton skeleton-card" style="height:80px"></div>
+            </div>
           </div>
         </section>
 
@@ -262,5 +313,21 @@
   <script src="app.js"></script>
   <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
+
+  <!-- Task Detail Modal -->
+  <div class="task-detail-modal" id="task-detail-modal">
+    <div class="task-detail-modal__backdrop" id="task-detail-backdrop"></div>
+    <div class="task-detail-modal__panel">
+      <div class="task-detail-modal__header">
+        <h3>Task Details</h3>
+        <button class="task-detail-modal__close" id="task-detail-close">×</button>
+      </div>
+      <div class="task-detail-modal__body" id="task-detail-body"></div>
+      <div class="task-detail-modal__footer">
+        <button class="btn btn--ghost" id="task-detail-cancel">Cancel</button>
+        <button class="btn btn--primary" id="task-detail-save">Save Changes</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

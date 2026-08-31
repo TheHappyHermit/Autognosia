@@ -1,9 +1,8 @@
-import { CommandDeck } from './app-core.js';
 
   // ── Tasks & Organizer ──────────────────────────────────────────────────────
-  CommandDeck.prototype.renderTasks = function(
-    const container = document.getElementById('task-list-container');
-    const waitingContainer = document.getElementById('waiting-list-container');
+  CommandDeck.prototype.renderTasks = function() {
+    const container = this.getViewEl('task-list-container');
+    const waitingContainer = this.getViewEl('waiting-list-container');
     if (!container) return;
     
     let filtered = this.state.tasks;
@@ -13,7 +12,7 @@ import { CommandDeck } from './app-core.js';
     else if (this.taskFilter === 'completed') filtered = filtered.filter(t => t.status === 'completed');
     else if (this.taskFilter === 'all') filtered = filtered.filter(t => t.status !== 'completed');
 
-    CommandDeck.prototype.if = function(filtered.length === 0) {
+    if (filtered.length === 0) {
       container.innerHTML = '<div class="empty-hint">No tasks in this view. Use quick add above to create one!</div>';
     } else {
       container.innerHTML = filtered.map(t => this.renderTaskCard(t)).join('');
@@ -21,8 +20,8 @@ import { CommandDeck } from './app-core.js';
 
     // Waiting / Blocked tab
     const waitingTasks = this.state.tasks.filter(t => t.status === 'waiting' || t.status === 'blocked');
-    CommandDeck.prototype.if = function(waitingContainer) {
-      CommandDeck.prototype.if = function(waitingTasks.length === 0) {
+    if (waitingContainer) {
+      if (waitingTasks.length === 0) {
         waitingContainer.innerHTML = '<div class="empty-hint">No blocked or waiting tasks. Pipeline is clear!</div>';
       } else {
         waitingContainer.innerHTML = waitingTasks.map(t => this.renderTaskCard(t)).join('');
@@ -41,7 +40,7 @@ import { CommandDeck } from './app-core.js';
     });
   }
 
-  CommandDeck.prototype.renderTaskCard = function(
+  CommandDeck.prototype.renderTaskCard = function(t) {
     const isDone = t.status === 'completed';
     return `
       <div class="task-card ${isDone ? 'completed' : ''}" data-task-id="${t.id}">
@@ -63,7 +62,7 @@ import { CommandDeck } from './app-core.js';
 
 
   // ── Reminders ──────────────────────────────────────────────────────────────
-  CommandDeck.prototype.renderReminders = function(
+  CommandDeck.prototype.renderReminders = function() {
     const container = document.getElementById('reminders-list-container');
     if (!container) return;
 
@@ -72,7 +71,7 @@ import { CommandDeck } from './app-core.js';
     else if (this.remFilter === 'snoozed') filtered = filtered.filter(r => r.status === 'snoozed');
     else if (this.remFilter === 'sent') filtered = filtered.filter(r => r.status === 'sent');
 
-    CommandDeck.prototype.if = function(filtered.length === 0) {
+    if (filtered.length === 0) {
       container.innerHTML = '<div class="empty-hint">No reminders matching this filter. Use the bar above or chat with Hermes to set one!</div>';
       return;
     }
@@ -117,7 +116,7 @@ import { CommandDeck } from './app-core.js';
     });
   }
 
-  CommandDeck.prototype.renderReminderCard = function(
+  CommandDeck.prototype.renderReminderCard = function(r) {
     const channel = r.channel || 'all';
     const channelLabels = {
       all: '⚡ All Channels',
@@ -155,10 +154,10 @@ import { CommandDeck } from './app-core.js';
     `;
   }
 
-  CommandDeck.prototype.renderProjects = function(
+  CommandDeck.prototype.renderProjects = function() {
     const container = document.getElementById('projects-list-container');
     if (!container) return;
-    CommandDeck.prototype.if = function(this.state.projects.length === 0) {
+    if (this.state.projects.length === 0) {
       container.innerHTML = '<div class="empty-hint">No active projects configured.</div>';
       return;
     }

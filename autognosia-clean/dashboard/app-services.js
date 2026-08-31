@@ -1,8 +1,7 @@
-import { CommandDeck } from './app-core.js';
 
   // ── Phase 2: Service Grid, Media & Queue ──────────────────────────────────
 
-  CommandDeck.prototype.getServiceIcon = function(
+  CommandDeck.prototype.getServiceIcon = function(name) {
     const icons = {
       'Jellyfin': '🎬',
       'Plex': '🎥',
@@ -19,16 +18,16 @@ import { CommandDeck } from './app-core.js';
     return icons[name] || '⚙️';
   }
 
-  CommandDeck.prototype.formatSize = function(
+  CommandDeck.prototype.formatSize = function() {
     if (!bytes) return '';
     const gb = bytes / (1024 * 1024 * 1024);
     return gb >= 1 ? `${gb.toFixed(1)} GB` : `${(bytes / (1024 * 1024)).toFixed(0)} MB`;
   }
 
-  CommandDeck.prototype.fetchServices = async function(
+  CommandDeck.prototype.fetchServices = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/services`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         const services = await res.json();
         this.renderServiceGrid(services);
         this.updateServiceStatus(services);
@@ -38,8 +37,8 @@ import { CommandDeck } from './app-core.js';
     }
   }
 
-  CommandDeck.prototype.renderServiceGrid = function(
-    const grid = document.getElementById('service-grid');
+  CommandDeck.prototype.renderServiceGrid = function(services) {
+    const grid = this.getViewEl('service-grid');
     if (!grid) return;
 
     grid.innerHTML = Object.values(services).map(svc => {
@@ -67,8 +66,8 @@ import { CommandDeck } from './app-core.js';
     }).join('');
   }
 
-  CommandDeck.prototype.updateServiceStatus = function(
-    const statusEl = document.getElementById('services-status');
+  CommandDeck.prototype.updateServiceStatus = function(services) {
+    const statusEl = this.getViewEl('services-status');
     if (!statusEl) return;
 
     const healthy = Object.values(services).filter(s => s.health === 'healthy').length;
@@ -81,20 +80,20 @@ import { CommandDeck } from './app-core.js';
     }
 
     // Update freshness stamp
-    const freshEl = document.getElementById('services-freshness-text');
+    const freshEl = this.getViewEl('services-freshness-text');
     if (freshEl) freshEl.textContent = 'updated just now';
-    const freshEl2 = document.getElementById('services-freshness');
-    CommandDeck.prototype.if = function(freshEl2) {
+    const freshEl2 = this.getViewEl('services-freshness');
+    if (freshEl2) {
       freshEl2.classList.remove('is-stale');
       const dot = freshEl2.querySelector('.panel-freshness__dot');
       if (dot) dot.className = 'panel-freshness__dot panel-freshness__dot--fresh';
     }
   }
 
-  CommandDeck.prototype.fetchMedia = async function(
+  CommandDeck.prototype.fetchMedia = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/media/active`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         const streams = await res.json();
         this.renderMediaGrid(streams);
       }
@@ -103,14 +102,14 @@ import { CommandDeck } from './app-core.js';
     }
   }
 
-  CommandDeck.prototype.renderMediaGrid = function(
-    const grid = document.getElementById('media-grid');
+  CommandDeck.prototype.renderMediaGrid = function(streams) {
+    const grid = this.getViewEl('media-grid');
     if (!grid) return;
 
-    const countEl = document.getElementById('media-count');
+    const countEl = this.getViewEl('media-count');
     if (countEl) countEl.textContent = `${streams.length} active stream${streams.length !== 1 ? 's' : ''}`;
 
-    CommandDeck.prototype.if = function(streams.length === 0) {
+    if (streams.length === 0) {
       grid.innerHTML = '<div class="media-placeholder">No active streams</div>';
       return;
     }
@@ -131,10 +130,10 @@ import { CommandDeck } from './app-core.js';
     }).join('');
   }
 
-  CommandDeck.prototype.fetchQueue = async function(
+  CommandDeck.prototype.fetchQueue = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/queue`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         const queue = await res.json();
         this.renderQueue(queue);
       }
@@ -143,14 +142,14 @@ import { CommandDeck } from './app-core.js';
     }
   }
 
-  CommandDeck.prototype.renderQueue = function(
-    const list = document.getElementById('queue-list');
+  CommandDeck.prototype.renderQueue = function(queue) {
+    const list = this.getViewEl('queue-list');
     if (!list) return;
 
-    const countEl = document.getElementById('queue-count');
+    const countEl = this.getViewEl('queue-count');
     if (countEl) countEl.textContent = `${queue.length} pending`;
 
-    CommandDeck.prototype.if = function(queue.length === 0) {
+    if (queue.length === 0) {
       list.innerHTML = '<div class="queue-placeholder">Queue is empty</div>';
       return;
     }

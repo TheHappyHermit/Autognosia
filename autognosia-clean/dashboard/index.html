@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,23 +16,24 @@
   <link rel="stylesheet" href="services.css" />
   <link rel="stylesheet" href="agent.css" />
   <link rel="stylesheet" href="bots.css" />
+  <link rel="stylesheet" href="home-lab.css" />
 </head>
 <body>
   <div class="app-layout">
     <!-- Sidebar Navigation -->
     <nav class="sidebar" role="navigation" aria-label="Main navigation">
       <div class="sidebar-logo" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
       </div>
       <div class="sidebar-nav">
-        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠</a>
-        <a href="#" class="sidebar-link" data-view="system" aria-label="System" title="System">📊</a>
-        <a href="#" class="sidebar-link" data-view="bots" aria-label="Bots" title="Bots">🤖</a>
-        <a href="#" class="sidebar-link" data-view="media" aria-label="Media" title="Media">🎬</a>
-        <a href="#" class="sidebar-link" data-view="downloads" aria-label="Downloads" title="Downloads">📥</a>
-        <a href="#" class="sidebar-link" data-view="settings" aria-label="Settings" title="Settings">⚙️</a>
+        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠<span class="sidebar-label">Dashboard</span></a>
+        <a href="#" class="sidebar-link" data-view="bots" aria-label="Agents" title="Agents">🤖<span class="sidebar-label">Agents</span></a>
+        <a href="#" class="sidebar-link" data-view="calendar" aria-label="Calendar" title="Calendar">📅<span class="sidebar-label">Calendar</span></a>
+        <a href="#" class="sidebar-link" data-view="tasks" aria-label="Tasks" title="Tasks">✓<span class="sidebar-label">Tasks</span></a>
+        <a href="#" class="sidebar-link" data-view="services" aria-label="Services" title="Services">⚙️<span class="sidebar-label">Services</span></a>
+        <a href="#" class="sidebar-link" data-view="homelab" aria-label="Home Lab" title="Home Lab">🖥️<span class="sidebar-label">Home Lab</span></a>
       </div>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
@@ -43,7 +44,7 @@
       <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">☰</button>
       <div class="header-brand">
         <span class="header-brand-icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
         </span>
@@ -55,10 +56,14 @@
         <span class="header-search-hint">⌘K</span>
       </div>
       <div class="header-actions">
+        <button class="header-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
         <button class="header-btn" aria-label="Notifications" title="Notifications">
           🔔
           <span class="badge-dot" aria-hidden="true"></span>
         </button>
+        <div class="hud-clock" id="hud-clock" aria-label="UTC time">
+          <span class="clock-time">00:00:00</span>
+        </div>
         <div class="system-status" aria-label="System status">
           <span class="status-dot status-dot--ok" aria-hidden="true"></span>
           <span>Healthy</span>
@@ -70,8 +75,8 @@
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="content-area" id="main-content" role="main">
+    <!-- Main Content Area (Dashboard View) -->
+    <main class="content-area view-section" id="view-dashboard" role="main" data-current-view="dashboard">
       <!-- Hero Stats Row -->
       <section class="hero-stats" aria-label="System metrics">
         <div class="hero-stat">
@@ -90,19 +95,19 @@
           <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat__label">NETWORK</span>
+          <span class="hero-stat__label">NET</span>
           <span class="hero-stat__value text-tabular" id="stat-network">--</span>
-          <span class="hero-stat__unit">Mbps</span>
+          <span class="hero-stat__unit">MB</span>
         </div>
         <div class="hero-stat">
-          <span class="hero-stat__label">AGENTS</span>
-          <span class="hero-stat__value text-tabular" id="stat-agents">--</span>
-          <span class="hero-stat__unit">active</span>
+          <span class="hero-stat__label">GPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-gpu">--</span>
+          <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">UPTIME</span>
           <span class="hero-stat__value text-tabular" id="stat-uptime">--</span>
-          <span class="hero-stat__unit">days</span>
+          <span class="hero-stat__unit">d</span>
         </div>
       </section>
 
@@ -121,11 +126,11 @@
           <span class="hud-metric__value text-tabular" id="stat-reminders">--</span>
         </div>
         <div class="hud-metric">
-          <span class="hud-metric__label">Today's Events</span>
+          <span class="hud-metric__label">Events</span>
           <span class="hud-metric__value text-tabular" id="stat-today-events">--</span>
         </div>
         <div class="hud-metric">
-          <span class="hud-metric__label">Unread Emails</span>
+          <span class="hud-metric__label">Unread</span>
           <span class="hud-metric__value text-tabular" id="stat-unread-emails">--</span>
         </div>
         <div class="hud-metric">
@@ -134,13 +139,80 @@
         </div>
       </section>
 
+      <!-- Home Lab Server Cards -->
+      <section class="server-grid" aria-label="Home lab servers">
+        <div class="server-card" id="server-main">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🖥️ 10.1.1.10
+              <span class="server-card__ip">Main</span>
+            </div>
+            <span class="server-card__status online" id="server-main-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-main-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>llama-server</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Ollama</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Graphify</span>
+            </div>
+            <div class="gpu-meter">
+              <div class="gpu-meter__label">
+                <span>V100 GPU</span>
+                <span class="gpu-meter__value" id="gpu-main-util">0%</span>
+              </div>
+              <div class="gpu-meter__bar">
+                <div class="gpu-meter__fill" id="gpu-main-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-card" id="server-agent">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🤖 10.1.1.37
+              <span class="server-card__ip">Agent</span>
+            </div>
+            <span class="server-card__status online" id="server-agent-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-agent-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Hermes</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Paperclip</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Honcho</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Meilisearch</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Qdrant</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Redis</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Postgres</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-card" id="server-agent-zero">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              ⚡ 10.1.1.18
+              <span class="server-card__ip">Agent Zero</span>
+            </div>
+            <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-agent-zero-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Agent Zero</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>ShadowBroker</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>MariaDB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Briefing Bar -->
       <section class="panel" aria-label="Daily briefing">
         <div class="panel-header">
           <div class="panel-title">📋 Daily Executive Synthesis</div>
           <div class="panel-footer" style="margin:0;padding:0;border:none">
-            <span id="briefing-date" style="color:var(--text-3);font-size:12px;">Loading date...</span>
-            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:12px;margin-left:8px;">just now</span>
+            <span id="briefing-date" style="color:var(--text-3);font-size:var(--fs-sm);">Loading date...</span>
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:var(--fs-sm);margin-left:8px;">just now</span>
           </div>
         </div>
         <div class="panel-body">
@@ -148,7 +220,7 @@
           <div id="briefing-priorities" style="margin-top:var(--space-3)">
             <ul id="briefing-priorities-list" aria-label="Top priorities"></ul>
           </div>
-          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);">
+          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);border:1px solid var(--glass-border);">
             <span id="briefing-prompt-text"></span>
           </div>
         </div>
@@ -191,8 +263,10 @@
           <div class="panel-header">
             <div class="panel-title">📊 Telemetry</div>
           </div>
-          <div class="panel-body" id="telemetry-grid">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+          <div class="panel-body">
+            <div class="telemetry-grid" id="telemetry-grid">
+              <div class="skeleton skeleton-card" style="height:60px"></div>
+            </div>
           </div>
         </section>
 
@@ -252,7 +326,7 @@
             <div class="panel-status" id="agent-status"></div>
           </div>
           <div class="panel-body" id="agent-grid">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
 
@@ -262,7 +336,7 @@
             <div class="panel-status" id="cron-status"></div>
           </div>
           <div class="panel-body" id="cron-list">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
 
@@ -271,7 +345,7 @@
             <div class="panel-title">📁 Active Projects</div>
           </div>
           <div class="panel-body" id="projects-list-container">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
 
@@ -282,7 +356,7 @@
           </div>
           <div class="panel-body">
             <div class="service-grid" id="service-grid">
-              <div class="skeleton skeleton-card" style="height:80px"></div>
+              <div class="skeleton skeleton-card" style="height:60px"></div>
             </div>
           </div>
         </section>
@@ -292,17 +366,152 @@
             <div class="panel-title">🕸️ Knowledge Graph</div>
           </div>
           <div class="panel-body" id="graphify-grid">
-            <div class="skeleton skeleton-card" style="height:80px"></div>
+            <div class="skeleton skeleton-card" style="height:60px"></div>
           </div>
         </section>
       </div>
     </main>
 
-    <!-- Bots View (hidden by default) -->
-    <div id="view-bots" class="view-section" style="padding:var(--space-5);max-width:calc(100vw - var(--sidebar-width))">
-      <div id="bots-container">
-        <!-- Populated by app-bots.js -->
+    <!-- Bots View (hidden by default) — Grokbot-style vertical stripe + chat panel -->
+    <div id="view-bots" class="view-section bots-view" role="region" aria-label="Agent Command Center">
+      <div class="bots-sidebar" id="bots-sidebar">
+        <div class="bots-sidebar-header">
+          <h3>Agents</h3>
+          <span class="bots-count" id="bots-count">0</span>
+        </div>
+        <div class="bots-stripe" id="bots-stripe">
+          <!-- Agent stripe populated by app-bots.js -->
+        </div>
       </div>
+      <div class="bots-chat-panel" id="bots-chat-panel">
+        <div class="bots-chat-empty" id="bots-chat-empty">
+          <div class="bots-chat-empty-icon">🤖</div>
+          <div class="bots-chat-empty-title">Select an agent to chat</div>
+          <div class="bots-chat-empty-desc">Click on any agent in the stripe to open a conversation.</div>
+        </div>
+        <div class="bots-chat-active" id="bots-chat-active" style="display:none">
+          <div class="bots-chat-header">
+            <div class="bot-avatar" id="chat-bot-avatar">🤖</div>
+            <div class="bots-chat-header-info">
+              <div class="bots-chat-header-name" id="chat-bot-name">Agent Name</div>
+              <div class="bots-chat-header-model" id="chat-bot-model">Model • Provider</div>
+            </div>
+            <div class="bots-chat-header-status">
+              <span class="bot-status-dot" id="chat-bot-status-dot"></span>
+              <span id="chat-bot-status-text">idle</span>
+            </div>
+          </div>
+          <div class="bots-chat-messages" id="bot-chat-messages"></div>
+          <div class="bots-chat-input-bar">
+            <input type="text" class="bots-chat-input" id="bot-chat-input" placeholder="Message agent…" aria-label="Message" />
+            <button class="bots-chat-send" id="bot-chat-send" aria-label="Send">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar View -->
+    <div id="view-calendar" class="view-section calendar-view" role="region" aria-label="Calendar">
+      <div class="view-header">
+        <h2>Calendar</h2>
+        <div class="calendar-controls">
+          <button class="btn btn--ghost" id="cal-prev" onclick="cd.navigateCalendar(-1)">←</button>
+          <span id="cal-heading" style="min-width:200px;text-align:center;">Today</span>
+          <button class="btn btn--ghost" id="cal-next" onclick="cd.navigateCalendar(1)">→</button>
+          <button class="btn btn--ghost" onclick="cd.renderCalendar()">Today</button>
+        </div>
+      </div>
+      <div class="calendar-filter-bar">
+        <button class="filter-pill active" data-cal-filter="all" onclick="cd.calFilter='all';cd.renderCalendar()">All</button>
+        <button class="filter-pill" data-cal-filter="meeting" onclick="cd.calFilter='meeting';cd.renderCalendar()">Meetings</button>
+        <button class="filter-pill" data-cal-filter="task" onclick="cd.calFilter='task';cd.renderCalendar()">Tasks</button>
+        <button class="filter-pill" data-cal-filter="subscription" onclick="cd.calFilter='subscription';cd.renderCalendar()">Subscriptions</button>
+      </div>
+      <div class="calendar-view-tabs">
+        <button class="view-tab active" data-view="day" onclick="cd.selectedCalendarView='day';cd.renderCalendar()">Day</button>
+        <button class="view-tab" data-view="week" onclick="cd.selectedCalendarView='week';cd.renderCalendar()">Week</button>
+        <button class="view-tab" data-view="month" onclick="cd.selectedCalendarView='month';cd.renderCalendar()">Month</button>
+      </div>
+      <div id="calendar-stage" class="calendar-stage">
+        <div class="empty-hint">Loading calendar…</div>
+      </div>
+    </div>
+
+    <!-- Tasks View -->
+    <div id="view-tasks" class="view-section tasks-view" role="region" aria-label="Tasks">
+      <div class="view-header">
+        <h2>Tasks</h2>
+        <div class="task-controls">
+          <button class="filter-pill active" data-task-filter="all" onclick="cd.taskFilter='all';cd.renderTasks()">All</button>
+          <button class="filter-pill" data-task-filter="critical" onclick="cd.taskFilter='critical';cd.renderTasks()">Critical</button>
+          <button class="filter-pill" data-task-filter="in_progress" onclick="cd.taskFilter='in_progress';cd.renderTasks()">In Progress</button>
+          <button class="filter-pill" data-task-filter="next" onclick="cd.taskFilter='next';cd.renderTasks()">Next</button>
+          <button class="filter-pill" data-task-filter="completed" onclick="cd.taskFilter='completed';cd.renderTasks()">Done</button>
+        </div>
+      </div>
+      <div class="task-columns">
+        <div class="task-column">
+          <h3>Active</h3>
+          <div id="task-list-container"></div>
+        </div>
+        <div class="task-column">
+          <h3>Waiting / Blocked</h3>
+          <div id="waiting-list-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services View -->
+    <div id="view-services" class="view-section services-view" role="region" aria-label="Services">
+      <div class="view-header">
+        <h2>Services</h2>
+        <div id="services-status" class="panel-status"></div>
+      </div>
+      <div class="services-grid-container">
+        <div class="service-grid" id="service-grid"></div>
+      </div>
+      <div style="margin-top:24px;">
+        <h3 style="margin-bottom:8px;">Media Streams</h3>
+        <div id="media-grid"></div>
+      </div>
+      <div style="margin-top:24px;">
+        <h3 style="margin-bottom:8px;">Download Queue</h3>
+        <div id="queue-list"></div>
+      </div>
+    </div>
+
+    <!-- Home Lab View -->
+    <div id="view-homelab" class="view-section homelab-view" role="region" aria-label="Home Lab">
+      <div class="view-header">
+        <h2>Home Lab</h2>
+      </div>
+      <section class="server-grid" aria-label="Home lab servers">
+        <div class="server-card" id="server-main">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🖥️ 10.1.1.10
+              <span class="server-card__ip">Main</span>
+            </div>
+            <span class="server-card__status online" id="server-main-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-main-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>llama-server</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Ollama</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Graphify</span>
+            </div>
+            <div class="gpu-meter">
+              <div class="gpu-meter__label">
+                <span>V100 GPU</span>
+                <span class="gpu-meter__value" id="gpu-main-util">0%</span>
+              </div>
+              <div class="gpu-meter__bar">
+                <div class="gpu-meter__fill" id="gpu-main-fill" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
@@ -310,9 +519,29 @@
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Scripts -->
-  <script src="app.js"></script>
+  <script src="app-core.js"></script>
+  <script src="app-data-fetch.js"></script>
+  <script src="app-calendar.js"></script>
+  <script src="app-tasks.js"></script>
+  <script src="app-services.js"></script>
   <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
+  <script>
+    // Theme toggle
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const saved = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      if (toggle) toggle.textContent = saved === 'dark' ? '☀️' : '🌙';
+      if (toggle) toggle.addEventListener('click', function() {
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+      });
+    })();
+  </script>
 
   <!-- Task Detail Modal -->
   <div class="task-detail-modal" id="task-detail-modal">
