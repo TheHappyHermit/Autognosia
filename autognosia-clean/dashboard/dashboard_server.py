@@ -1106,7 +1106,7 @@ def get_download_queue():
 
 HOME_LAB_SERVERS = {
     "main": {
-        "ip": "10.1.1.10",
+        "ip": "<MAIN_SERVER_IP>",
         "name": "Main",
         "role": "LLM inference, graph processing",
         "services": {
@@ -1117,7 +1117,7 @@ HOME_LAB_SERVERS = {
         "gpu": {"name": "V100", "memory_mb": 32768, "type": "nvidia"},
     },
     "agent": {
-        "ip": "10.1.1.37",
+        "ip": "<AGENT_SERVER_IP>",
         "name": "Agent",
         "role": "Hermes gateway, paperclip, memory systems",
         "services": {
@@ -1131,7 +1131,7 @@ HOME_LAB_SERVERS = {
         },
     },
     "agent_zero": {
-        "ip": "10.1.1.18",
+        "ip": "<AGENT_ZERO_SERVER_IP>",
         "name": "Agent Zero",
         "role": "Autonomous agent, data brokering",
         "services": {

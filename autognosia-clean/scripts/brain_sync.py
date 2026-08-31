@@ -59,7 +59,7 @@ PG_USER = os.environ.get("BRAIN_PG_USER", "brain")
 PG_PASSWORD = os.environ.get("BRAIN_PG_PASSWORD", "brain")
 PG_DB = os.environ.get("BRAIN_PG_DB", "brain")
 
-OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.1.1.10:11434")
+OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://<MAIN_SERVER_IP>:11434")
 EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "qwen3-embedding:8b")
 
 CHUNK_TOKENS = int(os.environ.get("BRAIN_CHUNK_TOKENS", "512"))
