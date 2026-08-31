@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.github/
+dashboard/data/
+dashboard/config/

@@ -1,0 +1,292 @@
+/* ==========================================================================
+   Main Content Area & Panel Layout
+   ========================================================================== */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+}
+
+.content-area {
+  grid-column: 2;
+  margin-top: var(--header-height);
+  padding: var(--space-5);
+  overflow-y: auto;
+  max-width: calc(100vw - var(--sidebar-width));
+}
+
+/* Hero Stats Row */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.hero-stat {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--motion-fast);
+}
+
+.hero-stat:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.hero-stat__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+}
+
+.hero-stat__value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1;
+}
+
+.hero-stat__unit {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Section Headings */
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  margin: var(--space-6) 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* Panels Grid */
+.panels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+
+.panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--motion-fast);
+}
+
+.panel:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.panel-title svg {
+  color: var(--accent);
+}
+
+.panel-body {
+  min-height: 100px;
+}
+
+.panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6);
+  gap: var(--space-2);
+}
+
+.empty-state__icon {
+  font-size: 32px;
+  margin-bottom: var(--space-2);
+  opacity: 0.6;
+}
+
+.empty-state__title {
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.empty-state__desc {
+  font-size: 13px;
+  color: var(--text-3);
+  max-width: 240px;
+}
+
+.empty-state__action {
+  margin-top: var(--space-3);
+}
+
+/* Tab Navigation */
+.tab-group {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--bg-tertiary);
+  padding: 2px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  width: fit-content;
+}
+
+.tab-btn {
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all var(--motion-fast);
+}
+
+.tab-btn:hover {
+  color: var(--text-1);
+}
+
+.tab-btn.active {
+  background: var(--bg-secondary);
+  color: var(--text-1);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text { height: 12px; margin: 4px 0; border-radius: 4px; }
+.skeleton-text.short { width: 60%; }
+.skeleton-title { height: 14px; width: 40%; margin: 4px 0; border-radius: 4px; }
+.skeleton-card { height: 80px; border-radius: var(--radius-md); }
+.skeleton-row { height: 48px; margin: 4px 0; border-radius: var(--radius-md); }
+.skeleton-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .content-area {
+    grid-column: 1;
+    max-width: 100vw;
+    padding: var(--space-3);
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panels-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hud-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* HUD Metrics Row */
+.hud-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.hud-metric {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.hud-metric__label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+}
+
+.hud-metric__value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1;
+}
+
+.hud-metric__value.ok { color: var(--accent-emerald); }
+.hud-metric__value.warn { color: var(--accent-amber); }
+.hud-metric__value.danger { color: var(--accent-rose); }
