@@ -1,5 +1,5 @@
 /* ==========================================================================
-   App Header
+   App Header — Glassmorphism + Dark Mode Toggle
    ========================================================================== */
 
 .app-header {
@@ -16,7 +16,7 @@
   align-items: center;
   padding: 0 var(--space-5);
   gap: var(--space-4);
-  z-index: 50;
+  z-index: var(--z-sticky);
 }
 
 .header-hamburger {
@@ -38,9 +38,11 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 700;
+  font-size: var(--fs-lg);
   color: var(--text-1);
+  letter-spacing: -0.02em;
+  font-family: var(--font-display);
 }
 
 .header-brand-icon {
@@ -49,6 +51,7 @@
   height: 24px;
 }
 
+/* ── Search Bar ──────────────────────────────────────────────────────── */
 .header-search {
   flex: 1;
   max-width: 480px;
@@ -57,21 +60,26 @@
 
 .header-search input {
   width: 100%;
-  height: 36px;
+  height: 38px;
   padding: 0 var(--space-4) 0 var(--space-6);
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
   background: var(--bg-tertiary);
   color: var(--text-1);
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-family: var(--font-sans);
   transition: all var(--motion-fast);
+}
+
+.header-search input::placeholder {
+  color: var(--text-3);
 }
 
 .header-search input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-sm);
+  background: var(--bg-secondary);
 }
 
 .header-search-icon {
@@ -81,6 +89,7 @@
   transform: translateY(-50%);
   color: var(--text-3);
   pointer-events: none;
+  font-size: 14px;
 }
 
 .header-search-hint {
@@ -88,14 +97,17 @@
   right: var(--space-3);
   top: 50%;
   transform: translateY(-50%);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-3);
   background: var(--bg-elevated);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-weight: 500;
 }
 
+/* ── Header Actions ──────────────────────────────────────────────────── */
 .header-actions {
   display: flex;
   align-items: center;
@@ -106,8 +118,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: none;
   border: none;
@@ -121,6 +133,11 @@
 .header-btn:hover {
   background: var(--accent-soft);
   color: var(--accent);
+  transform: scale(1.05);
+}
+
+.header-btn:active {
+  transform: scale(0.95);
 }
 
 .header-btn .badge-dot {
@@ -134,6 +151,62 @@
   border: 2px solid var(--glass-bg);
 }
 
+/* ── Dark Mode Toggle ────────────────────────────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 18px;
+  transition: all var(--motion-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle__icon {
+  transition: transform var(--motion-bounce), opacity var(--motion-fast);
+}
+
+.theme-toggle__icon--sun {
+  position: absolute;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle__icon--moon {
+  position: absolute;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle__icon--sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+[data-theme="dark"] .theme-toggle__icon--moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* ── System Status ───────────────────────────────────────────────────── */
 .system-status {
   display: flex;
   align-items: center;
@@ -141,8 +214,9 @@
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
   background: var(--bg-tertiary);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
+  font-weight: 500;
 }
 
 .status-dot {
@@ -151,10 +225,14 @@
   border-radius: 50%;
 }
 
-.status-dot--ok { background: var(--success); }
+.status-dot--ok {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
 .status-dot--warn { background: var(--warning); }
 .status-dot--error { background: var(--danger); }
 
+/* ── WebSocket Indicator ─────────────────────────────────────────────── */
 .ws-indicator {
   display: flex;
   align-items: center;
@@ -162,9 +240,10 @@
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
   background: var(--accent-soft);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-sm);
+  font-weight: 600;
   color: var(--accent);
+  letter-spacing: 0.02em;
 }
 
 .ws-dot {
@@ -176,13 +255,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
+/* ── Responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .app-header {
     left: 0;
+    padding: 0 var(--space-3);
   }
 
   .header-hamburger {
@@ -194,6 +275,11 @@
   }
 
   .header-search-hint {
+    display: none;
+  }
+
+  .system-status span,
+  .ws-indicator span:not(.ws-dot) {
     display: none;
   }
 }

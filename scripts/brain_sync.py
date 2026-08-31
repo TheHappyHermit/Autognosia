@@ -63,20 +63,22 @@ OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.1.1.10:11434")
 EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "qwen3-embedding:8b")
 
 CHUNK_TOKENS = int(os.environ.get("BRAIN_CHUNK_TOKENS", "512"))
-CHUNK_OVERLAP = int(os.environ.get("BRAIN_CHUNK_OVERLAP", "50"))
+CHUNK_OVERLAP = int(os.environ.get("BRAIN_CHUNK_OVERLAP", "25"))
 
 # Approximate chars per token for markdown text
 CHARS_PER_TOKEN = 3.5
 
-# Embedding batch size — smaller = more reliable, larger = faster
-# For files with many chunks, the embedder falls back to smaller batches on timeout
-BATCH_SIZE = 8
-# Per-text timeout scales with batch size: base 60s + 5s per text in batch
-EMBED_TIMEOUT_BASE = 60
-EMBED_TIMEOUT_PER_TEXT = 5
+# Embedding batch size — one file at a time to keep context reasonable
+# and avoid overwhelming Ollama with concurrent requests
+BATCH_SIZE = 1
+# Per-text timeout: base 120s + 10s per text in batch (single file = 130s)
+EMBED_TIMEOUT_BASE = 120
+EMBED_TIMEOUT_PER_TEXT = 10
 # Retry configuration
-MAX_RETRIES = 3
+MAX_RETRIES = 5
 RETRY_BACKOFF = 2.0  # exponential backoff multiplier
+
+
 
 # ── Database helpers ────────────────────────────────────────────────────
 
@@ -265,6 +267,34 @@ def embed_texts_with_retry(texts: list[str], dim: int = 2000) -> list[list[float
     raise Exception(f"Failed to embed single text after {MAX_RETRIES} retries")
 
 
+# ── Ollama concurrency management ──────────────────────────────────────
+
+def is_ollama_busy() -> bool:
+    """Check if Ollama currently has active requests (via /api/ps)."""
+    try:
+        req = urllib.request.Request(f"{OLLAMA_URL}/api/ps", method="GET")
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read())
+            models = data.get("models", [])
+            # If any model is currently loaded/running, consider it busy
+            for m in models:
+                if m.get("size", 0) > 0:
+                    return True
+            return False
+    except Exception:
+        # If we can't check, assume it's not busy
+        return False
+
+
+def wait_if_ollama_busy(max_wait: int = 60):
+    """Wait if Ollama is currently processing requests, to avoid overwhelming it."""
+    waited = 0
+    while is_ollama_busy() and waited < max_wait:
+        print(f"    [ollama busy] waiting {waited}s / {max_wait}s...")
+        time.sleep(3)
+        waited += 3
+
+
 # ── File scanning ───────────────────────────────────────────────────────
 
 def compute_file_hash(filepath: Path) -> str:
@@ -441,6 +471,9 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
         else:
             stats["updated"] += 1
 
+        # Wait if Ollama is already busy (concurrency management)
+        wait_if_ollama_busy(max_wait=60)
+
         # Chunk
         chunks = chunk_markdown(file_info["content"], source_name, slug)
         if not chunks:
@@ -506,7 +539,7 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
             
             conn.commit()
             stats["chunks"] += inserted
-            
+
             if embed_errors > 0:
                 print(f"  [partial] {slug}: {inserted}/{len(chunks)} chunks embedded ({embed_errors} batch failures)")
             else:
@@ -516,6 +549,9 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
             print(f"  [error] Upsert failed for {slug}: {e}")
             conn.rollback()
             stats["errors"] += 1
+
+        # Small delay between files so we don't starve Ollama
+        time.sleep(1)
 
     print(f"  Stats: {stats}")
     return stats
@@ -605,3 +641,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

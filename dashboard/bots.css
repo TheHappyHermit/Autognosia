@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Bot Management Page (Grokbot-style vertical stripe + chat panel)
+   Bot Management Page — Premium vertical stripe + chat panel
    ========================================================================== */
 
 /* View Section */
@@ -20,8 +20,8 @@
 }
 
 .bots-sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 260px;
+  min-width: 260px;
   border-right: 1px solid var(--border-subtle);
   background: var(--bg-primary);
   display: flex;
@@ -38,16 +38,17 @@
 }
 
 .bots-sidebar-header h3 {
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 600;
   color: var(--text-1);
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .bots-count {
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   padding: 2px 8px;
   border-radius: var(--radius-full);
@@ -76,17 +77,19 @@
 
 .bot-stripe-item:hover {
   background: var(--bg-tertiary);
+  border-color: var(--border-subtle);
 }
 
 .bot-stripe-item.active {
   background: var(--accent-soft);
   border-color: var(--accent);
+  box-shadow: var(--shadow-xs);
 }
 
 .bot-stripe-avatar {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   background: var(--accent-soft);
   display: flex;
@@ -101,8 +104,8 @@
 }
 
 .bot-stripe-name {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--fs-base);
+  font-weight: 600;
   color: var(--text-1);
   white-space: nowrap;
   overflow: hidden;
@@ -110,7 +113,7 @@
 }
 
 .bot-stripe-role {
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text-3);
   white-space: nowrap;
   overflow: hidden;
@@ -124,9 +127,17 @@
   border-radius: 50%;
 }
 
-.bot-stripe-status--online { background: var(--success); }
-.bot-stripe-status--thinking { background: var(--warning); animation: pulse 1.5s infinite; }
-.bot-stripe-status--idle { background: var(--text-3); }
+.bot-stripe-status--online {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+.bot-stripe-status--thinking {
+  background: var(--warning);
+  animation: pulse 1.5s infinite;
+}
+.bot-stripe-status--idle {
+  background: var(--text-3);
+}
 
 /* Chat Panel */
 .bots-chat-panel {
@@ -149,17 +160,17 @@
 
 .bots-chat-empty-icon {
   font-size: 48px;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .bots-chat-empty-title {
-  font-size: 18px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-2);
 }
 
 .bots-chat-empty-desc {
-  font-size: 13px;
+  font-size: var(--fs-base);
   text-align: center;
   max-width: 280px;
 }
@@ -178,12 +189,13 @@
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
 }
 
 .bots-chat-header .bot-avatar {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   background: var(--accent-soft);
   display: flex;
@@ -197,13 +209,13 @@
 }
 
 .bots-chat-header-name {
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 600;
   color: var(--text-1);
 }
 
 .bots-chat-header-model {
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text-3);
 }
 
@@ -211,7 +223,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text-3);
 }
 
@@ -235,6 +247,7 @@
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   border-top: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
 }
 
 .bots-chat-input {
@@ -244,23 +257,29 @@
   border-radius: var(--radius-full);
   background: var(--bg-tertiary);
   color: var(--text-1);
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-family: var(--font-sans);
+  transition: all var(--motion-fast);
+}
+
+.bots-chat-input::placeholder {
+  color: var(--text-3);
 }
 
 .bots-chat-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--bg-secondary);
 }
 
 .bots-chat-send {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
   border-radius: 50%;
   border: none;
-  background: var(--accent);
+  background: var(--gradient-brand);
   color: white;
   cursor: pointer;
   font-size: 16px;
@@ -268,10 +287,16 @@
   align-items: center;
   justify-content: center;
   transition: all var(--motion-fast);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
 }
 
 .bots-chat-send:hover {
   transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.4);
+}
+
+.bots-chat-send:active {
+  transform: scale(0.95);
 }
 
 /* Chat Messages */
@@ -279,26 +304,26 @@
   max-width: 80%;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.5;
 }
 
 .bot-message--bot {
   align-self: flex-start;
-  background: var(--accent-soft);
+  background: var(--bg-tertiary);
   color: var(--text-1);
   border-bottom-left-radius: 4px;
 }
 
 .bot-message--user {
   align-self: flex-end;
-  background: var(--bg-tertiary);
+  background: var(--accent-soft);
   color: var(--text-1);
   border-bottom-right-radius: 4px;
 }
 
 .bot-message-time {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-3);
   margin-top: var(--space-1);
 }
@@ -344,17 +369,17 @@
 
 .bot-empty-icon {
   font-size: 48px;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .bot-empty-title {
   font-weight: 600;
   color: var(--text-1);
-  font-size: 18px;
+  font-size: var(--fs-xl);
 }
 
 .bot-empty-desc {
-  font-size: 14px;
+  font-size: var(--fs-md);
   color: var(--text-3);
   max-width: 320px;
 }
