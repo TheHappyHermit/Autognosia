@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT DEFAULT '',
-    notes TEXT DEFAULT '',
     status TEXT DEFAULT 'active',
     priority TEXT DEFAULT 'medium',
     due_at TEXT,
@@ -89,80 +88,16 @@ def _demo_projects() -> list:
 
 
 def _demo_tasks(now: str) -> list:
-    """(title, description, notes, status, priority, due_at, project_index_or_None)."""
+    """(title, description, status, priority, due_at, project_index_or_None)."""
     return [
-        (
-            "Back up NAS before migration",
-            "Full snapshot of media pool to cold storage.",
-            "SSH to NAS admin panel → Create BTRFS snapshot → rsync to external USB drive\n- NAS IP: 10.1.1.5\n- USB drive mounted at /mnt/backup\n- Verify: btrfs subvolume show /mnt/backup/snapshot",
-            "active",
-            "critical",
-            _utc(hours=6),
-            0,
-        ),
-        (
-            "Rotate reverse-proxy TLS certs",
-            "Certs expire soon; renew and reload Traefik.",
-            "Traefik is handling ACME via Let's Encrypt\n- Check: traefik_acme_resolver status\n- Certs at: /data/traefik/certs/\n- Reload: SIGHUP to traefik process",
-            "active",
-            "high",
-            _utc(days=1),
-            0,
-        ),
-        (
-            "Tune graphify ingestion batch size",
-            "Reduce memory spikes during nightly runs.",
-            "Current batch_size: 500 (too large)\nTarget: 100-150\nConfig: /data/graphify/config.yaml\nRestart required: graphify-worker service",
-            "active",
-            "medium",
-            _utc(days=2),
-            1,
-        ),
-        (
-            "Write wiki page: backup strategy",
-            "Document the 3-2-1 scheme for the team.",
-            "Blocked on: waiting for final NAS topology diagram\nOutline:\n- 3 copies of data\n- 2 different media types\n- 1 offsite copy\n- RPO/RTO targets",
-            "blocked",
-            "high",
-            _utc(days=4),
-            1,
-        ),
-        (
-            "Draft Q3 research reading list",
-            "Shortlist papers on memory consolidation.",
-            "Papers to review:\n1. Kenji et al. 2025 - Memory replay in transformers\n2. Smith & Lee 2024 - Consolidation during sleep\n3. Hermes team notes on prospective memory",
-            "active",
-            "medium",
-            _utc(days=7),
-            1,
-        ),
-        (
-            "Order drip irrigation fittings",
-            "Wait for price drop before ordering.",
-            'Parts list:\n- 1/2" mainline tubing (50ft)\n- Drip emitters (20x)\n- Pressure regulator\n- Timer (WiFi)\nBudget: ~$120',
-            "active",
-            "low",
-            _utc(days=14),
-            2,
-        ),
-        (
-            "Archive completed garden tasks",
-            "Close out the revamp project cleanly.",
-            "All raised beds built. Drip system installed.\nRemaining: tool shed (deferred to spring).",
-            "completed",
-            "low",
-            None,
-            2,
-        ),
-        (
-            "Review monthly budget report",
-            "Compare actuals against plan.",
-            "Done. Under budget by $45 this month.",
-            "completed",
-            "medium",
-            _utc(hours=-24),
-            None,
-        ),
+        ("Back up NAS before migration", "Full snapshot of media pool to cold storage.", "active", "critical", _utc(hours=6), 0),
+        ("Rotate reverse-proxy TLS certs", "Certs expire soon; renew and reload Traefik.", "active", "high", _utc(days=1), 0),
+        ("Tune graphify ingestion batch size", "Reduce memory spikes during nightly runs.", "active", "medium", _utc(days=2), 1),
+        ("Write wiki page: backup strategy", "Document the 3-2-1 scheme for the team.", "blocked", "high", _utc(days=4), 1),
+        ("Draft Q3 research reading list", "Shortlist papers on memory consolidation.", "active", "medium", _utc(days=7), 1),
+        ("Order drip irrigation fittings", "Wait for price drop before ordering.", "active", "low", _utc(days=14), 2),
+        ("Archive completed garden tasks", "Close out the revamp project cleanly.", "completed", "low", None, 2),
+        ("Review monthly budget report", "Compare actuals against plan.", "completed", "medium", _utc(hours=-24), None),
     ]
 
 
@@ -213,16 +148,16 @@ def initialize_organizer_db(db_path: Path) -> None:
                 (name, description, status, now),
             )
 
-        for title, description, notes, status, priority, due_at, project_idx in _demo_tasks(now):
+        for title, description, status, priority, due_at, project_idx in _demo_tasks(now):
             project_id = None
             if project_idx is not None:
                 row = conn.execute("SELECT id FROM projects WHERE name = ?", (_demo_projects()[project_idx][0],)).fetchone()
                 project_id = row[0] if row else None
             completed_at = now if status == "completed" else None
             conn.execute(
-                """INSERT INTO tasks (title, description, notes, status, priority, due_at, project_id, created_at, updated_at, completed_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (title, description, notes, status, priority, due_at, project_id, now, now, completed_at),
+                """INSERT INTO tasks (title, description, status, priority, due_at, project_id, created_at, updated_at, completed_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (title, description, status, priority, due_at, project_id, now, now, completed_at),
             )
 
         for title, cue, action, status in _demo_intentions():

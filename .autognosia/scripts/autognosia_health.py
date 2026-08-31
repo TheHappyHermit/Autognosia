@@ -6,7 +6,7 @@ Runs in no-agent cron (daily at 8 AM on this deployment).
 Exits 0 if verification passes, 1 if it fails.
 
 PLATFORM: Cross-platform (Python 3)
-  • All dependencies (verify_stack.py, gbrain CLI, Python) are cross-platform
+  • All dependencies (verify_stack.py, Python) are cross-platform
   • The verify_stack.py script must exist at ~/personal-agent/verify_stack.py
 
 Linux-specific notes:
@@ -53,22 +53,7 @@ def main() -> int:
     else:
         print(f"[skip] verify_stack.py not found at {VERIFY_SCRIPT}")
 
-    # Check gbrain health
-    try:
-        result = subprocess.run(
-            [GBRAIN, "doctor"],
-            capture_output=True, text=True, timeout=60
-        )
-        if result.returncode == 0 and "Overall health" in result.stdout:
-            print("[ok] GBrain healthy")
-        else:
-            print(f"[warn] GBrain doctor: rc={result.returncode}")
-            if result.stderr:
-                print(f"  stderr: {result.stderr[:200]}")
-    except FileNotFoundError:
-        print("[skip] gbrain CLI not found on PATH")
-    except Exception as e:
-        print(f"[warn] gbrain doctor error: {e}")
+    print("[gbrain] GBrain removed from deployment (skip check)")
 
     # Check Personal Organizer API
     try:

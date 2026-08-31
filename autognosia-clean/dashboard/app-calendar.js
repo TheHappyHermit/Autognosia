@@ -1,8 +1,7 @@
-import { CommandDeck } from './app-core.js';
 
   // ── Calendar Rendering & Views (Day, Week, Month) ──────────────────────────
-  CommandDeck.prototype.navigateCalendar = function(
-    CommandDeck.prototype.if = function(this.selectedCalendarView === 'day') {
+  CommandDeck.prototype.navigateCalendar = function(delta) {
+    if (this.selectedCalendarView === 'day') {
       this.currentDate.setDate(this.currentDate.getDate() + delta);
     } else if (this.selectedCalendarView === 'week') {
       this.currentDate.setDate(this.currentDate.getDate() + (delta * 7));
@@ -12,9 +11,9 @@ import { CommandDeck } from './app-core.js';
     this.renderCalendar();
   }
 
-  CommandDeck.prototype.renderCalendar = function(
-    const stage = document.getElementById('calendar-stage');
-    const heading = document.getElementById('cal-heading');
+  CommandDeck.prototype.renderCalendar = function() {
+    const stage = this.getViewEl('calendar-stage');
+    const heading = this.getViewEl('cal-heading');
     
     // Filter events based on active category
     let events = this.state.calendarEvents;
@@ -22,12 +21,12 @@ import { CommandDeck } from './app-core.js';
     else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
     else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
 
-    CommandDeck.prototype.if = function(events.length === 0) {
+    if (events.length === 0) {
       stage.innerHTML = '<div class="empty-hint">No events scheduled.</div>';
       return;
     }
 
-    CommandDeck.prototype.if = function(this.selectedCalendarView === 'day') {
+    if (this.selectedCalendarView === 'day') {
       this.renderDayView(stage, heading, events);
     } else if (this.selectedCalendarView === 'week') {
       this.renderWeekView(stage, heading, events);
@@ -36,7 +35,7 @@ import { CommandDeck } from './app-core.js';
     }
   }
 
-  CommandDeck.prototype.renderDayView = function(
+  CommandDeck.prototype.renderDayView = function(stage, heading, events) {
     const dateStr = this.currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
     const isoDate = this.currentDate.toISOString().split('T')[0];
     heading.textContent = dateStr;
@@ -78,7 +77,7 @@ import { CommandDeck } from './app-core.js';
     stage.innerHTML = html;
   }
 
-  CommandDeck.prototype.renderWeekView = function(
+  CommandDeck.prototype.renderWeekView = function(stage, heading, events) {
     const startOfWeek = new Date(this.currentDate);
     startOfWeek.setDate(this.currentDate.getDate() - this.currentDate.getDay());
     
@@ -89,7 +88,7 @@ import { CommandDeck } from './app-core.js';
 
     let html = '<div style="display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; height:100%;">';
     
-    CommandDeck.prototype.for = function(let i = 0; i < 7; i++) {
+    for (let i = 0; i < 7; i++) {
       const day = new Date(startOfWeek);
       day.setDate(startOfWeek.getDate() + i);
       const iso = day.toISOString().split('T')[0];
@@ -114,7 +113,7 @@ import { CommandDeck } from './app-core.js';
     stage.innerHTML = html;
   }
 
-  CommandDeck.prototype.renderMonthView = function(
+  CommandDeck.prototype.renderMonthView = function(stage, heading, events) {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
     heading.textContent = this.currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -127,12 +126,12 @@ import { CommandDeck } from './app-core.js';
     dayNames.forEach(d => html += `<div class="month-day-head">${d}</div>`);
 
     // Blanks for preceding days
-    CommandDeck.prototype.for = function(let b = 0; b < firstDay; b++) {
+    for (let b = 0; b < firstDay; b++) {
       html += `<div class="month-cell other-month"></div>`;
     }
 
     // Days of current month
-    CommandDeck.prototype.for = function(let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
       const curIso = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       const isToday = curIso === new Date().toISOString().split('T')[0];
       const dayEvs = events.filter(e => strToDateStr(e.start) === curIso);

@@ -10,6 +10,8 @@ services:
       - ./data:/data
       - ./config:/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${HOME}/.hermes:/host-hermes:ro
+      - ${HOME}/.hermes/profiles:/host-profiles:ro
     environment:
       - AUTOGNOSIA_HOME=/data
       - CONFIG_PATH=/config/services.yaml

@@ -1,8 +1,7 @@
-import { CommandDeck } from './app-core.js';
 
 // ── Renderers ──────────────────────────────────────────────────────────────
 
-CommandDeck.prototype.renderOverview = function(
+CommandDeck.prototype.renderOverview = function() {
     const stats = this.state.overview.stats || {};
     document.getElementById('stat-active-tasks').textContent = stats.active_tasks ?? '--';
     document.getElementById('stat-critical-tasks').textContent = stats.critical_tasks ?? '0';
@@ -13,14 +12,14 @@ CommandDeck.prototype.renderOverview = function(
     document.getElementById('stat-intentions').textContent = stats.active_intentions ?? '0';
   }
 
-CommandDeck.prototype.renderBriefing = function(
+CommandDeck.prototype.renderBriefing = function() {
     const b = this.state.briefing;
     if (b.date) document.getElementById('briefing-date').textContent = b.date;
     if (b.summary) document.getElementById('briefing-summary').textContent = b.summary;
     if (b.prompt_me) document.getElementById('briefing-prompt-text').textContent = `"${b.prompt_me}"`;
 
     const priList = document.getElementById('briefing-priorities-list');
-    CommandDeck.prototype.if = function(b.top_priorities && b.top_priorities.length > 0) {
+    if (b.top_priorities && b.top_priorities.length > 0) {
       priList.innerHTML = b.top_priorities.map(p => `
         <li>
           ${escapeHtml(p.title)}
@@ -37,10 +36,10 @@ CommandDeck.prototype.renderBriefing = function(
 
   // ── Data Fetching ──────────────────────────────────────────────────────────
 
-  CommandDeck.prototype.fetchSystemStats = async function(
+  CommandDeck.prototype.fetchSystemStats = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/system`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         const data = await res.json();
         document.getElementById('stat-cpu').textContent = data.cpu_percent ?? '--';
         document.getElementById('stat-ram').textContent = data.ram_percent ?? '--';
@@ -54,7 +53,7 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.refreshAllData = async function(
+  CommandDeck.prototype.refreshAllData = async function() {
     await Promise.all([
       this.fetchSystemStats(),
       this.fetchOverview(),
@@ -72,10 +71,10 @@ CommandDeck.prototype.renderBriefing = function(
     ]);
   }
 
-  CommandDeck.prototype.fetchOverview = async function(
+  CommandDeck.prototype.fetchOverview = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/overview`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.overview = await res.json();
         this.renderOverview();
       }
@@ -84,10 +83,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchBriefing = async function(
+  CommandDeck.prototype.fetchBriefing = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/briefing`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.briefing = await res.json();
         this.renderBriefing();
       }
@@ -96,10 +95,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchTasks = async function(
+  CommandDeck.prototype.fetchTasks = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/tasks`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.tasks = await res.json();
         this.renderTasks();
       }
@@ -108,10 +107,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchReminders = async function(
+  CommandDeck.prototype.fetchReminders = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/reminders`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.reminders = await res.json();
         this.renderReminders();
       }
@@ -120,10 +119,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchProjects = async function(
+  CommandDeck.prototype.fetchProjects = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/projects`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.projects = await res.json();
         this.renderProjects();
       }
@@ -132,10 +131,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchCalendar = async function(
+  CommandDeck.prototype.fetchCalendar = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/calendar`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.calendarEvents = await res.json();
         this.renderCalendar();
       }
@@ -144,10 +143,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchEmails = async function(
+  CommandDeck.prototype.fetchEmails = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/emails`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.emails = await res.json();
         this.renderEmails();
       }
@@ -156,10 +155,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchIntentions = async function(
+  CommandDeck.prototype.fetchIntentions = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/intentions`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.intentions = await res.json();
         this.renderIntentions();
       }
@@ -168,10 +167,10 @@ CommandDeck.prototype.renderBriefing = function(
     }
   }
 
-  CommandDeck.prototype.fetchTelemetry = async function(
+  CommandDeck.prototype.fetchTelemetry = async function() {
     try {
       const res = await fetch(`${this.apiBase}/api/telemetry`);
-      CommandDeck.prototype.if = function(res.ok) {
+      if (res.ok) {
         this.state.telemetry = await res.json();
         this.renderTelemetry();
       }

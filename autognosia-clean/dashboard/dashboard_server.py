@@ -120,7 +120,7 @@ def get_organizer_conn() -> sqlite3.Connection:
         conn = sqlite3.connect(str(ORGANIZER_DB))
         conn.executescript("""
             CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', created_at TEXT);
-            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', notes TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
+            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
             CREATE TABLE IF NOT EXISTS intentions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, cue TEXT, action TEXT, status TEXT DEFAULT 'dormant', created_at TEXT);
             CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remind_at TEXT, channel TEXT DEFAULT 'all', notes TEXT DEFAULT '', status TEXT DEFAULT 'pending', sent_at TEXT, created_at TEXT);
             CREATE TABLE IF NOT EXISTS important_dates (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT, description TEXT);
@@ -336,12 +336,11 @@ def create_task(payload: Dict[str, Any] = Body(...)):
     conn = get_organizer_conn()
     cur = conn.cursor()
     cur.execute("""
-        INSERT INTO tasks (title, description, notes, status, priority, due_at, project_id, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+        INSERT INTO tasks (title, description, status, priority, due_at, project_id, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'))
     """, (
         title,
         payload.get("description", ""),
-        payload.get("notes", ""),
         status,
         payload.get("priority", "medium"),
         payload.get("due_at"),
@@ -357,7 +356,7 @@ def update_task(task_id: int, payload: Dict[str, Any] = Body(...)):
     conn = get_organizer_conn()
     cur = conn.cursor()
     
-    allowed = ["title", "description", "notes", "status", "priority", "due_at", "completed_at", "project_id"]
+    allowed = ["title", "description", "status", "priority", "due_at", "completed_at", "project_id"]
     updates = []
     params = []
     
@@ -616,33 +615,14 @@ def get_telemetry():
     except Exception:
         pass
 
-    # Profile configs — check mounted host profiles, then REPO_ROOT, then $HOME/.hermes
+    # Profile configs — check both repo root and ${HOME}/.hermes for profile configs
     profiles = ["default", "oracle", "researcher", "planner", "auditor", "personal-organizer"]
     profile_status = {}
-    host_profiles = Path("/host-profiles")
-    host_hermes = Path("/host-hermes")
     for p in profiles:
+        # Check repo root first (for dev setups), then ${HOME}/.hermes (for production)
         prof_dir = REPO_ROOT / "profiles" / p
         hermes_dir = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes"))) / "profiles" / p
-        host_dir = host_profiles / p if host_profiles.exists() else None
-        # "default" profile lives at ~/.hermes/ root, not in profiles/
-        if p == "default":
-            host_default = host_hermes if host_hermes.exists() else None
-            hermes_default = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-            if host_default and (host_default / "config.yaml").exists():
-                profile_status[p] = "configured"
-            elif (hermes_default / "config.yaml").exists():
-                profile_status[p] = "configured"
-            elif (prof_dir / "config.yaml").exists():
-                profile_status[p] = "configured"
-            else:
-                profile_status[p] = "missing"
-        elif host_dir and host_dir.exists():
-            profile_status[p] = "configured"
-        elif prof_dir.exists() or hermes_dir.exists():
-            profile_status[p] = "configured"
-        else:
-            profile_status[p] = "missing"
+        profile_status[p] = "configured" if prof_dir.exists() or hermes_dir.exists() else "missing"
 
     # Database sizes
     db_stats = {}
@@ -838,23 +818,13 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
 
 @app.get("/api/bots")
 def get_bots():
-    """List all configured bots/agents from host profiles mount."""
+    """List all configured bots/agents."""
     import psutil
+    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    profiles_dir = hermes_home / "profiles"
     bots = []
-    
-    # Check /host-profiles first (mounted from host), then fall back to HERMES_HOME
-    profile_sources = [
-        Path("/host-profiles"),
-        Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes"))) / "profiles",
-    ]
-    
-    profiles_dir = None
-    for src in profile_sources:
-        if src.exists():
-            profiles_dir = src
-            break
-    
-    if profiles_dir and profiles_dir.exists():
+
+    if profiles_dir.exists():
         for profile_dir in sorted(profiles_dir.iterdir()):
             if not profile_dir.is_dir():
                 continue
@@ -867,12 +837,7 @@ def get_bots():
                     import yaml
                     with open(config_file) as f:
                         cfg = yaml.safe_load(f) or {}
-                    raw_model = cfg.get("model", "unknown")
-                    # Handle both string and dict formats
-                    if isinstance(raw_model, dict):
-                        model = raw_model.get("default", "unknown")
-                    else:
-                        model = raw_model
+                    model = cfg.get("model", "unknown")
                 except Exception:
                     pass
 
@@ -897,6 +862,19 @@ def get_bots():
                 "last_activity": datetime.now(timezone.utc).isoformat(),
                 "avatar": "🤖" if profile_name == "default" else "🧠"
             })
+
+    if not bots:
+        bots.append({
+            "id": "demo",
+            "name": "Demo Assistant",
+            "role": "Sample bot for UI testing",
+            "model": "demo-model",
+            "provider": "Demo",
+            "status": "idle",
+            "current_task": None,
+            "last_activity": datetime.now(timezone.utc).isoformat(),
+            "avatar": "🤖"
+        })
 
     return {"bots": bots}
 
@@ -1121,9 +1099,152 @@ def get_download_queue():
     queue = []
     queue.extend(_get_sonarr_queue(10))
     queue.extend(_get_radarr_queue(10))
+
     return queue
 
-# ── # ── Agent Intelligence Endpoints (Phase 3) ───────────────────────────────────────
+# ── # ── Home Lab Monitoring Endpoints ───────────────────────────────────────────
+
+HOME_LAB_SERVERS = {
+    "main": {
+        "ip": "10.1.1.10",
+        "name": "Main",
+        "role": "LLM inference, graph processing",
+        "services": {
+            "llama-server": {"port": 8080, "path": "/health"},
+            "ollama": {"port": 11434, "path": "/api/tags"},
+            "graphify": {"port": 8081, "path": "/health"},
+        },
+        "gpu": {"name": "V100", "memory_mb": 32768, "type": "nvidia"},
+    },
+    "agent": {
+        "ip": "10.1.1.37",
+        "name": "Agent",
+        "role": "Hermes gateway, paperclip, memory systems",
+        "services": {
+            "hermes-gateway": {"port": 8642, "path": "/health"},
+            "paperclip": {"port": 3000, "path": "/"},
+            "honcho": {"port": 3100, "path": "/health"},
+            "meilisearch": {"port": 7700, "path": "/health"},
+            "qdrant": {"port": 6333, "path": "/collections"},
+            "redis": {"port": 6379, "path": None},
+            "postgres": {"port": 5432, "path": None},
+        },
+    },
+    "agent_zero": {
+        "ip": "10.1.1.18",
+        "name": "Agent Zero",
+        "role": "Autonomous agent, data brokering",
+        "services": {
+            "agent-zero": {"port": 80, "path": "/"},
+            "shadowbroker": {"port": 9000, "path": "/health"},
+            "mariadb": {"port": 3306, "path": None},
+        },
+    },
+}
+
+
+def _check_remote_service(host: str, port: int, path: str = None, timeout: float = 2.0) -> dict:
+    """Check health of a remote service on the home lab network."""
+    url = f"http://{host}:{port}"
+    if path:
+        url += path
+    try:
+        r = requests.get(url, timeout=timeout)
+        return {
+            "healthy": r.status_code < 500,
+            "status_code": r.status_code,
+            "response_ms": round((r.elapsed.total_seconds() * 1000), 1) if hasattr(r, 'elapsed') else None,
+        }
+    except requests.exceptions.Timeout:
+        return {"healthy": False, "status_code": 0, "response_ms": None, "error": "timeout"}
+    except Exception as e:
+        return {"healthy": False, "status_code": 0, "response_ms": None, "error": str(e)}
+
+
+def _get_nvidia_smi(host: str = "localhost") -> dict:
+    """Get GPU metrics via nvidia-smi (local only; remote needs ssh)."""
+    result = {"available": False, "gpus": []}
+    try:
+        if host not in ("localhost", "127.0.0.1"):
+            # Remote GPU check would require SSH — skip for now
+            return result
+        r = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name,utilization.gpu,memory.used,memory.total", "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5
+        )
+        if r.returncode == 0:
+            result["available"] = True
+            for line in r.stdout.strip().split("\n"):
+                if line.strip():
+                    parts = [p.strip() for p in line.split(",")]
+                    if len(parts) >= 4:
+                        result["gpus"].append({
+                            "name": parts[0],
+                            "utilization": int(parts[1]),
+                            "memory_used_mb": int(parts[2]),
+                            "memory_total_mb": int(parts[3]),
+                        })
+    except Exception:
+        pass
+    return result
+
+
+@app.get("/api/homelab")
+def get_homelab_status():
+    """Return full home lab status: servers, services, GPU."""
+    # Local GPU
+    gpu_info = _get_nvidia_smi("localhost")
+
+    result = {
+        "servers": {},
+        "gpu": gpu_info,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    for key, server in HOME_LAB_SERVERS.items():
+        is_local = server["ip"] in ("127.0.0.1", "localhost")
+        host = "localhost" if is_local else server["ip"]
+
+        server_result = {
+            "ip": server["ip"],
+            "name": server["name"],
+            "role": server["role"],
+            "online": True,
+            "services": {},
+        }
+
+        for svc_name, svc_info in server.get("services", {}).items():
+            if is_local:
+                health = _check_remote_service(host, svc_info["port"], svc_info.get("path"))
+            else:
+                health = _check_remote_service(host, svc_info["port"], svc_info.get("path"))
+            server_result["services"][svc_name] = {
+                "port": svc_info["port"],
+                **health,
+            }
+            if not health.get("healthy"):
+                server_result["online"] = False
+
+        # Add GPU info for main server
+        if key == "main" and gpu_info["available"]:
+            server_result["gpu"] = gpu_info["gpus"][0] if gpu_info["gpus"] else None
+
+        result["servers"][key] = server_result
+
+    return result
+
+
+@app.get("/api/health")
+def healthcheck():
+    """Healthcheck endpoint for Docker and monitoring."""
+    docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
+    db_ok = ORGANIZER_DB.exists()
+    return JSONResponse({
+        "status": "ok",
+        "docker": docker_ok,
+        "database": db_ok,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
 
 @app.get("/api/agent")
 def get_agent_status():
@@ -1151,24 +1272,13 @@ def get_agent_status():
             pass
     
     # Count cron jobs
-    host_hermes = Path("/host-hermes") if Path("/host-hermes").exists() else Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    cron_dir = Path.home() / ".hermes" / "cron"
     cron_count = 0
-    jobs_file = host_hermes / "cron" / "jobs.json"
-    if jobs_file.exists():
-        try:
-            data = json.loads(jobs_file.read_text(encoding="utf-8", errors="ignore"))
-            cron_count = len(data.get("jobs", []))
-        except Exception:
-            cron_yaml_dir = host_hermes / "cron"
-            if cron_yaml_dir.exists():
-                cron_count = len([f for f in cron_yaml_dir.iterdir() if f.suffix in ['.yaml', '.yml']])
-    else:
-        cron_dir = host_hermes / "cron"
-        if cron_dir.exists():
-            cron_count = len([f for f in cron_dir.iterdir() if f.suffix in ['.yaml', '.yml'] and f.name != 'jobs.json'])
+    if cron_dir.exists():
+        cron_count = len([f for f in cron_dir.iterdir() if f.suffix in ['.yaml', '.yml']])
     
     # Memory stats
-    memory_dir = host_hermes / "memory"
+    memory_dir = Path.home() / ".hermes" / "memory"
     memory_files = 0
     if memory_dir.exists():
         memory_files = len([f for f in memory_dir.iterdir() if f.suffix == '.md'])
@@ -1189,60 +1299,70 @@ def get_cron_jobs():
     """List all configured cron jobs with status."""
     cron_jobs = []
     
-    # Hermes stores cron jobs in ~/.hermes/cron/jobs.json (JSON, not YAML)
-    host_hermes = Path("/host-hermes") if Path("/host-hermes").exists() else Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-    jobs_file = host_hermes / "cron" / "jobs.json"
-    
-    if jobs_file.exists():
+    # Try jobs.json first
+    jobs_json_path = Path.home() / ".hermes" / "cron" / "jobs.json"
+    if jobs_json_path.exists():
         try:
-            data = json.loads(jobs_file.read_text(encoding="utf-8", errors="ignore"))
-            file_jobs = data.get("jobs", [])
-            for job in file_jobs:
-                cron_jobs.append({
-                    "name": job.get("name", "Untitled"),
-                    "schedule": job.get("schedule_display") or job.get("schedule", {}).get("display") or "Unknown",
-                    "enabled": job.get("enabled", True),
-                    "state": job.get("state", "scheduled"),
-                    "last_status": job.get("last_status"),
-                    "file": "jobs.json",
-                })
+            data = json.loads(jobs_json_path.read_text(encoding="utf-8", errors="ignore"))
+            if isinstance(data, list):
+                for job in data:
+                    cron_jobs.append({
+                        "name": job.get("name", "Unknown"),
+                        "schedule": job.get("schedule", "Unknown"),
+                        "enabled": job.get("enabled", True),
+                        "file": "jobs.json"
+                    })
+            elif isinstance(data, dict) and "jobs" in data:
+                for job in data["jobs"]:
+                    cron_jobs.append({
+                        "name": job.get("name", "Unknown"),
+                        "schedule": job.get("schedule", "Unknown"),
+                        "enabled": job.get("enabled", True),
+                        "file": "jobs.json"
+                    })
         except Exception as e:
             cron_jobs.append({
-                "name": "Error parsing jobs.json",
+                "name": "jobs.json parse error",
                 "schedule": "Error",
                 "enabled": False,
-                "error": str(e),
+                "error": str(e)
             })
     
-    # Also check for YAML-based cron jobs (legacy)
-    yaml_dir = host_hermes / "cron"
-    if yaml_dir.exists():
-        for job_file in yaml_dir.glob("*.yaml"):
-            try:
-                content = job_file.read_text(encoding="utf-8", errors="ignore")
-                name = job_file.stem.replace("_", " ").title()
-                schedule = "Unknown"
-                enabled = True
-                for line in content.split(chr(10)):
-                    if "schedule:" in line:
-                        schedule = line.split(":", 1)[1].strip().strip(chr(34) + chr(39))
-                    if "enabled:" in line:
-                        enabled = "true" in line.lower()
-                cron_jobs.append({
-                    "name": name,
-                    "schedule": schedule,
-                    "enabled": enabled,
-                    "file": job_file.name,
-                })
-            except Exception as e:
-                cron_jobs.append({
-                    "name": job_file.stem,
-                    "schedule": "Error",
-                    "enabled": False,
-                    "error": str(e),
-                })
-
-    return {"jobs": cron_jobs, "total": len(cron_jobs)}
+    # Fallback: scan YAML files
+    if not cron_jobs:
+        cron_dir = Path.home() / ".hermes" / "cron"
+        if cron_dir.exists():
+            for job_file in cron_dir.glob("*.yaml"):
+                try:
+                    content = job_file.read_text(encoding="utf-8", errors="ignore")
+                    name = job_file.stem.replace('_', ' ').title()
+                    schedule = "Unknown"
+                    enabled = True
+                    
+                    for line in content.split(chr(10)):
+                        if 'schedule:' in line:
+                            schedule = line.split(":", 1)[1].strip().strip(chr(34) + chr(39))
+                        if 'enabled:' in line:
+                            enabled = 'true' in line.lower()
+                    
+                    cron_jobs.append({
+                        "name": name,
+                        "schedule": schedule,
+                        "enabled": enabled,
+                        "file": job_file.name
+                    })
+                except Exception as e:
+                    cron_jobs.append({
+                        "name": job_file.stem,
+                        "schedule": "Error",
+                        "enabled": False,
+                        "error": str(e)
+                    })
+    
+    return {
+        "jobs": cron_jobs,
+        "total": len(cron_jobs),
+    }
 
 @app.get("/api/graphify")
 def get_graphify_status():
@@ -1297,13 +1417,12 @@ def get_hermes_status():
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
     
-    host_hermes = Path("/host-hermes") if Path("/host-hermes").exists() else Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-    skills_dir = host_hermes / "skills"
+    skills_dir = Path.home() / ".hermes" / "skills"
     skills_count = 0
     if skills_dir.exists():
         skills_count = len([f for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists()])
     
-    plugins_dir = host_hermes / "plugins"
+    plugins_dir = Path.home() / ".hermes" / "plugins"
     plugins_count = 0
     if plugins_dir.exists():
         plugins_count = len([f for f in plugins_dir.iterdir() if f.is_dir() and (f / "plugin.yaml").exists() or (f / "plugin.yml").exists()])
@@ -1373,6 +1492,30 @@ def serve_bots_css():
 @app.get("/tokens.css")
 def serve_tokens():
     return FileResponse(str(DASHBOARD_DIR / "tokens.css"), media_type="text/css")
+
+@app.get("/home-lab.css")
+def serve_home_lab_css():
+    return FileResponse(str(DASHBOARD_DIR / "home-lab.css"), media_type="text/css")
+
+@app.get("/app-data-fetch.js")
+def serve_app_data_fetch():
+    return FileResponse(str(DASHBOARD_DIR / "app-data-fetch.js"), media_type="application/javascript")
+
+@app.get("/app-calendar.js")
+def serve_app_calendar():
+    return FileResponse(str(DASHBOARD_DIR / "app-calendar.js"), media_type="application/javascript")
+
+@app.get("/app-tasks.js")
+def serve_app_tasks():
+    return FileResponse(str(DASHBOARD_DIR / "app-tasks.js"), media_type="application/javascript")
+
+@app.get("/app-services.js")
+def serve_app_services():
+    return FileResponse(str(DASHBOARD_DIR / "app-services.js"), media_type="application/javascript")
+
+@app.get("/app-core.js")
+def serve_app_core():
+    return FileResponse(str(DASHBOARD_DIR / "app-core.js"), media_type="application/javascript")
 
 @app.get("/app.js")
 def serve_app():
