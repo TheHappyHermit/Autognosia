@@ -1,5 +1,7 @@
 # SETUP.md — Autognosia Detailed Configuration
 
+> **New to Autognosia?** See [INSTALL.md](INSTALL.md) for first-time setup. This document covers ongoing configuration after initial setup.
+
 This document details configuration of profiles, cron jobs, schemas, and memory tiers.
 
 ---
