@@ -1,0 +1,6 @@
+2026-08-25 08:57:25,317 INFO hermes_cli.web_server: Mounted plugin API routes: /api/plugins/hermes-achievements/
+2026-08-25 08:57:25,487 INFO hermes_cli.web_server: Mounted plugin API routes: /api/plugins/kanban/
+2026-08-25 08:57:25,675 INFO hermes_cli.web_server: Desktop cron scheduler will tick 6 profile(s): ['default', 'auditor', 'oracle', 'personal-organizer', 'planner', 'researcher']
+2026-08-25 08:57:25,677 INFO hermes_cli.web_server: Desktop cron scheduler started (provider=builtin, interval=60s)
+2026-08-25 08:57:27,263 INFO tui_gateway.ws: ws accepted peer=127.0.0.1:42338
+2026-08-25 08:58:24,674 INFO tui_gateway.ws: ws closed peer=127.0.0.1:42338 reason=client_disconnect(code=1006,reason=) messages=0 parse_errors=0 dispatch_crashes=0 send_failures=0 reaped_sessions=0 detached_sessions=0

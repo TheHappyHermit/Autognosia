@@ -1,0 +1,62 @@
+Cronjob Response: Morning Newsletter (6 AM)
+(job_id: eebf16fd600a)
+-------------
+
+The script ran successfully (exit code 0) and produced a complete newsletter. The one summarization warning was a transient retry that resolved on the second attempt (the final newsletter was synthesized at 3677 characters). 
+
+Per the task, I'm delivering the resulting newsletter as my final response (the system routes this to Telegram):
+
+# News Brief
+*2026-07-23 06:10*
+
+---
+
+## 🔬 Science
+
+**Trump ties Saudi nuclear deal to Israel normalization:** President Trump said Thursday that U.S. approval of a nuclear cooperation agreement with Saudi Arabia requires the kingdom to normalize relations with Israel, adding a significant new condition to the proposed deal.
+
+**Delhi Police may cancel passports of CJP protest rioters:** Authorities are using CCTV and video evidence to identify individuals directly involved in violence during NEET paper leak protests near Jantar Mantar, where an inspector was injured, and could initiate passport cancellation proceedings.
+
+**British Airways investigates after three pilots fall ill mid-flight:** Three pilots on a Hyderabad-London flight suffered suspected food poisoning from hotel breakfast and bottled water, with one becoming incapacitated at 30,000 feet and requiring oxygen and urgent medical care after landing.
+
+**U.S. Navy blocks release of sailors' service histories:** The service will no longer provide service records that were publicly available for decades, citing security threats and harassment concerns, as part of broader Pentagon press restrictions under Defense Secretary Hegseth.
+
+**Manchester police admit failure to examine synagogue attacker's phones:** Devices seized from Jihad Al-Shamie in February and September 2025 contained evidence of extremist views but were not analyzed before he killed two men at Heaton Park Synagogue in October; the chief constable apologized.
+
+**Geely to build EVs at Ford's Valencia plant in new joint venture:** The Chinese automaker will begin operations at the Spanish facility in early 2027 pending regulatory approval, with first vehicles slated for 2028, marking a major China-Europe manufacturing partnership.
+
+---
+
+## 🤖 AI & Tech
+
+**Chrome 155 redesigns Android notification prompts** to be less intrusive, auto-dismissing if ignored and adding a dedicated "Notifications" toggle in site controls.
+
+**Stadler Rail refuses $12.3M ransom** after Everest gang breached a supplier's data exchange platform; no security-relevant data, personal info, or production systems were compromised.
+
+**NVIDIA raises GDDR6/GDDR7 kit prices** for board partners, passing DRAM cost increases that will push RTX GPU prices higher in coming days.
+
+**Google confirms Pixel 11 series launch** for August 12 at 6:00 PM ET in New York.
+
+---
+
+## 🌍 World
+
+**Labour laws mandate timely final settlements** for departing employees to cover essential expenses like rent and loans before new income starts.
+
+**Oil prices hit highest level since June** after Red Sea attacks escalated Iran conflict, threatening global supply disruption.
+
+**India's first hydrogen train completes 900 km pilot** on Jind-Sonipat route, emitting only water vapor with fares matching diesel services.
+
+**Consumer authority fines Chaayos Rs 50,000** for auto-adding service charges, ordering refunds and removal of default charges from billing systems.
+
+**China develops Mach 26 asteroid deflection mission** using Long March 5 rocket to reduce response time for planetary threats.
+
+**Niger farmers regenerate 200 million trees** by reviving root systems, restoring degraded farmland and improving food security at low cost.
+
+**US and China solicit industry input on tariff reductions** through new trade board, seeking views on potential bilateral cuts.
+
+**US-China stability holds despite Trump election interference claims** as Beijing responds with restraint and Washington lifts Hong Kong sanctions.
+
+**Suzhou court orders Chinese tea chain to pay Louis Vuitton $1.5 million** for trademark infringement on floral pattern predating the brand.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Morning Newsletter (6 AM)").

@@ -1,0 +1,299 @@
+{
+  "https://portal.nousresearch.com": {
+    "data": {
+      "paidRecommendedModels": [
+        {
+          "modelName": "z-ai/glm-5.2:US",
+          "displayName": "z-ai/glm-5.2:US",
+          "source": "local",
+          "href": null,
+          "tokenPrice": null,
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 0,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "openai/gpt-5.6-sol",
+          "displayName": "OpenAI: GPT-5.6 Sol",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/openai/gpt-5.6-sol-20260709",
+          "tokenPrice": "in $1.60 / out $8.00 per 1M",
+          "contextLength": 1050000,
+          "inputModalities": [
+            "file",
+            "image",
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 1,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "openai/gpt-5.6-terra",
+          "displayName": "OpenAI: GPT-5.6 Terra",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/openai/gpt-5.6-terra-20260709",
+          "tokenPrice": "in $1.60 / out $9.60 per 1M",
+          "contextLength": 1050000,
+          "inputModalities": [
+            "file",
+            "image",
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 2,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "openai/gpt-5.6-luna",
+          "displayName": "OpenAI: GPT-5.6 Luna",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/openai/gpt-5.6-luna-20260709",
+          "tokenPrice": "in $0.16 / out $0.96 per 1M",
+          "contextLength": 1050000,
+          "inputModalities": [
+            "file",
+            "image",
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 3,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "upstage/solar-pro4:free",
+          "displayName": "upstage/solar-pro4:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 4,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "meituan/longcat-2.0:free",
+          "displayName": "meituan/longcat-2.0:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 5,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "tencent/hy3:free",
+          "displayName": "tencent/hy3:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 6,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "poolside/laguna-s-2.1:free",
+          "displayName": "Poolside: Laguna S 2.1 (free)",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/poolside/laguna-s-2.1-20260720",
+          "tokenPrice": "$0.00/1M",
+          "contextLength": 262144,
+          "inputModalities": [
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 7,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "stepfun/step-3.7-flash:free",
+          "displayName": "stepfun/step-3.7-flash:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 8,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "poolside/laguna-xs-2.1:free",
+          "displayName": "Poolside: Laguna XS 2.1 (free)",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/poolside/laguna-xs-2.1-20260625",
+          "tokenPrice": "$0.00/1M",
+          "contextLength": 262144,
+          "inputModalities": [
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 9,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        }
+      ],
+      "freeRecommendedModels": [
+        {
+          "modelName": "upstage/solar-pro4:free",
+          "displayName": "upstage/solar-pro4:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 0,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "meituan/longcat-2.0:free",
+          "displayName": "meituan/longcat-2.0:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 1,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "tencent/hy3:free",
+          "displayName": "tencent/hy3:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 2,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "poolside/laguna-s-2.1:free",
+          "displayName": "Poolside: Laguna S 2.1 (free)",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/poolside/laguna-s-2.1-20260720",
+          "tokenPrice": "$0.00/1M",
+          "contextLength": 262144,
+          "inputModalities": [
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 3,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "stepfun/step-3.7-flash:free",
+          "displayName": "stepfun/step-3.7-flash:free",
+          "source": "local",
+          "href": null,
+          "tokenPrice": "$0.00/1M",
+          "contextLength": null,
+          "inputModalities": [],
+          "outputModalities": [],
+          "position": 4,
+          "isVisionModel": true,
+          "isCompactionModel": true,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        },
+        {
+          "modelName": "poolside/laguna-xs-2.1:free",
+          "displayName": "Poolside: Laguna XS 2.1 (free)",
+          "source": "openrouter",
+          "href": "https://openrouter.ai/poolside/laguna-xs-2.1-20260625",
+          "tokenPrice": "$0.00/1M",
+          "contextLength": 262144,
+          "inputModalities": [
+            "text"
+          ],
+          "outputModalities": [
+            "text"
+          ],
+          "position": 5,
+          "isVisionModel": false,
+          "isCompactionModel": false,
+          "updatedAt": "2026-08-19T17:33:04.602Z"
+        }
+      ],
+      "paidRecommendedVisionModel": null,
+      "paidRecommendedCompactionModel": null,
+      "freeRecommendedVisionModel": {
+        "modelName": "stepfun/step-3.7-flash:free",
+        "displayName": "stepfun/step-3.7-flash:free",
+        "source": "local",
+        "href": null,
+        "tokenPrice": "$0.00/1M",
+        "contextLength": null,
+        "inputModalities": [],
+        "outputModalities": [],
+        "position": 4,
+        "isVisionModel": true,
+        "isCompactionModel": true,
+        "updatedAt": "2026-08-19T17:33:04.602Z"
+      },
+      "freeRecommendedCompactionModel": {
+        "modelName": "stepfun/step-3.7-flash:free",
+        "displayName": "stepfun/step-3.7-flash:free",
+        "source": "local",
+        "href": null,
+        "tokenPrice": "$0.00/1M",
+        "contextLength": null,
+        "inputModalities": [],
+        "outputModalities": [],
+        "position": 4,
+        "isVisionModel": true,
+        "isCompactionModel": true,
+        "updatedAt": "2026-08-19T17:33:04.602Z"
+      }
+    },
+    "ts": 1787792278.276968
+  }
+}

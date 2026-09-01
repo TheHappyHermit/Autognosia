@@ -1,0 +1,13 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[user]
+	email = hermes@local
+	name = Hermes Checkpoint
+[commit]
+	gpgsign = false
+[tag]
+	gpgSign = false
+[gc]
+	auto = 0

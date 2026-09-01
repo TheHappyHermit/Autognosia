@@ -1,0 +1,622 @@
+2026-08-25 15:08:14,477 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-25 15:08:15,654 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,655 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,656 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,656 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,657 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,687 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,688 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,689 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,690 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,690 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,691 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,696 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,697 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:15,697 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,117 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-25 15:08:39,808 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,809 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,811 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,812 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,813 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,817 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,818 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,819 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,821 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,822 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,823 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,828 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,828 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:08:39,829 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,041 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-25 15:13:00,604 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,605 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,606 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,607 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,607 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,612 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,613 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,614 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,617 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,617 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,618 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,623 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,624 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:13:00,624 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:01,719 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-25 15:18:02,335 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,337 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,338 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,340 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,341 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,376 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,377 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,379 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,380 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,380 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,381 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,387 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,387 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:18:02,387 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-25 15:19:15,195 WARNING [20260825_151801_53df68] agent.tool_executor: Tool web_search returned error (0.26s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-25 15:19:36,492 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-25 15:19:36,493 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 15:20:36.
+2026-08-25 15:19:48,474 WARNING [20260825_151801_53df68] agent.tool_executor: Tool web_search returned error (0.26s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-25 15:22:14,975 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03b00-7c13-7a62-9a7d-433484a4a78a')
+2026-08-26 09:55:57,772 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 09:55:58,888 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,892 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,895 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,898 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,900 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,944 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,946 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,947 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,948 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,949 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,949 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,956 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,957 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 09:55:58,957 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 09:56:24,653 WARNING [20260826_095555_4f4f26] agent.tool_executor: Tool terminal returned error (0.00s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 09:57:02,246 WARNING [20260826_095555_4f4f26] agent.tool_executor: Tool terminal returned error (0.37s): {"output": "ERROR: HTTP Error 404: Not Found", "exit_code": 1, "error": null}
+2026-08-26 09:57:06,317 WARNING [20260826_095555_4f4f26] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 09:58:50,230 WARNING [20260826_095555_4f4f26] agent.tool_executor: Tool terminal returned error (0.20s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [MEDIUM] URL uses raw IP address: URL points to IP address 10.1.1.10 instead of a domain name; [HIGH] Plain HTTP URL in execution con
+2026-08-26 10:05:21,750 WARNING [20260826_095555_4f4f26] agent.tool_executor: Tool terminal returned error (0.23s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] destructive command targets a system path: This destructive command targets a broad system path (root, a home tree, or a syste
+2026-08-26 10:05:39,624 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03eff-fdab-70d0-b437-f8457451b919')
+2026-08-26 11:08:20,791 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 11:08:21,341 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,342 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,343 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,344 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,345 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,370 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,371 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,372 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,373 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,374 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,375 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,382 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,382 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 11:08:21,383 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 11:09:23,807 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 11:09:23,822 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 11:09:23,835 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 11:09:23,849 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 11:09:23,866 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 11:09:23,887 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool terminal returned error (0.02s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 11:09:35,776 WARNING [20260826_110820_d150f8] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 11:43:37,044 WARNING [20260826_110820_d150f8] agent.chat_completion_helpers: Stream stale for 900s (threshold 900s) — no chunks received. model=qwen/qwen3.6-35b-a3b context=~61,772 tokens. Killing connection.
+2026-08-26 11:43:37,047 WARNING agent.stream_diag: Stream drop mid tool-call on attempt 2/3 — retrying. subagent_id=- depth=0 provider=lmstudio base_url=http://10.1.1.151:1234/v1 error_type=RemoteProtocolError error=peer closed connection without sending complete message body (incomplete chunked read) chain=RemoteProtocolError(peer closed connection without sending complete message body (incomplete chunked read)) <- RemoteProtocolError(peer closed connection without sending complete message body (incomplete chunked read)) <- RemoteProtocolError(peer closed connection without sending complete message body (incomplete chunked read)) http_status=200 bytes=10157 chunks=230 elapsed=932.11s ttfb=28.86s upstream=[-]
+2026-08-26 12:13:06,054 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03f42-4093-71d0-bdc9-46bb0158056c')
+2026-08-26 13:12:08,043 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 13:12:08,760 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,761 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,762 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,762 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,763 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,809 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,811 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,812 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,814 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,815 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,816 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,824 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,825 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:08,825 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:12:33,690 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.20s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://searxng.wineandgecko.com/search?q=services&format=json' uses unencrypted HTTP
+2026-08-26 13:12:33,861 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.16s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://firecrawl.wineandgecko.com/v1/scrape' uses unencrypted HTTP and is being pass
+2026-08-26 13:13:39,965 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.22s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 13:13:40,000 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.02s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:14:40,418 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:14:45,000 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:16:24,854 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool computer_use returned error (60.02s): {"error": "approval prompt timed out \u2014 the user did not respond. Silence is not consent; do not retry without the user.", "action": "focus_app"}
+2026-08-26 13:17:25,239 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:17:25,255 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:17:25,271 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:17:25,288 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:17:25,305 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:17:25,322 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:25:09,274 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:32:03,432 WARNING [20260826_131207_e11f5c] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:32:08,644 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,644 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,646 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,647 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,648 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,650 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,652 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,653 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,654 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,654 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,655 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,658 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,659 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,660 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:32:08,854 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03fb3-963a-74e0-8cf2-d29d01cb817b')
+2026-08-26 13:35:44,772 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 13:35:45,754 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,755 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,756 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,757 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,758 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,791 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,793 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,794 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,796 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,798 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,800 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,809 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,810 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:35:45,811 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:36:01,815 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:36:04,245 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.29s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 13:36:22,560 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:36:25,847 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.36s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Pipe to interpreter: curl | python3: Command pipes output from 'curl' directly to interpreter 'python3'. Downloaded content wi
+2026-08-26 13:36:31,368 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.31s): {"output": "", "exit_code": 6, "error": null}
+
+[Tool loop warning: same_tool_failure_warning; count=3; terminal has failed 3 times this turn. This looks like a loop. Do not switch to text-only replies
+2026-08-26 13:36:50,643 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.27s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 13:37:16,905 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.28s): {"output": "", "exit_code": 7, "error": null}
+2026-08-26 13:37:20,509 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.21s): {"output": "", "exit_code": 7, "error": null}
+
+[Tool loop warning: same_tool_failure_warning; count=3; terminal has failed 3 times this turn. This looks like a loop. Do not switch to text-only replies
+2026-08-26 13:37:20,598 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 13:37:20,602 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 13:38:20.
+2026-08-26 13:37:23,094 WARNING [20260826_133544_4e31d2] agent.tool_executor: Tool terminal returned error (0.25s): {"output": "", "exit_code": 6, "error": null}
+
+[Tool loop warning: same_tool_failure_warning; count=4; terminal has failed 4 times this turn. This looks like a loop. Do not switch to text-only replies
+2026-08-26 13:41:14,496 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03fc9-35a6-72b0-a841-2120e245ebb5')
+2026-08-26 13:42:47,961 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 13:42:49,067 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,068 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,069 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,071 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,072 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,109 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,111 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,113 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,115 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,118 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,119 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,134 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,135 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:42:49,137 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:49,967 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 13:43:51,048 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,049 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,051 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,052 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,053 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,058 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,061 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,062 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,063 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,065 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,066 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,075 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,076 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:43:51,076 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 13:44:01,066 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool computer_use returned error (60.07s): {"error": "approval prompt timed out \u2014 the user did not respond. Silence is not consent; do not retry without the user.", "action": "cua_browser_navigate"}
+2026-08-26 13:44:28,862 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:44:28,874 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:44:28,885 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:44:51,665 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.22s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 13:45:19,331 WARNING [20260826_134349_981e79] agent.tool_executor: Tool terminal returned error (0.52s): {"output": "usage: browser-use get [-h] {title,html,text,value,attributes,bbox} ...\nbrowser-use get: error: argument get_command: invalid choice: 'What is the first sentence of the Wikipedia intro fo
+2026-08-26 13:45:41,015 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 13:45:41,595 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.17s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 13:46:47,024 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:46:47,038 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:46:47,052 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:46:47,064 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:46:47,077 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 13:46:47,133 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03fd0-9ce9-78b1-8a0b-015fabf403bf')
+2026-08-26 13:47:21,137 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool web_extract returned error (1.31s): {
+  "results": [
+    {
+      "url": "https://wiki.servarr.com/radarr/api",
+      "title": "",
+      "content": "",
+      "error": "404 page not found"
+    },
+    {
+      "url": "https://wiki.servarr.c
+2026-08-26 13:48:03,878 WARNING [20260826_134247_2c099e] agent.tool_executor: Tool web_extract returned error (2.25s): {
+  "results": [
+    {
+      "url": "https://sonarr.tv/docs/api/",
+      "title": "Sonarr API Docs",
+      "content": "![](../../img/logo-256.png)**Sonarr API Docs**",
+      "error": null
+    },
+    {
+2026-08-26 13:50:56,406 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03fcf-ab85-74d2-9a8a-c6f3c9fea741')
+2026-08-26 14:32:34,502 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 14:32:35,537 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,539 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,541 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,542 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,544 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,653 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,654 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,655 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,656 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,657 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,662 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,666 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,667 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 14:32:35,667 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 14:33:40,591 WARNING [20260826_143234_51674a] agent.tool_executor: Tool terminal returned error (0.95s): {"output": "", "exit_code": 123, "error": null}
+2026-08-26 14:34:09,631 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 14:34:09,633 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 14:35:09.
+2026-08-26 14:34:21,318 WARNING [20260826_143234_51674a] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 14:34:28,845 WARNING [20260826_143234_51674a] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 14:40:36,146 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a03ffd-3c96-76a2-9b42-9f78865a3063')
+2026-08-26 14:50:51,838 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 14:50:52,644 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,646 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,647 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,648 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,649 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,686 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,687 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,688 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,689 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,690 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,692 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,699 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,700 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 14:50:52,701 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 14:51:56,246 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.39s): {"output": "", "exit_code": 1, "error": null}
+2026-08-26 14:52:26,127 WARNING [20260826_145051_09e78d] run_agent: Removed duplicate tool call: terminal
+2026-08-26 14:52:27,031 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 14:52:27,035 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 14:53:27.
+2026-08-26 14:52:38,431 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:15,355 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:15,374 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:15,390 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:15,410 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:15,429 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:15,445 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 14:53:33,602 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool web_extract returned error (6.95s): {
+  "results": [
+    {
+      "url": "https://jellyfin.org/docs/general/developers/api/",
+      "title": "Jellyfin",
+      "content": "[Skip to main content](https://jellyfin.org/docs/general/developer
+2026-08-26 14:53:50,547 WARNING [20260826_145051_09e78d] agent.tool_executor: Tool web_search returned error (0.33s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-26 15:08:24,015 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a0400d-fa6c-76b2-b862-0138c9ffe277')
+2026-08-26 15:57:12,687 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 15:57:13,458 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,460 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,462 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,464 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,466 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,506 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,509 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,510 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,513 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,514 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,516 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,527 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,528 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:13,529 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 15:57:42,951 WARNING [20260826_155712_f0df20] agent.tool_executor: Tool terminal returned error (0.21s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 15:57:43,296 WARNING [20260826_155712_f0df20] agent.tool_executor: Tool terminal returned error (0.33s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 15:58:08,745 WARNING [20260826_155712_f0df20] agent.tool_executor: Tool web_extract returned error (0.43s): {
+  "results": [
+    {
+      "url": "https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-5.0)",
+      "title": "",
+      "content": "",
+      "error": "Keyless Tavily extract failed
+2026-08-26 15:58:34,713 WARNING [20260826_155712_f0df20] agent.tool_executor: Tool web_search returned error (0.29s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-26 15:58:47,335 WARNING [20260826_155712_f0df20] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 15:58:59,743 WARNING [20260826_155712_f0df20] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 16:24:11,813 WARNING [20260826_155712_f0df20] agent.chat_completion_helpers: Stream stale for 900s (threshold 900s) — no chunks received. model=qwen/qwen3.6-35b-a3b context=~77,728 tokens. Killing connection.
+2026-08-26 16:24:11,816 WARNING agent.stream_diag: Stream drop mid tool-call on attempt 2/3 — retrying. subagent_id=- depth=0 provider=lmstudio base_url=http://10.1.1.151:1234/v1 error_type=RemoteProtocolError error=peer closed connection without sending complete message body (incomplete chunked read) chain=RemoteProtocolError(peer closed connection without sending complete message body (incomplete chunked read)) <- RemoteProtocolError(peer closed connection without sending complete message body (incomplete chunked read)) <- RemoteProtocolError(peer closed connection without sending complete message body (incomplete chunked read)) http_status=200 bytes=11306 chunks=260 elapsed=904.23s ttfb=0.35s upstream=[-]
+2026-08-26 16:37:59,021 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a0404a-b865-7c82-b496-9c85c955584c')
+2026-08-26 16:38:20,841 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 16:38:21,756 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,757 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,759 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,760 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,760 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,800 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,801 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,802 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,803 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,804 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,807 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,821 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,821 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:38:21,822 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:39:56,489 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 16:39:56,492 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 16:40:56.
+2026-08-26 16:39:59,672 WARNING [20260826_163819_99c802] agent.tool_executor: Tool terminal returned error (0.31s): {"output": "", "exit_code": 2, "error": null}
+2026-08-26 16:40:27,694 WARNING agent.title_generator: Title generation failed: Request timed out.
+2026-08-26 16:40:31,993 WARNING [20260826_163819_99c802] agent.tool_executor: Tool terminal returned error (0.29s): {"output": "Host home.wineandgecko.com not found: 3(NXDOMAIN)\nServer:\t\t127.0.0.53\nAddress:\t127.0.0.53#53\n\n** server can't find home.wineandgecko.com: NXDOMAIN", "exit_code": 1, "error": null}
+2026-08-26 16:40:32,427 WARNING [20260826_163819_99c802] agent.tool_executor: Tool terminal returned error (0.42s): {"output": "", "exit_code": 1, "error": null, "exit_code_meaning": "No matches found (not an error)"}
+2026-08-26 16:45:37,012 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a04070-62d0-7181-acb3-6c15d41f9d1f')
+2026-08-26 16:46:18,800 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 16:46:19,426 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:19,428 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:19,429 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:19,430 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:19,432 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,288 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,290 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,294 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,297 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,306 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,307 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,325 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,330 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:21,333 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:46:30,876 WARNING [20260826_164617_4f55ad] agent.tool_executor: Tool terminal returned error (0.63s): {"output": "", "exit_code": 1, "error": null}
+2026-08-26 16:46:58,623 WARNING [20260826_164617_4f55ad] agent.tool_executor: Tool terminal returned error (0.21s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Plain HTTP URL in execution context: URL 'http://home.wineandgecko.com/' uses unencrypted HTTP and is being passed to a comman
+2026-08-26 16:47:55,850 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 16:47:55,853 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 16:48:55.
+2026-08-26 16:48:00,136 WARNING [20260826_164617_4f55ad] agent.tool_executor: Tool web_extract returned error (2.82s): {
+  "results": [
+    {
+      "url": "https://hub.docker.com/r/crowdsec/crowdsec",
+      "title": "",
+      "content": "",
+      "error": "Keyless Exa extract failed: Error fetching URL(s): https://hub
+2026-08-26 16:48:26,034 WARNING agent.title_generator: Title generation failed: Request timed out.
+2026-08-26 16:48:34,442 WARNING [20260826_164617_4f55ad] agent.tool_executor: Tool web_search returned error (0.29s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-26 16:48:50,067 WARNING [20260826_164617_4f55ad] agent.tool_executor: Tool web_extract returned error (0.33s): {
+  "results": [
+    {
+      "url": "https://docs.romm.app/4.8.1/API-and-Development/API-Reference/",
+      "title": "",
+      "content": "",
+      "error": "Keyless Tavily extract failed: {\"error\":
+2026-08-26 16:51:51,669 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a04077-b407-76f0-aec7-0bb302d4055f')
+2026-08-26 16:52:10,212 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 16:52:11,057 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,060 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,060 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,061 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,062 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,117 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,120 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,122 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,125 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,128 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,131 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,145 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,147 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:11,148 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:52:29,316 WARNING [20260826_165209_6b77b2] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 16:53:01,028 WARNING [20260826_165209_6b77b2] agent.tool_executor: Tool terminal returned error (0.50s): {"output": "open /home/josh434/docker-compose.yaml: no such file or directory", "exit_code": 1, "error": null}
+2026-08-26 16:53:08,381 WARNING [20260826_165209_6b77b2] agent.tool_executor: Tool terminal returned error (0.31s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Pipe to interpreter: curl | python3: Command pipes output from 'curl' directly to interpreter 'python3'. Downloaded content wi
+2026-08-26 16:53:32,628 WARNING [20260826_165209_6b77b2] agent.tool_executor: Tool web_extract returned error (0.28s): {
+  "results": [
+    {
+      "url": "https://raw.githubusercontent.com/open-webui/open-webui/main/docs/before-starting/API.md",
+      "title": "",
+      "content": "",
+      "error": "Keyless Tavily e
+2026-08-26 16:53:45,576 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 16:53:45,580 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 16:54:45.
+2026-08-26 16:58:01,073 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a0407d-0a69-7c62-92c2-0680e25be216')
+2026-08-26 16:58:27,620 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 16:58:28,548 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,550 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,551 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,552 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,552 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,595 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,596 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,597 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,598 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,599 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,600 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,610 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,611 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:58:28,611 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 16:59:23,556 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool terminal returned error (0.19s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Insecure TLS flag detected: Flag '-sk' disables TLS certificate verification, allowing MITM attacks but single-query mode (-q)
+2026-08-26 16:59:33,635 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool terminal returned error (0.31s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [MEDIUM] URL uses raw IP address: URL points to IP address 10.1.1.10 instead of a domain name; [HIGH] Plain HTTP URL in execution con
+2026-08-26 16:59:57,023 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool web_search returned error (1.07s): {
+  "success": false,
+  "error": "Keyless Exa search failed: Unrecognized MCP response shape. Set EXA_API_KEY (https://exa.ai) or another web backend via `hermes tools` for reliable service."
+}
+2026-08-26 17:00:03,405 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 17:00:03,409 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 17:01:03.
+2026-08-26 17:00:33,665 WARNING agent.title_generator: Title generation failed: Request timed out.
+2026-08-26 17:00:34,445 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool web_search returned error (0.33s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-26 17:00:47,934 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool web_extract returned error (0.38s): {
+  "results": [
+    {
+      "url": "https://gotify.net/api-docs",
+      "title": "",
+      "content": "",
+      "error": "Keyless Tavily extract failed: {\"error\":{\"code\":\"daily_cap_reached\",\"m
+2026-08-26 17:00:53,999 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool terminal returned error (0.32s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Pipe to interpreter: curl | python3: Command pipes output from 'curl' directly to interpreter 'python3'. Downloaded content wi
+2026-08-26 17:01:30,332 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool terminal returned error (0.35s): {"output": "", "exit_code": 2, "error": null}
+2026-08-26 17:01:46,767 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool web_search returned error (0.30s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-26 17:03:03,171 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool web_search returned error (0.28s): {
+  "success": false,
+  "error": "Keyless Tavily search failed: {\"error\":{\"code\":\"daily_cap_reached\",\"message\":\"You reached the daily keyless Tavily limit. To continue immediately, pay via x4
+2026-08-26 17:03:22,114 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool web_extract returned error (14.67s): {
+  "results": [
+    {
+      "url": "https://immich.app/docs/developer/api",
+      "title": "Immich",
+      "content": "[Skip to main content](https://docs.immich.app/developer/api#__docusaurus_skipTo
+2026-08-26 17:03:33,632 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:03:36,125 WARNING [20260826_165826_7957f7] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:08:36,102 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a04082-ccd2-7df0-b31f-10f81cbc8fe7')
+2026-08-26 17:08:53,572 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 17:08:54,495 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,497 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,498 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,499 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,501 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,540 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,541 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,542 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,543 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,544 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,545 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,558 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,561 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:08:54,563 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:09:56,791 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.96s): {"output": "", "exit_code": 123, "error": null}
+2026-08-26 17:10:00,087 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.67s): {"output": "", "exit_code": 1, "error": null, "exit_code_meaning": "No matches found (not an error)"}
+2026-08-26 17:10:29,460 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 17:10:29,462 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 17:11:29.
+2026-08-26 17:10:31,253 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:10:59,625 WARNING agent.title_generator: Title generation failed: Request timed out.
+2026-08-26 17:12:14,930 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:12:14,949 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:12:14,963 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:12:14,978 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:12:14,993 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:12:24,275 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:12:36,192 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:13:47,609 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.24s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [MEDIUM] Lookalike TLD detected: Domain uses '.dev' TLD which can be confused with file extensions but single-query mode (-q) runs wi
+2026-08-26 17:15:10,704 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:10,718 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:10,765 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:46,090 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:46,104 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:46,116 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.00s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:46,129 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:15:46,142 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:16:09,968 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.19s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [MEDIUM] Lookalike TLD detected: Domain uses '.dev' TLD which can be confused with file extensions but single-query mode (-q) runs wi
+2026-08-26 17:19:59,263 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.29s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Insecure TLS flag detected: Flag '-sk' disables TLS certificate verification, allowing MITM attacks but single-query mode (-q)
+2026-08-26 17:19:59,503 WARNING [20260826_170852_d19e2e] agent.tool_executor: Tool terminal returned error (0.23s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Insecure TLS flag detected: Flag '-sk' disables TLS certificate verification, allowing MITM attacks but single-query mode (-q)
+2026-08-26 17:28:21,200 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a0408c-59ed-7052-9b00-be865babcf20')
+2026-08-26 17:28:45,147 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 17:28:46,050 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,052 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,054 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,055 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,056 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,098 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,098 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,100 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,101 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,103 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,104 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,117 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,118 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:28:46,118 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:30:20,557 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 17:30:20,559 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 17:31:20.
+2026-08-26 17:31:58,272 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "Foreground command uses '&' backgrounding. Re-send WITHOUT the '&' as terminal(command=\"<cmd>\", background=true) — add notify_on_complete=true for bounded j
+2026-08-26 17:36:46,797 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:36:46,814 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:36:46,828 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:36:46,841 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:36:46,852 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.00s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:36:52,220 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:36:59,720 WARNING agent.lsp.servers: bash-language-server: shellcheck not found on PATH — diagnostics will be empty until shellcheck is installed (apt: shellcheck, brew: shellcheck, scoop: shellcheck).
+2026-08-26 17:37:38,122 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:40:08,895 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:40:08,908 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:40:08,922 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:40:08,936 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:40:08,949 WARNING [20260826_172844_5882cf] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:43:30,565 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a0409e-883c-7ca0-a49b-ebd69224748b')
+2026-08-26 17:43:53,555 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 17:43:54,240 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,242 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,244 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,245 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,247 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,278 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,279 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,280 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,280 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,281 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,282 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,288 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,288 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:43:54,288 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:45:28,260 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 17:45:28,261 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 17:46:28.
+2026-08-26 17:47:24,609 WARNING [20260826_174353_7e2eb7] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:56:04,712 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a040ac-633e-7382-9d33-dee13b98b68a')
+2026-08-26 17:56:23,658 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 17:56:24,216 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,217 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,218 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,218 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,219 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,251 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,253 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,254 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,255 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,256 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,256 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,261 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,262 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:56:24,262 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 17:57:58,180 WARNING agent.auxiliary_client: Auxiliary client: PAID lane engaged for auxiliary task — OpenRouter fallback model 'google/gemini-3.6-flash' is not a :free SKU and may incur real spend. Set auxiliary.free_only: true to restrict auxiliary fallbacks to free models, or auxiliary.openrouter_model to a :free model.
+2026-08-26 17:57:58,182 WARNING agent.auxiliary_client: Auxiliary: marking openrouter unhealthy for 60s (payment / credit error). Subsequent auxiliary calls will skip it until 17:58:58.
+2026-08-26 17:58:05,456 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool execute_code returned error (0.01s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:58:08,110 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:58:20,976 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool execute_code returned error (0.00s): {"status": "error", "error": "BLOCKED: execute_code runs arbitrary local Python (including subprocess calls that bypass shell-string approval checks). Single-query mode (-q) runs without a user presen
+2026-08-26 17:58:23,863 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 17:58:28,341 WARNING agent.title_generator: Title generation failed: Request timed out.
+2026-08-26 18:01:22,080 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool terminal returned error (0.01s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 18:01:32,535 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool terminal returned error (0.02s): {"output": "", "exit_code": -1, "error": "BLOCKED: Command flagged as dangerous (script execution via -e/-c flag) but single-query mode (-q) runs without a user present to approve it. Find an alternat
+2026-08-26 18:01:39,710 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool terminal returned error (0.36s): {"output": "", "exit_code": 1, "error": null}
+
+[Tool loop warning: same_tool_failure_warning; count=3; terminal has failed 3 times this turn. This looks like a loop. Do not switch to text-only replies
+2026-08-26 18:01:40,141 WARNING [20260826_175623_2c6a00] agent.tool_executor: Tool terminal returned error (0.24s): {"output": "", "exit_code": -1, "error": "BLOCKED: Security scan — [HIGH] Pipe to interpreter: 2>/dev/null | python3: Command pipes local output into interpreter 'python3'. This can execute or process
+2026-08-26 18:06:34,214 WARNING agent.relay_runtime: Hermes Relay drained 1 orphaned scope(s) before closing ScopeHandle(name='hermes.session', uuid='01a040b7-d494-7743-ba19-acc6e23e030c')
+2026-08-26 21:01:58,756 WARNING cli: Background MCP discovery previously exited with no connected servers; retrying discovery thread
+2026-08-26 21:02:00,489 WARNING tools.registry: check_fn check_browser_back_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,490 WARNING tools.registry: check_fn _browser_cdp_check returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,492 WARNING tools.registry: check_fn check_browser_click_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,493 WARNING tools.registry: check_fn check_browser_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,494 WARNING tools.registry: check_fn _browser_dialog_check returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,540 WARNING tools.registry: check_fn check_browser_navigate_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,542 WARNING tools.registry: check_fn check_browser_press_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,543 WARNING tools.registry: check_fn check_browser_scroll_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,545 WARNING tools.registry: check_fn check_browser_snapshot_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,546 WARNING tools.registry: check_fn check_browser_type_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,546 WARNING tools.registry: check_fn check_browser_vision_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,558 WARNING tools.registry: check_fn check_image_generation_requirements returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,559 WARNING tools.registry: check_fn _check_kanban_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:00,560 WARNING tools.registry: check_fn _check_kanban_orchestrator_mode returned False; dependent tools will be unavailable this turn
+2026-08-26 21:02:26,872 WARNING agent.chat_completion_helpers: Stream ended with no finish_reason after delivering text with no tool calls; treating as a mid-stream drop.

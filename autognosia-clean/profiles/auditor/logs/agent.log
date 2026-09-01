@@ -1,0 +1,27 @@
+2026-08-16 14:42:14,206 INFO hermes_cli.plugins: Plugin 'browser-browser-use' registered browser provider: browser-use
+2026-08-16 14:42:14,207 INFO hermes_cli.plugins: Plugin 'browser-browserbase' registered browser provider: browserbase
+2026-08-16 14:42:14,208 INFO hermes_cli.plugins: Plugin 'browser-firecrawl' registered browser provider: firecrawl
+2026-08-16 14:42:14,234 INFO hermes_plugins.dashboard_auth__basic: dashboard-auth-basic: no 'secret' configured; generating a random per-process signing key. Sessions will not survive a restart or span multiple workers. Set dashboard.basic_auth.secret (or HERMES_DASHBOARD_BASIC_AUTH_SECRET) for stable sessions.
+2026-08-16 14:42:14,234 INFO hermes_cli.dashboard_auth.registry: dashboard-auth: registered provider 'basic' (Username & Password)
+2026-08-16 14:42:14,235 INFO hermes_cli.plugins: Plugin 'basic' registered dashboard-auth provider: basic (Username & Password)
+2026-08-16 14:42:14,235 INFO hermes_plugins.dashboard_auth__basic: dashboard-auth-basic: registered password provider (username=josh434)
+2026-08-16 14:42:14,253 INFO hermes_cli.plugins: Plugin 'deepinfra' registered image_gen provider: deepinfra
+2026-08-16 14:42:14,253 INFO hermes_cli.plugins: Plugin 'fal' registered image_gen provider: fal
+2026-08-16 14:42:14,254 INFO hermes_cli.plugins: Plugin 'krea' registered image_gen provider: krea
+2026-08-16 14:42:14,254 INFO hermes_cli.plugins: Plugin 'openai' registered image_gen provider: openai
+2026-08-16 14:42:14,255 INFO hermes_cli.plugins: Plugin 'openai-codex' registered image_gen provider: openai-codex
+2026-08-16 14:42:14,255 INFO hermes_cli.plugins: Plugin 'openrouter' registered image_gen provider: openrouter
+2026-08-16 14:42:14,255 INFO hermes_cli.plugins: Plugin 'openrouter' registered image_gen provider: nous
+2026-08-16 14:42:14,256 INFO hermes_cli.plugins: Plugin 'xai' registered image_gen provider: xai
+2026-08-16 14:42:14,260 INFO hermes_cli.plugins: Plugin 'deepinfra' registered video_gen provider: deepinfra
+2026-08-16 14:42:14,260 INFO hermes_cli.plugins: Plugin 'fal' registered video_gen provider: fal
+2026-08-16 14:42:14,261 INFO hermes_cli.plugins: Plugin 'xai' registered video_gen provider: xai
+2026-08-16 14:42:14,261 INFO hermes_cli.plugins: Plugin 'web-brave-free' registered web provider: brave-free
+2026-08-16 14:42:14,262 INFO hermes_cli.plugins: Plugin 'web-ddgs' registered web provider: ddgs
+2026-08-16 14:42:14,262 INFO hermes_cli.plugins: Plugin 'web-exa' registered web provider: exa
+2026-08-16 14:42:14,263 INFO hermes_cli.plugins: Plugin 'web-firecrawl' registered web provider: firecrawl
+2026-08-16 14:42:14,264 INFO hermes_cli.plugins: Plugin 'web-parallel' registered web provider: parallel
+2026-08-16 14:42:14,264 INFO hermes_cli.plugins: Plugin 'web-searxng' registered web provider: searxng
+2026-08-16 14:42:14,265 INFO hermes_cli.plugins: Plugin 'web-tavily' registered web provider: tavily
+2026-08-16 14:42:14,265 INFO hermes_cli.plugins: Plugin 'web-xai' registered web provider: xai
+2026-08-16 14:42:14,281 INFO hermes_cli.plugins: Plugin discovery complete: 55 found, 48 enabled

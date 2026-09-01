@@ -1,0 +1,5 @@
+User runs OpenClaw (Hermes fork) with Telegram @OpenClaw434Bot, gateway port 18789, local mode. Has $10 OpenRouter credits (1,000 req/day). Nemotron free hit 32-worker limit. Google API quota exhausted. Z.ai billing issues. Wants reliable free model fallback chain. Prefers Camofox/Chromium browsers. Uses Obsidian vault at ~/Documents/Hermes-Vault. Uses LMStudio/qwen for coder profile. Direct IPs for internal services. Deterministic workflows > agents. Fallback: openrouter/auto -> deepseek-v3.2:free -> qwen3-coder:free -> gpt-oss-120b:free -> gemma-4-31b-it:free. Avoid Nemotron/Z.ai free. Expects verified tool execution, no fabricated output.
+§
+OpenClaw agents: main, coder, flowbot, system-maintainer, researcher, officeworker, homey, news, oracle. Gateway auth token + OpenRouter key in auth profiles. Tavily plugin. Memory: qmd.
+§
+Fallback chain: openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free. Avoid Nemotron free (worker limit) and Z.ai free (billing).

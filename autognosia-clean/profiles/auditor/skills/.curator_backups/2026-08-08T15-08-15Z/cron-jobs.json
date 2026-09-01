@@ -1,0 +1,188 @@
+{
+  "jobs": [
+    {
+      "id": "eebf16fd600a",
+      "name": "Morning Newsletter (6 AM)",
+      "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the results to Telegram.",
+      "skills": [
+        "freshrss-integration"
+      ],
+      "skill": "freshrss-integration",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "provider": "openrouter",
+      "base_url": null,
+      "script": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 6 * * *",
+        "display": "0 6 * * *"
+      },
+      "schedule_display": "0 6 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 126
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-04-04T15:51:03.178000-07:00",
+      "next_run_at": "2026-08-09T06:00:00-07:00",
+      "last_run_at": "2026-08-08T06:00:34.401312-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: HTTP 429: Rate limit exceeded: free-models-per-day-high-balance. ",
+      "deliver": "telegram",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null
+      },
+      "last_delivery_error": null,
+      "fire_claim": null,
+      "provider_snapshot": null,
+      "model_snapshot": null
+    },
+    {
+      "id": "2fdcb131de85",
+      "name": "Evening Newsletter (9 PM)",
+      "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the results to Telegram.",
+      "skills": [
+        "freshrss-integration"
+      ],
+      "skill": "freshrss-integration",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "provider": "openrouter",
+      "base_url": null,
+      "script": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 21 * * *",
+        "display": "0 21 * * *"
+      },
+      "schedule_display": "0 21 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 128
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-04-04T15:51:07.898680-07:00",
+      "next_run_at": "2026-08-08T21:00:00-07:00",
+      "last_run_at": "2026-08-07T21:13:09.541461-07:00",
+      "last_status": "ok",
+      "last_error": null,
+      "deliver": "telegram",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null
+      },
+      "last_delivery_error": null,
+      "fire_claim": null,
+      "provider_snapshot": null,
+      "model_snapshot": null
+    },
+    {
+      "id": "f3a967f632f9",
+      "name": "WealthForge Research Cron",
+      "prompt": "You are the WealthForge Deep Research Agent. Your job is to find the next pending research topic, research it, and append findings to the canonical research log.\n\n## Output targets\n- Append ONLY to: /home/josh434/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes/RESEARCH.md\n- Never write to USED_RESEARCH.md.\n- Never write to suite-research-append.md.\n\n## Update rules\n- Step 1: Read the roadmap AGENDA files to find one pending [\u23f3] topic to research:\n  - /home/josh434/Documents/Hermes-Vault/wealthforge-roadmap/AGENDA.md\n  - /home/josh434/Documents/Hermes-Vault/wealthforge-roadmap/AGENDA_ARCHIVE.md\n  - /home/josh434/Documents/Hermes-Vault/wealthforge-roadmap/agenda_backlog_toberesearched.md\n- Step 2: Research the topic comprehensively.\n- Step 3: Append a 12-section entry to RESEARCH.md.\n- Step 4: Mark the topic [\u2705] in the source AGENDA file you read and add any new [\u23f3] subtopics.\n\n## Critical rule\n- APPEND ONLY to RESEARCH.md. Do not overwrite or rewrite the file.\n- Do not move or modify legacy files like USED_RESEARCH.md or suite-research-append.md.\n\nIf there are no pending topics, respond with [SILENT] and make no writes.",
+      "skills": [],
+      "skill": null,
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "provider": "openrouter",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "*/5 * * * *",
+        "display": "*/5 * * * *"
+      },
+      "schedule_display": "*/5 * * * *",
+      "repeat": {
+        "times": null,
+        "completed": 15
+      },
+      "enabled": false,
+      "state": "paused",
+      "paused_at": "2026-05-30T23:24:16.514239-07:00",
+      "paused_reason": null,
+      "created_at": "2026-05-30T22:09:31.985134-07:00",
+      "next_run_at": "2026-05-30T23:25:00-07:00",
+      "last_run_at": "2026-05-30T23:22:39.340221-07:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null
+      },
+      "enabled_toolsets": [
+        "terminal",
+        "file"
+      ],
+      "workdir": "/home/josh434/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes",
+      "profile": "default",
+      "provider_snapshot": null,
+      "model_snapshot": null
+    },
+    {
+      "id": "082b13bf66ea",
+      "name": "WealthForge Research Cron",
+      "prompt": "You are the WealthForge Deep Research Agent. Your ONLY job: research ONE pending WealthForge topic per run. Use the WealthForge Deep Research skill. Deliver results to local files only.",
+      "skills": [],
+      "skill": null,
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "provider": "openrouter",
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "*/10 * * * *",
+        "display": "*/10 * * * *"
+      },
+      "schedule_display": "*/10 * * * *",
+      "repeat": {
+        "times": null,
+        "completed": 10394
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-30T23:26:42.695813-07:00",
+      "next_run_at": "2026-08-08T08:10:00-07:00",
+      "last_run_at": "2026-08-08T08:00:23.411313-07:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: HTTP 429: Rate limit exceeded: free-models-per-day-high-balance. ",
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null
+      },
+      "enabled_toolsets": [
+        "terminal",
+        "file"
+      ],
+      "workdir": "/home/josh434/Documents/Hermes-Vault/wealthforge-ai-local/knowledge_base/research_outcomes",
+      "profile": "default",
+      "fire_claim": null,
+      "provider_snapshot": null,
+      "model_snapshot": null
+    }
+  ],
+  "updated_at": "2026-08-08T08:00:23.411702-07:00"
+}

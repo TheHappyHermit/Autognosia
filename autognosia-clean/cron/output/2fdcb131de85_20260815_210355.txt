@@ -1,0 +1,56 @@
+Cronjob Response: Evening Newsletter (9 PM)
+(job_id: 2fdcb131de85)
+-------------
+
+The newsletter was generated successfully. Here's the output that will be delivered via Telegram:
+
+# News Brief
+*2026-08-15 21:03*
+
+---
+
+## 🔬 Science
+
+**Pakistan nuclear deterrence questioned:** A Bulletin of the Atomic Scientists report says India's Operation Sindoor strikes in May 2025 revealed Pakistan's nuclear weapons failed to deter deep strikes or provide a decisive exit from conflict. Islamabad is reportedly shifting focus toward conventional military power.
+
+**Indonesia earthquake kills 47:** A magnitude 7.7 quake struck Flores island, killing at least 47, injuring over 100, and displacing thousands across six regencies. Rescuers continue searching for victims buried by landslides triggered by the shallow tremor.
+
+**Belgium battles record wildfire:** The largest wildfire in Belgian history has burned 2,700 hectares in the High Fens nature reserve, forcing evacuation of 600 residents. EU deployed three helicopters and two water bombers as peatland fires spread rapidly.
+
+**Glioblastoma research breakthrough:** Ohio State researchers identified SET protein as a potential target to make glioblastoma more responsive to radiation and chemotherapy. The discovery could address treatment resistance in one of the deadliest brain cancers.
+
+**Amateur discovers massive meteorite crater:** A Google Maps user identified the 390-million-year-old Uhackatik impact crater in Quebec, validated by geologists through shatter cones and melted rock. Satellite imagery played a key role in this significant geological find.
+
+**Trump shares throwback Kim Jong Un photo:** The US president posted an old photograph with the North Korean leader on social media, captioning it "unfriendly look, but we get along great." The image dates from their previous diplomatic engagements.
+
+---
+
+## 🤖 AI & Tech
+
+**Guangdong targets Tsinghua talent to close AI gap:** The province hosted nearly 40 computer science students from Tsinghua University this week in a bid to retain top researchers after losing DeepSeek founder Liang Wenfeng and Moonshot AI founder Yang Zhilin to other regions.
+
+**AI firms suspected in bulk purchases of out-of-print books:** Booksellers across multiple countries report unusual large orders for old titles, raising concerns that companies are acquiring physical texts for training data.
+
+---
+
+## 🌍 World
+
+**Japan targets Mars moons**: The unmanned MMX mission plans to launch from Tanegashima Space Center in coming months, potentially paving the way for future human missions to Mars.
+
+**Qatar denies capturing Iranian pilots**: Qatar rejected Iran's claims of holding three military pilots after an alleged March airspace violation, stating it found one pilot's remains and attempted contact before defending its territory.
+
+**Ukraine in "technological war" with Russia**: Former defense minister Mykhailo Fedorov described the conflict as a technological war, crediting modern strategy for Ukraine's defense capabilities.
+
+**China gang crackdown raises wrongful conviction fears**: Lawyers warn of unjust convictions as authorities intensify organized crime prosecutions, citing a real estate developer's 20-year sentence later appealed.
+
+**India-Bangladesh discuss PM Rahman visit**: Diplomatic talks underway for Bangladesh Prime Minister Tarique Rahman's first bilateral visit to India August 21-25, following Modi's invitation and BIMSTEC chair role for September BRICS summit.
+
+**Bengaluru couple found dead in suspected murder-suicide**: A tech professional and his wife discovered deceased in their rental home; a WhatsApp voice message from the husband to his mother followed a reported argument over property.
+
+**Australia launches largest gun buyback in 30 years**: New South Wales begins a two-phase, jointly funded buyback starting November 2 in response to the Bondi beach terror attack, splitting costs between state and federal governments.
+
+**US shifts Cuba strategy to sanctions over military action**: The White House prioritizes economic pressure and revenue cutoff for Cuba's communist government rather than military operations, aiming to create internal fractures for negotiation.
+
+**Six dead including suspect in Michigan shootings**: A teen boy among six fatalities in multiple shootings; one girl survived the incidents.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Evening Newsletter (9 PM)").

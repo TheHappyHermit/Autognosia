@@ -1,0 +1,60 @@
+Cronjob Response: Evening Newsletter (9 PM)
+(job_id: 2fdcb131de85)
+-------------
+
+The newsletter has been generated successfully. Since this is a cron job, the system will automatically deliver this output to Telegram. Here's the newsletter content:
+
+---
+
+# News Brief
+*2026-08-07 21:12*
+
+---
+
+## 🔬 Science
+
+**Three cities honor Duwamish chair** Seattle, Tukwila, and Renton proclaimed August 8 as "Cecile Hansen Day" recognizing the Duwamish Tribe chair's 50-year leadership since 1975 and her advocacy for treaty rights and cultural heritage as a descendant of Chief Sealth.
+
+**ICE deports Mexicans with torture protections** The Trump administration removed Mexican nationals who had won court protection from deportation after proving likely torture, with ICE Director David Venturella reversing safeguards based on diplomatic assurances from Mexico that deportees would not be harmed.
+
+**Heat advisory issued for Southern California** Forecasters warned of searing weekend temperatures across non-coastal California with elevated fire danger, prompting heat advisories for inland regions.
+
+**Thailand launches semiconductor roadmap** The government unveiled the Siam Silica framework to build a domestic chip ecosystem and position Thailand as an ASEAN semiconductor hub, though analysts note the country trails Malaysia and Singapore significantly.
+
+---
+
+## 🤖 AI & Tech
+
+**WhatsApp adds parental controls section to iPhone app** making it easier for parents to find and set up managed accounts for children.
+
+**Apple expands Made for iPhone hearing device support to 623 models** across 104 brands with 43 new additions including bidirectional streaming models.
+
+**China faces critical shortage of high-quality Chinese-language training data** threatening next-generation AI development beyond existing chip restrictions.
+
+**Direct liquid cooling experiment shows GPU gains but CPU failures** when epoxying 3D-printed fittings directly to bare chips without water blocks.
+
+**Meta faces nearly billion-dollar penalty** as experts discuss social media's impact on children's mental health and platform accountability.
+
+**OpenAI pledges stricter security controls for Astra model** after acknowledging unreleased models demonstrated critical cyber capabilities requiring development-phase safeguards.
+
+---
+
+## 🌍 World
+
+**Pentagon revokes former Air Force secretary's clearance:** The Department of Defense stripped Frank Kendall of security access and barred him from sensitive positions, alleging he disclosed classified Air Force One capabilities to media. Kendall called the action "completely mystifying."
+
+**Indonesian village re-emerges from reservoir:** Drought lowered water levels at Karian Reservoir by 80 centimeters, revealing a submerged village while officials maintain the reservoir remains within safe operating limits.
+
+**Detained U.S. Marine's health deteriorates in Russia:** Robert Gilman, arrested in 2022, is reportedly in a "dissociative stupor" with his family fearing for his life, according to an advocacy group.
+
+**Ukrainian drones strike Russian warehouse 2,000km from border:** Kyiv's drones hit a Wildberries depot in Ekaterinburg, forcing hundreds to evacuate in the deepest strike yet on Russian territory.
+
+**Courts allow deportation of South Sudan and Myanmar nationals:** Federal judges in Boston and Chicago rejected challenges to ending Temporary Protected Status for both countries, following a Supreme Court ruling permitting similar terminations for Haiti and Syria.
+
+**Trump urges DOJ to pursue Reflecting Pool vandalism charges:** The president called for the Justice Department to reconsider dropping charges against those accused of damaging the Lincoln Memorial Reflecting Pool, maintaining vandalism caused its condition.
+
+---
+
+The script completed successfully: authenticated with FreshRSS via IP direct (10.1.1.10), fetched 50 non-sports articles from the last 24 hours, extracted content using the waterfall method (skipping 17 articles with insufficient content), and synthesized into the three topic sections above.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Evening Newsletter (9 PM)").

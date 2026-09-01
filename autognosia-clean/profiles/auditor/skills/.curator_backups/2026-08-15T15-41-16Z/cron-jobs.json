@@ -1,0 +1,91 @@
+{
+  "jobs": [
+    {
+      "id": "eebf16fd600a",
+      "name": "Morning Newsletter (6 AM)",
+      "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the result via Telegram. Use the default model fallback chain (openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free).",
+      "skills": [
+        "freshrss-integration"
+      ],
+      "skill": "freshrss-integration",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "provider": "openrouter",
+      "base_url": null,
+      "script": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 6 * * *",
+        "display": "0 6 * * *"
+      },
+      "schedule_display": "0 6 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 133
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-04-04T15:51:03.178000-07:00",
+      "next_run_at": "2026-08-16T06:00:00-07:00",
+      "last_run_at": "2026-08-15T06:04:22.190139-07:00",
+      "last_status": "ok",
+      "last_error": null,
+      "deliver": "telegram",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null
+      },
+      "last_delivery_error": null,
+      "fire_claim": null,
+      "provider_snapshot": null,
+      "model_snapshot": null
+    },
+    {
+      "id": "2fdcb131de85",
+      "name": "Evening Newsletter (9 PM)",
+      "prompt": "Run ~/.hermes/newsletter_venv/bin/python3 ~/.hermes/scripts/newsletter_builder.py and deliver the result via Telegram. Use the default model fallback chain (openrouter/auto -> deepseek/deepseek-v3.2:free -> qwen/qwen3-coder:free -> openai/gpt-oss-120b:free -> google/gemma-4-31b-it:free).",
+      "skills": [
+        "freshrss-integration"
+      ],
+      "skill": "freshrss-integration",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "provider": "openrouter",
+      "base_url": null,
+      "script": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 21 * * *",
+        "display": "0 21 * * *"
+      },
+      "schedule_display": "0 21 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 135
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-04-04T15:51:07.898680-07:00",
+      "next_run_at": "2026-08-15T21:00:00-07:00",
+      "last_run_at": "2026-08-14T21:01:51.299280-07:00",
+      "last_status": "ok",
+      "last_error": null,
+      "deliver": "telegram",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "7791814261",
+        "chat_name": "Josh",
+        "thread_id": null
+      },
+      "last_delivery_error": null,
+      "fire_claim": null,
+      "provider_snapshot": null,
+      "model_snapshot": null
+    }
+  ],
+  "updated_at": "2026-08-15T06:04:22.190718-07:00"
+}
