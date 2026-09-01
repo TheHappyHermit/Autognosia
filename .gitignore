@@ -56,6 +56,7 @@ wiki_engram.json
 # ── Personal directories ──
 Downloads/
 deploy/
+docs/
 archive/
 research/
 research_output/
@@ -235,3 +236,110 @@ __pycache__/
 *.swp
 *.swo
 *~
+
+# ═══════════════════════════════════════════════════════════
+# Research scratch files (not project source)
+# ═══════════════════════════════════════════════════════════
+
+# Research scripts and data
+*_research.json
+*_report.json
+*_report.md
+frontier_ontology_research_2026.md
+kg_research_sept2026.md
+authoring-role-definition-schema_research.md
+autocorrelation-adjusted-geweke-research.md
+hippocampal_indexing_theory_research.md
+synaptic-tagging-capture-sources.md
+taxonomy_ontology_research.md
+theory_of_mind_research_report.md
+fca_research_summary.md
+schema_policy_research.md
+critical_periods_research.json
+neural_oscillations_search_results.json
+linguistic_relativity_extracts.json
+semantic-search-research.json
+research_summary.json
+suite-research-append.md
+appraisal_theory_findings.md
+hermes-config-backup.yaml
+hermes-update.log
+metadata_rs.txt
+
+# Research Python scripts
+research_body_schema.py
+research_extended_mind.py
+research_extended_mind2.py
+research_extended_mind3.py
+research_extended_mind4.py
+research_extended_mind5.py
+research_search2.py
+research_search3.py
+research_search4.py
+research_time_perception.py
+source_monitoring_research.py
+source_monitoring_research2.py
+dump_schemas.py
+dump_sources.py
+extract_wiki.py
+pubmed_details.py
+search_body_models.py
+search_body_models2.py
+search_body_models3.py
+search_body_models4.py
+search_results.py
+
+# Screenshots
+screenshot-bots.png
+screenshot-calendar.png
+screenshot-dark-mode.png
+screenshot-dashboard.png
+screenshot-homelab.png
+screenshot-services.png
+screenshot-tasks.png
+phase2-test.png
+dashboard-index.html
+dashboard-refactor-summary.json
+dashboard-screenshots.js
+
+# Cached web pages
+pages/
+
+# Stress cognition research
+stress_cognition_research/
+
+# TMR research
+tmr_crossref.json
+tmr_crossref_pubmed.py
+tmr_pmc_ids.json
+
+# Temp directories
+tmp/
+tmp_research_content.txt
+tmp_seg_clustering_research.txt
+
+# Test probes
+apps/
+
+# Cargo lock
+Cargo.lock
+
+# ═══════════════════════════════════════════════════════════
+# System junk that should never be committed
+# ═══════════════════════════════════════════════════════════
+
+# .NET runtime
+.dotnet/
+
+# Session logs
+.xorgxrdp.10.log
+.xorgxrdp.10.log.old
+.xsession-errors
+
+# Misc system files
+.echo
+.gnupg/
+.npmrc
+.sudo_as_admin_successful
+.summarize/
+.wget-hsts
