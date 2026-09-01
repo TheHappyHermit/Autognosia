@@ -1,0 +1,18 @@
+# Default (Main Hermes) — Executive workspace and metacognitive router
+# This is the primary user-facing profile.
+#
+# MCP access: personal-organizer, honcho, gbrain
+# Excluded: SearXNG — Main Hermes NEVER searches the internet directly.
+#   All research is delegated to the Researcher profile via delegate_task.
+
+model:
+  main: default
+
+mcp_servers:
+  personal-organizer:
+    url: "http://127.0.0.1:8001"
+  honcho:
+    url: "http://127.0.0.1:8000"
+  gbrain:
+    command: "gbrain"
+    args: ["mcp"]

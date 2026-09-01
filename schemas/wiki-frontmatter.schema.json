@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Wiki Frontmatter (OKF v0.2)",
+  "description": "JSON Schema for validating YAML frontmatter in wiki pages. Both the Active Wiki and Oracle Brain conform to this schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["okf_version", "id", "title", "type", "status", "created", "updated"],
+  "properties": {
+    "okf_version": {
+      "type": "string",
+      "const": "0.2",
+      "description": "OKF spec version — all pages MUST use 0.2"
+    },
+    "type": {
+      "type": "string",
+      "description": "Page type — one of the allowed types below",
+      "enum": [
+        "profile",
+        "person",
+        "project",
+        "decision",
+        "system",
+        "asset",
+        "purchase",
+        "trip",
+        "routine",
+        "idea",
+        "question",
+        "lesson",
+        "reference",
+        "incident",
+        "Index"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Lifecycle status",
+      "enum": [
+        "draft",
+        "stable",
+        "deprecated",
+        "active",
+        "current",
+        "waiting",
+        "blocked",
+        "completed",
+        "cancelled",
+        "disputed",
+        "superseded",
+        "stale",
+        "unverified",
+        "archived"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Unique, stable, kebab-case identifier"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable title"
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "RFC 3339 UTC date when page was created"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date",
+      "description": "RFC 3339 UTC date of last modification"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional: one-line summary"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional: filterable tags"
+    },
+    "sources": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional: provenance URLs"
+    },
+    "generated": {
+      "type": "object",
+      "properties": {
+        "by": { "type": "string" },
+        "at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["by", "at"],
+      "description": "Optional: auto-generated metadata"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Optional: epistemic confidence"
+    },
+    "epistemic": {
+      "type": "string",
+      "enum": [
+        "fact",
+        "observation",
+        "explicit-preference",
+        "verified-inference",
+        "hypothesis",
+        "prediction",
+        "decision"
+      ],
+      "description": "Optional: epistemic label"
+    },
+    "wikilinks": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional: explicit outbound links for graph tooling"
+    },
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional: alternate names for the page"
+    },
+    "review_after": {
+      "type": "string",
+      "format": "date",
+      "description": "Optional: date after which page should be reviewed"
+    },
+    "related": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional: related page slugs"
+    },
+    "supersedes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional: page IDs this one replaces"
+    },
+    "superseded_by": {
+      "type": "string",
+      "description": "Optional: page ID that replaces this one"
+    }
+  }
+}
