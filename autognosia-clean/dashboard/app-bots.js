@@ -51,13 +51,14 @@ class BotsPage {
     const status = bot.status || 'idle';
     const statusClass = `bot-stripe-status--${status}`;
     const isActive = this.currentBot && this.currentBot.id === bot.id ? ' active' : '';
+    const modelStr = typeof bot.model === 'object' ? (bot.model.default || 'local') : (bot.model || '—');
     return `
       <div class="bot-stripe-item${isActive}" data-bot-id="${this.escapeHtml(bot.id)}" tabindex="0" role="button" aria-label="Chat with ${this.escapeHtml(bot.name)}">
         <div class="bot-stripe-avatar">${this.escapeHtml(bot.avatar || '🤖')}</div>
         <div class="bot-stripe-info">
           <div class="bot-stripe-name">${this.escapeHtml(bot.name)}</div>
           <div class="bot-stripe-role">${this.escapeHtml(bot.role)}</div>
-          <div class="bot-stripe-field"><span class="bot-stripe-field-label">Model:</span><span class="bot-stripe-field-value">${this.escapeHtml(bot.model || '—')}</span></div>
+          <div class="bot-stripe-field"><span class="bot-stripe-field-label">Model:</span><span class="bot-stripe-field-value">${this.escapeHtml(modelStr)}</span></div>
           <div class="bot-stripe-field"><span class="bot-stripe-field-label">Provider:</span><span class="bot-stripe-field-value">${this.escapeHtml(bot.provider || '—')}</span></div>
         </div>
         <div class="bot-stripe-status-wrap">

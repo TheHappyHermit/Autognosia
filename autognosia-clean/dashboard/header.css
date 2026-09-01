@@ -1,6 +1,6 @@
 /* ==========================================================================
-   App Header — Dark Executive Command Bar
-   Linear-style dark glass header with LIVE indicator pulse
+   App Header — Light-Mode-First Command Bar (Apple / Linear / Vercel)
+   Solid white surface, subtle bottom border + shadow. No glass, no glow.
    ========================================================================== */
 
 .app-header {
@@ -9,10 +9,9 @@
   left: var(--sidebar-width);
   right: 0;
   height: var(--header-height);
-  background: rgba(8, 9, 10, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-primary);
   border-bottom: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -33,7 +32,7 @@
 
 .header-hamburger:hover {
   color: var(--text-1);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
 }
 
 .header-brand {
@@ -60,7 +59,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-1) var(--space-2);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   transition: all var(--motion-fast);
@@ -68,11 +67,11 @@
 
 .header-search:focus-within {
   border-color: var(--border-active);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
+  box-shadow: var(--shadow-glow-accent);
 }
 
 .header-search-icon {
-  opacity: 0.4;
+  opacity: 0.5;
   font-size: var(--fs-md);
   flex-shrink: 0;
 }
@@ -94,9 +93,9 @@
 .header-search-hint {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--text-4);
+  color: var(--text-3);
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
 }
@@ -123,7 +122,7 @@
 
 .header-btn:hover {
   color: var(--text-1);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
 }
 
 .badge-dot {
@@ -134,7 +133,6 @@
   height: 6px;
   background: var(--danger);
   border-radius: 50%;
-  box-shadow: 0 0 4px var(--danger);
 }
 
 .system-status {
@@ -143,7 +141,6 @@
   gap: var(--space-1);
   font-size: var(--fs-sm);
   color: var(--text-2);
-  font-family: var(--font-mono);
 }
 
 .status-dot {
@@ -155,8 +152,7 @@
 
 .status-dot--ok {
   background: var(--success);
-  box-shadow: 0 0 6px var(--success-glow);
-  animation: pulse-glow 2s ease-in-out infinite;
+  box-shadow: 0 0 0 2px var(--success-soft);
 }
 
 .ws-indicator {
@@ -166,7 +162,6 @@
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--success);
-  font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -176,11 +171,10 @@
   height: 6px;
   background: var(--success);
   border-radius: 50%;
-  box-shadow: 0 0 6px var(--success-glow);
-  animation: pulse-glow 2s ease-in-out infinite;
+  box-shadow: 0 0 0 2px var(--success-soft);
 }
 
-/* HUD clock (UTC) */
+/* HUD clock (UTC) — monospace for the time value */
 .hud-clock {
   font-family: var(--font-mono);
   font-size: var(--fs-md);
@@ -189,7 +183,7 @@
   letter-spacing: 0.05em;
   padding: var(--space-1) var(--space-2);
   background: var(--accent-soft);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
 }
 

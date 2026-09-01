@@ -239,7 +239,7 @@
   z-index: var(--z-popover);
 }
 .snooze-popover[popover] { margin: 0; } /* browser positions it */
-.snooze-popover::backdrop { background: oklch(0 0 0 / 0.5); backdrop-filter: blur(2px); }
+.snooze-popover::backdrop { background: oklch(0 0 0 / 0.5); }
 
 .snooze-option {
   display: flex;
@@ -327,7 +327,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: var(--bg-overlay);
 }
 .task-detail-modal__panel {
   position: relative;

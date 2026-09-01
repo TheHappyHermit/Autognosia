@@ -1,6 +1,6 @@
 /* ==========================================================================
    Main Content Area & Panel Layout
-   Dark Executive Command Center — glassmorphism panels, precision spacing
+   Light-Mode-First Monitor Surface — flat elevation panels, precision spacing
    ========================================================================== */
 
 .app-layout {
@@ -27,10 +27,8 @@
 }
 
 .hero-stat {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: var(--space-3) var(--space-4);
   display: flex;
@@ -40,39 +38,21 @@
   position: relative;
 }
 
-.hero-stat::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0;
-  transition: opacity var(--motion-fast);
-  border-radius: 0 0 2px 2px;
-}
-
 .hero-stat:hover {
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--shadow-glow-accent);
-  transform: translateY(-1px);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
 }
 
-.hero-stat:hover::before {
-  opacity: 1;
-}
-
+/* Label — sans (not monospace) */
 .hero-stat__label {
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   color: var(--text-3);
-  font-family: var(--font-mono);
 }
 
+/* Value — monospace (numeric only) */
 .hero-stat__value {
   font-size: var(--fs-2xl);
   font-weight: 700;
@@ -98,7 +78,7 @@
 }
 
 .hud-metric {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-2) var(--space-3);
@@ -110,19 +90,20 @@
 }
 
 .hud-metric:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-tertiary);
   border-color: var(--border-medium);
 }
 
+/* Label — sans (not monospace) */
 .hud-metric__label {
   font-size: var(--fs-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-3);
-  font-family: var(--font-mono);
 }
 
+/* Value — monospace (numeric only) */
 .hud-metric__value {
   font-size: var(--fs-lg);
   font-weight: 700;
@@ -136,7 +117,7 @@
 .hud-metric__value.warn { color: var(--warning); }
 .hud-metric__value.danger { color: var(--danger); }
 
-/* ── Section Headings ────────────────────────────────────────────────── */
+/* ── Section Headings (label — sans) ──────────────────────────────────── */
 .section-title {
   font-size: var(--fs-sm);
   font-weight: 600;
@@ -147,7 +128,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: var(--font-mono);
 }
 
 .section-title::before {
@@ -159,7 +139,7 @@
   flex-shrink: 0;
 }
 
-/* ── Panels Grid (Linear-style glass cards) ───────────────────────────── */
+/* ── Panels Grid (flat elevation cards) ───────────────────────────────── */
 .panels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -167,10 +147,8 @@
 }
 
 .panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: var(--space-4);
   box-shadow: var(--shadow-sm);
@@ -179,8 +157,8 @@
 }
 
 .panel:hover {
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--shadow-glow-accent);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
 }
 
 .panel-header {
@@ -217,7 +195,6 @@
   border-top: 1px solid var(--border-subtle);
   font-size: var(--fs-sm);
   color: var(--text-3);
-  font-family: var(--font-mono);
 }
 
 /* ── Empty State ─────────────────────────────────────────────────────── */
@@ -244,7 +221,7 @@
 }
 
 .empty-state__desc {
-  font-size: var(--fs-base);
+  font-size: var(--fs-sm);
   color: var(--text-3);
   max-width: 220px;
 }
@@ -257,7 +234,7 @@
 .tab-group {
   display: flex;
   gap: 2px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   padding: 2px;
   border-radius: var(--radius-md);
   margin-bottom: var(--space-3);
@@ -266,8 +243,8 @@
 
 .tab-btn {
   padding: var(--space-1) var(--space-2);
-  border: none;
-  background: none;
+  border: 1px solid transparent;
+  background: transparent;
   border-radius: var(--radius-sm);
   font-size: var(--fs-base);
   font-weight: 500;
@@ -278,14 +255,13 @@
 }
 
 .tab-btn:hover {
-  color: var(--text-1);
-  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-2);
 }
 
 .tab-btn.active {
-  background: rgba(34, 211, 238, 0.12);
+  background: var(--accent-soft);
   color: var(--accent);
-  box-shadow: none;
+  border-color: var(--border-active);
 }
 
 /* ── All Full-View Sections Grid Placement ──────────────────────────── */
@@ -334,4 +310,29 @@
   .hero-stat {
     padding: var(--space-2);
   }
+}
+
+/* ── View Sections (show/hide based on active class) ──────────────────── */
+.view-section:not(.active) {
+  display: none;
+}
+.view-section.active {
+  display: block;
+}
+
+/* ── View Headers ──────────────────────────────────────────────────────── */
+.view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.view-header h2 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 0;
 }

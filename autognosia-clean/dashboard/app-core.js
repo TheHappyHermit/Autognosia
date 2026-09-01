@@ -88,11 +88,6 @@ class CommandDeck {
       window.botsPage.init();
     }
 
-    const mainContent = document.getElementById('view-dashboard');
-    if (mainContent) {
-      mainContent.style.display = (viewName === 'dashboard') ? 'block' : 'none';
-    }
-
     // Trigger data loads for specific views
     if (viewName === 'calendar') this.fetchCalendar();
     if (viewName === 'tasks') this.fetchTasks();

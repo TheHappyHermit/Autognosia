@@ -1,186 +1,45 @@
+/**
+ * Autognosia // Command Deck — Tasks View
+ * Kanban board with filtering.
+ */
 
-  // ── Tasks & Organizer ──────────────────────────────────────────────────────
-  CommandDeck.prototype.renderTasks = function() {
-    const container = this.getViewEl('task-list-container');
-    const waitingContainer = this.getViewEl('waiting-list-container');
-    if (!container) return;
-    
-    let filtered = this.state.tasks;
-    if (this.taskFilter === 'critical') filtered = filtered.filter(t => t.priority === 'critical' && t.status !== 'completed');
-    else if (this.taskFilter === 'next') filtered = filtered.filter(t => t.status === 'next');
-    else if (this.taskFilter === 'in_progress') filtered = filtered.filter(t => t.status === 'in_progress');
-    else if (this.taskFilter === 'completed') filtered = filtered.filter(t => t.status === 'completed');
-    else if (this.taskFilter === 'all') filtered = filtered.filter(t => t.status !== 'completed');
-
-    if (filtered.length === 0) {
-      container.innerHTML = '<div class="empty-hint">No tasks in this view. Use quick add above to create one!</div>';
-    } else {
-      container.innerHTML = filtered.map(t => this.renderTaskCard(t)).join('');
-    }
-
-    // Waiting / Blocked tab
-    const waitingTasks = this.state.tasks.filter(t => t.status === 'waiting' || t.status === 'blocked');
-    if (waitingContainer) {
-      if (waitingTasks.length === 0) {
-        waitingContainer.innerHTML = '<div class="empty-hint">No blocked or waiting tasks. Pipeline is clear!</div>';
-      } else {
-        waitingContainer.innerHTML = waitingTasks.map(t => this.renderTaskCard(t)).join('');
-      }
-    }
-
-    // Bind checkboxes
-    container.querySelectorAll('.task-checkbox').forEach(cb => {
-      cb.addEventListener('change', async (e) => {
-        const id = e.target.dataset.taskId;
-        const newStatus = e.target.checked ? 'completed' : 'next';
-        await this.updateTask(id, { status: newStatus });
-        await this.fetchTasks();
-        await this.fetchOverview();
-      });
-    });
+CommandDeck.prototype.renderTasks = function() {
+  const activeContainer = document.getElementById('task-list-container');
+  const waitingContainer = document.getElementById('waiting-list-container');
+  if (!activeContainer || !waitingContainer) return;
+  
+  const allTasks = this.state.tasks || [];
+  let filtered = allTasks;
+  if (this.taskFilter === 'critical') filtered = allTasks.filter(t => t.priority === 'critical');
+  else if (this.taskFilter === 'in_progress') filtered = allTasks.filter(t => t.status === 'in_progress');
+  else if (this.taskFilter === 'next') filtered = allTasks.filter(t => t.status === 'active');
+  else if (this.taskFilter === 'completed') filtered = allTasks.filter(t => t.status === 'completed');
+  
+  const active = filtered.filter(t => t.status !== 'completed' && t.status !== 'blocked');
+  const waiting = filtered.filter(t => t.status === 'blocked' || t.status === 'waiting');
+  
+  if (active.length === 0) {
+    activeContainer.innerHTML = '<div class="empty-hint">No active tasks.</div>';
+  } else {
+    activeContainer.innerHTML = active.map(t => this.renderTaskCard(t)).join('');
   }
+  
+  if (waiting.length === 0) {
+    waitingContainer.innerHTML = '<div class="empty-hint">Nothing waiting.</div>';
+  } else {
+    waitingContainer.innerHTML = waiting.map(t => this.renderTaskCard(t)).join('');
+  }
+};
 
-  CommandDeck.prototype.renderTaskCard = function(t) {
-    const isDone = t.status === 'completed';
-    return `
-      <div class="task-card ${isDone ? 'completed' : ''}" data-task-id="${t.id}">
-        <input type="checkbox" class="task-checkbox" data-task-id="${t.id}" ${isDone ? 'checked' : ''} />
-        <div class="task-details">
-          <div class="task-title-line">
-            <span class="task-title">${escapeHtml(t.title)}</span>
-            <span class="badge badge-${t.priority || 'medium'}">${t.priority}</span>
-          </div>
-          <div class="task-meta-row">
-            ${t.project_name ? `<span>📁 ${escapeHtml(t.project_name)}</span><span>•</span>` : ''}
-            ${t.due_at ? `<span>⏰ Due ${escapeHtml(t.due_at)}</span><span>•</span>` : ''}
-            <span>Status: ${t.status}</span>
-          </div>
-        </div>
+CommandDeck.prototype.renderTaskCard = function(task) {
+  return `
+    <div class="task-card" data-id="${task.id}">
+      <div class="task-card__title">${escapeHtml(task.title)}</div>
+      <div class="task-card__meta">
+        <span class="badge badge-${task.priority}">${escapeHtml(task.priority)}</span>
+        ${task.due_at ? `<span class="task-card__due">⏰ ${escapeHtml(task.due_at)}</span>` : ''}
       </div>
-    `;
-  }
-
-
-  // ── Reminders ──────────────────────────────────────────────────────────────
-  CommandDeck.prototype.renderReminders = function() {
-    const container = document.getElementById('reminders-list-container');
-    if (!container) return;
-
-    let filtered = this.state.reminders || [];
-    if (this.remFilter === 'pending') filtered = filtered.filter(r => r.status === 'pending');
-    else if (this.remFilter === 'snoozed') filtered = filtered.filter(r => r.status === 'snoozed');
-    else if (this.remFilter === 'sent') filtered = filtered.filter(r => r.status === 'sent');
-
-    if (filtered.length === 0) {
-      container.innerHTML = '<div class="empty-hint">No reminders matching this filter. Use the bar above or chat with Hermes to set one!</div>';
-      return;
-    }
-
-    container.innerHTML = filtered.map(r => this.renderReminderCard(r)).join('');
-
-    // Bind action buttons
-    container.querySelectorAll('.btn-snooze-5m').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.dataset.remId;
-        await this.snoozeReminder(id, 5);
-        await this.fetchReminders();
-        await this.fetchOverview();
-      });
-    });
-
-    container.querySelectorAll('.btn-snooze-15m').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.dataset.remId;
-        await this.snoozeReminder(id, 15);
-        await this.fetchReminders();
-        await this.fetchOverview();
-      });
-    });
-
-    container.querySelectorAll('.btn-snooze-1h').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.dataset.remId;
-        await this.snoozeReminder(id, 60);
-        await this.fetchReminders();
-        await this.fetchOverview();
-      });
-    });
-
-    container.querySelectorAll('.btn-dismiss-rem').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const id = e.target.dataset.remId;
-        await this.dismissReminder(id);
-        await this.fetchReminders();
-        await this.fetchOverview();
-      });
-    });
-  }
-
-  CommandDeck.prototype.renderReminderCard = function(r) {
-    const channel = r.channel || 'all';
-    const channelLabels = {
-      all: '⚡ All Channels',
-      telegram: '📱 Telegram',
-      discord: '💬 Discord',
-      email: '📧 Email',
-      sms: '📞 Phone/SMS',
-      desktop: '🖥️ Desktop'
-    };
-
-    return `
-      <div class="reminder-card ${r.status}" data-rem-id="${r.id}">
-        <div class="reminder-top-row">
-          <span class="reminder-title">${escapeHtml(r.title)}</span>
-          <span class="badge ${r.status === 'sent' ? 'badge-completed' : r.status === 'snoozed' ? 'badge-medium' : 'badge-cyan'}">${r.status.toUpperCase()}</span>
-        </div>
-        ${r.notes ? `<div style="font-size:11px; color:var(--text-secondary);">${escapeHtml(r.notes)}</div>` : ''}
-        <div class="reminder-meta-row">
-          <div class="reminder-tags">
-            <span class="channel-tag ${channel}">${channelLabels[channel] || channel}</span>
-            <span>⏰ ${formatTime(r.remind_at) || r.remind_at}</span>
-          </div>
-          <div class="reminder-actions">
-            ${r.status !== 'sent' ? `
-              <button class="btn-rem-action btn-snooze-5m" data-rem-id="${r.id}">+5m</button>
-              <button class="btn-rem-action btn-snooze-15m" data-rem-id="${r.id}">+15m</button>
-              <button class="btn-rem-action btn-snooze-1h" data-rem-id="${r.id}">+1h</button>
-              <button class="btn-rem-action btn-dismiss-rem" data-rem-id="${r.id}">Dismiss</button>
-            ` : `
-              <button class="btn-rem-action btn-snooze-15m" data-rem-id="${r.id}">Reset +15m</button>
-            `}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  CommandDeck.prototype.renderProjects = function() {
-    const container = document.getElementById('projects-list-container');
-    if (!container) return;
-    if (this.state.projects.length === 0) {
-      container.innerHTML = '<div class="empty-hint">No active projects configured.</div>';
-      return;
-    }
-
-    container.innerHTML = this.state.projects.map(p => {
-      const total = p.total_tasks || 0;
-      const completed = p.completed_tasks || 0;
-      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-      return `
-        <div class="project-card">
-          <div class="project-name">${escapeHtml(p.name)}</div>
-          <div style="font-size:10px; color:var(--text-muted);">${escapeHtml(p.description || '')}</div>
-          <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:10px; color:var(--text-secondary);">
-            <span>Progress</span>
-            <span>${pct}% (${completed}/${total})</span>
-          </div>
-          <div class="progress-bar-container">
-            <div class="progress-bar-fill" style="width: ${pct}%"></div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-
+      ${task.project_name ? `<div class="task-card__project">${escapeHtml(task.project_name)}</div>` : ''}
+    </div>
+  `;
+};

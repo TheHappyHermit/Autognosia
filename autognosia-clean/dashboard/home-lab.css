@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Home Lab Panels — Server Cards, LLM Endpoints, GPU Meters
+   Light-Mode-First (Apple / Linear / Vercel). Flat elevation, no glass/glow.
+   Monospace reserved for numeric values only.
+   ========================================================================== */
+
+/* ── Server Cards (3-column grid) ──────────────────────────────────────── */
+.server-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.server-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--motion-fast);
+  position: relative;
+}
+
+.server-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.server-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+/* Name — label (sans) */
+.server-card__name {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* IP — numeric value (mono) */
+.server-card__ip {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+/* Status word — label (sans) */
+.server-card__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.server-card__status.online { color: var(--success); }
+.server-card__status.offline { color: var(--danger); }
+
+.server-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.server-card__services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+/* ── Service Pills (label — sans) ─────────────────────────────────────── */
+.service-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-2);
+}
+
+.service-pill--online {
+  background: var(--success-soft);
+  border-color: rgba(22, 163, 74, 0.28);
+  color: var(--success);
+}
+
+.service-pill--offline {
+  background: var(--danger-soft);
+  border-color: rgba(220, 38, 38, 0.28);
+  color: var(--danger);
+}
+
+.service-pill__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── GPU Meter ─────────────────────────────────────────────────────────── */
+.gpu-meter {
+  margin-top: var(--space-2);
+}
+
+/* Label row — sans */
+.gpu-meter__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+
+.gpu-meter__bar {
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.gpu-meter__fill {
+  height: 100%;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
+  transition: width var(--motion-base);
+}
+
+.gpu-meter__fill--high {
+  background: var(--gradient-warm);
+}
+
+/* Value — numeric (mono) */
+.gpu-meter__value {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+/* ── LLM Endpoints ────────────────────────────────────────────────────── */
+.llm-endpoints {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.llm-endpoint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--motion-fast);
+}
+
+.llm-endpoint:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-tertiary);
+}
+
+.llm-endpoint__status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.llm-endpoint__status.active {
+  background: var(--success);
+  box-shadow: 0 0 0 2px var(--success-soft);
+}
+
+.llm-endpoint__status.inactive {
+  background: var(--text-4);
+}
+
+.llm-endpoint__info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Name — label (sans) */
+.llm-endpoint__name {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Meta — data values (mono) */
+.llm-endpoint__meta {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+/* TPS — numeric value (mono) */
+.llm-endpoint__tps {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* ── Container Summary ────────────────────────────────────────────────── */
+.container-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+/* Counts — numeric (mono) */
+.container-summary__count {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.container-summary__count .up { color: var(--success); }
+
+.container-summary__count .total {
+  color: var(--text-3);
+  font-size: var(--fs-md);
+  font-weight: 500;
+}
+
+/* Label — sans */
+.container-summary__label {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Telemetry Grid ───────────────────────────────────────────────────── */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-2);
+}
+
+.telemetry-metric {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  text-align: center;
+  transition: all var(--motion-fast);
+}
+
+.telemetry-metric:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-tertiary);
+}
+
+/* Value — numeric (mono) */
+.telemetry-metric__value {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Label — sans */
+.telemetry-metric__label {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+
+/* Sub value — numeric (mono) */
+.telemetry-metric__sub {
+  font-size: var(--fs-xs);
+  color: var(--text-4);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}

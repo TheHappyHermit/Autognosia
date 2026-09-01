@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* View Section */
-.view-section {
+.view-section:not(.active) {
   display: none;
 }
 

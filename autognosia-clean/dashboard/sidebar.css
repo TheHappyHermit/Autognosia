@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Sidebar Navigation — Dark Executive Style
-   Linear-style dark glass sidebar with cyan accent active state
+   Sidebar Navigation — Light-Mode-First (Apple / Linear / Vercel)
+   Flat surface, subtle border, accent active state. No glass, no glow.
    ========================================================================== */
 
 .sidebar {
@@ -9,9 +9,7 @@
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
-  background: rgba(15, 16, 17, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-secondary);
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
@@ -53,13 +51,12 @@
 
 .sidebar-link:hover {
   color: var(--text-1);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
 }
 
 .sidebar-link.active {
   color: var(--accent);
-  background: rgba(34, 211, 238, 0.08);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.15);
+  background: var(--accent-soft);
 }
 
 .sidebar-link.active::before {
@@ -90,7 +87,6 @@
   color: var(--accent);
   font-weight: 600;
   font-size: var(--fs-sm);
-  font-family: var(--font-mono);
 }
 
 /* Collapsed state (icons only) */
