@@ -56,7 +56,6 @@ wiki_engram.json
 # ── Personal directories ──
 Downloads/
 deploy/
-docs/
 archive/
 research/
 research_output/
@@ -138,11 +137,16 @@ skills/apple/
 skills/creative/
 skills/data-science/
 skills/devops/
+skills/diffusion/
 skills/email/
+skills/gaming/
+skills/leisure/
+skills/media/
 skills/mlops/
 skills/note-taking/
 skills/productivity/
 skills/research/
+skills/social-media/
 skills/software-development/
 skills/web/
 
