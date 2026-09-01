@@ -16,7 +16,7 @@ When you tell Hermes to set up the Autognosia from the repository, Hermes follow
 6. **Generate** `SEARXNG_SECRET` using `openssl rand -hex 32`
 7. **Start** Docker services in order: SearXNG → Honcho → Personal Organizer → Brain Search
 8. **Verify** each service with health check endpoints
-9. **Register** cron jobs from `cron-jobs/definitions.md`
+9. **Register** cron jobs from `docs/cron-jobs/definitions.md`
 10. **Run** acceptance tests (`tests/run_tests.sh`)
 
 If any step fails, Hermes stops and reports the issue. You can then fix it and resume.
@@ -57,7 +57,7 @@ Autognosia implements cognitive division of labor across specialized profiles.
 
 ## 3. Cron Jobs
 
-See [`cron-jobs/definitions.md`](cron-jobs/definitions.md) for canonical specifications and [`cron-jobs/setup-instructions.md`](cron-jobs/setup-instructions.md) for registration commands.
+See [`docs/cron-jobs/definitions.md`](docs/cron-jobs/definitions.md) for canonical specifications and [`docs/cron-jobs/setup-instructions.md`](docs/cron-jobs/setup-instructions.md) for registration commands.
 
 | # | Time | Job | Type | Purpose |
 |---|------|-----|------|---------|
@@ -178,7 +178,7 @@ Tracks operational traces, verification outcomes, routing accuracy, and reflecti
 
 ## 7. Three-Tier Memory Architecture
 
-The Autognosia uses a three-tier memory cascade. See [`architecture/THREE-TIER-MEMORY.md`](architecture/THREE-TIER-MEMORY.md) for the full architecture.
+The Autognosia uses a three-tier memory cascade. See [`docs/architecture/THREE-TIER-MEMORY.md`](docs/architecture/THREE-TIER-MEMORY.md) for the full architecture.
 
 **Quick summary:**
 - **Hot** (~2200 chars): Always-loaded persistent memory for active context
@@ -191,7 +191,7 @@ Information flows downward through consolidation, never disappearing. Old ≠ wr
 
 ## 8. Research Protocol
 
-All internet research is delegated to the Researcher profile. See [`architecture/RESEARCH-PROTOCOL.md`](architecture/RESEARCH-PROTOCOL.md) for the full protocol.
+All internet research is delegated to the Researcher profile. See [`docs/architecture/RESEARCH-PROTOCOL.md`](docs/architecture/RESEARCH-PROTOCOL.md) for the full protocol.
 
 **Key rules:**
 1. Default profile NEVER searches the internet directly

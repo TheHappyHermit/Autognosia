@@ -332,7 +332,7 @@ python3 scripts/run_dashboard.py
 
 ### 10. Register Cron Jobs
 
-See `cron-jobs/setup-instructions.md` for cron job registration commands.
+335|See `docs/cron-jobs/setup-instructions.md` for cron job registration commands.
 
 ### 11. Set Up Firecrawl + CamoFox (Web Search & Scraping)
 
@@ -456,8 +456,7 @@ Completed sessions older than 7 days are automatically exported to structured JS
 ## Documentation Links
 
 - **Detailed configuration:** [`SETUP.md`](SETUP.md) (profiles, cron, wiki, schemas)
-- **Architecture & Epistemic Protocol:** [`REFERENCE.md`](REFERENCE.md)
-- **Three-Tier Memory Architecture:** [`architecture/THREE-TIER-MEMORY.md`](architecture/THREE-TIER-MEMORY.md)
-- **Cron Jobs Reference:** [`cron-jobs/definitions.md`](cron-jobs/definitions.md)
+- **Architecture & Epistemic Protocol:** [`docs/REFERENCE.md`](docs/REFERENCE.md)
+- **Three-Tier Memory Architecture:** [`docs/architecture/THREE-TIER-MEMORY.md`](docs/architecture/THREE-TIER-MEMORY.md)
 - **Troubleshooting:** [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md)
-- **Required Inputs:** [`REQUIRED_INPUTS.md`](REQUIRED_INPUTS.md)
+- **Required Inputs:** [`docs/REQUIRED_INPUTS.md`](docs/REQUIRED_INPUTS.md)
