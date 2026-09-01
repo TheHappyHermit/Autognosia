@@ -1190,14 +1190,14 @@ Hermes should inspect the target machine, preserve existing components, install 
 |------|---------|
 | [INSTALL.md](INSTALL.md) | Quick start deployment |
 | [SETUP.md](SETUP.md) | Detailed configuration (profiles, cron, wiki, schema) |
-| [REFERENCE.md](REFERENCE.md) | Architecture deep-dive, epistemic protocol, security |
+| [REFERENCE.md](docs/REFERENCE.md) | Architecture deep-dive, epistemic protocol, security |
 | [SYSTEM-RULES.md](SYSTEM-RULES.md) | Rules for all profiles |
-| [ATTRIBUTION.md](ATTRIBUTION.md) | Credits for external projects and skills |
+| [ATTRIBUTION.md](docs/ATTRIBUTION.md) | Credits for external projects and skills |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and fixes |
-| [REQUIRED_INPUTS.md](REQUIRED_INPUTS.md) | Configuration values needed during setup |
-| [IMPROVEMENTS.md](IMPROVEMENTS.md) | Proposed improvements (memory dedup, metadata, etc.) |
-| [AUDIT.md](AUDIT.md) | Internet research audit of all components |
-| [EXPLANATION.md](EXPLANATION.md) | Explanation of hermes-config-backup and related decisions |
+| [REQUIRED_INPUTS.md](docs/REQUIRED_INPUTS.md) | Configuration values needed during setup |
+| [IMPROVEMENTS.md](docs/IMPROVEMENTS.md) | Proposed improvements (memory dedup, metadata, etc.) |
+| [AUDIT.md](docs/AUDIT.md) | Internet research audit of all components |
+| [EXPLANATION.md](docs/EXPLANATION.md) | Explanation of hermes-config-backup and related decisions |
 
 ---
 
