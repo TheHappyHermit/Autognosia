@@ -1,0 +1,174 @@
+{
+  "topic": "LLMs + Structured Knowledge (September 2026)",
+  "findings": [
+    {
+      "title": "AutoSchemaKG: Autonomous Knowledge Graph Construction through Dynamic Schema Induction from Web-Scale Corpora",
+      "venue": "ACL 2026",
+      "date": "2026-07",
+      "key_findings": "Fully autonomous KG construction eliminating predefined schemas. Two-stage approach: (1) LLM-based triple extraction (entities + events) from text, (2) Schema induction via conceptualization organizing instances into semantic categories. Processes 50M+ documents to construct ATLAS KG. Outperforms schema-based and schema-free baselines on multi-hop QA. Code and data released.",
+      "url": "https://arxiv.org/abs/2505.23628"
+    },
+    {
+      "title": "TRACE-KG: Beyond Predefined Schemas for Context-Enriched Knowledge Graph Generation",
+      "venue": "ICML 2026 (Graph Foundation Models workshop)",
+      "date": "2026-04",
+      "key_findings": "Induces reusable hierarchical schema directly from corpus text without predefined ontology. Uses ontology-held-out protocol: curated reference ontology only for post-hoc evaluation. Produces structurally coherent, traceable KGs. Practical alternative to both ontology-driven and schema-free pipelines. Accepted at GFM @ ICML 2026.",
+      "url": "https://arxiv.org/abs/2604.03496"
+    },
+    {
+      "title": "Can LLMs be Good Graph Judge for Knowledge Graph Construction?",
+      "venue": "EMNLP 2025",
+      "date": "2025-11",
+      "key_findings": "Evaluates LLMs as judges for KG construction quality. Proposes graph-level evaluation criteria: structural coherence, semantic validity, completeness. Finds LLMs can effectively judge KG quality but struggle with fine-grained relation validation. Introduces benchmark for LLM-as-judge in KG construction.",
+      "url": "https://aclanthology.org/2025.emnlp-main.554"
+    },
+    {
+      "title": "SCOPE and SCION: A Benchmark and an Auditable Pipeline for Schema Induction and Ontology Normalization",
+      "venue": "ICML 2026",
+      "date": "2026-05",
+      "key_findings": "SCOPE: train-text-only benchmark for corpus-to-schema induction from 24 IE sources (15 RE + 9 EE) with gold schema graphs. SCION: auditable reference pipeline with candidate-linked evidence under strict JSON contracts. SCION-lite achieves highest F1 among LLM-only and extract-then-aggregate baselines. SCION-RL variant reduces reliance on proprietary LLMs.",
+      "url": "https://arxiv.org/abs/2607.21610"
+    },
+    {
+      "title": "Agentic AI for Ontology Grounding Over LLM-Discovered Scientific Schemas",
+      "venue": "Semantic Web Journal 2026",
+      "date": "2026",
+      "key_findings": "Schema-Miner Pro: human-in-the-loop workflow for scientific schema mining. LLMs analyze corpus, propose candidate attributes (e.g., precursor pulse time in ALD literature), expert review grounds to ontology. Transitions from extraction to schema induction. Related: LLMs4SchemaDiscovery (arXiv 2025).",
+      "url": "https://journals.sagepub.com/doi/full/10.1177/22104968261431521"
+    },
+    {
+      "title": "Ontology-to-Tools Compilation for Executable Semantic Constraint Enforcement in LLM Agents",
+      "venue": "arXiv (Cambridge CoMo Group)",
+      "date": "2026-02",
+      "key_findings": "Compiles ontological T-Boxes into executable MCP tool interfaces that LLM agents must use for KG instantiation. Enforces semantic constraints during generation (not post-hoc). Within The World Avatar ecosystem: ontology-aware tools for entity creation, attribute/relation completion, SPARQL accessors, fuzzy lookup. Applied to metal-organic polyhedra synthesis literature. Nine specialized agents orchestrated by Central Controller.",
+      "url": "https://arxiv.org/abs/2602.03439"
+    },
+    {
+      "title": "Graph-constrained Reasoning (GCR): Faithful Reasoning on Knowledge Graphs with Large Language Models",
+      "venue": "ICML 2025",
+      "date": "2025",
+      "key_findings": "Bridges structured KG knowledge with unstructured LLM reasoning. KG-Trie (trie-based index) constrains LLM decoding to valid KG paths, eliminating reasoning hallucinations. Uses lightweight KG-specialized LLM for graph-constrained decoding + powerful general LLM for inductive reasoning. Zero-shot generalizable to unseen KGs. SOTA on KGQA benchmarks.",
+      "url": "https://arxiv.org/abs/2410.13080"
+    },
+    {
+      "title": "KARMA: Leveraging Multi-Agent LLMs for Automated Knowledge Graph Enrichment",
+      "venue": "NeurIPS 2025 (Spotlight)",
+      "date": "2026-01",
+      "key_findings": "Nine collaborative LLM agents for KG enrichment: entity discovery, relation extraction, schema alignment, conflict resolution. Hierarchical multi-agent system with Central Controller. Sequential iterative process augmenting existing KG G=(V,E) from unstructured publications. Addresses scalability of manual curation.",
+      "url": "https://arxiv.org/abs/2502.06472"
+    },
+    {
+      "title": "MAKES-QA: A Multi-Agent Framework for Scientific KGQA",
+      "venue": "Expert Systems with Applications 2026",
+      "date": "2026",
+      "key_findings": "Modular multi-agent framework for dynamic KG construction and enrichment in scientific domains. Three enrichment strategies for user-guided graph expansion. Combines KG-based retrieval with LLM answer synthesis. Enables flexible knowledge discovery from scientific literature.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0957417426010699"
+    },
+    {
+      "title": "KnoBuilder: An LLM-Agent for Autonomous and Personalized Knowledge Graph Construction",
+      "venue": "NeurIPS 2025 (NORA Workshop)",
+      "date": "2025",
+      "key_findings": "Agentic framework for autonomous personalized KG construction from unstructured text. Synergistic loop: strategic planning for knowledge acquisition, self-refining extraction with multi-stage validation, dynamic consolidation maintaining graph coherence. 85% F1 extraction, 46% acquisition efficiency improvement, 91% entity resolution, 96% consistency.",
+      "url": "https://neurips.cc/virtual/2025/129837"
+    },
+    {
+      "title": "Self-Prompting LLM Agents for Dynamic Knowledge Graph Construction and Reasoning",
+      "venue": "NeurIPS 2025 (NORA Workshop)",
+      "date": "2025",
+      "key_findings": "DYNA-SKILL: expands relation set from 35 predefined to 168 total (133 dynamic) via self-prompting mechanism. Hybrid configuration (predefined + dynamic relations) matches or exceeds predefined-only on CommonsenseQA, RiddleSense, ARC Challenge. Enriches relational diversity for multi-step logical reasoning.",
+      "url": "https://neurips.cc/virtual/2025/129841"
+    },
+    {
+      "title": "SPARQL-LLM: Real-Time SPARQL Query Generation from Natural Language Questions",
+      "venue": "arXiv / ISWC 2024 Special Session",
+      "date": "2025-12",
+      "key_findings": "Real-time SPARQL generation over federated KGs. Chat web service at expasy.org/chat, MCP server at chat.expasy.org/mcp, reusable pip package sparql-llm. Addresses federated query generation across multiple endpoints.",
+      "url": "https://arxiv.org/abs/2512.14277"
+    },
+    {
+      "title": "Accurate SPARQL Generation via In-Context Learning and Schema-Based Word Extraction",
+      "venue": "Bioinformatics 2026",
+      "date": "2026",
+      "key_findings": "Novel framework avoiding hallucinations without training data. Combines LLM-based word extraction with schema-based constraints. Validated on biomedical KGs.",
+      "url": "https://academic.oup.com/bioinformatics/article/42/5/btag174/8644338"
+    },
+    {
+      "title": "Context-Aware Few-Shot Learning SPARQL Query Generation on Aviation Knowledge Graph",
+      "venue": "Machine Learning and Knowledge Extraction 2025",
+      "date": "2025",
+      "key_findings": "Three-step methodology integrating relevant triples and task examples into single prompt for domain-specific KG. Flexible approach for NL-to-SPARQL on aviation KG.",
+      "url": "https://www.mdpi.com/2504-4990/7/2/52"
+    },
+    {
+      "title": "Large Language Models Meet Knowledge Graphs for Question Answering: Synthesis and Opportunities",
+      "venue": "EMNLP 2025",
+      "date": "2025-11",
+      "key_findings": "Survey synthesizing KG+LLM QA landscape. KG integration mitigates core LLM limitations: poor multi-hop reasoning, outdated knowledge, hallucination. Covers retrieval, reasoning, and representation strategies.",
+      "url": "https://aclanthology.org/2025.emnlp-main.1249"
+    },
+    {
+      "title": "KGEIR: Knowledge Graph-Enhanced Iterative Reasoning for Multi-Hop Question Answering",
+      "venue": "ACL 2025 (R2LM Workshop)",
+      "date": "2025-01",
+      "key_findings": "Dynamically constructs and refines KGs during QA to enhance multi-hop reasoning. Iterative graph construction guided by question decomposition. Training-free framework.",
+      "url": "https://aclanthology.org/2025.r2lm-1.14"
+    },
+    {
+      "title": "LLMs4OL 2025: The 2nd Large Language Models for Ontology Learning Challenge",
+      "venue": "ISWC 2025",
+      "date": "2025-11",
+      "key_findings": "Second benchmark for LLM-driven ontology learning. Subtasks: Text2Onto, term typing, taxonomy discovery, non-taxonomic relation extraction. Hybrid pipelines (commercial LLMs + domain-tuned embeddings + fine-tuning) achieve strongest performance. Specialized domain models excel in biomedical/technical datasets. Key insights: prompt engineering, RAG, ensemble learning critical.",
+      "url": "https://www.tib-op.org/ojs/index.php/ocp/article/view/2913"
+    },
+    {
+      "title": "Large Language Models for Ontology Engineering: A Systematic Literature Review",
+      "venue": "Semantic Web Journal 2025",
+      "date": "2025",
+      "key_findings": "Analyzes 36 papers (2018-May 2025), extracts 46 distinct OE tasks where LLMs applied. Covers requirements, implementation, publication, maintenance phases. New prompting techniques: Memoryless CQbyCQ and Ontogenia for automated ontology development from competency questions.",
+      "url": "https://www.semantic-web-journal.net/content/large-language-models-ontology-engineering-systematic-literature-review"
+    },
+    {
+      "title": "OntoEKG: LLM-Driven Pipeline for Enterprise Knowledge Graph Ontology Generation",
+      "venue": "arXiv",
+      "date": "2026-02",
+      "key_findings": "Accelerates domain-specific ontology generation from unstructured enterprise data. Iterative Chain-of-Thought algorithm for user refinement. Semi-automatic KG construction with minimal expert involvement. LLM-as-Judge for RAG answer evaluation.",
+      "url": "https://arxiv.org/abs/2602.01276"
+    },
+    {
+      "title": "Neuro-Symbolic AI for Knowledge Graph Construction in Manufacturing: Systematic Literature Review",
+      "venue": "ResearchGate 2025",
+      "date": "2025",
+      "key_findings": "SLR on neuro-symbolic AI + LLMs in KG construction for manufacturing. Identifies integration patterns: symbolic constraints guiding neural extraction, neural embedding enhancing symbolic reasoning, joint training frameworks.",
+      "url": "https://www.researchgate.net/publication/400922931_LLMs_on_the_Rise_Neuro-Symbolic_AI_for_Knowledge_Graph_Construction_in_Manufacturing_Systematic_Literature_Review"
+    },
+    {
+      "title": "Handbook on Neurosymbolic AI and Knowledge Graphs",
+      "venue": "IOS Press 2025",
+      "date": "2025",
+      "key_findings": "ORKG (Open Research Knowledge Graph) as large-scale neuro-symbolic knowledge organization system. Neuro-symbolic integration enhances complex query support, relationship inference, explainable AI insights. LLM effectiveness for KG population: ~90% triple extraction accuracy with proper prompting.",
+      "url": "https://ebooks.iospress.nl/volume/handbook-on-neurosymbolic-ai-and-knowledge-graphs"
+    },
+    {
+      "title": "Neural-Symbolic Reasoning over Knowledge Graphs: A Survey from KDD 2025",
+      "venue": "KDD 2025 Exploration",
+      "date": "2025",
+      "key_findings": "Comprehensive survey on neural-symbolic KG reasoning with LLM integration. Covers query types, neural symbolic reasoning classifications, innovative LLM+KG integration patterns. Highlights potential for complex reasoning over structured knowledge.",
+      "url": "https://www.kdd.org/exploration_files/p124-Neural_Symbolic_KGR_survey.pdf"
+    },
+    {
+      "title": "Large language models for scholarly ontology generation: An extensive analysis in the engineering field",
+      "venue": "Information Processing & Management 2025",
+      "date": "2025",
+      "key_findings": "Evaluates 17 LLMs on novel engineering domain dataset. Four domain-specific zero-shot prompting strategies. Results >96% F1; small open models competitive. Demonstrates LLM capability for scholarly ontology generation.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0306457325002031"
+    },
+    {
+      "title": "LLM-empowered knowledge graph construction: A survey",
+      "venue": "arXiv",
+      "date": "2025-10",
+      "key_findings": "Comprehensive survey of LLM-based KG construction. Covers information acquisition branch (entity/relation extraction), RAG, GraphRAG, emerging topics. Theoretical foundations and practical hands-on exercises.",
+      "url": "https://arxiv.org/abs/2510.20345"
+    }
+  ],
+  "summary": "As of September 2026, the LLM + Structured Knowledge field has matured into several convergent directions: (1) Autonomous KG construction without predefined schemas (AutoSchemaKG, TRACE-KG) using dynamic schema induction from web-scale corpora; (2) Rigorous schema induction benchmarks (SCOPE/SCION at ICML 2026) with auditable pipelines; (3) Neuro-symbolic integration via constrained decoding (GCR/KG-Trie at ICML 2025) eliminating hallucinations; (4) Ontology-to-tools compilation (Cambridge CoMo Group, Feb 2026) converting T-Boxes into executable MCP tool interfaces for real-time constraint enforcement; (5) Multi-agent KG construction/enrichment (KARMA at NeurIPS 2025 Spotlight, KnoBuilder, MAKES-QA) with specialized agent orchestration; (6) SPARQL generation maturing with federated query support (SPARQL-LLM) and schema-constrained approaches; (7) KGQA advancing via dynamic graph construction during reasoning (KGEIR) and graph-constrained faithful reasoning; (8) LLM-based ontology learning benchmarked via LLMs4OL 2025 challenge showing hybrid pipelines dominate. The field is shifting from extraction-only to end-to-end autonomous construction with schema induction, constraint enforcement, and multi-agent orchestration as key frontiers."
+}

@@ -1,0 +1,258 @@
+SOURCE_URL: https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric
+
+font-variant-numeric CSS property - CSS | MDN
+Skip to main content
+
+Skip to search
+
+Toggle sidebar
+Web
+
+CSS
+
+Reference
+
+Properties
+
+font-variant-numeric
+
+Theme
+
+OS default
+
+Light
+
+Dark
+
+English (US)
+
+Remember languageLearn more
+
+Deutsch
+
+English (US)
+
+Français
+
+日本語
+
+Русский
+
+中文 (简体)
+
+font-variant-numeric CSS property
+
+ Baseline
+
+ Widely available
+
+This feature is well established and works across many devices and browser versions. It’s been available across browsers since January 2020.
+
+ Learn more
+
+ See full compatibility
+
+The font-variant-numericCSS property controls the usage of alternate glyphs for numbers, fractions, and ordinal markers.
+
+Try it
+
+font-variant-numeric: normal;
+
+font-variant-numeric: ordinal;
+
+font-variant-numeric: slashed-zero;
+
+font-variant-numeric: tabular-nums;
+
+font-variant-numeric: oldstyle-nums;
+
+font-variant-numeric: lining-nums;
+
+font-variant-numeric: proportional-nums;
+
+font-variant-numeric: diagonal-fractions;
+
+<section id="default-example">
+ <div id="example-element">
+ <table>
+ <tbody>
+ <tr>
+ <td><span class="tabular">0</span></td>
+ </tr>
+ <tr>
+ <td><span class="tabular">3.54</span></td>
+ </tr>
+ <tr>
+ <td><span class="tabular">1.71</span></td>
+ </tr>
+ <tr>
+ <td><span class="tabular">1st</span></td>
+ </tr>
+ <tr>
+ <td><span class="tabular">3/4</span></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+</section>
+
+@font-face {
+ font-family: "Source Sans Pro";
+ src:
+ local("SourceSansPro-Regular"),
+ url("/shared-assets/fonts/SourceSansPro-Regular.otf") format("opentype");
+ font-weight: normal;
+ font-style: normal;
+}
+
+section {
+ font-family: "Source Sans Pro", sans-serif;
+ margin-top: 10px;
+ font-size: 1.5em;
+}
+
+#example-element table {
+ margin-left: auto;
+ margin-right: auto;
+}
+
+.tabular {
+ border: 1px solid;
+}
+
+Syntax
+
+css
+font-variant-numeric: normal;
+font-variant-numeric: ordinal;
+font-variant-numeric: slashed-zero;
+font-variant-numeric: lining-nums; /* <numeric-figure-values> */
+font-variant-numeric: oldstyle-nums; /* <numeric-figure-values> */
+font-variant-numeric: proportional-nums; /* <numeric-spacing-values> */
+font-variant-numeric: tabular-nums; /* <numeric-spacing-values> */
+font-variant-numeric: diagonal-fractions; /* <numeric-fraction-values> */
+font-variant-numeric: stacked-fractions; /* <numeric-fraction-values> */
+font-variant-numeric: oldstyle-nums stacked-fractions;
+
+/* Global values */
+font-variant-numeric: inherit;
+font-variant-numeric: initial;
+font-variant-numeric: revert;
+font-variant-numeric: revert-layer;
+font-variant-numeric: unset;
+
+Values
+
+This property is specified either as normal or a space-separated list of the following values:
+normal
+This keyword leads to the deactivation of the use of such alternate glyphs.
+ordinal
+This keyword forces the use of special glyphs for the ordinal markers, like 1st, 2nd, 3rd, 4th in English or a 1a in Italian. It corresponds to the OpenType values ordn.
+slashed-zero
+This keyword forces the use of a 0 with a slash; this is useful when a clear distinction between O and 0 is needed. It corresponds to the OpenType values zero.
+<numeric-figure-values>
+These values control the figures used for numbers. Two values are possible:
+
+lining-nums activating the set of figures where numbers are all lying on the baseline. It corresponds to the OpenType values lnum.
+
+oldstyle-nums activating the set of figures where some numbers, like 3, 4, 7, 9 have descenders. It corresponds to the OpenType values onum.
+<numeric-spacing-values>
+These values controls the sizing of figures used for numbers. Two values are possible:
+
+proportional-nums activating the set of figures where numbers are not all of the same size. It corresponds to the OpenType values pnum.
+
+tabular-nums activating the set of figures where numbers are all of the same size, allowing them to be easily aligned like in tables. It corresponds to the OpenType values tnum.
+<numeric-fraction-values>
+These values controls the glyphs used to display fractions. Two values are possible:
+
+diagonal-fractions activating the set of figures where the numerator and denominator are made smaller and separated by a slash. It corresponds to the OpenType values frac.
+
+stacked-fractions activating the set of figures where the numerator and denominator are made smaller, stacked and separated by a horizontal line. It corresponds to the OpenType values afrc.
+
+Formal definition
+
+Initial valuenormal
+
+Applies toall elements and text. It also applies to ::first-letter and ::first-line.
+
+Inheritedyes
+
+Computed valueas specified
+
+Animation typediscrete
+
+Formal syntax
+font-variant-numeric = 
+normal|
+[<numeric-figure-values>||<numeric-spacing-values>||<numeric-fraction-values>||ordinal||slashed-zero]
+
+<numeric-figure-values> = 
+lining-nums|
+oldstyle-nums
+
+<numeric-spacing-values> = 
+proportional-nums|
+tabular-nums
+
+<numeric-fraction-values> = 
+diagonal-fractions|
+stacked-fractions
+
+Examples
+
+Setting ordinal numeric forms
+
+Click "Play" in the code blocks below to edit the example in the MDN Playground:
+
+html
+<p class="ordinal">1st, 2nd, 3rd, 4th, 5th</p>
+
+css
+@font-face {
+ font-family: "Source Sans Pro";
+ src: url("https://mdn.github.io/shared-assets/fonts/SourceSansPro-Regular.otf")
+ format("opentype");
+ font-weight: normal;
+ font-style: normal;
+}
+
+.ordinal {
+ font-family: "Source Sans Pro", sans-serif;
+ font-size: 2rem;
+ font-variant-numeric: ordinal;
+}
+
+Specifications
+
+ Specification
+
+CSS Fonts Module Level 4
+# font-variant-numeric-prop
+
+Browser compatibility
+
+See also
+
+font-variant
+
+font-variant-alternates
+
+font-variant-caps
+
+font-variant-east-asian
+
+font-variant-emoji
+
+font-variant-ligatures
+
+font-variant-position
+
+ Help improve MDN
+
+Was this page helpful to you?
+YesNo
+Learn how to contribute
+
+ This page was last modified on Jul 21, 2026 by MDN contributors.
+
+View this page on GitHub • Report a problem with this content

@@ -1,0 +1,155 @@
+SOURCE_URL: https://gethomepage.dev/configs/services/
+
+Services - Homepage
+
+ Skip to content
+
+Services
+
+Services are configured inside the services.yaml file. You can have any number of groups, and any number of services per group.
+
+Groups
+
+Groups are defined as top-level array entries.
+
+-Group A:-Service A:href:http://localhost/-Group B:-Service B:href:http://localhost/
+
+Nested Groups
+
+Groups can be nested by using the same format as the top-level groups.
+
+-Group A:-Service A:href:http://localhost/-Group B:-Service B:href:http://localhost/-Service C:href:http://localhost/
+
+Services
+
+Services are defined as array entries on groups,
+
+-Group A:-Service A:href:http://localhost/-Service B:href:http://localhost/-Service C:href:http://localhost/-Group B:-Service D:href:http://localhost/
+
+Service Widgets
+
+Each service can have widgets attached to it (often matching the service type, but that's not forced).
+
+In addition to the href of the service, you can also specify the target location in which to open that link. See Link Target for more details.
+
+Using Emby as an example, this is how you would attach the Emby service widget.
+
+-Emby:icon:emby.pnghref:http://emby.host.or.ip/description:Movies & TV Showswidget:type:embyurl:http://emby.host.or.ipkey:apikeyapikeyapikeyapikeyapikey
+
+Multiple Widgets
+
+Each service can have multiple widgets attached to it, for example:
+
+-Emby:icon:emby.pnghref:http://emby.host.or.ip/description:Movies & TV Showswidgets:-type:embyurl:http://emby.host.or.ipkey:apikeyapikeyapikeyapikeyapikey-type:uptimekumaurl:http://uptimekuma.host.or.ip:portslug:statuspageslug
+
+Note
+
+Multiple widgets per service are not yet supported with Kubernetes ingress annotations.
+
+Custom HTTP headers
+
+Widgets that make HTTP calls support extra request headers via headers. This is useful when a reverse proxy expects a secret header.
+
+-UptimeRobot:icon:uptimekuma.pnghref:https://uptimerobot.com/widget:type:uptimeroboturl:https://api.uptimerobot.comkey:${UPTIMEROBOT_API_KEY}headers:User-Agent:homepageX-Auth-Key:your-secret-here
+
+If you define services via Docker labels or Kubernetes annotations, use the same key with dot-notation (for example homepage.widget.headers.X-Auth-Key=secret or gethomepage.dev/widget.headers.X-Auth-Key: "secret").
+
+Field Visibility
+
+Each widget can optionally provide a list of which fields should be visible via the fields widget property. If no fields are specified, then all fields will be displayed. The fields property must be a valid YAML array of strings. As an example, here is the entry for Sonarr showing only a couple of fields.
+
+In all cases a widget will work and display all fields without specifying the fields property.
+
+-Sonarr:icon:sonarr.pnghref:http://sonarr.host.or.ipwidget:type:sonarrfields:["wanted","queued"]url:http://sonarr.host.or.ipkey:apikeyapikeyapikeyapikeyapikey
+
+Block Highlighting
+
+Widgets can tint their metric block text automatically based on rules defined alongside the service. Attach a highlight section to the widget configuration and map each block to one or more numeric or string rules using the field key (for example, queued, lan_users). The custom api widget does not support highlighting.
+
+-Sonarr:icon:sonarr.pnghref:http://sonarr.host.or.ipwidget:type:sonarrurl:http://sonarr.host.or.ipkey:${SONARR_API_KEY}highlight:queued:numeric:-level:dangerwhen:gtevalue:20-level:warnwhen:gtevalue:5-level:goodwhen:eqvalue:0status:string:-level:dangerwhen:regexvalue:"(failed|import)pending"-level:goodwhen:equalsvalue:"Allgood"status_code:string:-level:warnwhen:regexvalue:"^5\\d{2}$"
+
+Supported numeric operators for the when property are gt, gte, lt, lte, eq, ne, between, and outside. String rules support equals, includes, startsWith, endsWith, and regex. Each rule can be inverted with negate: true, and string rules may pass caseSensitive: true or custom regex flags. The highlight engine does its best to coerce formatted values, but you will get the most reliable results when you pass plain numbers or strings into <Block>.
+
+Value Only Highlighting
+
+You can optionally apply highlighting only to the value portion of a block (not the label) by setting valueOnly: true on the field configuration. This keeps the label visible while highlighting only the metric value itself.
+
+-Sonarr:...highlight:queued:valueOnly:true...
+
+Descriptions
+
+Services may have descriptions,
+
+-Group A:-Service A:href:http://localhost/description:This is my service-Group B:-Service B:href:http://localhost/description:This is another service
+
+Icons
+
+Services may have an icon attached to them, you can use icons from Dashboard Icons automatically, by passing the name of the icon, with, or without .png, .webp or .svg to specify the desired version.
+
+You can also specify prefixed icons from:
+
+Material Design Icons with mdi-XX
+
+Simple Icons with si-XX
+
+selfh.st/icons with sh-XX to use the png version or sh-XX.svg/png/webp for a specific version
+
+You can specify a custom color for mdi and si icons by adding a hex color code as a suffix e.g. mdi-XX-#f0d453 or si-XX-#a712a2.
+
+Note that these icon sets are not bundled with Homepage, they are fetched in the browser from remote CDN servers. To use the icons offline you may download the icons and serve them locally, or rely on browser caching when applicable.
+
+To use a remote icon, use the absolute URL (e.g. https://...).
+
+To use a local icon, first create a Docker mount to /app/public/icons and then reference your icon as /icons/myicon.png. You will need to restart the container when adding new icons.
+
+Warning
+
+Material Design Icons for brands were deprecated and may be removed in the future. Using Simple Icons for brand icons will prevent any issues if / when the Material Design Icons are removed.
+
+-Group A:-Sonarr:icon:sonarr.pnghref:http://sonarr.host/description:Series management-Group B:-Radarr:icon:radarr.pnghref:http://radarr.host/description:Movie management-Group C:-Service:icon:mdi-flask-outlinehref:http://service.host/description:My cool service
+
+Ping
+
+Services may have an optional ping property that allows you to monitor the availability of an external host. As of v0.8.0, the ping feature attempts to use a true (ICMP) ping command on the underlying host. Currently, only IPv4 is supported.
+
+Note
+
+Because ping uses the ping command on the underlying host, in some cases you may need to install e.g. the iputils-ping package on the host system.
+
+-Group A:-Sonarr:icon:sonarr.pnghref:http://sonarr.host/ping:sonarr.host-Group B:-Radarr:icon:radarr.pnghref:http://radarr.host/ping:some.other.host
+
+You can also apply different styles to the ping indicator by using the statusStyle property, see settings.
+
+Site Monitor
+
+Services may have an optional siteMonitor property (formerly ping) that allows you to monitor the availability of a URL you chose and have the response time displayed. You do not need to set your monitor URL equal to your href or ping URL.
+
+Note
+
+The site monitor feature works by making an http HEAD request to the URL, and falls back to GET in case that fails. It will not, for example, login if the URL requires auth or is behind e.g. Authelia. In the case of a reverse proxy and/or auth this usually requires the use of an 'internal' URL to make the site monitor feature correctly display status.
+
+-Group A:-Sonarr:icon:sonarr.pnghref:http://sonarr.host/siteMonitor:http://sonarr.host/-Group B:-Radarr:icon:radarr.pnghref:http://radarr.host/siteMonitor:http://some.other.host/
+
+You can also apply different styles to the site monitor indicator by using the statusStyle property, see settings.
+
+Docker Integration
+
+Services may be connected to a Docker container, either running on the local machine, or a remote machine.
+
+-Group A:-Service A:href:http://localhost/description:This is my serviceserver:my-servercontainer:my-container-Group B:-Service B:href:http://localhost/description:This is another serviceserver:other-servercontainer:other-container
+
+Clicking on the status label of a service with Docker integration enabled will expand the container stats, where you can see CPU, Memory, and Network activity.
+
+Note
+
+This can also be controlled with showStats. See show docker stats for more information
+
+Service Integrations
+
+Services may also have a service widget (or integration) attached to them, this works independently of the Docker integration.
+
+You can find information and configuration for each of the supported integrations on the Widgets page.
+
+Here is an example of a Radarr & Sonarr service, with their respective integrations.
+
+-Group A:-Sonarr:icon:sonarr.pnghref:http://sonarr.host/description:Series managementwidget:type:sonarrurl:http://sonarr.hostkey:apikeyapikeyapikeyapikeyapikey-Group B:-Radarr:icon:radarr.pnghref:http://radarr.host/description:Movie managementwidget:type:radarrurl:http://radarr.hostkey:apikeyapikeyapikeyapikeyapikey

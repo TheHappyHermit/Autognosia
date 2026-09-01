@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install the canonical wiki schema into both wikis.
-# Run this after cloning autognosia-clean (or any time you want to sync).
+# Run this after cloning the autognosia repo (or any time you want to sync).
 # This is idempotent — only overwrites if the wiki exists.
 #
 # Usage: bash scripts/install_wiki_schema.sh [AUTOGNOSIA_ROOT]
@@ -16,7 +16,7 @@ REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 SCHEMA_FILE="$REPO_DIR/schemas/wiki-schema.md"
 
 if [[ ! -f "$SCHEMA_FILE" ]]; then
-  echo "ERROR: $SCHEMA_FILE not found. Are you running from an autognosia-clean checkout?" >&2
+  echo "ERROR: $SCHEMA_FILE not found. Are you running from the autognosia checkout?" >&2
   exit 1
 fi
 

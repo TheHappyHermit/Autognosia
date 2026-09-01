@@ -1,0 +1,157 @@
+SOURCE_URL: https://codefronts.com/layouts/css-bento-grid-layouts/
+
+6 CSS Bento Grid Layouts — Free Live Demos | CodeFronts
+
+CODEFRONTS
+Saved!
+
+Components
+CSS ButtonsCSS CardsCSS Login FormsCSS Input FieldsCSS CheckboxesCSS Progress Bars
+View all 39 components
+
+Motion
+CSS Button Hover EffectsCSS Card Hover EffectsCSS Link EffectsCSS Loading Animations
+View all 34 motion
+
+Layouts
+CSS Grid LayoutsCSS Hero SectionsCSS Sidebar LayoutsCSS Split Screen
+View all 23 layouts
+
+Navigation
+CSS NavbarsCSS Sidebar NavigationCSS Mega MenusCSS TabsCSS AccordionsCSS Breadcrumbs
+View all 18 navigation
+
+UI Snippets
+CSS BadgesCSS Banners & AlertsCSS Countdown TimersCSS TooltipsCSS Tags & ChipsCSS Dividers
+View all 22 ui snippets
+
+Design Styles
+CSS GlassmorphismCSS NeumorphismCSS NeonCSS BrutalistCSS Dark Mode UICSS Minimalist UI
+View all 13 design styles
+
+Generators
+Gradient GeneratorBox Shadow GeneratorBorder RadiusFlexbox GeneratorGrid GeneratorAnimation Generator
+View all 25 generators
+
+Tools
+CSS → TailwindColor Contrast CheckerCSS MinifierPX to REMCSS Unit ConverterResponsive Breakpoint Tester
+View all 24 tools
+
+Search
+
+6 CSS Bento Grid Layouts
+
+#cssbentogrid#conicgradientbordercss#layouts#css-only#css+js
+
+6 hand-coded CSS bento grid layouts for tier-1 SaaS marketing pages (Stripe / Linear / Vercel / Notion / Framer), Apple-style product showcases, admin analytics dashboards, creative portfolios, e-commerce category hubs, and mobile link-in-bio pages — 6 topics × 2 sub-variants = 12 designs total. Each topic pairs a keynote-aesthetic variant with a paper-doc or brutalist variant side-by-side inside a .bgl-NN-group flex row so visitors see both directions at once. 3 Pure CSS + 3 vanilla-JS under 60 lines. Zero dependencies vs Aceternity ($299/yr), Magic UI, shadcn, Tremor, Framer Motion, ReactBits. True responsiveness via CSS container-type: inline-size so each grid reflows by its own width — drop into any sidebar or article column. Core Web Vitals safe (CLS 0, INP-friendly) with GPU-composited conic-border sweeps and cursor spotlights, WCAG 2.2 AA accessible with prefers-reduced-motion guards, framework-agnostic. Scoped under .bgl-NNa / .bgl-NNb for no-collision pasting.
+
+3 pure CSS3 light JSPublished Jul 17, 2026
+
+Related15 CSS Card Grid Layouts·30 CSS Grid Layouts·31 CSS Hero Sections
+
+01 / 06Pure CSS
+
+Apple-Style Product Feature Showcase
+
+The keynote-style responsive CSS bento grid layout everyone searches for after an Apple launch: a large hero cell for the product story, flanked by smaller 1×1 stat cards with oversized numerals and micro-copy. Built with grid-template-areas-free spans on a 12-column CSS Grid, a conic-gradient border sweep on hover, and container queries so it collapses to a clean single-column stack on mobile.
+
+Browser support
+Chrome 105+Safari 16+Firefox 110+
+
+02 / 06CSS + JS
+
+SaaS Feature Value-Prop Matrix
+
+The bento grid layout for SaaS landing pages that over 60% of modern startups use to break down complex features without walls of text: one large core-feature block with an in-card UI mock, a real-time activity block, and smaller cells for integrations, a testimonial and pricing. Variant A adds the Linear-style cursor-tracked spotlight border; variant B is a pure-CSS version with a living animated bar chart and scrolling activity feed.
+
+Browser support
+Chrome 105+Safari 16+Firefox 110+
+
+03 / 06CSS + JS
+
+Analytics Dashboard Overview
+
+The application-dashboard bento grid layout developers search for when building admin panels: a wide line graph across the top, a square single-number KPI widget with an animated count-up, a vertical recent-activity list and a quick-actions block — multiple distinct data types visible at once without mental fatigue. Variant B is a dark ops-console with a pure-CSS conic-gradient gauge and sparkline bars.
+
+Browser support
+Chrome 105+Safari 16.4+Firefox 110+
+
+04 / 06CSS + JS
+
+Creative Portfolio Bento Grid
+
+A bento grid portfolio template that acts as a one-screen resume for designers and frontend engineers in competitive job markets: a profile card with photo and bio, a wide case-studies block with slick hover states, a live clock + location widget, a social links square and a skills marquee strip. Variant B is a black-and-white neo-brutalist take with hard shadows and hover inversion.
+
+Browser support
+Chrome 105+Safari 16+Firefox 110+
+
+05 / 06Pure CSS
+
+E-commerce Bento Category Hub
+
+The retail bento grid layout replacing boring row-and-column product listings: a New Arrivals image spanning two rows vertically, a horizontal 30%-off sale banner with an animated gradient, and square blocks for trending product categories with image zoom hover states — category collections and current promotions bundled into one balanced view. Variant B is a minimal boutique take where hover reveals a sliding Shop link.
+
+Browser support
+Chrome 105+Safari 16+Firefox 110+
+
+06 / 06Pure CSS
+
+Link-in-Bio Social Hub
+
+A mobile-first, pure-CSS link-in-bio bento grid that mimics iOS home-screen widgets: rounded high-contrast blocks holding a profile avatar, a working dark-mode toggle built with :has() and zero JavaScript, streaming platform links and a mini newsletter signup — the lightweight personal landing page developers search for as a Linktree alternative. Variant B is a loud neon-contrast poster take.
+
+Browser support
+Chrome 105+Safari 15.4+Firefox 121+
+
+FAQ
+Frequently asked questions
+
+What is a bento grid layout and why did it become the dominant marketing feature-grid pattern?
+A bento grid layout is an asymmetric tile composition where individual cards span different numbers of columns and rows on a shared grid — usually one large feature tile paired with smaller supporting tiles, evoking the compartmentalized Japanese lunch box. The pattern broke into mainstream design via Apple's WWDC 2023 keynote slides and has since become the dominant feature-grid convention across every tier-1 SaaS marketing site: Stripe, Linear, Vercel, Notion, Framer, Cursor, Raycast, Arc Browser, Superhuman and Cron all ship bento variants on their landing pages. The reason it displaced the earlier 3-across / 4-across feature grid is compression — a bento layout communicates 6-9 discrete product benefits in the same vertical space that a traditional feature row uses for 3, without visual noise, because the asymmetry gives the eye clear entry points (the hero tile) and secondary paths (the smaller tiles). Tier-1 (US / UK / CA / AU / DE / NZ) buyers who spend their day on Apple-first devices read bento as premium; anything that still uses uniform 3-column grids reads as dated. This collection ships the 6 real-world use cases where bento wins over uniform grids: Apple-style product showcase, SaaS feature value-prop matrix, analytics dashboard overview, creative portfolio, e-commerce category hub, and mobile link-in-bio.
+How do I build a CSS bento grid layout without any framework — just raw CSS Grid?
+The recipe is three CSS declarations. First, declare the parent grid: display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(150px, auto); gap: 16px. The 12-column track is standard because it factors cleanly into 1, 2, 3, 4, 6, and 12 — every span you might want is expressible without fractional columns. Second, on the hero card apply grid-column: span 8; grid-row: span 2 to make it occupy a 2×8 area at the top-left; smaller stat cards get grid-column: span 4 and take their default single-row height. Third, on mobile swap the grid to grid-template-columns: 1fr so every tile stacks vertically full-width. That's the entire bento pattern in three rules — no grid-template-areas string needed, no JavaScript, no framework. Demo 01 (Apple-Style Product Feature Showcase) ships this exact recipe with a conic-gradient border sweep on hover using registered @property --a (Chrome 85+, Safari 16.4+, Firefox 128+). For sites that need to support pre-container-query browsers, swap @container (max-width: 880px) for @media (max-width: 880px) — the inner rules are identical.
+Which topic maps to which real-world SaaS / e-commerce / creator use case?
+SaaS marketing pages (Stripe / Linear / Vercel / Notion / Framer / Superhuman / Cursor / Raycast) — Topic 02 (SaaS Feature Value-Prop Matrix) is the canonical feature-grid pattern with one large core-feature block, a real-time activity block, and smaller integration + testimonial + pricing tiles. Variant A adds the Linear-style cursor-tracked spotlight border; variant B is pure-CSS with a living animated bar chart and scrolling activity feed. This is a VERY HIGH tier CPM vertical ($15-25 CPM on tier-1 devices) — SaaS pricing / feature-matrix keywords consistently outperform generic tech keywords. Product-launch pages (Apple / Rabbit / Humane / Ledger / Framework laptops / Playdate) — Topic 01 (Apple-Style Product Feature Showcase) is the keynote-slide bento with a large hero cell for the product story flanked by 1×1 stat cards with oversized numerals. Analytics dashboards (Amplitude / Mixpanel / Vercel Analytics / Linear Insights / Grafana / Sentry) — Topic 03 (Analytics Dashboard Overview) is the application-dashboard bento with a wide line graph, a single-number KPI widget, a recent-activity list and a quick-actions block. E-commerce category pages (Shopify / BigCommerce / WooCommerce / Etsy / Amazon / Farfetch) — Topic 05 (E-commerce Bento Category Hub) is the retail bento replacing boring row-and-column product listings: a New Arrivals image spanning two rows vertically, a horizontal sale banner with animated gradient, and square blocks for trending categories with image zoom. Also a VERY HIGH tier CPM vertical ($15-25 CPM). Portfolio / personal sites — Topic 04 (Creative Portfolio Bento Grid) is the one-screen resume for designers and frontend engineers with profile card, case-studies block, live clock + location widget, social links square and skills marquee. Creator economy / mobile link hubs (Linktree / Beacons / Bio Sites / Milkshake) — Topic 06 (Link-in-Bio Social Hub) is the mobile-first pure-CSS bento mimicking iOS home-screen widgets with a working dark-mode toggle built via :has() and zero JavaScript. Every topic is hand-coded CSS — copy the HTML + CSS panels, drop them into any stack, ship.
+How do these bento grids stay Core Web Vitals safe — CLS 0, INP-friendly, no jank?
+Three disciplines apply everywhere. First, layout reservation — every grid reserves its final track structure before any card animates so Cumulative Layout Shift stays 0. Cards that animate their appearance on hover animate transform, opacity, and filter only — never width, height, margin, or padding in the containing-block sense — because those trigger the layout + paint pipeline on every frame and destroy Interaction to Next Paint scores on mid-tier mobile hardware. Second, container queries over media queries — every topic uses container-type: inline-size on the section root and @container rules to switch spans. The advantage over @media is that the layout responds to the grid's OWN width, not the viewport, so the same bento drops into a narrow sidebar without breaking. Chrome 105+, Safari 16+, Firefox 110+ support this natively — for older browsers the @container rules degrade to viewport-based @media queries with a 1-line swap documented in every demo's customization notes. Third, GPU-composited borders — the conic-gradient border sweep uses a registered @property --a angle driving a ::before ring cut into a 1px frame with mask-composite: exclude. It's pure compositor work: no layout, no paint of the underlying tile, only the ring texture rotates. On a mid-tier Android device this stays well under Google's 200ms INP threshold even with all 6 topics rendering on one gallery page.
+How do these bento grids meet WCAG 2.2 accessibility — asymmetric layouts are famously hard to get right for screen readers?
+Three practices apply to every variant. Semantic markup — every topic is a real <section aria-labelledby> with a single <h2> per section and <article> for individual tiles. Interactive tiles use real <a> for navigation and real <button> for actions — not <div role='button'>. That means screen readers announce landmark structure correctly, TAB order follows DOM order (which follows visual reading order because the grid is defined by CSS spans over the natural DOM sequence), and every focusable tile ships a :focus-visible ring at 3px outline with 3px offset — the WCAG 2.4.7 requirement most bento templates skip. Second, motion — every animated variant respects @media (prefers-reduced-motion: reduce) with an appropriate calm-down block: the hover border sweep stops rotating, cursor-tracked spotlights disable pointer-following, and the sale-banner gradient animation freezes. Third, contrast — text sits on solid tile backgrounds (never on a translucent surface where the underlying content dictates contrast), and hero-tile display type stays above WCAG 1.4.3 AA (4.5:1 for normal, 3:1 for large). Every touch target hits the WCAG 2.5.5 44×44px minimum, so bento tiles remain usable one-handed on mobile. This is the accessibility floor Section 508 (US federal procurement), EN 301 549 (EU / DE public sector), AODA (Ontario), DDA (Australia), and the European Accessibility Act (June 2025) all require.
+What's the browser support story — container queries, @property, mask-composite, :has()?
+The advanced primitives cluster in modern engines but every demo carries an @supports fallback so older browsers get a working version, not a broken one. Container queries (@container) — Chrome 105+, Safari 16+, Firefox 110+. Every topic uses container-type: inline-size so grids reflow by their own width instead of the viewport. Browsers without container query support fall back to viewport-based @media queries — the inner rules are identical, only the container name changes. Registered @property typed custom properties — Chrome 85+, Safari 16.4+, Firefox 128+. Used in Topic 01 (conic border sweep angle) and Topic 04 (cursor spotlight position). Without @property support the border ring still renders — it just doesn't rotate. :has() — Chrome 105+, Safari 15.4+, Firefox 121+. Used in Topic 06 (Link-in-Bio) to drive the dark-mode toggle state from a sibling checkbox without JavaScript. mask-composite: exclude for the border-ring pattern — Chrome 120+ standardized, Safari 15.4+, Firefox 120+. The one-line fallback is a solid border. backdrop-filter — Chrome 76+, Safari 14+ (with -webkit- prefix), Firefox 103+. Every glass surface includes the -webkit-backdrop-filter fallback. Tier-1 (US / UK / CA / AU / DE / NZ) traffic on evergreen browsers gets the full experience; the long tail on IE-era enterprise browsers gets the graceful degrade.
+How do these compare to Tailwind's grid utilities, shadcn bento, Aceternity UI bento, and Tremor dashboards — why not just use one of those?
+Four honest trade-offs. Bundle cost — shadcn bento, Aceternity UI, Magic UI, ReactBits, and Tremor's dashboard components all ship as React components on top of Framer Motion (60KB+ once you include React DOM), Radix UI primitives (~40KB), and their own utility CSS. That's ~120-150KB gzip just to render a bento grid. Every topic in this collection is either 100% pure CSS (3 of 6) or CSS + under 60 lines of vanilla JavaScript (3 of 6) — total collection under 20KB uncompressed of framework-free code. Framework lock-in — shadcn requires React + Radix + Tailwind + a specific project structure. Aceternity requires React. Tremor requires React. These 6 topics are framework-agnostic — the HTML + CSS + JS panels drop into any stack (Astro, Next.js, SvelteKit, Vue, plain HTML, Ruby on Rails ERB, Django templates) with zero adaptation. Tailwind's own grid utilities (grid grid-cols-12 gap-4) are excellent and this collection's demos map cleanly to Tailwind arbitrary values — but they don't ship the bento composition itself; you still have to write the span logic per tile. License and cost — Aceternity Pro is $299+/year for their full bento collection. Magic UI Pro is a subscription. shadcn is free but ties you to their dependency tree. Every demo here is MIT licensed, free forever, no attribution required (though a link back is always appreciated). Accessibility floor — many React bento libraries treat semantics as an afterthought. Every demo here ships with keyboard navigation, focus-visible rings, aria-current / aria-live where state changes, aria-label on icon-only controls, prefers-reduced-motion guards, and passes WCAG 2.2 SC 1.4.3 AA on realistic content. If you're already on React and don't need the accessibility floor or the zero-bundle guarantee, Aceternity is a reasonable choice for prototyping. This collection specifically serves the case where you want the bento aesthetic without the React wrapper, without the subscription cost, and without the WCAG shortcuts.
+Are these free to use in commercial projects, and do they work in React, Vue, Svelte, Next.js, Astro, and SvelteKit?
+Yes on both. Every topic is MIT licensed — free for personal and commercial projects, no attribution required (though a link back to codefronts.com is always appreciated). Every demo is plain HTML + CSS + optional vanilla JS with no build step, no framework wrapper, no dependencies. Drop the HTML into a React component's JSX (with className instead of class), a Vue single-file component's template, a Svelte component, an Astro island, or a SvelteKit page — the CSS ships as a scoped module, an inline <style> block, or a Tailwind arbitrary-value paste. Server-side rendering — every demo renders correctly on the server without hydration flash. Topics that ship with vanilla JS handlers (Topic 02 cursor spotlight, Topic 03 dashboard interactions, Topic 04 portfolio widget) use plain event listeners with AbortController for cleanup or are pure event delegation — safe for React StrictMode double-mount. Content-Security-Policy — demos with strict CSP (script-src 'self' without 'unsafe-inline') work by default because no demo uses inline onclick handlers; the JS runs from external files that the CSP allowlist can permit. Vue 3 v-model bindings work on the demos with form controls (link-in-bio dark-mode toggle, e-commerce filters). Angular, Blazor, HTMX, Turbo, Rails ERB, Django, and Laravel Blade all work — the HTML + CSS + JS is framework-agnostic. If you're on Tailwind, the CSS ports cleanly: grid-cols-12, col-span-8, row-span-2, gap-4, and arbitrary values like [grid-template-columns:repeat(12,1fr)] cover most of the utility mapping; SVG filters, container queries, and named keyframes belong in tailwind.config.js under extend.keyframes + extend.animation.
+
+Related collections
+
+15 CSS Aspect Ratio Demos
+
+15 hand-coded CSS aspect-ratio demos for video embeds, product galleries, IAB ad slots, native dialogs, and CLS-safe placeholders: 16:9 iframe YouTube embed with click-to-load facade + up-next rail, 21:9 full-screen hero video with min-height/max-height:100svh guardrails + Ken Burns drift, 1:1 Instagram-style square grid with 2×2 feature tile, 4:3 magazine card image cover, 9:16 vertical stories rail (TikTok/Reels/Shorts pattern) with scroll-snap + segment bars, 4:5 apparel product image gallery with radio-driven state + 1:1 thumbnails, 1:1 zoom thumbnail carousel with pointer-tracked --zx/--zy magnifier, prevent-layout-shift placeholder with live PerformanceObserver CLS meter (before/after side-by-side lab), dynamic content fallback with three policies (bend/strict/auto) via :has() toggle, IAB ad banner slots (728×90 leaderboard, 300×250 medium rectangle, 300×600 half-page, 320×50 mobile) with skeletons + container-query mobile swap, responsive modal dialog sized min(92vw, 88svh×16/9, 1080px) with @starting-style animation, responsive OpenStreetMap iframe wrapper with 16:9 → 1:1 container-query narrow swap, media query orientation live HUD + resize:both container-ratio playground, object-fit logo cloud with contain/cover/fill switcher via :has(), and side-by-side padding-top hack (height:0 + padding-top:56.25%) → modern aspect-ratio migration comparison with live ratio picker. 11 truly Pure CSS + 4 with a tiny optional vanilla JS snippet (facade swap, pointer magnifier, CLS meter, native dialog). Every demo is scoped under a unique .car-NN prefix so it drops into any project without CSS collisions, ships prefers-reduced-motion guards, and is framework-agnostic (works as-is in React, Vue, Svelte, Astro, Next.js, Remix, or plain HTML).
+
+20 CSS Blog Layouts
+
+20 hand-coded CSS blog and editorial layouts for magazine homepages, news sites, personal archives, newsletter back-issues, recipe and podcast blogs, developer tutorials, and long-form journalism. Covers a magazine homepage with hero plus editor-picks rail, a news homepage with breaking-news ticker, blog archives with sticky year separators, Substack-style issue-numbered archives, recipe card grids with prep-time badges, podcast episode lists with waveforms, long-form articles with scroll-driven reading progress, drop caps and floated pull quotes via first-letter, Medium-style 65ch centred reader layouts, dev tutorials with a sticky code panel beside prose, interview transcripts with alternating speakers, case-study pages with stat counters, video blogs with an episode rail, full-bleed photo essays, news articles with sticky related-stories sidebars, documentation pages with prev/next chapter nav, a standalone blog post card, a scroll-snap category filter bar, an inline newsletter callout that breaks out of the prose column, and a horizontal featured-post rail. 12 are pure CSS with zero JavaScript. Every layout is scoped under a .bl-NN prefix for no-collision pasting, guards prefers-reduced-motion, and ports unchanged to React, Vue, Svelte, Astro, Next.js and Tailwind.
+
+15 CSS Card Grid Layouts
+
+15 production CSS card grid layouts covering the most-searched grid patterns plus originals built for real use cases — auto-fit responsive blog archive grid, asymmetric bento-box feature grid, equal-height product grid, fluid Pinterest-style masonry, team directory face grid, 3D hover-flip card grid, stratified duotone bento, editorial tabloid bento with masthead and TOC, use-case showcase grid, SaaS pricing comparison with featured tier, Vercel-style testimonial wall with featured 2x2, Airbnb-style hero photo collage with location pills, SaaS stats dashboard with CSS-bar sparklines, editorial featured-article magazine grid with category-coded pills, and a Liquid Glass bento grid with per-tile refraction rims (Apple iOS 26 / macOS Tahoe aesthetic). Every layout scoped under .cg-NN, zero dependencies, copy-paste ready.
+
+New CSS demos monthly. No spam.
+
+A short email when a new collection ships. Unsubscribe any time.
+
+By subscribing you agree to our privacy policy. Powered by Kit — subscribers can export or unsubscribe any time.
+
+X / TwitterBlueskyMastodonFacebookLinkedInRedditHacker NewsWhatsAppEmail
+
+Copy linkBookmark
+
+Search CodeFronts
+esc
+
+AllToolsGeneratorsCollections
+
+Loading…
+
+↑↓ navigate↵ selectesc closeOpen full search page →

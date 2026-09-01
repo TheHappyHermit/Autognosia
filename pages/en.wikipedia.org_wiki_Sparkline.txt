@@ -1,0 +1,128 @@
+SOURCE_URL: https://en.wikipedia.org/wiki/Sparkline
+
+Sparkline - Wikipedia
+
+Jump to content
+
+Search
+
+Sparkline
+
+5 languages
+
+Deutsch
+
+Español
+
+Français
+
+Русский
+
+Українська
+
+Edit links
+
+From Wikipedia, the free encyclopedia
+
+Small data visualisation, usually inline with text
+Example sparklines in small multiple
+IndexDayValueChange
+
+Dow Jones10765.45−32.82 (−0.30%)
+
+S&P 5001256.92−8.10 (−0.64%)
+
+Sparklines showing the movement of the Dow Jones Industrial Average and S&P 500 during February 7, 2006
+
+A sparkline is a very small line chart, typically drawn without axes or coordinates. It presents the general shape of a variation (typically over time) in some measurement, such as temperature or stock market price, in a simple and highly condensed way. Whereas a typical chart is designed to professionally show as much data as possible, and is set off from the flow of text, sparklines are intended to be succinct, memorable, and located where they are discussed. Sparklines are small enough to be embedded in text, or several sparklines may be grouped together as elements of a small multiple. 
+
+History
+[edit]
+Illustration from the "Life and Opinions of Tristram Shandy, Gentleman"
+In 1762 Laurence Sterne used typographical devices in his sixth volume of The Life and Opinions of Tristram Shandy, Gentleman to illustrate his narrative proceeding: "These were the four lines I moved through my first, second, third, and fourth volumes,–".[1]
+
+The 1888 monograph describing the 1883 eruption of Krakatoa shows barometric signatures of the event obtained at various stations around the world in the same fashion, but in separate plates (VII & VIII), not within the text.[2]
+
+Edward Tufte documented a compact style in 1983 called "intense continuous time-series".[3] He introduced the term sparkline in 2006 for "small, high resolution graphics embedded in a context of words, numbers, images",[4][5] which are "data-intense, design-simple, word-sized graphics".[6] Later in 2020, Tufte attributed the idea to Donald Knuth's "METAFONTbook".[7]
+Sparklines in Medved QuoteTracker[8]
+The first software sparkline was programmed in 1999 by Peter Zelchenko.[9] He introduced "an inline-chart" feature for Mike Medved's QuoteTracker.[10][9] TD Ameritrade later discontinued QuoteTracker.[11]
+
+On May 7, 2008, Microsoft employees filed a patent application for the implementation of sparklines in Microsoft Excel 2010. The application was published on November 12, 2009,[12] prompting Tufte[13] to express concerns about patent breadth and non-novelty.[14] On 23 January, 2009, MultiRacio Ltd. published an OpenOffice.org Calc extension named "EuroOffice Sparkline".[15] On March 3, 2022, Tomaž Vajngerl implemented sparklines in LibreOffice Calc version 7.4, including support for importing sparklines from the OOXML Workbook format.[16]
+
+Usage
+[edit]
+
+Sparklines are frequently used in line with text. For example: 
+
+The Dow Jones Industrial Average for February 7, 2006 .
+
+The sparkline should be about the same height as the text around it. Tufte offers some useful design principles for the sizing of sparklines to maximize their readability.[5]
+
+See also
+[edit]
+
+Kagi chart
+
+References
+[edit]
+
+↑Laurence Sterne, Life and Opinions of Tristram Shandy, Ann Ward (vol. 1–2), Dodsley (vol. 3–4), Becket & DeHondt (vol. 5–9), 1759-1767
+
+↑Symons, G. J., Judd, J. W., Strachey, S. R., Wharton, W. J. L., Evans, F. J., Russell, F. A. R., ... & Whipple, G. M. (1888). The eruption of Krakatoa: And subsequent phenomena. Trübner & Company. Plate VII
+
+↑Tufte, Edward (1983). The Visual Display of Quantitative Information. Quoted in "ET Work on Sparklines". Retrieved from http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=000AIr.
+
+↑Bissantz & Company GmbH. "Sparklines: Another masterpiece of Edward Tufte". Archived from the original on 2007-03-11.
+
+12Edward Tufte (November 2013). "Sparkline theory and practice". Edward Tufte forum.
+
+↑Edward Tufte (2006). Beautiful Evidence. Graphics Press. ISBN0-9613921-7-7.
+
+↑@EdwardTufte (May 16, 2020). "Donald Knuth in The METAFONTbook, 1986, uses a letterform matrix 100pt by 10pt to show data with a "skyline texture." Knuth has invented everything. The history of sparkline-like inline graphics for 800 years" (Tweet) – via Twitter.
+
+↑Zelchenko, Peter; Medved, Michael. "Medved QuoteTracker screenshot". Wayback Machine. Internet Archive. Archived from the original on 13 October 1999. Retrieved 1 December 2015.
+
+12Capadisli, Sarven (October 18, 2016). Sparqlines: SPARQL to Sparkline(PDF). Proceedings of the 4th International Workshop on Semantic Statistics co-located with 15th International Semantic Web Conference (ISWC 2016). Vol.1654.
+
+↑"WaybackMachine snapshot from October 13, 1999, see "Screen Shots"". Archived from the original on 1999-11-27.
+
+↑Carey, Theresa W. (Nov 26, 2016). "Medved Revives; Sneak Peek at StockNews.com". Barron's.
+
+↑"Sparklines in the grid". 2009-11-12. Retrieved 2009-11-19.
+
+↑"Sparklines in Excel". 2009-07-17. Retrieved 2009-11-20.
+
+↑"Microsoft makes patent claim for Sparklines". 2009-11-19. Retrieved 2009-11-19.
+
+↑"EuroOffice Sparkline | OpenOffice.org repository for Extensions". Archived from the original on 2009-01-26. Retrieved 2018-07-06.
+
+↑Vajngerl, Tomaž (2022-03-08). "Sparklines in Calc". Retrieved 2022-03-09.
+
+Further reading
+[edit]
+
+"History of Sparklines", essay by Edward Tufte, edwardtufte.com
+
+"Sparkline in Google Sheets", blog.tryamigo.com
+
+"Micro Visualisations", thesis by Jonas Parnow, microvis.info
+
+"Everything you ever wanted to know about Sparklines in Google Sheets", benlcollins.com
+
+Retrieved from "https://en.wikipedia.org/w/index.php?title=Sparkline&oldid=1303299179"
+
+Category: 
+Infographics
+
+Hidden categories: 
+Articles with short description
+
+Short description is different from Wikidata
+
+CS1: unfit URL
+
+Search
+
+Sparkline
+
+5 languagesAdd topic

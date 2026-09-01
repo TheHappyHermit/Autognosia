@@ -1,0 +1,62 @@
+{
+  "topic": "AI Ontology Failures and Structural Hallucination (September 2026)",
+  "findings": [
+    {
+      "title": "Why LLMs Hallucinate on Structured Knowledge: A Mechanistic Analysis of Reasoning over Linearized Representations",
+      "venue": "ACL 2026 (Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics, Volume 1: Long Papers)",
+      "date": "July 2026",
+      "key_findings": "Mechanistic analysis showing hallucinations on structured knowledge (graphs/tables) arise from systematic internal dynamics, not random noise. Two core mechanisms: (1) Structural Shortcut Reliance (SSR) - attention disproportionately concentrates on shortcut-like structural cues rather than distributing across full context; (2) Semantic grounding failures in feed-forward layers cause reversion to parametric memory instead of using provided knowledge. Hallucination consistently associated with feed-forward layer semantic grounding failures, while attention allocation varies by task. Patterns generalize from single-hop graphs to multi-hop and tabular settings, enabling cross-format hallucination detection.",
+      "url": "https://aclanthology.org/2026.acl-long.914"
+    },
+    {
+      "title": "When Do Hallucinations Arise? A Graph Perspective on the Evolution of Path Reuse and Path Compression",
+      "venue": "arXiv:2604.03557v1 (submitted April 2026)",
+      "date": "April 2026",
+      "key_findings": "Unified graph-based framework modeling next-token prediction as graph search over implicit relational structures. Identifies two fundamental hallucination mechanisms: (1) Path Reuse - in early training, model learns underlying graph structure before contextual constraints, reusing memorized paths and ignoring context (intrinsic reasoning failure); (2) Path Compression - in later training, frequent multi-step paths collapse into shortcut edges, suppressing low-resource nodes (extrinsic reasoning failure). Provides unified explanation connecting pretraining dynamics to downstream behaviors like reversal curse and reasoning distribution bias. Shows hallucinations emerge naturally from structural biases in next-token prediction formulation even as training loss decreases.",
+      "url": "https://arxiv.org/html/2604.03557v1"
+    },
+    {
+      "title": "KGHaluBench: A Knowledge Graph-Based Hallucination Benchmark for Evaluating the Breadth and Depth of LLM Knowledge",
+      "venue": "EACL 2026 Findings (Findings of the Association for Computational Linguistics: EACL 2026)",
+      "date": "March 2026",
+      "key_findings": "Dynamic KG-based benchmark addressing limitations of static/narrow QA benchmarks. Uses Wikidata (118M+ entities) to construct multifaceted questions with statistically estimated difficulty to address popularity bias. Automated verification pipeline detects abstentions and verifies responses at conceptual and correctness levels, identifying different hallucination types. Evaluates 25 frontier LLMs with novel accuracy/hallucination metrics revealing knowledge factors causing hallucinations across model sizes. Provides more interpretable insight into breadth vs. depth of knowledge gaps.",
+      "url": "https://aclanthology.org/2026.findings-eacl.206"
+    },
+    {
+      "title": "OAEI-LLM-T: A TBox Benchmark Dataset for Understanding Large Language Model Hallucinations in Ontology Matching",
+      "venue": "arXiv:2503.21813v3 (v3 March 2026)",
+      "date": "March 2026 (v3)",
+      "key_findings": "First benchmark for LLM hallucinations in ontology matching (OM) tasks, extending OAEI datasets. Captures hallucinations from 10 LLMs (GPT-4o, GPT-4o-mini, Llama-3-8B, Qwen, Gemma, ChatGLM) across 7 TBox datasets (anatomy, conference, food, biodiv, mse, commonkg, dh). Organizes OM-specific hallucinations into two primary categories and six sub-categories: Missing from LLM (recall failure), Missing from Reference (precision failure), Incorrect Mapping. Enables LLM leaderboard for OM tasks and fine-tuning datasets for hallucination mitigation. Reveals LLM-based OM systems inherit hallucinations in retriever and matcher components.",
+      "url": "https://arxiv.org/html/2503.21813v3"
+    },
+    {
+      "title": "Large Language Models Hallucination: A Comprehensive Survey",
+      "venue": "arXiv:2510.06265v2",
+      "date": "October 2025 (v2)",
+      "key_findings": "Comprehensive taxonomy of hallucination causes across full LLM lifecycle (data collection, architecture, pretraining, fine-tuning, evaluation, inference). Five detection taxonomies: retrieval-, uncertainty-, embedding-, learning-, self-consistency-based. Four mitigation categories: prompt, retrieval, reasoning, model-centric training/adaptation. Key insight: no single approach fully mitigates hallucination; hybrid approaches combining reasoning (CoT, self-consistency) with retrieval and model-centric training most promising. Identifies benchmark limitations: static questions, binary labels, human annotation dependence, lack of explainability, English-centric evaluation. Covers reasoning-aware solutions (CoT, iterative refinement, chain-of-verification) and multilingual/low-resource challenges.",
+      "url": "https://arxiv.org/html/2510.06265v2"
+    },
+    {
+      "title": "Language Without Propositions: Why Large Language Models Hallucinate",
+      "venue": "Philosophies 2026, 11(2), 42 (preprint Jan 2026, peer-reviewed 2026)",
+      "date": "January 2026 (preprint), 2026 (journal)",
+      "key_findings": "Philosophical analysis arguing LLM hallucinations are a 'truth representation problem': LLMs lack internal representation of propositions as truth-bearers, so truth/falsity cannot constrain generation. Critiques computational, data, and architectural explanations as converging on same representational deficit. Shows LLM design (optimization for fluent continuation) aligns with coherence theory of truth and structuralist/relational semantics, not correspondence theory. Critiques Chalmers' radical interpretation approach as downplaying hallucination ubiquity and inheriting instability from post-training edits. Proposes logical atomism revival: atomic propositions should be represented in basic vector layer as principled route to reducing hallucination.",
+      "url": "https://www.preprints.org/manuscript/202601.1447"
+    },
+    {
+      "title": "Topology-Aware Reasoning over Incomplete Knowledge Graph with Graph-Based Soft Prompting (GraSP)",
+      "venue": "arXiv:2604.12503v2 (April 2026)",
+      "date": "April 2026",
+      "key_findings": "Topology-aware evaluation showing that KG reasoning benchmarks must account for graph topology complexity. Introduces GraSP framework using graph-based soft prompting for incomplete KG reasoning. Demonstrates topology-aware methods outperform baselines on CWQ, WebQSP, GrailQA. Reveals sharp performance degradation with increasing topological complexity (tree-level vs. two-loop structures). Reducible graphs consistently harder than irreducible ones - counterintuitive finding showing topology matters more than raw reasoning depth. Validates need for topology-aware evaluation metrics (SCHEMA-like) beyond standard accuracy.",
+      "url": "https://arxiv.org/html/2604.12503v2"
+    },
+    {
+      "title": "Reasoning Path Compression: Compressing Generation Trajectories for Efficient LLM Reasoning",
+      "venue": "NeurIPS 2025",
+      "date": "May 2025 (arXiv), December 2025 (NeurIPS)",
+      "key_findings": "Training-free method (RPC) that accelerates inference by exploiting semantic sparsity in reasoning paths. Demonstrates reasoning paths contain redundant tokens that can be pruned via attention-based selector while preserving quality. Connects to path compression hallucination mechanism: compression at inference mirrors compression during training. Provides practical validation that semantic sparsity exists in reasoning trajectories, supporting graph-perspective analysis of path compression as overfitting to frequent trajectories.",
+      "url": "https://www.alphaxiv.org/abs/2505.13866v1"
+    }
+  ],
+  "summary": "As of September 2026, AI ontology failures and structural hallucination research has converged on a mechanistic, graph-theoretic understanding. Key advances: (1) Li et al. (ACL 2026) established SSR and semantic grounding failure as core mechanistic drivers of structured-knowledge hallucination. (2) The graph-perspective paper (arXiv 2604.03557) unified intrinsic/extrinsic reasoning failures as Path Reuse (early-training underfitting to context) and Path Compression (late-training overfitting to frequent paths). (3) KGHaluBench (EACL 2026) and OAEI-LLM-T (arXiv 2026) provide dynamic, KG-grounded benchmarks with typologies for breadth/depth and OM-specific hallucinations respectively. (4) Topology-aware evaluation (GraSP, SCHEMA-adjacent work) reveals topology complexity, not just hop count, determines reasoning difficulty. (5) Philosophical analysis (Mácha 2026) frames hallucination as truth representation problem rooted in lack of propositional structure - aligning with structuralist/coherence semantics of LLM training objectives. (6) NeurIPS 2025 RPC work validates path compression as real phenomenon exploitable for efficiency. Together, these show structural hallucination is not a bug but an architectural consequence of next-token prediction over linearized relational structures."
+}

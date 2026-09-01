@@ -1,0 +1,150 @@
+SOURCE_URL: https://sarvkit.com/DesignKit/guides/dark-mode-design-guide/
+
+Dark Mode Design: A Practical Guide | DesignKit
+
+Dark Mode Design: A Practical Guide
+
+By Rahul AnandDesign7 min readMay 2026
+
+Dark mode is no longer optional. Most modern operating systems offer it, most users prefer it for at least some contexts, and apps that ship only a light theme look dated. But naive dark mode — inverted colors, harsh contrast, broken elevation — is often worse than no dark mode at all. This guide covers what makes dark mode work.
+
+The Core Decisions
+
+ElementLight modeDark mode
+
+Surface base#FFFFFF#121212 or similar near-black
+
+Body text#111 or #222rgba(255,255,255,0.87)
+
+Secondary textrgba(0,0,0,0.6)rgba(255,255,255,0.6)
+
+ElevationShadowsLighter background tints
+
+Brand colorSaturatedDesaturate 15-30%
+
+BordersLight graySubtle lighter tint
+
+The Pitfalls
+
+Pure black backgrounds. Harsh contrast and OLED smearing during scroll. Stick to near-black.
+
+Pure white text. Vibrates and tires eyes. Use slightly muted white.
+
+Highly saturated brand colors. Look neon and aggressive on dark. Desaturate.
+
+Drop shadows for elevation. Mostly invisible on dark surfaces. Use background lightness.
+
+Same image assets. Photos and screenshots designed for light backgrounds often have white edges or shadow halos that show on dark. Provide dark variants where it matters.
+
+Inverted colors only. Algorithmic inversion produces ugly, low-contrast palettes. Hand-design dark colors.
+
+The Implementation Pattern
+:root {
+ --bg-surface: #ffffff;
+ --text-primary: #111111;
+ --brand: oklch(0.55 0.18 270);
+}
+:root[data-theme="dark"] {
+ --bg-surface: #121212;
+ --text-primary: rgba(255,255,255,0.87);
+ --brand: oklch(0.7 0.14 270);
+}
+@media (prefers-color-scheme: dark) {
+ :root:not([data-theme]) {
+ --bg-surface: #121212;
+ --text-primary: rgba(255,255,255,0.87);
+ --brand: oklch(0.7 0.14 270);
+ }
+}
+Testing Checklist
+
+Run a contrast audit on the dark palette specifically — light-mode passes don't transfer.
+
+Check all interactive states (hover, focus, active, disabled) in both modes.
+
+Test images, illustrations, and screenshots in dark — flag the ones that look wrong.
+
+Test the theme toggle in both directions, and respect prefers-color-scheme as default.
+
+Try It Yourself
+
+Test colors and palettes for dark mode with DesignKit's color tools.
+Color Palette Extractor →
+
+Dark mode is not "inverted light mode"
+
+A direct colour inversion produces eye strain, broken hierarchy, and shadows that no longer read. Dark mode requires its own design pass: a desaturated palette, lifted surface colours to express elevation (because shadows are nearly invisible on dark backgrounds), and re-tuned semantic colours (pure red on near-black vibrates; a muted #f87171 reads cleanly). Apple's and Material's dark guidance both lean on the same principle — design dark mode as a parallel theme, not an inversion.
+
+The colour rules that matter
+
+Background: not pure black (#000). Use a near-black like #121212 or #0b0a1a. Pure black produces excessive contrast that causes halation against bright text.
+
+Surface elevation: lighter, not darker, as elements rise. Material recommends increasing white overlay opacity by ~1–5% per elevation level.
+
+Text: high-emphasis at 87% white opacity, medium 60%, disabled 38%. Pure white text is rarely needed and causes the same halation issue.
+
+Accent colours: desaturate by 10–30% from the light-mode palette. The eye perceives saturated colour as more intense on dark backgrounds.
+
+Semantic colours (error, warning, success) need their own dark-mode tunings — your light-mode #d32f2f red will look neon on #121212.
+
+Accessibility and contrast
+
+WCAG 2.1 AA requires 4.5:1 contrast for body text, 3:1 for large text and UI components. Use a contrast checker on every text/background pair — passing in light mode does not guarantee passing in dark mode.
+
+Reduce shadow opacity to 0.4–0.6 and increase blur — shadows must work against a dark canvas without becoming muddy.
+
+Test with reduced-motion and high-contrast OS settings; both interact with dark mode in non-obvious ways.
+
+Validate with users who have low vision and astigmatism — pure white on pure black is one of their hardest scenarios.
+
+System integration
+
+Respect the user's OS preference with the prefers-color-scheme media query and persist any manual override in localStorage. Default to "follow system". Avoid auto-switching at sunset — users find unexpected theme changes jarring, especially mid-task.
+
+Battery is largely a myth on LCD. Dark mode meaningfully saves battery only on OLED displays at high brightness. The accessibility, fatigue, and aesthetic arguments are stronger reasons to ship it well.
+
+Frequently Asked Questions
+
+Why is dark mode harder?▼
+
+It reverses contrast assumptions, breaks shadow-based elevation, saturates color differently, and exposes hidden a11y issues.
+
+Pure black?▼
+
+Rarely. Near-black (#121212) reduces harshness and OLED smearing.
+
+Elevation?▼
+
+Lighter background tints replace shadows. Higher elevation = lighter surface.
+
+Recolor everything?▼
+
+Adjust, don't redesign. Desaturate brand colors; use soft white for text.
+
+Technically?▼
+
+CSS custom properties scoped to a theme attribute; respect prefers-color-scheme; manual toggle for override.
+
+Related Guides
+
+Color Theory
+
+How perception shifts on dark backgrounds.
+
+Accessibility Contrast
+
+WCAG ratios apply equally in dark mode — verify your dark palette passes.
+
+Related tools and guides
+
+More DesignKit tools
+
+Color Palette Extractor
+
+Image Filters
+
+Helpful guides
+
+Color Theory
+
+Accessibility Contrast
