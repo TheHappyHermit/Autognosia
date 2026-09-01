@@ -1,0 +1,24 @@
+## Overview
+When a supervisory authority revokes or suspends an equivalence recognition (e.g., FCA revoking EU venue equivalence perception for certain trading systems), trading venues and investment firms must avoid immediate routing breaks. MiFID II/RTS 23 provides limited transition grace periods in which execution can continue under an approved override workflow while affected transactions are reviewed and reporting pipelines aligned.
+
+## What to build
+- Grace-period routing override policy engine
+  - Stores per-jurisdiction override rules keyed by `LEI`, `MIC`, and `ISIN` class scope.
+  - Raises explicit pre-trade exception when a venue is temporarily in a revocation grace window but not yet fully blocked.
+- Audit trail for overridden routes
+  - Immutable record with: trader ID, timestamp, venue `MIC`, legal basis invoked (e.g., FCA temporary permission notice), expiry date, and override reason code mapped to RTS article.
+- Approved-actor matrix
+  - Defines which roles (e.g., Dealing Desk Lead, Compliance Officer, CTO delegate) may authorize, review, and revoke overrides.
+- Automatic expiry re-evaluation
+  - Scheduler re-checks override status at configurable intervals and removes the exception when grace period ends or equivalence is reinstated.
+
+## Competitors / comparable solutions
+- Bloomberg AIM/EMSX compliance modules and SimCorp workflows offer similar supervised override logs, but are not jurisdiction-native to post-Brexit UK-EQUIV scope.
+- OpenGamma and Numerifides provide MiFID II compliance plugins, but do not specifically model revocation grace-period routing exclusions.
+- FCA/FCA-TPR-VENUE notices are typically manually parsed within trading operations; no mainstream product natively auto-ingests equivalence revocation alerts as policy evaluations.
+
+## Regulatory considerations
+- **RTS 23 (Articles 13 and 14)** and **FCA SUP/Transaction Reporting Guidance**: Require accurate venue identification and prompt suspension of routing when recognition lapses. Grace-period overrides must be clearly justified and auditable.
+- **FCA temporary permissions regime (TPR)**: UK equivalence decisions for EU firms are interlinked with TPR windows; override workflows must reflect TPR-stage mapping.
+- **BCBS 239 / SMCR / SYSC**: Override authority records must satisfy internal controls; escalation paths must be visible to supervisors.
+- **Audit retention**: Under UK record-keeping expectations, audit records for traffic-route changes should persist for 5+ years.

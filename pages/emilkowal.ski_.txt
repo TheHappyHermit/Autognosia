@@ -1,0 +1,20 @@
+SOURCE_URL: https://emilkowal.ski/
+
+Emil Kowalski
+
+My new course called aiforui.dev is in early access!Early access has closed.
+
+Emil KowalskiDesign EngineerToday
+I work on the Web team at Linear. I like to build things for designers and developers, think deeply about the user interface, how it looks, feels, behaves.
+
+Previously, I worked on the design team at Vercel.
+
+Projects
+animations.devA course on web animations.SonnerAn opinionated toast component for React.aiforui.devAI for Designers and Engineers.VaulA drawer component for React.
+
+Writing
+Friction as a FeatureA natural filter for bad ideas.You Don’t Need AnimationsWhy you are animating more often than you should.Agents with TasteHow to transfer taste into an AI.Building a Toast ComponentMy experience building Sonner, a toast library.Developing TasteWhy taste matters and how to develop it.The Magic of Clip PathOne of the most underrated CSS properties.7 Practical Animation TipsSimple ideas you can use to improve your animations.Train Your JudgementSettling for good enough is not good enough.Building an animation courseBehind the scenes of my animation course.Building a Drawer ComponentMy experience building a drawer component for React.
+
+NewsletterExclusive, newsletter-only content once a month. No spam, no nonsense.
+
+MoreYou can see more of my work onTwitterand more of my code onGitHub.

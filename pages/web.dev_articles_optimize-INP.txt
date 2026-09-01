@@ -1,0 +1,11 @@
+SOURCE_URL: https://web.dev/articles/optimize-INP
+
+404  |  Page Not Found  |  web.dev
+
+ Skip to main content
+
+Sign in
+
+404
+
+ Sorry, we couldn't find that page.

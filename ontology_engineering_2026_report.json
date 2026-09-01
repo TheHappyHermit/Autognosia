@@ -1,0 +1,216 @@
+{
+  "topic": "Latest Developments in Ontology Engineering (2025-2026)",
+  "findings": [
+    {
+      "title": "LLMs4KGOE 2026: First Workshop on LLM-driven Knowledge Graph and Ontology Engineering",
+      "venue": "ESWC 2026 (co-located workshop)",
+      "date": "May 11, 2026",
+      "key_findings": "First dedicated workshop on LLM-driven ontology engineering at ESWC 2026. 16 papers accepted from 19 submissions. Key themes: multi-agent ontology generation (MASEO), neuro-symbolic drafting (OG-NSD), hallucination reduction (PERSEUS), expert-in-the-loop CQ elicitation (IDEA2), and multi-agent text-to-ontology pipelines. Establishes LLM-driven OE as a distinct research track with focus on evaluation methodologies, provenance, governance, and neuro-symbolic control.",
+      "url": "https://ceur-ws.org/Vol-4246"
+    },
+    {
+      "title": "MASEO: A Multi-Agent System for Explainable Ontology Generation",
+      "venue": "LLMs4KGOE 2026 (ESWC 2026 Workshop)",
+      "date": "May 2026",
+      "key_findings": "Multi-agent framework distributing ontology generation tasks among specialized agents for transparency and modularity. Each agent handles specific subtasks (terminology extraction, taxonomy construction, relation extraction, axiom generation) with explicit reasoning traces. Enables explainable generation where each axiom can be traced to agent decisions. Implemented as open-source toolkit at github.com/oeg-upm/maseo.",
+      "url": "https://github.com/oeg-upm/maseo"
+    },
+    {
+      "title": "OG-NSD: Neuro-Symbolic Ontology Drafting from Natural-Language Requirements",
+      "venue": "LLMs4KGOE 2026 (ESWC 2026 Workshop)",
+      "date": "May 2026",
+      "key_findings": "Neuro-symbolic approach combining LLM-based drafting with symbolic reasoning for ontology construction from natural language requirements. Uses LLMs to generate candidate axioms, then validates and refines them through OWL reasoners. Addresses logical consistency gaps in pure LLM generation. Integrates requirements engineering with formal ontology development.",
+      "url": "https://ceur-ws.org/Vol-4246"
+    },
+    {
+      "title": "PERSEUS: Reducing LLM Hallucinations in Multimodal Knowledge Graph Construction and Ontology Learning",
+      "venue": "LLMs4KGOE 2026 (ESWC 2026 Workshop)",
+      "date": "May 2026",
+      "key_findings": "Framework for detecting and mitigating hallucinations in LLM-generated ontologies using multimodal verification. Combines structural analysis, lexical similarity checks, and LLM-based evaluation to identify semantic redundancies, hierarchy conflicts, and property modeling artifacts. Open-source 'Pitfalls Detector' tool released for automated validation.",
+      "url": "https://ceur-ws.org/Vol-4246"
+    },
+    {
+      "title": "Pitfalls in AI-Generated Ontologies: Strategies for Detection and Mitigation",
+      "venue": "LLMs4KGOE 2026 (ESWC 2026 Workshop)",
+      "date": "May 2026",
+      "key_findings": "Introduces a new catalog of ontology pitfalls specific to LLM-generated ontologies (beyond traditional human-engineered pitfalls). Categories: semantic redundancies, hierarchy conflicts, property modeling artifacts. Implements detection via structural analysis + lexical similarity + LLM evaluation. Validated on LLM-generated ontologies across domains. Open-source tool available.",
+      "url": "https://www.eurecom.fr/en/publication/8707"
+    },
+    {
+      "title": "From Manual to LLM-assisted: A Mapping Review on Ontology Construction Methods",
+      "venue": "Semantic Web Journal (under review, submitted Jan 2026)",
+      "date": "January 2026",
+      "key_findings": "Comprehensive mapping review comparing traditional vs LLM-assisted ontology construction. Identifies 5 distinct LLM-based methods: (A) Pipeline Decomposition, (B) End-to-End Generation, (C) Two-Phase Generation, (D) Retrieval-Augmented Generation, (E) Multi-Agent Orchestration. Key challenges: hallucination, granularity calibration, lack of ground truth, concept type discovery. Provides method selection guidance by use case.",
+      "url": "https://www.semantic-web-journal.net/content/manual-llm-assisted-mapping-review-ontology-construction-methods"
+    },
+    {
+      "title": "OntoExtend: A Framework for Requirement-driven and Scalable Ontology Extension with LLMs",
+      "venue": "arXiv preprint (July 2026)",
+      "date": "July 2026",
+      "key_findings": "RAG-based framework for extending existing ontologies driven by competency questions. Uses ontology retriever to extract relevant elements from input ontologies, then LLM generates grounded extensions. Ensures namespace consistency and direct reuse of existing ontology elements. Scalable to multiple input ontologies. Addresses the ontology extension use case (vs. from-scratch construction).",
+      "url": "https://arxiv.org/html/2607.17963v1"
+    },
+    {
+      "title": "NeOn-GPT Extended: Advancing LLM-Powered Ontology Learning",
+      "venue": "Semantic Web Journal / Sage Journals (2026)",
+      "date": "2026",
+      "key_findings": "Extended NeOn methodology guided LLM-based ontology learning with cross-domain evaluation. Clarifies capabilities and limitations of NeOn-guided LLM approaches. Provides systematic evaluation across domains showing where LLM assistance excels (terminology extraction, relation suggestion) vs. struggles (complex hierarchy reasoning, logical consistency).",
+      "url": "https://journals.sagepub.com/doi/full/10.1177/22104968261453138"
+    },
+    {
+      "title": "Large Language Models for Ontology Engineering: A Systematic Literature Review",
+      "venue": "Semantic Web Journal / Sage Journals (2026)",
+      "date": "2026",
+      "key_findings": "Systematic literature review covering LLM roles in core OE activities: requirements elicitation, conceptualization, formalization, evaluation, and maintenance. Maps 100+ papers. Key finding: LLMs primarily assist in early phases (requirements, conceptualization) with human-in-the-loop validation; formalization and evaluation remain challenging. Identifies gap in end-to-end validated pipelines.",
+      "url": "https://journals.sagepub.com/doi/10.1177/22104968261465514"
+    },
+    {
+      "title": "LLMs4OL 2025: The 2nd Large Language Models for Ontology Learning Challenge at ISWC 2025",
+      "venue": "ISWC 2025 Challenge",
+      "date": "November 2025",
+      "key_findings": "Second edition of LLMs4OL challenge at ISWC 2025. Tasks: term typing, type taxonomy discovery, type non-taxonomic relation extraction. Benchmarked multiple LLMs on ontology learning from text corpora. Results show LLMs effective at terminology extraction and typing but struggle with complex taxonomic reasoning and non-taxonomic relations. Establishes standardized evaluation protocol.",
+      "url": "https://github.com/HamedBabaei/LLMs4OL"
+    },
+    {
+      "title": "End-to-End Ontology Learning with Large Language Models (OLLM)",
+      "venue": "NeurIPS 2024",
+      "date": "December 2024",
+      "key_findings": "Introduces OLLM: end-to-end neural method for building taxonomic backbone from scratch by fine-tuning LLM with custom regularizer. Novel metrics using deep learning for semantic/structural similarity to ground truth. Outperforms subtask composition methods on Wikipedia and arXiv domains. Demonstrates adaptation to new domains with few training examples.",
+      "url": "https://neurips.cc/virtual/2024/poster/94942"
+    },
+    {
+      "title": "OntoURL: A Benchmark for Evaluating Large Language Models on Symbolic Ontological Understanding, Reasoning and Learning",
+      "venue": "arXiv / Semantic Scholar (2025)",
+      "date": "2025",
+      "key_findings": "First comprehensive benchmark for evaluating LLM capabilities on symbolic ontological understanding. Tests formal reasoning, ontology completion, and ontology learning tasks. Reveals significant gaps in LLM ability to handle formal symbolic representations vs. natural language. Critical benchmark for advancing LLM-ontology integration.",
+      "url": "https://www.semanticscholar.org/paper/OntoURL-A-Benchmark-for-Evaluating-Large-Language-Zhang/e2ad90e5a1a990615978972bfe6b1f78ad89dc50"
+    },
+    {
+      "title": "Large Language Models Assisting Ontology Evaluation (OE-Assist)",
+      "venue": "ISWC 2025 Companion / arXiv",
+      "date": "July 2025",
+      "key_findings": "Introduces OE-Assist framework for automated and semi-automated ontology evaluation via competency question verification. Finds o1-preview and o3-mini perform at similar level to average human evaluators on CQ verification. 1,393 CQs and ontologies dataset released. Highlights need for ephemeral evaluation sets to prevent training data contamination.",
+      "url": "https://arxiv.org/abs/2507.14552"
+    },
+    {
+      "title": "IDEA2: Expert-in-the-loop Competency Question Elicitation for Collaborative Ontology Engineering",
+      "venue": "LLMs4KGOE 2026 (ESWC 2026 Workshop) / arXiv",
+      "date": "April 2026",
+      "key_findings": "Semi-automated workflow integrating LLM-based CQ extraction with expert validation. Iterative reformulation loop: LLM extracts CQs → experts review on collaborative platform (Notion) → LLM reformulates rejected CQs → repeat until consensus. Provenance tracking via PROV-O and OWLUnit. Validated in 2 real-world scenarios showing acceleration of requirements engineering and improved CQ relevance.",
+      "url": "https://arxiv.org/abs/2604.01344"
+    },
+    {
+      "title": "A Survey on Interaction Design with Large Language Models for Ontology Requirements Elicitation with Competency Questions",
+      "venue": "Semantic Web Journal (under review, submitted Jan 2025)",
+      "date": "January 2025",
+      "key_findings": "Survey of interaction design patterns for LLM-assisted CQ elicitation. Analyzes human-LLM collaboration modes, feedback mechanisms, and validation workflows. Identifies need for structured feedback loops, provenance tracking, and consensus-building mechanisms. Maps design space for collaborative ontology requirements engineering tools.",
+      "url": "https://semantic-web-journal.net/content/survey-interaction-design-large-language-models-ontology-requirements-elicitation-competency"
+    },
+    {
+      "title": "A Comparative Study of Competency Question Elicitation Methods",
+      "venue": "ESWC 2026 / arXiv",
+      "date": "2026",
+      "key_findings": "Compares three CQ elicitation methods: (1) LLM-generated, (2) expert-crafted, (3) hybrid. LLM-generated CQs more complex and diverse but require refinement. Hybrid approach (LLM draft + expert refinement) achieves best balance of coverage and quality. Characterizes LLM-generated CQ sensitivity to model choice and prompt design.",
+      "url": "https://arxiv.org/html/2507.02989v2"
+    },
+    {
+      "title": "Results of the Ontology Alignment Evaluation Initiative 2025 (OAEI 2025)",
+      "venue": "ISWC 2025 (20th Ontology Matching Workshop)",
+      "date": "November 2025 / Published 2026",
+      "key_findings": "OAEI 2025: 12 tracks, 20 participants. Key result: LogMap family (including new LogMapLLM) achieves coherent alignments. LLM-based systems (LogMapLLM, Agent-OM, DRAL-OA) emerge as competitive. LLM-as-Oracle approach (LogMap + LLM) achieves top-2 in bio-ml track. OAEI-LLM benchmark introduced for studying LLM hallucinations in ontology matching.",
+      "url": "https://ceur-ws.org/Vol-4144"
+    },
+    {
+      "title": "Large Language Models as Oracles for Ontology Alignment",
+      "venue": "EACL 2026 (main conference)",
+      "date": "2026",
+      "key_findings": "Uses LLMs as oracles to validate uncertain correspondences in ontology alignment. LogMap + LLM oracle achieves top-2 in OAEI 2025 bio-ml track. Analyzes prompt formulations, context enrichment, and model variations. Shows LLMs effective as diagnostic engines for borderline mappings, reducing human effort while maintaining quality.",
+      "url": "https://arxiv.org/abs/2508.08500"
+    },
+    {
+      "title": "LLM Driven Justified Ontology Alignment",
+      "venue": "ELMKE 2026 (ESWC 2026 Workshop)",
+      "date": "May 2026",
+      "key_findings": "Generates SSSOM-compliant alignments with explicit justifications and provenance metadata. Evaluates GPT-5.4, GPT-5 Mini, Gemini Flash/Pro on OAEI Conference dataset. Progressive prompt refinement (early → extended → improved) significantly improves output consistency and schema compliance. Enables expert review of LLM-generated alignments with traceable reasoning.",
+      "url": "https://davidchavesfraga.com/outcomes/papers/2026/code2026llm.pdf"
+    },
+    {
+      "title": "Ontology Reuse in LLM-Generated Ontologies: A Comparative Evaluation Framework",
+      "venue": "ELMKE 2026 (ESWC 2026 Workshop)",
+      "date": "May 2026",
+      "key_findings": "Framework measuring ontology reuse across four dimensions: (1) vocabulary reuse, (2) structural reuse, (3) axiomatic reuse, (4) provenance-aware reuse. Investigates whether LLMs reuse existing ontologies when generating new ones. Comparative evaluation across models and prompts. GitHub implementation available for reproducibility.",
+      "url": "https://github.com/HenonLamboro-Trialog/OntologyReuse-LLM-Evaluation"
+    },
+    {
+      "title": "MILA: Ontology Matching with Knowledge Retrieval and LLMs",
+      "venue": "Information Systems Journal (2025)",
+      "date": "2025",
+      "key_findings": "Retrieve-identify-prompt pipeline within prioritized depth-first search. Limits LLM calls to borderline cases. Achieved highest F-measure in 5 of 7 unsupervised OAEI 2024 tasks, outperforming state-of-the-art by up to 17%. Task-agnostic, stable performance, significantly reduced runtime. Demonstrates hybrid symbolic/LLM approach superiority over pure LLM matching.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S1566253525003276"
+    },
+    {
+      "title": "16th Workshop on Ontology Design and Patterns (WOP 2025) at ISWC 2025",
+      "venue": "ISWC 2025 (Nara, Japan)",
+      "date": "November 2025",
+      "key_findings": "WOP 2025 focused on quality assurance, pattern extraction, anti-patterns, and domain-specific ODPs (geosciences, life sciences, sustainability, digital humanities). Joint with HAIBRIDGE 2025 on Hybrid Intelligence. 17th WOP scheduled for ISWC 2026 (Bari, Italy). ODPs increasingly applied to LLM-guided ontology construction and KG quality assurance.",
+      "url": "https://ceur-ws.org/Vol-4093"
+    },
+    {
+      "title": "Industrial Adoption of Semantic Web Technologies: ESWC 2026 Industry Track",
+      "venue": "ESWC 2026 Industry Track",
+      "date": "May 2026",
+      "key_findings": "Industry track focuses on real-world adoption challenges: scalability, transferability of academic results, FAIR compliance, digital twins, Industry 4.0. Key sectors: manufacturing (Siemens, Bosch, SAP), healthcare, BFSI, government. Market reports show 40% North America market share. Main barriers: ontology consistency in federated systems, semantic-relational integration latency.",
+      "url": "https://2026.eswc-conferences.org/calls/industry-track"
+    },
+    {
+      "title": "Ontology Quality Improvement in the Semantic Web: Evidence from Educational Knowledge Graphs",
+      "venue": "Applied Sciences (MDPI), Special Issue Digital Engineering",
+      "date": "January 2026",
+      "key_findings": "Empirical study on educational KGs (EDUKG) showing LLM-enhanced quality assessment outperforms traditional debugging. Decoupled learning components from domain semantics using ontology-agnostic quality metrics. Supports adaptation to healthcare (SNOMED CT, FHIR), e-government (DCAT-AP), and industrial systems. Demonstrates industrial applicability of LLM-based quality workflows.",
+      "url": "https://www.mdpi.com/2079-8954/14/2/154"
+    },
+    {
+      "title": "Special Issue on Semantic Web for Industrial Engineering",
+      "venue": "Semantic Web Journal (Call for Papers, 2026)",
+      "date": "2026",
+      "key_findings": "Call for industrial applications: discrete/continuous manufacturing, AEC, product design, digital twins, FAIR data management. Topics: ontology-based patterns for industrial engineering, modularization/evolution methodologies for industrial contexts, semantic interoperability in Industry 4.0. Signals growing industrial demand for ontology engineering expertise.",
+      "url": "https://www.semantic-web-journal.net/blog/call-papers-special-issue-semantic-web-industrial-engineering-research-and-applications"
+    },
+    {
+      "title": "VOILA 2025/2026: Visualization and Interaction for Ontologies, Linked Data and Knowledge Graphs",
+      "venue": "ISWC 2025 (9th edition) / ISWC 2026 (7th edition)",
+      "date": "2025-2026",
+      "key_findings": "VOILA workshop series continues as premier venue for ontology visualization. 2025: 9th edition at ISWC Baltimore. 2026: 7th edition at ISWC Bari. Tools: WebVOWL (VOWL notation), ProtégéVOWL, Ontodia, VOWLMap for alignment visualization. Emerging: collaborative editing in WebProtégé, large-display visualizations, mobile/gesture interaction. Focus shifting to LLM-assisted visual exploration.",
+      "url": "https://voila-workshop.github.io"
+    },
+    {
+      "title": "metaphactory & WebProtégé: Enterprise Ontology Collaboration Platforms",
+      "venue": "Industry Tools (2026 market analysis)",
+      "date": "2026",
+      "key_findings": "metaphactory: enterprise KG platform with visual semantic modeling, vocabulary/taxonomy management, collaboration (shared workspaces, comments, RBAC, review flows, versioning). WebProtégé: browser-based collaborative OWL editing for research teams. Both address governance, lifecycle control, and multi-stakeholder collaboration. Key trend: business-user-accessible modeling with AI-assisted semantic modeling.",
+      "url": "https://www.ovaledge.com/blog/ontology-management-tools"
+    },
+    {
+      "title": "LLM-TEXT2KG 2026: 5th International Workshop on LLM-Integrated Knowledge Graph Generation from Text",
+      "venue": "ESWC 2026 (co-located workshop)",
+      "date": "May 10-14, 2026",
+      "key_findings": "5th edition of Text2KG workshop at ESWC 2026. Focus: LLM-integrated KG generation from unstructured text. Topics: legal rule ontologies, personal KGs, propaganda narrative analysis, agentic dynamic ontology generation, multilingual IE for KG population. Demonstrates maturation of text-to-ontology/KG pipeline as established research area.",
+      "url": "https://aiisc.ai/text2kg2026"
+    },
+    {
+      "title": "AgentO: An Ontology for Modeling Agentic AI Systems",
+      "venue": "ESWC 2026 Main Track (accepted paper)",
+      "date": "May 2026",
+      "key_findings": "New ontology (AgentO) for modeling agentic AI systems - addressing the emerging need to represent agents, tools, workflows, and multi-agent interactions formally. Reflects 2026 shift toward agent-based AI architectures requiring ontological grounding. Accepted at ESWC 2026 main conference track.",
+      "url": "https://2026.eswc-conferences.org/program/accepted-papers/main-tracks"
+    },
+    {
+      "title": "OntoEKG and NeOn-GPT: Industrial Case Studies (IRT SystemX × EDF)",
+      "venue": "Industry Case Study (2025-2026)",
+      "date": "2025-2026",
+      "key_findings": "IRT SystemX collaboration with EDF (French energy) applying OntoEKG and extended NeOn-GPT for ontology engineering in energy domain. OntoEKG achieved fuzzy-match F1 0.724 in Data domain. MCP protocol orchestration coordinates LLM, RDF/OWL graph, vector RAG, external APIs. Tower of Hanoi validation: 5-disc success rate 33.3% → 45.5%. Demonstrates industrial deployment readiness.",
+      "url": "https://zerofuturetech.substack.com/p/building-ontology-with-llms-five"
+    }
+  ],
+  "summary": "Ontology engineering in 2025-2026 is defined by the convergence of LLMs with formal methods. Key trends: (1) Multi-agent neuro-symbolic systems (MASEO, OG-NSD, MOSES) replacing single-LLM pipelines for explainability and logical consistency; (2) Rigorous evaluation frameworks (OE-Assist, ELMKE, OAEI-LLM, OntoURL) addressing the 'how do we know it's correct?' question; (3) Expert-in-the-loop workflows (IDEA2) becoming standard for requirements elicitation; (4) Ontology reuse/extension (OntoExtend, reuse evaluation frameworks) prioritized over from-scratch generation; (5) Industrial adoption accelerating in manufacturing, energy, healthcare with deployed case studies (IRT SystemX/EDF, SAP, Siemens); (6) Ontology alignment/matching transformed by LLM oracles and justified alignments (SSSOM compliance); (7) Design patterns (WOP) evolving to address LLM-specific anti-patterns and hybrid intelligence; (8) Visualization tools (WebVOWL, metaphactory, WebProtégé) adding collaborative and LLM-assisted features. The field has moved from 'can LLMs do this?' to 'how do we build trustworthy, auditable, industrial-grade LLM-assisted ontology engineering pipelines?'"
+}

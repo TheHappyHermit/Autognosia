@@ -1,0 +1,142 @@
+Using Python 3.11.15 environment at: venv
+Resolved 98 packages in 267ms
+   Building hermes-agent @ file:///home/josh434/.hermes/hermes-agent
+      Built hermes-agent @ file:///home/josh434/.hermes/hermes-agent
+Prepared 1 package in 1.21s
+Uninstalled 1 package in 0.41ms
+Installed 1 package in 1ms
+ - hermes-agent==0.20.4 (from file:///home/josh434/.hermes/hermes-agent)
+ + hermes-agent==0.20.5 (from file:///home/josh434/.hermes/hermes-agent)
+Using Python 3.11.15 environment at: venv
+Resolved 1 package in 56ms
+Checked 1 package in 0.10ms
+npm notice run hermes-agent@1.0.0 postinstall
+npm notice run echo '✅ Node dependencies installed. Run: python run_agent.py --help'
+✅ Node dependencies installed. Run: python run_agent.py --help
+
+added 551 packages in 14s
+⚕ Updating Hermes Agent...
+
+  ⚠ Snapshot: skipping state.db (4.4 GB exceeds 1.0 GB limit)
+  ⚠ Skipping snapshot prune: DB file(s) skipped for size: state.db
+◆ Pre-update snapshot: 20260825-145931-pre-update
+
+→ Fetching updates...
+→ Local changes detected — stashing before update...
+Saved working directory and index state On main: hermes-update-autostash-20260825-145931
+→ Found 942 new commit(s)
+→ Pulling updates...
+→ Restoring local changes...
+⚠ Local changes were restored on top of the updated codebase.
+  Review `git diff` / `git status` if Hermes behaves unexpectedly.
+  ✓ Cleared 147 stale __pycache__ directories
+→ Updating Python dependencies...
+  ✓ Cleared 15 stale __pycache__ directories
+
+→ Refreshing 13 active lazy backend(s)...
+  ✓ 13 already current
+
+→ Refreshing active memory provider dependencies (honcho)...
+
+  Installing dependencies: honcho-ai
+  ✓ Installed honcho-ai
+→ Warming npx cache for agent-browser...
+→ Updating Node.js dependencies...
+  ✓ ui-tui, web workspaces installed (desktop skipped)
+→ Building web UI...
+    npm notice run web@0.0.0 build
+    npm notice run tsc -b && vite build
+    [33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+      - `__dirname` (vite.config.ts:80:25). Use `import.meta.dirname` instead
+    Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+    [36mvite v8.2.0 [32mbuilding client environment for production...[36m[39m
+    [2K
+    transforming...✓ 2222 modules transformed.
+    rendering chunks...
+    computing gzip size...
+    ../hermes_cli/web_dist/index.html                                       1.50 kB │ gzip:   0.54 kB
+    ../hermes_cli/web_dist/assets/Mondwest-Regular-CWscgue7.woff2          23.82 kB
+    ../hermes_cli/web_dist/assets/RulesExpanded-Regular-l8uVympt.woff2     33.82 kB
+    ../hermes_cli/web_dist/assets/RulesExpanded-Bold-DZA7s8Pa.woff2        35.01 kB
+    ../hermes_cli/web_dist/assets/RulesCompressed-Regular-BSXFyF4x.woff2   37.76 kB
+    ../hermes_cli/web_dist/assets/RulesCompressed-Medium-CA76_CrB.woff2    38.84 kB
+    ../hermes_cli/web_dist/assets/Collapse-Bold-mgICk9-_.woff2             59.14 kB
+    ../hermes_cli/web_dist/assets/Collapse-Regular-DysayoTY.woff2          62.81 kB
+    ../hermes_cli/web_dist/assets/xterm-BrP-ENHg.css                        3.93 kB │ gzip:   1.01 kB
+    ../hermes_cli/web_dist/assets/index-mXYHKWVT.css                      112.59 kB │ gzip:  17.61 kB
+    ../hermes_cli/web_dist/assets/chat-activation-BiaqYo9D.js               0.04 kB │ gzip:   0.06 kB
+    ../hermes_cli/web_dist/assets/page-header-context-Cv8A-rTa.js           0.15 kB │ gzip:   0.14 kB
+    ../hermes_cli/web_dist/assets/useProfileScope-CZ2qacRL.js               0.26 kB │ gzip:   0.21 kB
+    ../hermes_cli/web_dist/assets/usePageHeader-BtGwRGnc.js                 0.30 kB │ gzip:   0.23 kB
+    ../hermes_cli/web_dist/assets/utils-Bpcp-Df0.js                         0.53 kB │ gzip:   0.29 kB
+    ../hermes_cli/web_dist/assets/rolldown-runtime-CbXtAM7H.js              0.58 kB │ gzip:   0.36 kB
+    ../hermes_cli/web_dist/assets/DeleteConfirmDialog-BvTzgx0N.js           0.61 kB │ gzip:   0.38 kB
+    ../hermes_cli/web_dist/assets/useModalBehavior-oWox1GPh.js              0.62 kB │ gzip:   0.39 kB
+    ../hermes_cli/web_dist/assets/clipboard-owkvc3zk.js                     0.73 kB │ gzip:   0.44 kB
+    ../hermes_cli/web_dist/assets/mcp-server-create-B0VgoYzF.js             0.92 kB │ gzip:   0.46 kB
+    ../hermes_cli/web_dist/assets/DocsPage-CscDZhW1.js                      1.96 kB │ gzip:   1.08 kB
+    ../hermes_cli/web_dist/assets/PairingPage-CMkcxc_f.js                   4.79 kB │ gzip:   1.64 kB
+    ../hermes_cli/web_dist/assets/plugins-CXox63Jh.js                       5.55 kB │ gzip:   2.61 kB
+    ../hermes_cli/web_dist/assets/LogsPage-CjfFqdEJ.js                      7.31 kB │ gzip:   3.18 kB
+    ../hermes_cli/web_dist/assets/FilesPage-BzWtHo5i.js                     9.80 kB │ gzip:   3.25 kB
+    ../hermes_cli/web_dist/assets/WebhooksPage-DhLRTT2K.js                 12.57 kB │ gzip:   3.84 kB
+    ../hermes_cli/web_dist/assets/themes-C3XAmlmD.js                       12.79 kB │ gzip:   4.19 kB
+    ../hermes_cli/web_dist/assets/ModelReloadConfirm-DyLZBkxK.js           13.41 kB │ gzip:   4.97 kB
+    ../hermes_cli/web_dist/assets/ProfileBuilderPage-Dx2fT3PT.js           14.86 kB │ gzip:   4.49 kB
+    ../hermes_cli/web_dist/assets/McpPage-CmRuUuQR.js                      17.15 kB │ gzip:   4.98 kB
+    ../hermes_cli/web_dist/assets/ConfigPage-Dxa_OR1Q.js                   17.99 kB │ gzip:   6.01 kB
+    ../hermes_cli/web_dist/assets/AnalyticsPage-BBDjoo18.js                20.17 kB │ gzip:   6.00 kB
+    ../hermes_cli/web_dist/assets/api-Dy2FGwWo.js                          21.91 kB │ gzip:   4.90 kB
+    ../hermes_cli/web_dist/assets/PluginsPage-DfOb28qH.js                  24.91 kB │ gzip:   7.51 kB
+    ../hermes_cli/web_dist/assets/ProfilesPage-C2nsH8fg.js                 25.17 kB │ gzip:   7.05 kB
+    ../hermes_cli/web_dist/assets/ChannelsPage-BZ9FByjV.js                 28.72 kB │ gzip:   7.94 kB
+    ../hermes_cli/web_dist/assets/EnvPage-D--VG__Z.js                      29.29 kB │ gzip:   7.81 kB
+    ../hermes_cli/web_dist/assets/ModelsPage-BV6Pvl7s.js                   33.99 kB │ gzip:  10.44 kB
+    ../hermes_cli/web_dist/assets/SystemPage-DFKa6Ff8.js                   40.67 kB │ gzip:  10.92 kB
+    ../hermes_cli/web_dist/assets/CronPage-D-b_75E9.js                     43.54 kB │ gzip:  14.02 kB
+    ../hermes_cli/web_dist/assets/SkillsPage-BZjFR20B.js                   44.09 kB │ gzip:  12.48 kB
+    ../hermes_cli/web_dist/assets/SessionsPage-B0G6yqdx.js                 46.17 kB │ gzip:  14.11 kB
+    ../hermes_cli/web_dist/assets/ChatPage-BqlHU99B.js                     49.32 kB │ gzip:  16.75 kB
+    ../hermes_cli/web_dist/assets/vendor-B7eZBWFZ.js                       50.06 kB │ gzip:  17.82 kB
+    ../hermes_cli/web_dist/assets/index-DUZHTcQg.js                        64.02 kB │ gzip:  21.76 kB
+    ../hermes_cli/web_dist/assets/react-vendor-BoVnYuL4.js                226.99 kB │ gzip:  72.78 kB
+    ../hermes_cli/web_dist/assets/ui-D6CeFIrh.js                          290.01 kB │ gzip:  94.81 kB
+    ../hermes_cli/web_dist/assets/xterm-CXxU4Y2B.js                       474.38 kB │ gzip: 122.64 kB
+    ../hermes_cli/web_dist/assets/i18n-XZPHmDjw.js                        477.80 kB │ gzip: 140.85 kB
+    
+    [32m✓ built in 5.38s[39m
+  ✓ Web UI built
+→ Checking if desktop app needs rebuilding...
+  ✓ Desktop app up to date
+
+✓ Code updated! [main @ 1bbb6e5bce]
+  ✓ Model catalog cache refreshed from checkout
+
+→ Syncing bundled skills...
+  ~ 3 user-modified (kept)
+    → see them: hermes skills list-modified  (diff/reset to resume updates)
+  ✓ Skills are up to date
+
+→ Syncing bundled skills to all profiles...
+  default: ~3 user-modified
+  auditor: ~3 user-modified
+  oracle: ~3 user-modified
+  personal-organizer: ↑1 updated
+  planner: ~3 user-modified
+  researcher: ~3 user-modified
+
+→ Checking configuration for new options...
+
+  ℹ Updating config format (v38 → v39)…
+  ✓ Config format updated (no new settings to configure)
+
+✓ Update complete! (v0.20.4 → v0.20.5) [main @ 1bbb6e5bce]
+  → hermes-gateway: draining (up to 1815s)...
+
+  ✓ Restarted hermes-gateway
+
+⟲ Restarting managed dashboard service (the running backend no longer matches the updated frontend)
+    ✓ restarted hermes-dashboard.service
+
+Tip: You can now select a provider and model:
+  hermes model              # Select provider and model

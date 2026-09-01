@@ -1,0 +1,271 @@
+SOURCE_URL: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_container_queries
+
+CSS container queries - CSS | MDN
+Skip to main content
+
+Skip to search
+
+Toggle sidebar
+Web
+
+CSS
+
+Guides
+
+Containment
+
+Container queries
+
+Theme
+
+OS default
+
+Light
+
+Dark
+
+English (US)
+
+Remember languageLearn more
+
+Deutsch
+
+English (US)
+
+Español
+
+Français
+
+日本語
+
+中文 (简体)
+
+CSS container queries
+
+Container queries enable you to apply styles to an element based on certain attributes of its container:
+
+The container-name.
+
+The container's size.
+
+Styles applied to the container.
+
+The container's scroll-state or that of its scrolling ancestor.
+
+Whether the container is anchor-positioned and has a position-try fallback option applied to it.
+
+Container queries are an alternative to media queries, which apply styles to elements based on viewport size or other device characteristics.
+
+This article provides an introduction to using container queries, specifically focusing on size container queries. Other guides discuss style, scroll-state, and anchored container queries in detail.
+
+Using container size queries
+
+While container queries apply styles based on the container name or type, container size queries apply styles specifically based on the container's dimensions. To use container size queries, you need to declare a containment context on an element so that the browser knows you might want to query the dimensions of this container later.
+To do this, use the container-type property with a value of size, inline-size, or normal.
+
+These values have the following effects:
+size
+The query will be based on the inline and block dimensions of the container.
+Applies layout, style, and size containment to the container.
+inline-size
+The query will be based on the inline dimensions of the container.
+Applies layout, style, and inline-size containment to the element.
+normal
+The default value. The element is not a query container for any container size queries, but can still be used as a query container for name-only container queries or container style queries.
+
+Consider the following example of a card component for a blog post with a title and some text:
+
+html
+<div class="post">
+ <div class="card">
+ <h2>Card title</h2>
+ <p>Card content</p>
+ </div>
+</div>
+
+You can create a containment context using the container-type property:
+
+css
+.post {
+ container-type: inline-size;
+}
+
+Next, use the @container at-rule to define a container query.
+The query in the following example will apply styles to elements based on the size of the nearest ancestor with a containment context.
+Specifically, this query will apply a larger font size for the card title if the container is wider than 700px:
+
+css
+/* Default heading styles for the card title */
+.card h2 {
+ font-size: 1em;
+}
+
+/* If the container is larger than 700px */
+@container (width > 700px) {
+ .card h2 {
+ font-size: 2em;
+ }
+}
+
+Using container queries, the card can be reused in multiple areas of a page without needing to know specifically where it will be placed each time.
+If the container with the card is narrower than 700px, the font of the card title will be small, and if the card is in a container that's wider than 700px, the font of the card title will be bigger.
+
+For more information on the syntax of container queries, see the @container page.
+
+Naming containment contexts
+
+In the previous section, a container query applied styles based on the nearest ancestor with a containment context.
+It's possible to give a containment context a name using the container-name property. Once named, the name can be used in a @container query so as to target a specific container.
+The following example creates a containment context with the name sidebar:
+
+css
+.post {
+ container-type: inline-size;
+ container-name: sidebar;
+}
+
+You can then target this containment context using the @container at-rule:
+
+css
+@container sidebar (width > 700px) {
+ .card {
+ font-size: 2em;
+ }
+}
+
+More information on naming containment contexts is available on the container-name page.
+
+Name-only container queries
+
+As well as using a container-name along with a <container-query>, you can query a container using just its name. These so-called name-only container queries enable selectively applying styles to elements based on whether they have an ancestor with a specific container-name set.
+
+For example, consider the following HTML:
+
+html
+<div id="container">
+ <p>I'm in the container.</p>
+ <p>I'm also in the container.</p>
+</div>
+<p>I'm not in the container.</p>
+
+If we assign a name to the container:
+
+css
+#container {
+ container-name: my-container;
+}
+
+We can then selectively apply styles only to elements inside that container:
+
+css
+@container my-container {
+ p {
+ background-color: lime;
+ font-size: 1.3rem;
+ width: 50vw;
+ padding: 0.5rem;
+ font-family: sans-serif;
+ }
+}
+
+In this example, the specified styles would be applied only to the first and second <p> elements, but not to the third.
+
+Shorthand container syntax
+
+The shorthand way of declaring a containment context is to use the container property:
+
+css
+.post {
+ container: sidebar / inline-size;
+}
+
+For more information on this property, see the container reference.
+
+Container query length units
+
+When applying styles to the descendants of a container using size container queries (that is, its container-type is set to size or inline-size), you can use container query length units.
+These units specify a length relative to the dimensions of a query container.
+Components that use units of length relative to their container are more flexible to use in different containers without having to recalculate concrete length values.
+
+If no eligible container is available for the query, the container query length unit defaults to the small viewport unit for that axis (sv*).
+
+The container query length units are:
+
+cqw: 1% of a query container's width
+
+cqh: 1% of a query container's height
+
+cqi: 1% of a query container's inline size
+
+cqb: 1% of a query container's block size
+
+cqmin: The smaller value of either cqi or cqb
+
+cqmax: The larger value of either cqi or cqb
+
+The following example uses the cqi unit to set the font size of a heading based on the inline size of the container:
+
+css
+@container (width > 700px) {
+ .card h2 {
+ font-size: max(1.5em, 1.23em + 2cqi);
+ }
+}
+
+For more information on these units, see the Container query length units reference.
+
+Fallbacks for container queries
+
+For browsers that don't yet support container queries, grid and flex can be used to create a similar effect for the card component used on this page.
+The following example uses a grid-template-columns declaration to create a two-column layout for the card component.
+
+css
+.card {
+ display: grid;
+ grid-template-columns: 2fr 1fr;
+}
+
+If you want to use a single-column layout for devices with a smaller viewport, you can use a media query to change the grid template:
+
+css
+@media (width <= 700px) {
+ .card {
+ grid-template-columns: 1fr;
+ }
+}
+
+See also
+
+Media queries
+
+CSS @container at-rule
+
+CSS contain property
+
+CSS container shorthand property
+
+CSS container-name property
+
+CSS content-visibility property
+
+Using container size and style queries
+
+Using container scroll-state queries
+
+Using anchored container queries
+
+Say Hello to CSS Container Queries by Ahmad Shadeed
+
+Container Queries: a Quick Start Guide
+
+Collection of Container Queries articles
+
+ Help improve MDN
+
+Was this page helpful to you?
+YesNo
+Learn how to contribute
+
+ This page was last modified on Jul 8, 2026 by MDN contributors.
+
+View this page on GitHub • Report a problem with this content
