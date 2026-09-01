@@ -1,6 +1,0 @@
-[package]
-name = "taganchor-probe-b"
-version = "0.0.0"
-edition = "2021"
-[dependencies]
-clap = { version = "=4.6.1", features = ["derive"] }
