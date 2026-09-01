@@ -1,1 +1,0 @@
-![](../../img/logo-256.png)**Sonarr API Docs**
