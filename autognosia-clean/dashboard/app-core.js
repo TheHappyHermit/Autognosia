@@ -40,8 +40,10 @@ class CommandDeck {
         const el = viewEl.querySelector(`#${id}`);
         if (el) return el;
       }
+      return document.getElementById(id);
     }
-    return document.getElementById(id);
+    // Dashboard preview elements carry a dashboard- prefix
+    return document.getElementById(`dashboard-${id}`) || document.getElementById(id);
   }
 
   async init() {

@@ -141,16 +141,16 @@
 
       <!-- Home Lab Server Cards -->
       <section class="server-grid" aria-label="Home lab servers">
-        <div class="server-card" id="server-main">
+        <div class="server-card" id="dashboard-server-main">
           <div class="server-card__header">
             <div class="server-card__name">
               🖥️ <MAIN_SERVER_IP>
               <span class="server-card__ip">Main</span>
             </div>
-            <span class="server-card__status online" id="server-main-status">● Online</span>
+            <span class="server-card__status online" id="dashboard-server-main-status">● Online</span>
           </div>
           <div class="server-card__body">
-            <div class="server-card__services" id="server-main-services">
+            <div class="server-card__services" id="dashboard-server-main-services">
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>llama-server</span>
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Ollama</span>
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Graphify</span>
@@ -158,7 +158,7 @@
             <div class="gpu-meter">
               <div class="gpu-meter__label">
                 <span>V100 GPU</span>
-                <span class="gpu-meter__value" id="gpu-main-util">0%</span>
+                <span class="gpu-meter__value" id="dashboard-gpu-main-util">0%</span>
               </div>
               <div class="gpu-meter__bar">
                 <div class="gpu-meter__fill" id="gpu-main-bar" style="width: 0%"></div>
@@ -167,16 +167,16 @@
           </div>
         </div>
 
-        <div class="server-card" id="server-agent">
+        <div class="server-card" id="dashboard-server-agent">
           <div class="server-card__header">
             <div class="server-card__name">
               🤖 <AGENT_SERVER_IP>
               <span class="server-card__ip">Agent</span>
             </div>
-            <span class="server-card__status online" id="server-agent-status">● Online</span>
+            <span class="server-card__status online" id="dashboard-server-agent-status">● Online</span>
           </div>
           <div class="server-card__body">
-            <div class="server-card__services" id="server-agent-services">
+            <div class="server-card__services" id="dashboard-server-agent-services">
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Hermes</span>
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Paperclip</span>
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Honcho</span>
@@ -188,16 +188,16 @@
           </div>
         </div>
 
-        <div class="server-card" id="server-agent-zero">
+        <div class="server-card" id="dashboard-server-agent-zero">
           <div class="server-card__header">
             <div class="server-card__name">
               ⚡ <AGENT_ZERO_SERVER_IP>
               <span class="server-card__ip">Agent Zero</span>
             </div>
-            <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
+            <span class="server-card__status online" id="dashboard-server-agent-zero-status">● Online</span>
           </div>
           <div class="server-card__body">
-            <div class="server-card__services" id="server-agent-zero-services">
+            <div class="server-card__services" id="dashboard-server-agent-zero-services">
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Agent Zero</span>
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>ShadowBroker</span>
               <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>MariaDB</span>
@@ -235,7 +235,7 @@
           <div class="panel-header">
             <div class="panel-title">📅 Schedule & Calendar</div>
           </div>
-          <div class="panel-body" id="calendar-stage">
+          <div class="panel-body" id="dashboard-calendar-stage">
             <div class="empty-state">
               <div class="empty-state__icon">📅</div>
               <div class="empty-state__title">No events today</div>
@@ -249,7 +249,7 @@
           <div class="panel-header">
             <div class="panel-title">✅ Action Pipeline</div>
           </div>
-          <div class="panel-body" id="task-list-container">
+          <div class="panel-body" id="dashboard-task-list-container">
             <div class="empty-state">
               <div class="empty-state__icon">✓</div>
               <div class="empty-state__title">No active tasks</div>
@@ -355,7 +355,7 @@
             <div class="panel-status" id="services-status"></div>
           </div>
           <div class="panel-body">
-            <div class="service-grid" id="service-grid">
+            <div class="service-grid" id="dashboard-service-grid">
               <div class="skeleton skeleton-card" style="height:60px"></div>
             </div>
           </div>
@@ -506,7 +506,7 @@
                 <span class="gpu-meter__value" id="gpu-main-util">0%</span>
               </div>
               <div class="gpu-meter__bar">
-                <div class="gpu-meter__fill" id="gpu-main-fill" style="width:0%"></div>
+                <div class="gpu-meter__fill" id="dashboard-gpu-main-fill" style="width:0%"></div>
               </div>
             </div>
           </div>

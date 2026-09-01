@@ -20,8 +20,8 @@
 }
 
 .bots-sidebar {
-  width: 260px;
-  min-width: 260px;
+  width: 380px;
+  min-width: 380px;
   border-right: 1px solid var(--border-subtle);
   background: var(--bg-primary);
   display: flex;
@@ -107,9 +107,7 @@
   font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
 }
 
 .bot-stripe-role {
@@ -118,6 +116,62 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.bot-stripe-field {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+}
+
+.bot-stripe-field-label {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+}
+
+.bot-stripe-field-value {
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+}
+
+.bot-stripe-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.bot-stripe-status-text {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.bot-chat-btn {
+  flex-shrink: 0;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--motion-fast);
+}
+
+.bot-chat-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.bot-chat-btn:active {
+  transform: scale(0.97);
 }
 
 .bot-stripe-status {

@@ -13,6 +13,7 @@
 
   CommandDeck.prototype.renderCalendar = function() {
     const stage = this.getViewEl('calendar-stage');
+    if (!stage) return;
     const heading = this.getViewEl('cal-heading');
     
     // Filter events based on active category
