@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autognosia // Command Deck</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+  <link rel="stylesheet" href="header.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="briefing.css" />
+  <link rel="stylesheet" href="calendar.css" />
+  <link rel="stylesheet" href="tasks.css" />
+  <link rel="stylesheet" href="comms.css" />
+  <link rel="stylesheet" href="drawers.css" />
+  <link rel="stylesheet" href="services.css" />
+  <link rel="stylesheet" href="agent.css" />
+  <link rel="stylesheet" href="bots.css" />
+  <link rel="stylesheet" href="home-lab.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠<span class="sidebar-label">Dashboard</span></a>
+        <a href="#" class="sidebar-link" data-view="bots" aria-label="Agents" title="Agents">🤖<span class="sidebar-label">Agents</span></a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
+    </nav>
+
+    <!-- Header -->
+    <header class="app-header" role="banner">
+      <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">☰</button>
+      <div class="header-brand">
+        <span class="header-brand-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </span>
+        <span>Autognosia</span>
+      </div>
+      <div class="header-search">
+        <span class="header-search-icon" aria-hidden="true">🔍</span>
+        <input type="search" id="global-search" placeholder="Search..." aria-label="Search" />
+        <span class="header-search-hint">⌘K</span>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" aria-label="Notifications" title="Notifications">
+          🔔
+          <span class="badge-dot" aria-hidden="true"></span>
+        </button>
+        <div class="hud-clock" id="hud-clock" aria-label="UTC time">
+          <span class="clock-time">00:00:00</span>
+        </div>
+        <div class="system-status" aria-label="System status">
+          <span class="status-dot status-dot--ok" aria-hidden="true"></span>
+          <span>Healthy</span>
+        </div>
+        <div class="ws-indicator" id="ws-indicator" aria-label="Connection status">
+          <span class="ws-dot" aria-hidden="true"></span>
+          <span>LIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area (Dashboard View) -->
+    <main class="content-area" id="main-content" role="main" data-current-view="dashboard">
+      <!-- Hero Stats Row -->
+      <section class="hero-stats" aria-label="System metrics">
+        <div class="hero-stat">
+          <span class="hero-stat__label">CPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-cpu">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">RAM</span>
+          <span class="hero-stat__value text-tabular" id="stat-ram">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">DISK</span>
+          <span class="hero-stat__value text-tabular" id="stat-disk">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">NET</span>
+          <span class="hero-stat__value text-tabular" id="stat-network">--</span>
+          <span class="hero-stat__unit">MB</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">GPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-gpu">--</span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">UPTIME</span>
+          <span class="hero-stat__value text-tabular" id="stat-uptime">--</span>
+          <span class="hero-stat__unit">d</span>
+        </div>
+      </section>
+
+      <!-- HUD Metrics Row -->
+      <section class="hud-metrics" aria-label="Task and intention metrics">
+        <div class="hud-metric">
+          <span class="hud-metric__label">Active Tasks</span>
+          <span class="hud-metric__value text-tabular" id="stat-active-tasks">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Critical</span>
+          <span class="hud-metric__value text-tabular" id="stat-critical-tasks">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Reminders</span>
+          <span class="hud-metric__value text-tabular" id="stat-reminders">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Events</span>
+          <span class="hud-metric__value text-tabular" id="stat-today-events">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Unread</span>
+          <span class="hud-metric__value text-tabular" id="stat-unread-emails">--</span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Intentions</span>
+          <span class="hud-metric__value text-tabular" id="stat-intentions">--</span>
+        </div>
+      </section>
+
+      <!-- Home Lab Server Cards -->
+      <section class="server-grid" aria-label="Home lab servers">
+        <div class="server-card" id="server-main">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🖥️ 10.1.1.10
+              <span class="server-card__ip">Main</span>
+            </div>
+            <span class="server-card__status online" id="server-main-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-main-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>llama-server</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Ollama</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Graphify</span>
+            </div>
+            <div class="gpu-meter">
+              <div class="gpu-meter__label">
+                <span>V100 GPU</span>
+                <span class="gpu-meter__value" id="gpu-main-util">0%</span>
+              </div>
+              <div class="gpu-meter__bar">
+                <div class="gpu-meter__fill" id="gpu-main-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-card" id="server-agent">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              🤖 10.1.1.37
+              <span class="server-card__ip">Agent</span>
+            </div>
+            <span class="server-card__status online" id="server-agent-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-agent-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Hermes</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Paperclip</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Honcho</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Meilisearch</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Qdrant</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Redis</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Postgres</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-card" id="server-agent-zero">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              ⚡ 10.1.1.18
+              <span class="server-card__ip">Agent Zero</span>
+            </div>
+            <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="server-agent-zero-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Agent Zero</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>ShadowBroker</span>
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>MariaDB</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Briefing Bar -->
+      <section class="panel" aria-label="Daily briefing">
+        <div class="panel-header">
+          <div class="panel-title">📋 Daily Executive Synthesis</div>
+          <div class="panel-footer" style="margin:0;padding:0;border:none">
+            <span id="briefing-date" style="color:var(--text-3);font-size:var(--fs-sm);">Loading date...</span>
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:var(--fs-sm);margin-left:8px;">just now</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="briefing-summary">Loading...</div>
+          <div id="briefing-priorities" style="margin-top:var(--space-3)">
+            <ul id="briefing-priorities-list" aria-label="Top priorities"></ul>
+          </div>
+          <div id="briefing-prompt" style="margin-top:var(--space-3);padding:var(--space-3);background:var(--accent-soft);border-radius:var(--radius-md);border:1px solid var(--glass-border);">
+            <span id="briefing-prompt-text"></span>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-title">System Overview</div>
+
+      <!-- Panels Grid -->
+      <div class="panels-grid">
+        <!-- Calendar Panel -->
+        <section class="panel" aria-label="Calendar & Schedule">
+          <div class="panel-header">
+            <div class="panel-title">📅 Schedule & Calendar</div>
+          </div>
+          <div class="panel-body" id="calendar-stage">
+            <div class="empty-state">
+              <div class="empty-state__icon">📅</div>
+              <div class="empty-state__title">No events today</div>
+              <div class="empty-state__desc">Your schedule is clear.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tasks Panel -->
+        <section class="panel" aria-label="Action Pipeline">
+          <div class="panel-header">
+            <div class="panel-title">✅ Action Pipeline</div>
+          </div>
+          <div class="panel-body" id="task-list-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">✓</div>
+              <div class="empty-state__title">No active tasks</div>
+              <div class="empty-state__desc">Pipeline clear.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Telemetry Panel -->
+        <section class="panel" aria-label="System Telemetry">
+          <div class="panel-header">
+            <div class="panel-title">📊 Telemetry</div>
+          </div>
+          <div class="panel-body">
+            <div class="telemetry-grid" id="telemetry-grid">
+              <div class="skeleton skeleton-card" style="height:60px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Email Panel -->
+        <section class="panel" aria-label="Email Radar">
+          <div class="panel-header">
+            <div class="panel-title">✉️ Email Radar</div>
+          </div>
+          <div class="panel-body" id="email-stream-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">✉️</div>
+              <div class="empty-state__title">Inbox clear</div>
+              <div class="empty-state__desc">Nothing hunting you right now.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Intentions Panel -->
+        <section class="panel" aria-label="Prospective Intentions">
+          <div class="panel-header">
+            <div class="panel-title">⏱ Prospective Intentions</div>
+          </div>
+          <div class="panel-body" id="intentions-stream-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">⏱</div>
+              <div class="empty-state__title">No active intentions</div>
+              <div class="empty-state__desc">Prospective memory is quiet.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Wiki Search Panel -->
+        <section class="panel" aria-label="Knowledge Vault">
+          <div class="panel-header">
+            <div class="panel-title">🧠 Knowledge Vault</div>
+          </div>
+          <div class="panel-body">
+            <input type="search" id="wiki-search-input" placeholder="Search knowledge vault…" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-tertiary);color:var(--text-1);margin-bottom:var(--space-3)" />
+            <div id="wiki-results-container">
+              <div class="empty-state">
+                <div class="empty-state__icon">🔍</div>
+                <div class="empty-state__title">Search your knowledge vault</div>
+                <div class="empty-state__desc">Type above to search across all documents.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="section-title">Agent Intelligence</div>
+
+      <!-- Agent Panels -->
+      <div class="panels-grid">
+        <section class="panel" aria-label="Hermes Agent">
+          <div class="panel-header">
+            <div class="panel-title">🤖 Hermes Agent</div>
+            <div class="panel-status" id="agent-status"></div>
+          </div>
+          <div class="panel-body" id="agent-grid">
+            <div class="skeleton skeleton-card" style="height:60px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Cron Jobs">
+          <div class="panel-header">
+            <div class="panel-title">⏰ Scheduled Jobs</div>
+            <div class="panel-status" id="cron-status"></div>
+          </div>
+          <div class="panel-body" id="cron-list">
+            <div class="skeleton skeleton-card" style="height:60px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Projects">
+          <div class="panel-header">
+            <div class="panel-title">📁 Active Projects</div>
+          </div>
+          <div class="panel-body" id="projects-list-container">
+            <div class="skeleton skeleton-card" style="height:60px"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Service Grid">
+          <div class="panel-header">
+            <div class="panel-title">🔧 Service Grid</div>
+            <div class="panel-status" id="services-status"></div>
+          </div>
+          <div class="panel-body">
+            <div class="service-grid" id="service-grid">
+              <div class="skeleton skeleton-card" style="height:60px"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Graphify">
+          <div class="panel-header">
+            <div class="panel-title">🕸️ Knowledge Graph</div>
+          </div>
+          <div class="panel-body" id="graphify-grid">
+            <div class="skeleton skeleton-card" style="height:60px"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Bots View (hidden by default) — Grokbot-style vertical stripe + chat panel -->
+    <div id="view-bots" class="view-section bots-view" role="region" aria-label="Agent Command Center">
+      <div class="bots-sidebar" id="bots-sidebar">
+        <div class="bots-sidebar-header">
+          <h3>Agents</h3>
+          <span class="bots-count" id="bots-count">0</span>
+        </div>
+        <div class="bots-stripe" id="bots-stripe">
+          <!-- Agent stripe populated by app-bots.js -->
+        </div>
+      </div>
+      <div class="bots-chat-panel" id="bots-chat-panel">
+        <div class="bots-chat-empty" id="bots-chat-empty">
+          <div class="bots-chat-empty-icon">🤖</div>
+          <div class="bots-chat-empty-title">Select an agent to chat</div>
+          <div class="bots-chat-empty-desc">Click on any agent in the stripe to open a conversation.</div>
+        </div>
+        <div class="bots-chat-active" id="bots-chat-active" style="display:none">
+          <div class="bots-chat-header">
+            <div class="bot-avatar" id="chat-bot-avatar">🤖</div>
+            <div class="bots-chat-header-info">
+              <div class="bots-chat-header-name" id="chat-bot-name">Agent Name</div>
+              <div class="bots-chat-header-model" id="chat-bot-model">Model • Provider</div>
+            </div>
+            <div class="bots-chat-header-status">
+              <span class="bot-status-dot" id="chat-bot-status-dot"></span>
+              <span id="chat-bot-status-text">idle</span>
+            </div>
+          </div>
+          <div class="bots-chat-messages" id="bot-chat-messages"></div>
+          <div class="bots-chat-input-bar">
+            <input type="text" class="bots-chat-input" id="bot-chat-input" placeholder="Message agent…" aria-label="Message" />
+            <button class="bots-chat-send" id="bot-chat-send" aria-label="Send">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="app-core.js"></script>
+  <script src="app-bots.js"></script>
+  <script src="enhance.js"></script>
+
+  <!-- Task Detail Modal -->
+  <div class="task-detail-modal" id="task-detail-modal">
+    <div class="task-detail-modal__backdrop" id="task-detail-backdrop"></div>
+    <div class="task-detail-modal__panel">
+      <div class="task-detail-modal__header">
+        <h3>Task Details</h3>
+        <button class="task-detail-modal__close" id="task-detail-close">×</button>
+      </div>
+      <div class="task-detail-modal__body" id="task-detail-body"></div>
+      <div class="task-detail-modal__footer">
+        <button class="btn btn--ghost" id="task-detail-cancel">Cancel</button>
+        <button class="btn btn--primary" id="task-detail-save">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+# Brain Postgres — separate Postgres + pgvector for native brain search
+# Own database, own lifecycle. Does NOT share with Honcho or any other service.
+#
+# Usage:
+#   docker compose -f docker/docker-compose.brain.yml up -d
+#
+# Connect from host:
+#   psql -h localhost -p 5433 -U brain -d brain
+#
+# Initialize schema:
+#   python3 scripts/brain_sync.py --init
+#
+# Prerequisites:
+#   - Docker Engine installed
+#   - No existing service on port 5433
+
+name: autognosia-brain
+
+services:
+  database:
+    image: pgvector/pgvector:pg15
+    container_name: brain-postgres
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      - POSTGRES_DB=brain
+      - POSTGRES_USER=brain
+      - POSTGRES_PASSWORD=brain
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - brain-pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brain -d brain"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - brain-net
+
+  # Optional: pgAdmin for debugging (disabled by default)
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: brain-pgadmin
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=admin@brain.local
+  #     - PGADMIN_DEFAULT_PASSWORD=admin
+  #   ports:
+  #     - "127.0.0.1:8088:80"
+  #   depends_on:
+  #     - database
+  #   networks:
+  #     - brain-net
+  #   profiles: ["debug"]
+
+volumes:
+  brain-pgdata:
+
+networks:
+  brain-net:
+    driver: bridge

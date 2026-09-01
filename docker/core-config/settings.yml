@@ -1,0 +1,102 @@
+# SearXNG Instance Configuration
+# Instance settings
+general:
+  instance_name: "Autognosia Search"
+  contact_url: false
+  enable_metrics: false
+
+# Search formats configuration (REQUIRED for Hermes Agent JSON queries)
+search:
+  safe_search: 0
+  autocomplete: ""
+  formats:
+    - html
+    - json
+
+# DOI resolvers (required by SearXNG preferences.py)
+doi_resolvers:
+  doi.org: "https://doi.org/"
+  oadoi.org: "https://oadoi.org/"
+default_doi_resolver: "doi.org"
+
+# Search engines
+engines:
+  - name: bing
+    engine: bing
+    shortcut: bi
+    timeout: 3.0
+
+  - name: brave
+    engine: brave
+    shortcut: br
+    timeout: 3.0
+
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    timeout: 3.0
+
+  - name: google
+    engine: google
+    shortcut: go
+    timeout: 3.0
+
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
+    timeout: 3.0
+
+  - name: github
+    engine: github
+    shortcut: gh
+    timeout: 3.0
+
+  - name: stackoverflow
+    engine: stackexchange
+    shortcut: se
+    api_site: stackoverflow
+    timeout: 3.0
+
+  - name: youtube
+    engine: youtube_noapi
+    shortcut: yt
+    timeout: 3.0
+
+# UI settings
+ui:
+  default_theme: simple
+  default_locale: en
+  theme_args:
+    simple_theme: dark
+
+# Server settings
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+  limiter: false
+  # Overridden at runtime by the SEARXNG_SECRET env var (see docker/.env).
+  # SearXNG substitutes the env value over this placeholder on startup, so the
+  # literal below is never used in a configured deployment. Do not commit a real
+  # secret here.
+  secret_key: "CHANGE_ME_IN_PRODUCTION"
+  image_name: "searxng"
+  method: "GET"
+  unique_ip: false
+  max_request_timeout: 10
+  public_instance: false
+  trusted_proxies: []
+  query_in_referrer: false
+  enable_result_container: false
+  hash_secret: ""
+
+# Redis/Valkey cache connection
+redis:
+  url: redis://searxng-valkey:6379/0
+
+# Outgoing requests
+outgoing:
+  request_timeout: 3.0
+  max_request_timeout: 10.0
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true

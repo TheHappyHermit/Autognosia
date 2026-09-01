@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TheHappyHermit/Autognosia/schemas/research-request.schema.json",
+  "title": "Autognosia Research Request Envelope",
+  "description": "Inter-agent package requesting deep research and synthesis into the Oracle Brain. Placed in exchange/research/, consumed exactly once.",
+  "type": "object",
+  "required": ["id", "topic", "context", "priority", "created_at", "source", "target_profile", "deliver_to", "requirements"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Envelope contract version. Absent = version 1."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{3,63}$",
+      "description": "Unique request identifier; also the filename stem."
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "context": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1000,
+      "description": "Why this research is wanted and how it will be used."
+    },
+    "priority": {
+      "enum": ["low", "medium", "high"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Producing subsystem, e.g. 'oracle-knowledge-expansion'."
+    },
+    "target_profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Hermes profile that should execute the research."
+    },
+    "deliver_to": {
+      "type": "string",
+      "default": "exchange/research"
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verify_citations", "synthesize", "target_wiki", "max_pages"],
+      "properties": {
+        "verify_citations": { "type": "boolean" },
+        "synthesize": { "type": "boolean" },
+        "target_wiki": { "enum": ["active", "oracle"] },
+        "max_pages": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "focus": {
+          "type": "string",
+          "description": "Free-text scoping guidance, e.g. 'long-term knowledge, not current events'."
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Producer-private extras; ignored by consumers."
+    }
+  }
+}

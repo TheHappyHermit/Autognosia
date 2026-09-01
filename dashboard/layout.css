@@ -1,0 +1,328 @@
+/* ==========================================================================
+   Main Content Area & Panel Layout
+   Dark Executive Command Center — glassmorphism panels, precision spacing
+   ========================================================================== */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.content-area {
+  grid-column: 2;
+  margin-top: var(--header-height);
+  padding: var(--space-4) var(--space-5);
+  overflow-y: auto;
+  max-width: calc(100vw - var(--sidebar-width));
+}
+
+/* ── Hero Stats Row (system metrics) ──────────────────────────────────── */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.hero-stat {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  transition: all var(--motion-fast);
+  position: relative;
+}
+
+.hero-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity var(--motion-fast);
+  border-radius: 0 0 2px 2px;
+}
+
+.hero-stat:hover {
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--shadow-glow-accent);
+  transform: translateY(-1px);
+}
+
+.hero-stat:hover::before {
+  opacity: 1;
+}
+
+.hero-stat__label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.hero-stat__value {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.1;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-stat__unit {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+/* ── HUD Metrics Row (task/intention counts) ──────────────────────────── */
+.hud-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.hud-metric {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+  transition: all var(--motion-fast);
+}
+
+.hud-metric:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-medium);
+}
+
+.hud-metric__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.hud-metric__value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.1;
+  font-family: var(--font-mono);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.hud-metric__value.ok { color: var(--success); }
+.hud-metric__value.warn { color: var(--warning); }
+.hud-metric__value.danger { color: var(--danger); }
+
+/* ── Section Headings ────────────────────────────────────────────────── */
+.section-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+  margin: var(--space-6) 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+}
+
+.section-title::before {
+  content: '';
+  width: 2px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Panels Grid (Linear-style glass cards) ───────────────────────────── */
+.panels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+
+.panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--motion-fast);
+  position: relative;
+}
+
+.panel:hover {
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.panel-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  letter-spacing: -0.01em;
+}
+
+.panel-title svg {
+  color: var(--accent);
+}
+
+.panel-body {
+  min-height: 60px;
+}
+
+.panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+/* ── Empty State ─────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  gap: var(--space-2);
+}
+
+.empty-state__icon {
+  font-size: 28px;
+  margin-bottom: var(--space-1);
+  opacity: 0.4;
+}
+
+.empty-state__title {
+  font-weight: 600;
+  color: var(--text-2);
+  font-size: var(--fs-md);
+}
+
+.empty-state__desc {
+  font-size: var(--fs-base);
+  color: var(--text-3);
+  max-width: 220px;
+}
+
+.empty-state__action {
+  margin-top: var(--space-2);
+}
+
+/* ── Tab Navigation (filter pills) ─────────────────────────────────────── */
+.tab-group {
+  display: flex;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  width: fit-content;
+}
+
+.tab-btn {
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all var(--motion-fast);
+  font-family: var(--font-sans);
+}
+
+.tab-btn:hover {
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--accent);
+  box-shadow: none;
+}
+
+/* ── Bots View Grid Placement ────────────────────────────────────────── */
+.bots-view {
+  grid-column: 2;
+}
+
+/* ── Responsive (Linear-style breakpoints) ────────────────────────────── */
+@media (max-width: 1280px) {
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .hud-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-stats,
+  .hud-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .panels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .content-area {
+    padding: var(--space-3);
+  }
+  .hero-stats,
+  .hud-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+  .hero-stat {
+    padding: var(--space-2);
+  }
+}

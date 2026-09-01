@@ -1,0 +1,139 @@
+# SECURITY NOTE: All passwords are set via environment variables.
+# Required .env file with: HONCHO_PG_USER, HONCHO_PG_PASSWORD, HONCHO_PG_DB
+# CHANGE DEFAULT PASSWORDS before production use!
+# Autognosia — Honcho Memory System
+#
+# Provides autobiographical/user-model memory for Hermes Agent.
+# API available at: http://127.0.0.1:8000
+#
+# Usage:
+#   docker compose -f docker/docker-compose.honcho.yml up -d
+#
+# Prerequisites:
+#   - Docker Engine installed
+#   - .env file configured with LLM provider credentials
+#
+# Configuration:
+#   - Copy .env.example to .env and fill in your LLM provider
+#   - Honcho requires an LLM for its deriver (user-model derivation)
+#   - Use a local/private endpoint if possible to keep autobiographical data local
+
+name: autognosia-honcho
+
+services:
+  api:
+    image: ghcr.io/plastic-labs/honcho:${HONCHO_VERSION:-latest}
+    entrypoint: ["sh", "docker/entrypoint.sh"]
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/app/.venv/bin/python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/openapi.json', timeout=2).read()",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - lancedb-data:/app/lancedb_data
+    environment:
+      - DB_CONNECTION_URI=postgresql+psycopg://${HONCHO_PG_USER:-postgres}:${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}@database:5432/${HONCHO_PG_DB:-postgres}
+      - CACHE_URL=redis://redis:6379/0?suppress=true
+      - CACHE_ENABLED=true
+    env_file:
+      - path: .env
+        required: true
+    restart: unless-stopped
+    networks:
+      - honcho-net
+
+  deriver:
+    image: ghcr.io/plastic-labs/honcho:${HONCHO_VERSION:-latest}
+    entrypoint: ["/app/.venv/bin/python", "-m", "src.deriver"]
+    depends_on:
+      api:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - lancedb-data:/app/lancedb_data
+    environment:
+      - DB_CONNECTION_URI=postgresql+psycopg://${HONCHO_PG_USER:-postgres}:${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}@database:5432/${HONCHO_PG_DB:-postgres}
+      - CACHE_URL=redis://redis:6379/0?suppress=true
+      - CACHE_ENABLED=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/app/.venv/bin/python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://api:8000/openapi.json', timeout=2).read()",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    env_file:
+      - path: .env
+        required: true
+    restart: unless-stopped
+    networks:
+      - honcho-net
+
+  database:
+    image: pgvector/pgvector:${PG_VERSION:-pg15}
+    restart: unless-stopped
+    expose:
+      - "5432"
+    command: ["postgres", "-c", "max_connections=200"]
+    environment:
+      - POSTGRES_DB=${HONCHO_PG_DB:-postgres}
+      - POSTGRES_USER=${HONCHO_PG_USER:-postgres}
+      - POSTGRES_PASSWORD=$${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - honcho-pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${HONCHO_PG_USER:-postgres} -d ${HONCHO_PG_DB:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - honcho-net
+
+  redis:
+    image: redis:${REDIS_VERSION:-8.2}
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - honcho-redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - honcho-net
+
+
+volumes:
+  honcho-pgdata:
+  honcho-redis-data:
+  lancedb-data:
+
+networks:
+  honcho-net:
+    driver: bridge

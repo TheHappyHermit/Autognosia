@@ -1,0 +1,233 @@
+# ── Runtime directories ──
+.hermes/
+.autognosia/
+.github/
+hermes-cortex/
+cortex-backup/
+gbrain/
+hub/
+.openclaw.pre-migration/
+
+# ── Package managers ──
+.bun/
+.npm/
+.npm-global/
+.nvm/
+.cargo/
+.rustup/
+.node/
+.node_modules/
+
+# ── AI tool configs ──
+.claude/
+.codex/
+.cua-driver/
+.agents/
+.antigravity-server/
+
+# ── System/user data ──
+.config/
+.local/
+.cache/
+.DS_Store
+Thumbs.db
+.Xauthority
+
+# ── Shell configs ──
+.bash_history
+.bash_logout
+.bashrc
+.profile
+
+# ── Screenshots and temp files ──
+dashboard-*.png
+dashboard_*.png
+debug_*.py
+demo_data.py
+Decision-*.md
+developmental_ai_research.json
+tmr_semantic_scholar.json
+val_out.txt
+vm-port-diagnosis.sh
+vm-port-fix.sh
+wiki_engram.json
+*.pyc
+
+# ── Personal directories ──
+Downloads/
+deploy/
+docs/
+archive/
+research/
+research_output/
+rebate-platform/
+body_schema_*
+cd_search*
+cognitive_effort_*
+command-deck-design-report.md
+carryover_tasks.md
+audit*.png
+audit_research.py
+benchmark.py
+check_system.py
+engram_research_*.py
+lib_research.py
+parse_*.py
+tmr_research.py
+research_search.py
+
+# ── Large binaries ──
+*.bin
+*.pack
+*.tar.gz
+*.zip
+models_dev_cache.json
+
+# ── Browser ──
+.browser-use/
+snap/
+
+# ── Temp ──
+/tmp/oc-*
+/tmp/hermes-*
+
+# ── PII scrubbing scripts ──
+*pii*scrub*
+*scrub*pii*
+
+# ── Git ──
+# Note: .gitignore is intentionally NOT ignored so it can be versioned
+
+# ── Docker ──
+.docker/
+Projects/
+hermes-retrieval-reflex/
+oc-work/
+personal-agent/
+wiki.bak-*/
+honcho/
+node_modules/
+lightllm/
+litellm_proxy/
+firecrawl-stack/
+pending/
+Public/
+cron/
+cron-jobs/
+gbrain/
+tirith/
+repo-backup-*/
+hermes-env-backup/
+archive/
+research/
+research_output/
+
+# ── Vault and backups ──
+Documents/
+backups/
+_home_josh434_*/
+_home_josh434_*
+venv/
+.venv/
+site-packages/
+research_task/
+knowledge_base/
+
+# ── Bundled Hermes skills (ship with base Hermes, not custom) ──
+skills/apple/
+skills/creative/
+skills/data-science/
+skills/devops/
+skills/email/
+skills/mlops/
+skills/note-taking/
+skills/productivity/
+skills/research/
+skills/software-development/
+skills/web/
+
+# ── Large binaries ──
+.opencode/
+.vscode-server/
+
+# ── AI tool configs ──
+.gemini/
+.honcho/
+.notebooklm-mcp-cli/
+.qwen/
+.pki/
+.ssh/
+.gitconfig
+.vscode-server/
+
+# ═══════════════════════════════════════════════════════════
+# Downloaded binaries & build artifacts (not project source)
+# ═══════════════════════════════════════════════════════════
+
+# Downloaded CLI binaries (gh, etc. - install via package manager)
+bin/
+.electron-gyp/
+
+# Hermes skills backup (regenerated from base Hermes install)
+hermes-skills-backup/
+
+# Temporary research/download scratch space
+research_tmp/
+tmp_research_blocks/
+
+# ═══════════════════════════════════════════════════════════
+# Runtime / cache state (regenerated on install)
+# ═══════════════════════════════════════════════════════════
+
+# Hermes profile cache/state files
+profiles/*/models_dev_cache.etag
+profiles/*/.update_check
+profiles/*/.skills_prompt_snapshot.json
+
+# Bundled skills duplicated under profiles (ship with base Hermes)
+profiles/personal-organizer/skills/apple/
+profiles/personal-organizer/skills/autonomous-ai-agents/
+profiles/personal-organizer/skills/creative/
+profiles/personal-organizer/skills/devops/
+profiles/personal-organizer/skills/email/
+profiles/personal-organizer/skills/github/
+profiles/personal-organizer/skills/media/
+profiles/personal-organizer/skills/mlops/
+profiles/personal-organizer/skills/note-taking/
+profiles/personal-organizer/skills/productivity/
+profiles/personal-organizer/skills/research/
+profiles/personal-organizer/skills/smart-home/
+profiles/personal-organizer/skills/social-media/
+profiles/personal-organizer/skills/software-development/
+profiles/personal-organizer/skills/web/
+
+# Legacy gbrain runtime state
+.gbrain/
+
+# ═══════════════════════════════════════════════════════════
+# Environment secrets (real credentials - keep .example templates)
+# ═══════════════════════════════════════════════════════════
+
+# Any .env file with real secrets (docker-compose reads .env.example templates)
+.env
+.env.web-stack
+lightllm/.env
+litellm_proxy/.env
+
+# ═══════════════════════════════════════════════════════════
+# Python / Node build artifacts & downloaded packages
+# ═══════════════════════════════════════════════════════════
+
+__pycache__/
+*.egg-info/
+*.whl
+*.gguf
+*.safetensors
+
+# ═══════════════════════════════════════════════════════════
+# OS & editor junk
+# ═══════════════════════════════════════════════════════════
+
+*.swp
+*.swo
+*~

@@ -1,0 +1,47 @@
+name: autognosia-searxng
+
+services:
+  core:
+    image: docker.io/searxng/searxng:${SEARXNG_VERSION:-latest}
+    container_name: searxng-core
+    restart: always
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      - SEARXNG_SECRET=${SEARXNG_SECRET}
+    env_file: ./.env
+    volumes:
+      - ./core-config/:/etc/searxng/:Z
+      - searxng-cache:/var/cache/searxng/
+    networks:
+      - searxng-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  valkey:
+    image: docker.io/valkey/valkey:${VALKEY_VERSION:-9-alpine}
+    container_name: searxng-valkey
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: always
+    expose:
+      - "6379"
+    volumes:
+      - searxng-valkey-data:/data/
+    networks:
+      - searxng-net
+    healthcheck:
+      test: ["CMD-SHELL", "valkey-cli ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  searxng-cache:
+  searxng-valkey-data:
+
+networks:
+  searxng-net:
+    driver: bridge

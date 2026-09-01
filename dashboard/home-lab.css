@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Home Lab Panels — Server Cards, LLM Endpoints, GPU Meters
+   Dark Executive Command Center
+   ========================================================================== */
+
+/* ── Server Cards (3-column grid) ──────────────────────────────────────── */
+.server-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.server-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  transition: all var(--motion-fast);
+  position: relative;
+}
+
+.server-card:hover {
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.server-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.server-card__name {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+}
+
+.server-card__ip {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.server-card__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-family: var(--font-mono);
+}
+
+.server-card__status.online {
+  color: var(--success);
+}
+
+.server-card__status.offline {
+  color: var(--danger);
+}
+
+.server-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.server-card__services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+/* ── Service Pills ─────────────────────────────────────────────────────── */
+.service-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+.service-pill--online {
+  border-color: rgba(34, 199, 94, 0.2);
+  color: var(--success);
+  background: rgba(34, 199, 94, 0.08);
+}
+
+.service-pill--offline {
+  border-color: rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.service-pill__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── GPU Meter ─────────────────────────────────────────────────────────── */
+.gpu-meter {
+  margin-top: var(--space-2);
+}
+
+.gpu-meter__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+}
+
+.gpu-meter__bar {
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.gpu-meter__fill {
+  height: 100%;
+  background: var(--gradient-brand);
+  border-radius: var(--radius-full);
+  transition: width var(--motion-base);
+}
+
+.gpu-meter__fill--high {
+  background: var(--gradient-warm);
+}
+
+.gpu-meter__value {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+/* ── LLM Endpoints ────────────────────────────────────────────────────── */
+.llm-endpoints {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.llm-endpoint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--motion-fast);
+}
+
+.llm-endpoint:hover {
+  border-color: var(--border-medium);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.llm-endpoint__status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.llm-endpoint__status.active {
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success-glow);
+}
+
+.llm-endpoint__status.inactive {
+  background: var(--text-4);
+}
+
+.llm-endpoint__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.llm-endpoint__name {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-mono);
+}
+
+.llm-endpoint__meta {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.llm-endpoint__tps {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* ── Container Summary ────────────────────────────────────────────────── */
+.container-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.container-summary__count {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.container-summary__count .up {
+  color: var(--success);
+}
+
+.container-summary__count .total {
+  color: var(--text-3);
+  font-size: var(--fs-md);
+  font-weight: 500;
+}
+
+.container-summary__label {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Telemetry Grid ───────────────────────────────────────────────────── */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-2);
+}
+
+.telemetry-metric {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  text-align: center;
+  transition: all var(--motion-fast);
+}
+
+.telemetry-metric:hover {
+  border-color: var(--border-medium);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.telemetry-metric__value {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.telemetry-metric__label {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+
+.telemetry-metric__sub {
+  font-size: var(--fs-xs);
+  color: var(--text-4);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}

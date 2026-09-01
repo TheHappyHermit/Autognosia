@@ -1,0 +1,5 @@
+# Autognosia Brain Search dependencies
+# Install: pip install -r requirements.txt
+# Or: uv pip install -r requirements.txt
+
+pg8000>=1.30  # Pure Python PostgreSQL driver (no native deps)
