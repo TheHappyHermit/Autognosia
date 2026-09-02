@@ -187,7 +187,7 @@ def main():
             VALUES (1, 'Awaiting feedback', 'User review on setup', date('now', '+3 days'), 'waiting');
 
             INSERT INTO reminders (id, title, remind_at, channel, status)
-            VALUES (1, 'Review Autognosia Command Deck Metrics', datetime('now', '+2 hours'), 'all', 'pending');
+            VALUES (1, 'Review Autognosia Command Deck Metrics', strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+2 hours'), 'all', 'pending');
         """)
     
     conn.close()
