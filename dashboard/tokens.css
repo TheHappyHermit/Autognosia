@@ -128,9 +128,9 @@
   --shadow-inset: rgba(0,0,0,0.3) 0 0 12px 0 inset;
 
   /* ── Glassmorphism (purposeful depth system) ───────────────────────── */
-  --glass-bg: rgba(15, 16, 17, 0.72);
-  --glass-bg-strong: rgba(15, 16, 17, 0.88);
-  --glass-border: rgba(34, 211, 238, 0.12);
+  --glass-bg: rgba(22, 24, 26, 0.88);
+  --glass-bg-strong: rgba(28, 30, 32, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.06);
   --glass-border-strong: rgba(34, 211, 238, 0.25);
   --glass-blur: blur(12px) saturate(180%);
 
