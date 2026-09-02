@@ -142,7 +142,7 @@ CommandDeck.prototype.renderReminderCard = function(r) {
       <div class="reminder-meta-row">
         <div class="reminder-tags">
           <span class="channel-tag ${channel}">${channelLabels[channel] || channel}</span>
-          <span>⏰ ${formatTime(r.remind_at) || r.remind_at}</span>
+          <span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${formatTime(r.remind_at) || r.remind_at}</span>
         </div>
         <div class="reminder-actions">
           ${r.status !== 'sent' ? `
