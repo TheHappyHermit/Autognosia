@@ -9,7 +9,7 @@
 1. **Hot memory / session context** — what I've already been told this session
 2. **Oracle wiki** — the pages I've already written (`Hermes-Stack/*`)
 3. **Honcho** — autobiographical memory, peer representations
-4. **GBrain** — document retrieval over the Oracle brain
+4. **Brain Search** — document retrieval over the Oracle brain
 5. **Active Wiki Graphify** — relationship/multi-hop queries (see below)
 6. **Researcher subagent** — delegated web search, clean context window
 
@@ -74,7 +74,7 @@ graphify query "How does X connect to Y?" --graph ~/.autognosia/oracle/brain/gra
 
 ### Operational patterns that already bit us
 
-- MCP stdio servers die with minimal client PATHs → absolute-path wrapper scripts (see deploy/gbrain-mcp.sh).
+- MCP stdio servers die with minimal client PATHs → absolute-path wrapper scripts.
 - PEP 668 blocks system pip → isolated venv + os.execv re-exec (see dashboard_server.py::_ensure_web_deps).
 - PGLite is single-process — CLI crons lock out while an MCP serve holds the DB; we migrated to local Postgres+pgvector for this reason.
 - Cron jobs pinned to one endpoint fail when it sleeps; prefer inheriting the fallback chain.

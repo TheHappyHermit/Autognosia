@@ -4,9 +4,9 @@ UPDATED 2026-08-23 (post-autognosia-migration, re-verified live on .37):
 - organizer.db: /home/<USER>/.autognosia/personal-organizer/data/organizer.db (tables: tasks, projects, subscriptions, important_dates, intentions, waiting_states, reminders — NO source_records)
 - ~/.hermes-autognosia now holds only autognosia.db/exchange/logs/personal-organizer (stale path map below is history)
 
-# Agent Server (10.1.1.37) — Hermes Autognosia Path Map
+# Agent Server — Hermes Autognosia Path Map
 
-Verified 2026-08-16. Repo: `~/hermes-autognosia` (github.com/<USER_ALT>/hermes-autognosia). README is the design doc (~1900 lines): retrieval-cost hierarchy Honcho → Active Wiki → Oracle → GBrain; knowledge flows hot→cold, never deleted ("knowledge changes temperature").
+Verified 2026-08-16. Repo: `~/hermes-autognosia` (github.com/<USER_ALT>/hermes-autognosia). README is the design doc (~1900 lines): retrieval-cost hierarchy Honcho → Active Wiki → Oracle; knowledge flows hot→cold, never deleted ("knowledge changes temperature").
 
 ## Canonical paths (`config/paths.yaml`)
 - `autognosia_home`: `~/.hermes-autognosia`
@@ -23,13 +23,13 @@ Verified 2026-08-16. Repo: `~/hermes-autognosia` (github.com/<USER_ALT>/hermes-a
 | `rebuild_oracle_index.py` (Oracle Index Rebuild cron) | indexes `active-wiki/` → writes into `oracle/brain/` |
 | `audit_wiki.py` (Wiki Lint Daily + Weekly Deep crons) | `oracle/brain/` |
 | `fill_oracle_gaps.py` (Oracle Knowledge Expansion cron) | `oracle/brain/` |
-| `gbrain_sync.py` (hourly GBrain Sync cron) | `~/personal-agent/oracle/brain` — HARDCODED |
+| `brain_sync.py` (hourly Brain Sync cron) | `~/personal-agent/oracle/brain` — HARDCODED |
 | `oracle_search.py` (literal ripgrep fallback) | `~/personal-agent/oracle/brain` — HARDCODED |
 | graphify-autognosia-integration skill | `oracle/brain/` + raw evidence in `oracle/raw/` |
 | library-onboarding / capture-and-triage skills | `oracle/brain/` |
 | installed wiki-maintenance skill | `active-wiki/` only |
 
-**Rule:** vault content must live in `oracle/brain/` AND be copied to `~/personal-agent/oracle/brain` (GBrain + literal search). Both locations, no config edits needed.
+**Rule:** vault content must live in `oracle/brain/` AND be copied to `~/personal-agent/oracle/brain` (Brain Sync + literal search). Both locations, no config edits needed.
 
 ## LLM Wiki location
 - `WIKI_PATH` IS set in `~/.hermes/.env` (added 2026-08-16): `/home/<USER>/.hermes-autognosia/active-wiki`. Backup of pre-edit .env: `~/.hermes/.env.bak-20260816`.
@@ -40,7 +40,7 @@ The agent VM's own Hermes instance auto-created **23 cron jobs** at 21:29 on 202
 
 ## Remediation executed 2026-08-16 (all verified)
 1. Oracle Vault moved into `~/.hermes-autognosia/oracle/brain/` — 379 md; `oracle/` now contains only `brain/`.
-2. Copied to `~/personal-agent/oracle/brain` — 379 md (GBrain Sync + oracle_search.py fallback now have content).
+2. Copied to `~/personal-agent/oracle/brain` — 379 md (Brain Sync + oracle_search.py fallback now have content).
 3. LLM wiki: 140 md copied into `~/.hermes-autognosia/active-wiki/`; old location preserved as `~/wiki.bak-20260816`; `WIKI_PATH` appended to `.env`.
 4. Seven desktop skills pushed path-adapted (25 files, zero Windows paths remaining): oracle-query + hermes-troubleshooting (with nested cron-job-management) at top level; llm-wiki-commands, oracle-entity-creation, oracle-wiki-research-pipeline, wiki-maintenance-hermes under `research/`. Mapping used: Vault→`~/.hermes-autognosia/oracle/brain`, LLM_WIKI→`active-wiki`, Oracle\Incoming→`~/.hermes-autognosia/incoming` (dir created), Backups/Daily→`~/backups/`, AppData logs/cron/state.db→`~/.hermes/...`, `.hermes.md` enforcement ref→`SYSTEM-RULES.md`. Visible to the remote instance only after its gateway reloads.
 

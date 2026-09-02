@@ -196,7 +196,7 @@ Autognosia demonstrates strong architectural thinking — three-tier memory, epi
 
 ### Oracle
 
-**What It Is:** Long-term librarian, historian, retrieval specialist (GBrain + literal Markdown fallback).
+**What It Is:** Long-term librarian, historian, retrieval specialist (Brain Search + literal Markdown fallback).
 
 **Best Practices:**
 - Structured retrieval order (semantic → lexical → literal → direct read)
@@ -372,7 +372,7 @@ Autognosia demonstrates strong architectural thinking — three-tier memory, epi
 | Feature | Autognosia | Best-in-Class | Gap |
 |---------|--------|----------------|-----|
 | Memory extraction | Manual ingestion | Mem0 automatic extraction | Manual is slower but richer |
-| Semantic search | GBrain (external) | Built-in vector DB | External dependency |
+| Semantic search | Brain Search (Postgres + pgvector) | Built-in vector DB | Native |
 | Coding agent | OpenCode (remote) | Local coding agent | Privacy trade-off |
 | Proactive engagement | prompt-me (daily) | Continuous monitoring | Daily may be too infinite |
 | Error recovery | Manual | Self-healing agents | No auto-retry |

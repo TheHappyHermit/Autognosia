@@ -53,7 +53,7 @@ chromium-browser \
   --disable-gpu \
   --start-maximized \
   --user-data-dir=/tmp/chromium-fresh \
-  http://10.1.1.37:8088/
+  http://<AGENT_SERVER_IP>:8088/
 ```
 
 Key flags:

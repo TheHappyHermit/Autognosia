@@ -16,10 +16,9 @@ This file credits the upstream projects, design patterns, and components that Au
 - **Repository:** [plastic-labs/honcho](https://github.com/plastic-labs/honcho)
 - **Role:** Autobiographical memory, user modeling, and dialectic state derivation.
 
-### 3. GBrain
-- **Creator:** [Garry Tan](https://garry.com/)
-- **Repository:** [garrytan/gbrain](https://github.com/garrytan/gbrain)
-- **Role:** Markdown-first historical knowledge graph, hybrid vector retrieval (pgvector/PGlite), and MCP endpoint.
+### 3. Brain Search (Postgres + pgvector)
+- **Creator:** Built-in (inspired by Graphify)
+- **Role:** Markdown-first historical knowledge graph, hybrid vector retrieval (pgvector), and MCP endpoint.
 
 ### 4. Graphify
 - **Organization:** [Graphify-Labs](https://github.com/Graphify-Labs) / [Safi Shamsi](https://github.com/safishamsi)
@@ -43,6 +42,6 @@ This file credits the upstream projects, design patterns, and components that Au
 Autognosia is licensed under the MIT License. Upstream projects retain their respective copyrights and licenses:
 - Hermes Agent: Apache 2.0 / MIT
 - Honcho: MIT
-- GBrain: Apache 2.0 / MIT
+- Brain Search: MIT
 - Graphify: MIT
 - SearXNG: AGPL 3.0

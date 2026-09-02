@@ -1280,7 +1280,7 @@ https://honcho.dev/
 
 ## Brain Search
 
-Built on PostgreSQL + pgvector. Inspired by the rebuildable index philosophy originally established with GBrain.
+Built on PostgreSQL + pgvector. Inspired by the rebuildable index philosophy originally established with Graphify.
 
 ## LLM-Wiki Pattern — Andrej Karpathy
 

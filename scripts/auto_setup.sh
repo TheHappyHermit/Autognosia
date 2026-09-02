@@ -204,9 +204,9 @@ fi
 
 success "Environment configured"
 
-# === Phase 6: Docker Services & GBrain ===
+# === Phase 6: Docker Services ===
 echo ""
-log "Phase 6: Deploying Docker services & GBrain..."
+log "Phase 6: Deploying Docker services..."
 
 cd "$REPO_ROOT/docker"
 
@@ -284,45 +284,7 @@ else
     fi
 fi
 
-# Deploy GBrain — PGLite mode (default, no Docker needed)
-log "Setting up GBrain (PGLite mode)..."
-if command -v gbrain &> /dev/null; then
-    log "gbrain CLI already installed"
-else
-    if ! command -v bun &> /dev/null; then
-        log "Installing bun..."
-        if command -v curl &> /dev/null; then
-            curl -fsSL https://bun.sh/install | bash
-            export PATH="$HOME/.bun/bin:$PATH"
-        else
-            warn "curl not available, cannot install bun. Install bun manually: https://bun.sh"
-        fi
-    fi
-    
-    if command -v bun &> /dev/null; then
-        log "Installing gbrain CLI..."
-        bun install -g gbrain
-        log "Initializing gbrain with PGLite..."
-        # Use --no-embedding for headless/deferred embedding configuration
-        gbrain init --pglite --no-embedding 2>/dev/null || gbrain init --pglite
-        success "gbrain installed and initialized"
-    else
-        warn "bun not available, cannot install gbrain. Install manually: bun install -g gbrain"
-    fi
-fi
 
-# Run gbrain doctor to verify
-if command -v gbrain &> /dev/null; then
-    log "Verifying gbrain health..."
-    gbrain doctor --fast 2>&1 | tail -3
-    success "gbrain health check complete"
-else
-    warn "gbrain not installed — install with: bun install -g gbrain"
-fi
-
-# PostgreSQL backend (optional, advanced users only)
-log "Note: For PostgreSQL backend, use: docker compose -f docker-compose.gbrain-postgres.yml up -d"
-log "Requires: bun install -g gbrain, then gbrain init --pglite for PGLite mode"
 
 # Launch Command Deck Dashboard Daemon (Port 8088)
 log "Launching Autognosia Command Deck Dashboard on port 8088..."

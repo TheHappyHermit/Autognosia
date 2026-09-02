@@ -9,7 +9,7 @@ Writes an adapted tree to <tempdir>/autognosia_skills_push, prints how many file
 changed, then verifies no Windows paths remain. Push with:
 
     cd /tmp/autognosia_skills_push   # MSYS view of C:\\tmp\\autognosia_skills_push
-    tar -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server <USER>@10.1.1.37 \
+    tar -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server <USER>@<AGENT_SERVER_IP> \
         "mkdir -p ~/.hermes/skills/research ~/.hermes-autognosia/incoming && tar -xf - -C ~/.hermes/skills/"
 
 Windows notes: run with `python` (no python3 on this box). MSYS /tmp maps to
