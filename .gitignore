@@ -2,8 +2,6 @@
 .hermes/
 .autognosia/
 .github/
-hermes-cortex/
-cortex-backup/
 
 hub/
 .openclaw.pre-migration/
