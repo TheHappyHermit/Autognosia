@@ -2,6 +2,24 @@ import { CommandDeck } from './app-core.js';
 
 // ── Calendar Rendering & Views (Day, Week, Month) ──────────────────────────
 
+function strToDateStr(str) {
+  if (!str) return '';
+  return str.split('T')[0];
+}
+
+function formatTime(isoStr) {
+  if (!isoStr || !isoStr.includes('T')) return '';
+  const time = isoStr.split('T')[1];
+  return time.substring(0, 5);
+}
+
+function getCategoryBadge(cat) {
+  if (cat === 'meeting') return 'badge-cyan';
+  if (cat === 'task_deadline') return 'badge-amber';
+  if (cat === 'subscription') return 'badge-purple';
+  return 'badge-medium';
+}
+
 CommandDeck.prototype.navigateCalendar = function(delta) {
   if (this.selectedCalendarView === 'day') {
     this.currentDate.setDate(this.currentDate.getDate() + delta);
@@ -16,8 +34,8 @@ CommandDeck.prototype.navigateCalendar = function(delta) {
 CommandDeck.prototype.renderCalendar = function() {
   const stage = document.getElementById('calendar-stage');
   const viewStage = document.getElementById('calendar-view-stage');
-  const heading = document.getElementById('cal-heading');
-  
+  const heading = document.querySelector('#view-calendar .view-section-header .view-section-title');
+
   let events = this.state.calendarEvents || [];
   if (this.calFilter === 'meeting') events = events.filter(e => e.category === 'meeting' || e.type === 'calendar');
   else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
@@ -45,7 +63,7 @@ CommandDeck.prototype.renderCalendar = function() {
 CommandDeck.prototype.renderDayView = function(stage, heading, events) {
   const dateStr = this.currentDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   const isoDate = this.currentDate.toISOString().split('T')[0];
-  heading.textContent = dateStr;
+  if (heading) heading.textContent = dateStr;
 
   const dayEvents = events.filter(e => strToDateStr(e.start) === isoDate);
 
@@ -91,7 +109,7 @@ CommandDeck.prototype.renderWeekView = function(stage, heading, events) {
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-  heading.textContent = `${startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+  if (heading) heading.textContent = `${startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 
   let html = '<div style="display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; height:100%;">';
 
@@ -123,7 +141,7 @@ CommandDeck.prototype.renderWeekView = function(stage, heading, events) {
 CommandDeck.prototype.renderMonthView = function(stage, heading, events) {
   const year = this.currentDate.getFullYear();
   const month = this.currentDate.getMonth();
-  heading.textContent = this.currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  if (heading) heading.textContent = this.currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
