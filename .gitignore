@@ -40,7 +40,17 @@ Thumbs.db
 # ── Screenshots and temp files ──
 dashboard-*.png
 dashboard_*.png
+view-*.png
 debug_*.py
+
+# ── Separate projects (not part of Autognosia core) ──
+rebate-platform/
+
+# ── Runtime task state ──
+pending/
+
+# ── Research scratch data (not source) ──
+ontology_memory_2026_findings.json
 demo_data.py
 Decision-*.md
 developmental_ai_research.json
@@ -340,3 +350,4 @@ engram_research_pubmed.json
 fca_research_output.json
 ontology_alignment_report_2026.json
 upper_ontology_research_2026.json
+dashboard/autognosia
