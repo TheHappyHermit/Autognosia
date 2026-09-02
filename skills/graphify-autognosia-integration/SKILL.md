@@ -67,7 +67,7 @@ If Graphify is unavailable, stale, returning no result, or returning incorrect r
 ## Ingestion Pipeline (V100-only — NO OpenRouter, NO desktop 3090)
 
 > **HARD RULE (Josh, 2026-08-26):** Graphify runs ONLY on the local V100 at
-> `http://10.1.1.10:8080/v1` (`/models/Qwen3.6-35B-A3B-Q4_K_M.gguf`). It must
+> `http://127.0.0.1:8080/v1` (`/models/Qwen3.6-35B-A3B-Q4_K_M.gguf`). It must
 > NEVER fall back to OpenRouter, and it must NEVER use the desktop 3090
 > (`localhost:1234` / `10.1.1.151:1234`) — that GPU is reserved for OpenCode /
 > desktop-researcher. The launch scripts bake in this env and a 96k
@@ -97,7 +97,7 @@ correct backend, model, output dir, and token cap.
 
 ### Local V100 (REQUIRED for this deployment)
 ```bash
-export OPENAI_BASE_URL="http://10.1.1.10:8080/v1"
+export OPENAI_BASE_URL="http://127.0.0.1:8080/v1"
 export OPENAI_API_KEY="sk-local"
 export OPENAI_MODEL="/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
 export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"   # 96k — avoids JSON truncation (bug #1365)

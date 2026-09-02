@@ -4,6 +4,9 @@ Install all repo skills to ${HOME}/.hermes/skills/ directory.
 
 This script copies skills from the repository into the Hermes Agent
 skills directory so they're available immediately after setup.
+
+Supports nested category subdirectories (e.g., skills/research/web-research-fallbacks/).
+Each directory containing a SKILL.md is installed as a separate skill.
 """
 
 import os
@@ -26,17 +29,18 @@ def main():
     installed_count = 0
     skipped_count = 0
     
-    for skill_dir in repo_skills.iterdir():
-        if skill_dir.is_dir() and (skill_dir / "SKILL.md").exists():
-            target = installed_skills / skill_dir.name
-            
-            if not target.exists():
-                shutil.copytree(skill_dir, target)
-                print(f"[installed] {skill_dir.name}")
-                installed_count += 1
-            else:
-                print(f"[skipped] {skill_dir.name} (already installed)")
-                skipped_count += 1
+    # Recursively find all SKILL.md files
+    for skill_md in repo_skills.rglob("SKILL.md"):
+        skill_dir = skill_md.parent
+        target = installed_skills / skill_dir.name
+        
+        if not target.exists():
+            shutil.copytree(skill_dir, target)
+            print(f"[installed] {skill_dir.name}")
+            installed_count += 1
+        else:
+            print(f"[skipped] {skill_dir.name} (already installed)")
+            skipped_count += 1
     
     print(f"\nSummary: {installed_count} installed, {skipped_count} skipped")
     return 0

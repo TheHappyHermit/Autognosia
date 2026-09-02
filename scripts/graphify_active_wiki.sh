@@ -12,7 +12,7 @@ LOG=/home/<USER>/.autognosia/logs/graphify-active-wiki.log
   echo "=== ACTIVE-WIKI GRAPHIFY $(date -u '+%Y-%m-%dT%H:%M:%SZ') — iGPU Ollama, qwen3.5:9b ==="
 } >> "$LOG"
 
-export OPENAI_BASE_URL="http://10.1.1.10:11434/v1"
+export OPENAI_BASE_URL="http://127.0.0.1:11434/v1"
 export OPENAI_API_KEY="sk-local"
 export OPENAI_MODEL="qwen3.5:9b"
 export GRAPHIFY_DISABLE_THINKING="1"

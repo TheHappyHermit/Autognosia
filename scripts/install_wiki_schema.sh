@@ -13,7 +13,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-SCHEMA_FILE="$REPO_DIR/schemas/wiki-schema.md"
+SCHEMA_FILE="$REPO_DIR/docs/schemas/SCHEMA.md"
 
 if [[ ! -f "$SCHEMA_FILE" ]]; then
   echo "ERROR: $SCHEMA_FILE not found. Are you running from the autognosia checkout?" >&2

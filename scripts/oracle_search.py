@@ -7,8 +7,9 @@ using ripgrep. Read-only.
 import sys
 import subprocess
 import os
+from pathlib import Path
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
 BRAIN_DIR = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
 
 def search(query: str, case_sensitive: bool = False, title_only: bool = False,

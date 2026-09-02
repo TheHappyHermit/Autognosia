@@ -46,7 +46,7 @@ def refresh_graph(name, source, graph_file):
 
     env = os.environ.copy()
     env["OPENAI_API_KEY"] = "sk-local"
-    env["OPENAI_BASE_URL"] = "http://10.1.1.10:11434/v1"
+    env["OPENAI_BASE_URL"] = "http://127.0.0.1:11434/v1"
     env["OPENAI_MODEL"] = "qwen3.5:9b"
     env["GRAPHIFY_DISABLE_THINKING"] = "1"
     env["GRAPHIFY_MAX_OUTPUT_TOKENS"] = "98304"

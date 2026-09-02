@@ -12,13 +12,14 @@ Usage:
 """
 
 import os
+from pathlib import Path
 import sys
 import shutil
 import subprocess
 from datetime import datetime
 
-HERMES_HOME = os.path.expanduser("${HOME}/.hermes")
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+HERMES_HOME = str(Path.home() / ".hermes")
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
 LOG_FILE = os.path.join(AUTOGNOSIA_HOME, "logs", "config-backup.log")
 
 # Items to back up from ${HOME}/.hermes/

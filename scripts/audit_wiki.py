@@ -14,11 +14,12 @@ Usage:
 """
 
 import os
+from pathlib import Path
 import sys
 import argparse
 import yaml
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
 DEFAULT_VAULT = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
 
 MIN_FILE_SIZE = 5000  # 5KB minimum for content files

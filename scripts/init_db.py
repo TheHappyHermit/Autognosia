@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT,
-    status TEXT DEFAULT 'active' CHECK(status IN ('active', 'completed', 'cancelled', 'blocked')),
+    status TEXT DEFAULT 'active' CHECK(status IN ('active', 'next', 'in_progress', 'waiting', 'completed', 'cancelled', 'blocked')),
     priority TEXT DEFAULT 'medium' CHECK(priority IN ('low', 'medium', 'high', 'critical')),
     due_at TEXT,
     completed_at TEXT,

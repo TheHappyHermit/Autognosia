@@ -100,7 +100,7 @@ services:
     environment:
       - POSTGRES_DB=${HONCHO_PG_DB:-postgres}
       - POSTGRES_USER=${HONCHO_PG_USER:-postgres}
-      - POSTGRES_PASSWORD=$${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}
+      - POSTGRES_PASSWORD=${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}
       - POSTGRES_HOST_AUTH_METHOD=trust
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:

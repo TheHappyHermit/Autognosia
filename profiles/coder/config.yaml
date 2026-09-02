@@ -1,7 +1,7 @@
 model:
   default: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
   provider: llamaCPP
-  base_url: http://10.1.1.10:8080/v1
+  base_url: http://127.0.0.1:8080/v1
   context_length: 262144
 providers:
   llamaCPP:

@@ -19,8 +19,9 @@ AUTOGNOSIA_HOME_STR = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".auto
 AUTOGNOSIA_HOME = Path(AUTOGNOSIA_HOME_STR)
 ACTIVE_WIKI = AUTOGNOSIA_HOME / "active-wiki"
 ORACLE_BRAIN = AUTOGNOSIA_HOME / "oracle" / "brain"
-MAIN_GRAPH_OUT = AUTOGNOSIA_HOME / "graphify-main-out"
-ORACLE_GRAPH_OUT = AUTOGNOSIA_HOME / "graphify-oracle-out"
+# Graphify writes in-place to <source>/graphify-out/graph.json by default
+MAIN_GRAPH_OUT = ACTIVE_WIKI / "graphify-out"
+ORACLE_GRAPH_OUT = ORACLE_BRAIN / "graphify-out"
 CONFIG_FILE = AUTOGNOSIA_HOME / "graphify-config.env"
 
 def ensure_directories():
@@ -51,7 +52,7 @@ def ensure_directories():
 
 def set_secrets_permissions():
     """Set 700 permissions on secrets directory if it exists."""
-    secrets_dir = PERSONAL_AGENT / "secrets"
+    secrets_dir = AUTOGNOSIA_HOME / "secrets"
     if secrets_dir.exists():
         os.chmod(str(secrets_dir), 0o700)
         print(f"  [permissions] secrets directory: 700")
@@ -160,7 +161,7 @@ def main():
     
     print("\nNext steps:")
     print("  1. Ingest wiki content")
-    print("  2. Run graph extraction: graphify extract active-wiki/ --out graphify-main-out")
+    print("  2. Run graph extraction: graphify extract active-wiki/ --out active-wiki/graphify-out")
     return 0
 
 if __name__ == "__main__":

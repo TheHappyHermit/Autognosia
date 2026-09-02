@@ -187,7 +187,7 @@ The active wiki graphify ingestion uses `GRAPHIFY_DISABLE_THINKING=1` for faster
 
 ```bash
 # Launch graphify extract on active wiki
-export OPENAI_BASE_URL="http://10.1.1.10:8080/v1"
+export OPENAI_BASE_URL="http://127.0.0.1:8080/v1"
 export OPENAI_API_KEY="sk-local"
 export OPENAI_MODEL="/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
 export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"
