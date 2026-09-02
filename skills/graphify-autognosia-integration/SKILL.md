@@ -58,7 +58,7 @@ If Graphify is unavailable, stale, returning no result, or returning incorrect r
 ### Oracle Graph Fallback Order
 1. Ordinary wiki search (`ripgrep /home/<USER>/.autognosia/oracle/brain/`)
 2. Direct Markdown/source inspection
-3. GBrain semantic/hybrid retrieval (via Oracle profile)
+3. **Ripgrep fallback** (if semantic search misses)
 4. Raw evidence search (`/home/<USER>/.autognosia/oracle/raw/`)
 5. Research Hermes
 

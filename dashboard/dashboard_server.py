@@ -669,15 +669,14 @@ def get_telemetry():
     if AUTOGNOSIA_DB.exists():
         db_stats["autognosia.db"] = f"{AUTOGNOSIA_DB.stat().st_size / 1024:.1f} KB"
 
-    # GBrain CLI
-    gbrain_installed = bool(shutil.which("gbrain") or shutil.which("gbrain.cmd"))
+    # Brain CLI (legacy — no longer used)
 
     return {
         "docker_available": docker_available,
         "containers": containers,
         "profiles": profile_status,
         "databases": db_stats,
-        "gbrain_cli": gbrain_installed,
+        "gbrain_cli": False,  # legacy — no longer used
         "server_time": datetime.now(timezone.utc).isoformat()
     }
 
@@ -1164,7 +1163,7 @@ HOME_LAB_SERVERS = {
         "gpu": {"name": "V100", "memory_mb": 32768, "type": "nvidia"},
     },
     "agent": {
-        "ip": "10.1.1.37",
+        "ip": "<AGENT_SERVER_IP>",
         "name": "Agent",
         "role": "Hermes gateway, paperclip, memory systems",
         "services": {
@@ -1178,7 +1177,7 @@ HOME_LAB_SERVERS = {
         },
     },
     "agent_zero": {
-        "ip": "10.1.1.18",
+        "ip": "<AGENT_ZERO_IP>",
         "name": "Agent Zero",
         "role": "Autonomous agent, data brokering",
         "services": {

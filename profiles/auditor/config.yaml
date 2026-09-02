@@ -1,6 +1,6 @@
 # Auditor — Evaluation, claim verification, and epistemic dispute resolution
 #
-# MCP access: personal-organizer (read-only verification), gbrain (evidence lookup)
+# MCP access: personal-organizer (read-only verification)
 # Excluded: SearXNG (Auditor doesn't search the internet)
 # Excluded: honcho (Auditor doesn't access autobiographical memory)
 #
@@ -12,6 +12,3 @@ model:
 mcp_servers:
   personal-organizer:
     url: "http://127.0.0.1:8001"
-  gbrain:
-    command: "gbrain"
-    args: ["mcp"]

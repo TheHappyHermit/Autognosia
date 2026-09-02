@@ -100,53 +100,7 @@ def check_honcho():
     running = [line.split()[0] for line in output.strip().split("\n") if "honcho" in line.lower()]
     return False, f"Honcho incomplete. Running: {', '.join(running) or 'none'}"
 
-def check_gbrain():
-    """Check GBrain CLI."""
-    bun_bin = shutil.which("gbrain") or shutil.which("gbrain.cmd")
-    if not bun_bin:
-        # Check common Bun install paths
-        candidates = [
-            str(HOME / ".bun" / "bin" / "gbrain"),
-            str(HOME / ".bun" / "bin" / "gbrain.cmd"),
-            "/usr/local/bin/gbrain",
-            "/opt/homebrew/bin/gbrain",
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                bun_bin = c
-                break
-    if bun_bin:
-        r = subprocess.run(
-            [bun_bin, "--version"],
-            capture_output=True, text=True, timeout=15
-        )
-        if r.returncode == 0:
-            return True, f"GBrain {r.stdout.strip()}"
-    return False, "GBrain CLI not available"
 
-def check_gbrain_health():
-    bun_bin = shutil.which("gbrain") or shutil.which("gbrain.cmd")
-    if not bun_bin:
-        candidates = [
-            str(HOME / ".bun" / "bin" / "gbrain"),
-            str(HOME / ".bun" / "bin" / "gbrain.cmd"),
-            "/usr/local/bin/gbrain",
-            "/opt/homebrew/bin/gbrain",
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                bun_bin = c
-                break
-    if bun_bin:
-        try:
-            r = subprocess.run(
-                [bun_bin, "doctor"],
-                capture_output=True, text=True, timeout=60
-            )
-            return True, "GBrain doctor verified"
-        except Exception as e:
-            return False, f"GBrain doctor error: {e}"
-    return False, "GBrain CLI not found"
 
 # ── Directory structure ──────────────────────────────────────────────────
 
