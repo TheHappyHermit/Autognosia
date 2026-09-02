@@ -12,6 +12,8 @@ export function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+window.escapeHtml = escapeHtml;
+
 export class CommandDeck {
   constructor() {
     this.apiBase = window.location.origin;
@@ -265,21 +267,24 @@ export class CommandDeck {
   }
 
   async refreshAllData() {
+    const safe = async (fn) => {
+      try { await fn(); } catch(e) { console.warn('Fetch error:', e.message); }
+    };
     await Promise.all([
-      this.fetchSystemStats(),
-      this.fetchOverview(),
-      this.fetchBriefing(),
-      this.fetchTasks(),
-      this.fetchReminders(),
-      this.fetchProjects(),
-      this.fetchCalendar(),
-      this.fetchEmails(),
-      this.fetchIntentions(),
-      this.fetchTelemetry(),
-      this.fetchServices(),
-      this.fetchAgentStatus(),
-      this.fetchCronJobs(),
-      this.fetchGraphifyStatus(),
+      safe(() => this.fetchSystemStats()),
+      safe(() => this.fetchOverview()),
+      safe(() => this.fetchBriefing()),
+      safe(() => this.fetchTasks()),
+      safe(() => this.fetchReminders()),
+      safe(() => this.fetchProjects()),
+      safe(() => this.fetchCalendar()),
+      safe(() => this.fetchEmails()),
+      safe(() => this.fetchIntentions()),
+      safe(() => this.fetchTelemetry()),
+      safe(() => this.fetchServices()),
+      safe(() => this.fetchAgentStatus()),
+      safe(() => this.fetchCronJobs()),
+      safe(() => this.fetchGraphifyStatus()),
     ]);
   }
 
