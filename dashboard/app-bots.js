@@ -38,7 +38,7 @@ class BotsPage {
     if (this.bots.length === 0) {
       stripe.innerHTML = `
         <div class="bot-empty">
-          <div class="bot-empty-icon">🤖</div>
+          <div class="bot-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/></svg></div>
           <div class="bot-empty-title">No Agents Configured</div>
           <div class="bot-empty-desc">Add your first bot to get started.</div>
         </div>
@@ -54,7 +54,7 @@ class BotsPage {
     const isActive = this.currentBot && this.currentBot.id === bot.id ? ' active' : '';
     return `
       <div class="bot-stripe-item${isActive}" data-bot-id="${bot.id}" tabindex="0" role="button" aria-label="Chat with ${escapeHtml(bot.name)}">
-        <div class="bot-stripe-avatar">${bot.avatar || '🤖'}</div>
+        <div class="bot-stripe-avatar">${bot.avatar || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/></svg>'}</div>
         <div class="bot-stripe-info">
           <div class="bot-stripe-name">${escapeHtml(bot.name)}</div>
           <div class="bot-stripe-role">${escapeHtml(bot.role)}</div>
@@ -117,7 +117,7 @@ class BotsPage {
     const statusDot = document.getElementById('chat-bot-status-dot');
     const statusText = document.getElementById('chat-bot-status-text');
 
-    if (avatarEl) avatarEl.textContent = bot.avatar || '🤖';
+    if (avatarEl) avatarEl.innerHTML = bot.avatar || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/></svg>';
     if (nameEl) nameEl.textContent = bot.name;
     if (modelEl) modelEl.textContent = `${bot.model} • ${bot.provider}`;
     if (statusDot) statusDot.className = `bot-status-dot bot-status-dot--${bot.status || 'idle'}`;

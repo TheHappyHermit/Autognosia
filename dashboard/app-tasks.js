@@ -4,8 +4,8 @@ import { CommandDeck } from './app-core.js';
 
 CommandDeck.prototype.renderTasks = function() {
   const container = document.getElementById('task-list-container');
+  const viewContainer = document.getElementById('tasks-view-container');
   const waitingContainer = document.getElementById('waiting-list-container');
-  if (!container) return;
   
   let filtered = this.state.tasks;
   if (this.taskFilter === 'critical') filtered = filtered.filter(t => t.priority === 'critical' && t.status !== 'completed');
@@ -14,10 +14,13 @@ CommandDeck.prototype.renderTasks = function() {
   else if (this.taskFilter === 'completed') filtered = filtered.filter(t => t.status === 'completed');
   else if (this.taskFilter === 'all') filtered = filtered.filter(t => t.status !== 'completed');
 
+  const renderTarget = container || viewContainer;
+  if (!renderTarget) return;
+
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-hint">No tasks in this view. Use quick add above to create one!</div>';
+    renderTarget.innerHTML = '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="empty-state__title">No tasks</div><div class="empty-state__desc">Your pipeline is clear.</div></div>';
   } else {
-    container.innerHTML = filtered.map(t => this.renderTaskCard(t)).join('');
+    renderTarget.innerHTML = filtered.map(t => this.renderTaskCard(t)).join('');
   }
 
   // Waiting / Blocked tab
@@ -31,7 +34,7 @@ CommandDeck.prototype.renderTasks = function() {
   }
 
   // Bind checkboxes
-  container.querySelectorAll('.task-checkbox').forEach(cb => {
+  renderTarget.querySelectorAll('.task-checkbox').forEach(cb => {
     cb.addEventListener('change', async (e) => {
       const id = e.target.dataset.taskId;
       const newStatus = e.target.checked ? 'completed' : 'next';
@@ -53,8 +56,8 @@ CommandDeck.prototype.renderTaskCard = function(t) {
           <span class="badge badge-${t.priority || 'medium'}">${t.priority}</span>
         </div>
         <div class="task-meta-row">
-          ${t.project_name ? `<span>📁 ${escapeHtml(t.project_name)}</span><span>•</span>` : ''}
-          ${t.due_at ? `<span>⏰ Due ${escapeHtml(t.due_at)}</span><span>•</span>` : ''}
+          ${t.project_name ? `<span class="task-project"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>${escapeHtml(t.project_name)}</span><span>•</span>` : ''}
+          ${t.due_at ? `<span class="task-due"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Due ${escapeHtml(t.due_at)}</span><span>•</span>` : ''}
           <span>Status: ${t.status}</span>
         </div>
       </div>
@@ -121,12 +124,12 @@ CommandDeck.prototype.renderReminders = function() {
 CommandDeck.prototype.renderReminderCard = function(r) {
   const channel = r.channel || 'all';
   const channelLabels = {
-    all: '⚡ All Channels',
-    telegram: '📱 Telegram',
-    discord: '💬 Discord',
-    email: '📧 Email',
-    sms: '📞 Phone/SMS',
-    desktop: '🖥️ Desktop'
+    all: 'All Channels',
+    telegram: 'Telegram',
+    discord: 'Discord',
+    email: 'Email',
+    sms: 'Phone/SMS',
+    desktop: 'Desktop'
   };
 
   return `

@@ -15,26 +15,30 @@ CommandDeck.prototype.navigateCalendar = function(delta) {
 
 CommandDeck.prototype.renderCalendar = function() {
   const stage = document.getElementById('calendar-stage');
+  const viewStage = document.getElementById('calendar-view-stage');
   const heading = document.getElementById('cal-heading');
-  if (!stage) return;
-
+  
   let events = this.state.calendarEvents || [];
   if (this.calFilter === 'meeting') events = events.filter(e => e.category === 'meeting' || e.type === 'calendar');
   else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
   else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
 
+  const renderTarget = stage || viewStage;
+  if (!renderTarget) return;
+
   if (events.length === 0) {
-    stage.innerHTML = '<div class="empty-hint">No events scheduled.</div>';
+    const emptyHtml = '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="empty-state__title">No events</div><div class="empty-state__desc">Your calendar is clear.</div></div>';
+    renderTarget.innerHTML = emptyHtml;
     if (heading) heading.textContent = 'No events';
     return;
   }
 
   if (this.selectedCalendarView === 'day') {
-    this.renderDayView(stage, heading, events);
+    this.renderDayView(renderTarget, heading, events);
   } else if (this.selectedCalendarView === 'week') {
-    this.renderWeekView(stage, heading, events);
+    this.renderWeekView(renderTarget, heading, events);
   } else if (this.selectedCalendarView === 'month') {
-    this.renderMonthView(stage, heading, events);
+    this.renderMonthView(renderTarget, heading, events);
   }
 };
 
@@ -67,7 +71,7 @@ CommandDeck.prototype.renderDayView = function(stage, heading, events) {
                 <span>${e.all_day ? 'ALL DAY' : formatTime(e.start)}</span>
                 <span>•</span>
                 <span class="badge ${getCategoryBadge(e.category)}">${e.category}</span>
-                ${e.location ? `<span>📍 ${escapeHtml(e.location)}</span>` : ''}
+                ${e.location ? `<span class="event-location"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${escapeHtml(e.location)}</span>` : ''}
               </div>
             </div>
           `).join('')}

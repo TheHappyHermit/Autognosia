@@ -63,7 +63,7 @@ CommandDeck.prototype.renderTelemetry = function() {
     <div class="telemetry-block">
       <h4>CONTAINER SERVICES (DOCKER)</h4>
       ${t.containers && t.containers.length > 0 ? t.containers.map(c => `
-        <div>✓ <strong>${escapeHtml(c.name)}</strong>: ${escapeHtml(c.status)}</div>
+        <div><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <strong>${escapeHtml(c.name)}</strong>: ${escapeHtml(c.status)}</div>
       `).join('') : '<div style="color:var(--text-muted);">No Docker containers currently active.</div>'}
     </div>
   `;
