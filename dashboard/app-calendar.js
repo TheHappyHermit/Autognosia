@@ -41,7 +41,8 @@ CommandDeck.prototype.renderCalendar = function() {
   else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
   else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
 
-  const renderTarget = stage || viewStage;
+  // Prefer the Calendar view container; fall back to dashboard calendar-stage
+  const renderTarget = viewStage || stage;
   if (!renderTarget) return;
 
   if (events.length === 0) {
