@@ -1,13 +1,14 @@
 /* ==========================================================================
    Main Content Area & Panel Layout
-   Dark Executive Command Center — glassmorphism panels, precision spacing
+   Premium Light-First Design — glassmorphism panels, precision spacing
    ========================================================================== */
 
 .app-layout {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-columns: var(--sidebar-width, 200px) 1fr;
   min-height: 100vh;
   background: var(--bg-primary);
+  transition: grid-template-columns var(--motion-base) var(--ease-out);
 }
 
 .content-area {
@@ -15,7 +16,39 @@
   margin-top: var(--header-height);
   padding: var(--space-4) var(--space-5);
   overflow-y: auto;
-  max-width: calc(100vw - var(--sidebar-width));
+  max-width: calc(100vw - var(--sidebar-width, 200px));
+  transition: max-width var(--motion-base) var(--ease-out);
+}
+
+/* View sections */
+.view-section {
+  grid-column: 2;
+  margin-top: var(--header-height);
+  padding: var(--space-4) var(--space-5);
+  overflow-y: auto;
+  display: none;
+}
+
+.view-section.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.view-section-header {
+  margin-bottom: var(--space-5);
+}
+
+.view-section-title {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+}
+
+.view-section-subtitle {
+  font-size: var(--fs-md);
+  color: var(--text-3);
+  margin-top: var(--space-1);
 }
 
 /* ── Hero Stats Row (system metrics) ──────────────────────────────────── */
@@ -28,8 +61,8 @@
 
 .hero-stat {
   background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   padding: var(--space-3) var(--space-4);
@@ -79,7 +112,7 @@
   color: var(--text-1);
   line-height: 1.1;
   font-family: var(--font-mono);
-  letter-spacing: -0.02em;
+  letter: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -98,7 +131,7 @@
 }
 
 .hud-metric {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-2) var(--space-3);
@@ -110,8 +143,9 @@
 }
 
 .hud-metric:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-tertiary);
   border-color: var(--border-medium);
+  box-shadow: var(--shadow-sm);
 }
 
 .hud-metric__label {
@@ -159,7 +193,7 @@
   flex-shrink: 0;
 }
 
-/* ── Panels Grid (Linear-style glass cards) ───────────────────────────── */
+/* ── Panels Grid (glass cards) ───────────────────────────── */
 .panels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -167,20 +201,25 @@
 }
 
 .panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: var(--space-4);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
   transition: all var(--motion-fast);
   position: relative;
 }
 
 .panel:hover {
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--shadow-glow-accent);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
 }
 
 .panel-header {
@@ -202,6 +241,8 @@
 
 .panel-title svg {
   color: var(--accent);
+  width: 18px;
+  height: 18px;
 }
 
 .panel-body {
@@ -232,8 +273,13 @@
 }
 
 .empty-state__icon {
-  font-size: 28px;
+  color: var(--text-4);
   margin-bottom: var(--space-1);
+}
+
+.empty-state__icon svg {
+  width: 32px;
+  height: 32px;
   opacity: 0.4;
 }
 
@@ -257,7 +303,7 @@
 .tab-group {
   display: flex;
   gap: 2px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   padding: 2px;
   border-radius: var(--radius-md);
   margin-bottom: var(--space-3);
@@ -279,21 +325,20 @@
 
 .tab-btn:hover {
   color: var(--text-1);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .tab-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .tab-btn.active {
-  background: rgba(34, 211, 238, 0.12);
+  background: var(--bg-secondary);
   color: var(--accent);
-  box-shadow: none;
+  box-shadow: var(--shadow-xs);
 }
 
-/* ── Bots View Grid Placement ────────────────────────────────────────── */
-.bots-view {
-  grid-column: 2;
-}
-
-/* ── Responsive (Linear-style breakpoints) ────────────────────────────── */
+/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1280px) {
   .hero-stats {
     grid-template-columns: repeat(3, 1fr);
@@ -325,4 +370,114 @@
   .hero-stat {
     padding: var(--space-2);
   }
+}
+
+/* ── Agent Cards (Agents View) ──────────────────────────────────────── */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.agent-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  transition: all var(--motion-fast);
+}
+
+[data-theme="dark"] .agent-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.agent-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+.agent-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.agent-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agent-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.agent-card__name {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.agent-card__model {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.agent-status-pill {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.agent-status-pill.online {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.agent-status-pill.offline {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.agent-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.agent-stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+}
+
+.agent-stat-label {
+  color: var(--text-3);
+}
+
+.agent-stat-value {
+  font-weight: 600;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+}
+
+/* ── Loading State ──────────────────────────────────────────────────── */
+.agent-loading {
+  text-align: center;
+  padding: var(--space-4);
+  color: var(--text-3);
+  font-size: var(--fs-sm);
 }

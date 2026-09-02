@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Autognosia // Command Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="sidebar.css" />
   <link rel="stylesheet" href="header.css" />
@@ -21,15 +24,43 @@
 <body>
   <div class="app-layout">
     <!-- Sidebar Navigation -->
-    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <nav class="sidebar" role="navigation" aria-label="Main navigation" id="main-sidebar">
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Collapse sidebar" title="Collapse">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
       <div class="sidebar-logo" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
       </div>
+      <div class="sidebar-section-label">Navigation</div>
       <div class="sidebar-nav">
-        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">🏠<span class="sidebar-label">Dashboard</span></a>
-        <a href="#" class="sidebar-link" data-view="bots" aria-label="Agents" title="Agents">🤖<span class="sidebar-label">Agents</span></a>
+        <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="sidebar-label">Dashboard</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="agents" aria-label="Agents" title="Agents">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+          <span class="sidebar-label">Agents</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="calendar" aria-label="Calendar" title="Calendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="sidebar-label">Calendar</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="tasks" aria-label="Tasks" title="Tasks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span class="sidebar-label">Tasks</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="services" aria-label="Services" title="Services">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="sidebar-label">Services</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="homelab" aria-label="Home Lab" title="Home Lab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span class="sidebar-label">Home Lab</span>
+        </a>
       </div>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
@@ -37,38 +68,45 @@
 
     <!-- Header -->
     <header class="app-header" role="banner">
-      <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">☰</button>
+      <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <div class="header-brand">
         <span class="header-brand-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
         </span>
         <span>Autognosia</span>
       </div>
       <div class="header-search">
-        <span class="header-search-icon" aria-hidden="true">🔍</span>
+        <span class="header-search-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
         <input type="search" id="global-search" placeholder="Search..." aria-label="Search" />
         <span class="header-search-hint">⌘K</span>
       </div>
       <div class="header-actions">
+        <button class="theme-toggle" aria-label="Toggle theme" title="Toggle theme" id="theme-toggle">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
         <button class="header-btn" aria-label="Notifications" title="Notifications">
-          🔔
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="badge-dot" aria-hidden="true"></span>
         </button>
-        <div class="hud-clock" id="hud-clock" aria-label="UTC time">
+        <div class="hud-clock" id="hud-clock" aria-label="Local time">
           <span class="clock-time">00:00:00</span>
         </div>
         <div class="system-status" aria-label="System status">
           <span class="status-dot status-dot--ok" aria-hidden="true"></span>
           <span>Healthy</span>
         </div>
-
       </div>
     </header>
 
-    <!-- Main Content Area (Dashboard View) -->
-    <main class="content-area" id="main-content" role="main" data-current-view="dashboard">
+    <!-- Dashboard View -->
+    <div id="view-dashboard" class="view-section active">
       <!-- Hero Stats Row -->
       <section class="hero-stats" aria-label="System metrics">
         <div class="hero-stat">
@@ -136,7 +174,8 @@
         <div class="server-card" id="server-main">
           <div class="server-card__header">
             <div class="server-card__name">
-              🖥️ 127.0.0.1
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>127.0.0.1</span>
               <span class="server-card__ip">Main</span>
             </div>
             <span class="server-card__status online" id="server-main-status">● Online</span>
@@ -162,7 +201,8 @@
         <div class="server-card" id="server-agent">
           <div class="server-card__header">
             <div class="server-card__name">
-              🤖 <AGENT_SERVER_IP>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+              <span><AGENT_SERVER_IP></span>
               <span class="server-card__ip">Agent</span>
             </div>
             <span class="server-card__status online" id="server-agent-status">● Online</span>
@@ -183,7 +223,8 @@
         <div class="server-card" id="server-agent-zero">
           <div class="server-card__header">
             <div class="server-card__name">
-              ⚡ <AGENT_ZERO_IP>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span><AGENT_ZERO_IP></span>
               <span class="server-card__ip">Agent Zero</span>
             </div>
             <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
@@ -201,7 +242,10 @@
       <!-- Briefing Bar -->
       <section class="panel" aria-label="Daily briefing">
         <div class="panel-header">
-          <div class="panel-title">📋 Daily Executive Synthesis</div>
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Daily Executive Synthesis
+          </div>
           <div class="panel-footer" style="margin:0;padding:0;border:none">
             <span id="briefing-date" style="color:var(--text-3);font-size:var(--fs-sm);">Loading date...</span>
             <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:var(--fs-sm);margin-left:8px;">just now</span>
@@ -225,11 +269,16 @@
         <!-- Calendar Panel -->
         <section class="panel" aria-label="Calendar & Schedule">
           <div class="panel-header">
-            <div class="panel-title">📅 Schedule & Calendar</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Schedule & Calendar
+            </div>
           </div>
           <div class="panel-body" id="calendar-stage">
             <div class="empty-state">
-              <div class="empty-state__icon">📅</div>
+              <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
               <div class="empty-state__title">No events today</div>
               <div class="empty-state__desc">Your schedule is clear.</div>
             </div>
@@ -239,11 +288,16 @@
         <!-- Tasks Panel -->
         <section class="panel" aria-label="Action Pipeline">
           <div class="panel-header">
-            <div class="panel-title">✅ Action Pipeline</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Action Pipeline
+            </div>
           </div>
           <div class="panel-body" id="task-list-container">
             <div class="empty-state">
-              <div class="empty-state__icon">✓</div>
+              <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
               <div class="empty-state__title">No active tasks</div>
               <div class="empty-state__desc">Pipeline clear.</div>
             </div>
@@ -253,11 +307,17 @@
         <!-- Telemetry Panel -->
         <section class="panel" aria-label="System Telemetry">
           <div class="panel-header">
-            <div class="panel-title">📊 Telemetry</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Telemetry
+            </div>
           </div>
           <div class="panel-body">
             <div class="telemetry-grid" id="telemetry-grid">
-              <div class="skeleton skeleton-card" style="height:60px"></div>
+              <div class="telemetry-metric">
+                <div class="telemetry-metric__value">--</div>
+                <div class="telemetry-metric__label">Loading...</div>
+              </div>
             </div>
           </div>
         </section>
@@ -265,11 +325,16 @@
         <!-- Email Panel -->
         <section class="panel" aria-label="Email Radar">
           <div class="panel-header">
-            <div class="panel-title">✉️ Email Radar</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email Radar
+            </div>
           </div>
           <div class="panel-body" id="email-stream-container">
             <div class="empty-state">
-              <div class="empty-state__icon">✉️</div>
+              <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
               <div class="empty-state__title">Inbox clear</div>
               <div class="empty-state__desc">Nothing hunting you right now.</div>
             </div>
@@ -279,11 +344,16 @@
         <!-- Intentions Panel -->
         <section class="panel" aria-label="Prospective Intentions">
           <div class="panel-header">
-            <div class="panel-title">⏱ Prospective Intentions</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Prospective Intentions
+            </div>
           </div>
           <div class="panel-body" id="intentions-stream-container">
             <div class="empty-state">
-              <div class="empty-state__icon">⏱</div>
+              <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
               <div class="empty-state__title">No active intentions</div>
               <div class="empty-state__desc">Prospective memory is quiet.</div>
             </div>
@@ -293,13 +363,18 @@
         <!-- Wiki Search Panel -->
         <section class="panel" aria-label="Knowledge Vault">
           <div class="panel-header">
-            <div class="panel-title">🧠 Knowledge Vault</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              Knowledge Vault
+            </div>
           </div>
           <div class="panel-body">
             <input type="search" id="wiki-search-input" placeholder="Search knowledge vault…" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-tertiary);color:var(--text-1);margin-bottom:var(--space-3)" />
             <div id="wiki-results-container">
               <div class="empty-state">
-                <div class="empty-state__icon">🔍</div>
+                <div class="empty-state__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
                 <div class="empty-state__title">Search your knowledge vault</div>
                 <div class="empty-state__desc">Type above to search across all documents.</div>
               </div>
@@ -314,89 +389,198 @@
       <div class="panels-grid">
         <section class="panel" aria-label="Hermes Agent">
           <div class="panel-header">
-            <div class="panel-title">🤖 Hermes Agent</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+              Hermes Agent
+            </div>
             <div class="panel-status" id="agent-status"></div>
           </div>
           <div class="panel-body" id="agent-grid">
-            <div class="skeleton skeleton-card" style="height:60px"></div>
+            <div class="agent-loading">Loading agent status...</div>
           </div>
         </section>
 
         <section class="panel" aria-label="Cron Jobs">
           <div class="panel-header">
-            <div class="panel-title">⏰ Scheduled Jobs</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Scheduled Jobs
+            </div>
             <div class="panel-status" id="cron-status"></div>
           </div>
           <div class="panel-body" id="cron-list">
-            <div class="skeleton skeleton-card" style="height:60px"></div>
+            <div class="agent-loading">Loading cron jobs...</div>
           </div>
         </section>
 
         <section class="panel" aria-label="Projects">
           <div class="panel-header">
-            <div class="panel-title">📁 Active Projects</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              Active Projects
+            </div>
           </div>
           <div class="panel-body" id="projects-list-container">
-            <div class="skeleton skeleton-card" style="height:60px"></div>
+            <div class="agent-loading">Loading projects...</div>
           </div>
         </section>
 
         <section class="panel" aria-label="Service Grid">
           <div class="panel-header">
-            <div class="panel-title">🔧 Service Grid</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Service Grid
+            </div>
             <div class="panel-status" id="services-status"></div>
           </div>
           <div class="panel-body">
             <div class="service-grid" id="service-grid">
-              <div class="skeleton skeleton-card" style="height:60px"></div>
+              <div class="agent-loading">Loading services...</div>
             </div>
           </div>
         </section>
 
         <section class="panel" aria-label="Graphify">
           <div class="panel-header">
-            <div class="panel-title">🕸️ Knowledge Graph</div>
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="19" cy="5" r="1"/><circle cx="19" cy="19" r="1"/><circle cx="5" cy="5" r="1"/><circle cx="5" cy="19" r="1"/></svg>
+              Knowledge Graph
+            </div>
           </div>
           <div class="panel-body" id="graphify-grid">
-            <div class="skeleton skeleton-card" style="height:60px"></div>
+            <div class="agent-loading">Loading graph data...</div>
           </div>
         </section>
       </div>
-    </main>
-
-    <!-- Bots View (hidden by default) — Grokbot-style vertical stripe + chat panel -->
-    <div id="view-bots" class="view-section bots-view" role="region" aria-label="Agent Command Center">
-      <div class="bots-sidebar" id="bots-sidebar">
-        <div class="bots-sidebar-header">
-          <h3>Agents</h3>
-          <span class="bots-count" id="bots-count">0</span>
-        </div>
-        <div class="bots-stripe" id="bots-stripe">
-          <!-- Agent stripe populated by app-bots.js -->
-        </div>
       </div>
-      <div class="bots-chat-panel" id="bots-chat-panel">
-        <div class="bots-chat-empty" id="bots-chat-empty">
-          <div class="bots-chat-empty-icon">🤖</div>
-          <div class="bots-chat-empty-title">Select an agent to chat</div>
-          <div class="bots-chat-empty-desc">Click on any agent in the stripe to open a conversation.</div>
-        </div>
-        <div class="bots-chat-active" id="bots-chat-active" style="display:none">
-          <div class="bots-chat-header">
-            <div class="bot-avatar" id="chat-bot-avatar">🤖</div>
-            <div class="bots-chat-header-info">
-              <div class="bots-chat-header-name" id="chat-bot-name">Agent Name</div>
-              <div class="bots-chat-header-model" id="chat-bot-model">Model • Provider</div>
+    </div>
+
+    <!-- Agents View -->
+    <div id="view-agents" class="view-section" role="region" aria-label="Agents">
+      <div class="view-section-header">
+        <h1 class="view-section-title">Agents</h1>
+        <p class="view-section-subtitle">Manage and monitor your AI agents</p>
+      </div>
+      <div class="agents-grid">
+        <div class="agent-card">
+          <div class="agent-card__header">
+            <div class="agent-card__avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>
             </div>
-            <div class="bots-chat-header-status">
-              <span class="bot-status-dot" id="chat-bot-status-dot"></span>
-              <span id="chat-bot-status-text">idle</span>
+            <div class="agent-card__info">
+              <div class="agent-card__name">Hermes Agent</div>
+              <div class="agent-card__model">Longcat 2.0 • Nous</div>
+            </div>
+            <span class="agent-status-pill online">Active</span>
+          </div>
+          <div class="agent-card__body">
+            <div class="agent-stat-row">
+              <span class="agent-stat-label">Sessions</span>
+              <span class="agent-stat-value">1</span>
+            </div>
+            <div class="agent-stat-row">
+              <span class="agent-stat-label">Tasks Today</span>
+              <span class="agent-stat-value">--</span>
             </div>
           </div>
-          <div class="bots-chat-messages" id="bot-chat-messages"></div>
-          <div class="bots-chat-input-bar">
-            <input type="text" class="bots-chat-input" id="bot-chat-input" placeholder="Message agent…" aria-label="Message" />
-            <button class="bots-chat-send" id="bot-chat-send" aria-label="Send">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar View -->
+    <div id="view-calendar" class="view-section" role="region" aria-label="Calendar">
+      <div class="view-section-header">
+        <h1 class="view-section-title">Calendar</h1>
+        <p class="view-section-subtitle">Your schedule and upcoming events</p>
+      </div>
+      <div class="calendar-view-container">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Schedule & Events
+            </div>
+          </div>
+          <div class="panel-body" id="calendar-view-stage">
+            <div class="empty-state">
+              <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div class="empty-state__title">No events</div>
+              <div class="empty-state__desc">Your calendar is clear.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tasks View -->
+    <div id="view-tasks" class="view-section" role="region" aria-label="Tasks">
+      <div class="view-section-header">
+        <h1 class="view-section-title">Tasks</h1>
+        <p class="view-section-subtitle">Action pipeline and task management</p>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            All Tasks
+          </div>
+        </div>
+        <div class="panel-body" id="tasks-view-container">
+          <div class="empty-state">
+            <div class="empty-state__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="empty-state__title">No tasks</div>
+            <div class="empty-state__desc">Your pipeline is clear.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services View -->
+    <div id="view-services" class="view-section" role="region" aria-label="Services">
+      <div class="view-section-header">
+        <h1 class="view-section-title">Services</h1>
+        <p class="view-section-subtitle">Service status and health monitoring</p>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Service Grid
+            <div class="panel-status" id="services-view-status"></div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="service-grid" id="service-grid-view">
+            <div class="agent-loading">Loading services...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home Lab View -->
+    <div id="view-homelab" class="view-section" role="region" aria-label="Home Lab">
+      <div class="view-section-header">
+        <h1 class="view-section-title">Home Lab</h1>
+        <p class="view-section-subtitle">Server infrastructure and monitoring</p>
+      </div>
+      <div class="server-grid" id="homelab-server-grid">
+        <div class="server-card">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>Local Server</span>
+              <span class="server-card__ip">Main</span>
+            </div>
+            <span class="server-card__status online">● Online</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services" id="homelab-main-services">
+              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Services loading...</span>
+            </div>
           </div>
         </div>
       </div>
