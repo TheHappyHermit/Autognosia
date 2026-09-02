@@ -1,0 +1,18 @@
+{
+  "artifact": "rebate_platform.2026-06-03.cache_risk_call_chain",
+  "status": "completed",
+  "module": "revenue_ops/utils.py",
+  "interface": "windows, collate_income, apply, rewards_owed",
+  "risk_controls": {
+    "window_frozen": "28 consecutive fixed windows",
+    "collation_frozen": "first_window_start, last_window_end, activity_count",
+    "penalty_tampering": "evidence_hash + dual_control HMAC"
+  },
+  "verified_tests": [
+    "tests/test_revenue_ops.py",
+    "tests/test_end_to_end.py",
+    "test_revenue_framework.py"
+  ],
+  "verified": true,
+  "timestamp": "2026-06-03"
+}

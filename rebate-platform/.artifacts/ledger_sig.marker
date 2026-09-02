@@ -1,0 +1,9 @@
+{
+  "artifact": "rebate_platform.2026-06-03.ledger_sig",
+  "status": "completed",
+  "module": "revenue_ops/ledger.py",
+  "interface": "pseudo_signature, eligibility",
+  "signature_length": 32,
+  "verified": true,
+  "timestamp": "2026-06-03"
+}
