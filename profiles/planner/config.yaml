@@ -1,7 +1,7 @@
 # Planner — Strategic task decomposition and dependency planning
 #
 # MCP access: personal-organizer (to read task/project state)
-# Excluded: SearXNG, honcho (Planner doesn't search or access memory)
+# Excluded: SearXNG, honcho, gbrain (Planner doesn't search, access memory, or query knowledge)
 #
 # Planner generates plans with verifiable acceptance criteria.
 # It reads current state but execution is handled by other profiles.

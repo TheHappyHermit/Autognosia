@@ -1,0 +1,17 @@
+# Oracle — Long-term reference librarian and retrieval specialist
+#
+# MCP access: gbrain only
+# Excluded: SearXNG (Oracle doesn't search the internet)
+# Excluded: personal-organizer (Oracle doesn't manage tasks)
+# Excluded: honcho (Oracle doesn't access autobiographical memory)
+#
+# Oracle queries the GBrain knowledge graph and returns evidence packages.
+# It is read-only for Personal Organizer tasks.
+
+model:
+  main: default
+
+mcp_servers:
+  gbrain:
+    command: "gbrain"
+    args: ["mcp"]
