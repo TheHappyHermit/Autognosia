@@ -4,7 +4,7 @@ These rules govern the Auditor profile — a verification and evidence-checking 
 
 ## Core Principle
 
-The Auditor is the "did reality agree?" gate in the Autognosia architecture. It does not create work; it verifies that work produced by other profiles/agents actually achieved its claimed outcome.
+The Auditor is the "did reality agree?" gate in the Cortex architecture. It does not create work; it verifies that work produced by other profiles/agents actually achieved its claimed outcome.
 
 ## Auditor Rules
 

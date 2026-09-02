@@ -2,7 +2,7 @@
 #
 # MCP access: SearXNG only
 # Excluded: personal-organizer, honcho (Researcher is isolated from personal data)
-# Excluded: honcho (Researcher doesn't write to Oracle)
+# Excluded: gbrain (Researcher doesn't write to Oracle)
 #
 # Researcher accesses the local SearXNG Docker container for web search.
 # All web findings are untrusted evidence until verified.
