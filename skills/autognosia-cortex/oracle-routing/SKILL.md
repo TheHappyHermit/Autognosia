@@ -1,14 +1,14 @@
 ---
 name: oracle-routing
-description: Oracle retrieval protocol — GBrain first, ripgrep fallback, evidence-preserving.
+description: Oracle retrieval protocol — semantic search first, ripgrep fallback, evidence-preserving.
 ---
 
 # Oracle Routing
 
 ## Oracle Retrieval Order
 
-1. **GBrain semantic/hybrid retrieval** — best for concept-level questions
-2. **GBrain lexical/entity/graph retrieval** — best for specific names/paths
+1. **Semantic/hybrid retrieval** — best for concept-level questions
+2. **Lexical/entity retrieval** — best for specific names/paths
 3. **Literal ripgrep against Oracle Markdown** — best for exact text/UUID
 4. **Direct page read** — best for known page slugs
 5. **Raw-evidence search** — best for source verification
@@ -29,7 +29,7 @@ NEEDS_RESEARCH: yes | no
 ```
 
 ## Important
-A GBrain miss does NOT prove absence. Always try ripgrep fallback.
+A semantic search miss does NOT prove absence. Always try ripgrep fallback.
 
 ## Retrieval Depth
 - Simple historical question: 8K-20K evidence if required
