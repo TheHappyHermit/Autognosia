@@ -36,31 +36,6 @@ CommandDeck.prototype.renderBriefing = function() {
   }
 };
 
-// ── Data Fetching ──────────────────────────────────────────────────────────
-
-CommandDeck.prototype.fetchSystemStats = async function() {
-  try {
-    const res = await fetch(`${this.apiBase}/api/system`);
-    if (res.ok) {
-      const data = await res.json();
-      const cpuEl = document.getElementById('stat-cpu');
-      if (cpuEl) cpuEl.textContent = (data.cpu_percent != null ? data.cpu_percent + '%' : 'N/A');
-      const ramEl = document.getElementById('stat-ram');
-      if (ramEl) ramEl.textContent = (data.ram_percent != null ? data.ram_percent + '%' : 'N/A');
-      const diskEl = document.getElementById('stat-disk');
-      if (diskEl) diskEl.textContent = (data.disk_percent != null ? data.disk_percent + '%' : 'N/A');
-      const netEl = document.getElementById('stat-network');
-      if (netEl) netEl.textContent = (data.network_gb != null ? data.network_gb + ' GB' : 'N/A');
-      const gpuEl = document.getElementById('stat-gpu');
-      if (gpuEl) gpuEl.textContent = 'N/A';
-      const uptimeEl = document.getElementById('stat-uptime');
-      if (uptimeEl) uptimeEl.textContent = (data.uptime_days != null ? data.uptime_days + 'd' : 'N/A');
-    }
-  } catch (e) {
-    console.warn('System stats fetch error:', e);
-  }
-};
-
 CommandDeck.prototype.refreshAllData = async function() {
   await Promise.all([
     this.fetchSystemStats(),

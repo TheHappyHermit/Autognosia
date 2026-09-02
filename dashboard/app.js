@@ -458,7 +458,7 @@ class CommandDeck {
           <li>
             ${escapeHtml(p.title)}
             <span class="badge badge-${p.priority || 'medium'}">${escapeHtml(p.priority)}</span>
-            ${p.due_at ? `<span>⏰ Due ${escapeHtml(p.due_at)}</span>` : ''}
+            ${p.due_at ? `<span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Due ${escapeHtml(p.due_at)}</span>` : ''}
           </li>
         `).join('');
       } else {
@@ -490,7 +490,7 @@ class CommandDeck {
     else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
 
     if (events.length === 0) {
-      stage.innerHTML = '<div class="empty-state"><div class="empty-state__icon">📅</div><div class="empty-state__title">No events today</div><div class="empty-state__desc">Your schedule is clear.</div></div>';
+      stage.innerHTML = '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="empty-state__title">No events today</div><div class="empty-state__desc">Your schedule is clear.</div></div>';
       return;
     }
 
@@ -500,7 +500,7 @@ class CommandDeck {
       const date = e.start?.includes('T') 
         ? new Date(e.start).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
         : e.start;
-      const icon = e.type === 'renewal' ? '🔄' : e.type === 'important_date' ? '📌' : '⏰';
+      const icon = e.type === 'renewal' ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' : e.type === 'important_date' ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
       return `
         <div class="calendar-event" style="border-left-color: ${e.color || 'var(--accent)'}">
           <div style="display:flex; justify-content:space-between; align-items:start;">
@@ -698,8 +698,8 @@ class CommandDeck {
             <span class="badge badge-${t.priority || 'medium'}">${t.priority}</span>
           </div>
           <div class="task-meta-row">
-            ${t.project_name ? `<span>📁 ${escapeHtml(t.project_name)}</span><span>•</span>` : ''}
-            ${t.due_at ? `<span>⏰ Due ${escapeHtml(t.due_at)}</span><span>•</span>` : ''}
+            ${t.project_name ? `<span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> ${escapeHtml(t.project_name)}</span><span>•</span>` : ''}
+            ${t.due_at ? `<span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Due ${escapeHtml(t.due_at)}</span><span>•</span>` : ''}
             <span>Status: ${t.status}</span>
           </div>
         </div>
@@ -756,7 +756,7 @@ class CommandDeck {
         <input type="datetime-local" id="task-detail-due" value="${task.due_at ? task.due_at.slice(0, 16) : ''}" />
       </div>
       <div class="task-detail-meta">
-        ${task.project_name ? `<span>📁 ${escapeHtml(task.project_name)}</span>` : ''}
+        ${task.project_name ? `<span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> ${escapeHtml(task.project_name)}</span>` : ''}
         <span>Created: ${escapeHtml(task.created_at || 'Unknown')}</span>
       </div>
     `;
@@ -856,12 +856,12 @@ class CommandDeck {
   renderReminderCard(r) {
     const channel = r.channel || 'all';
     const channelLabels = {
-      all: '⚡ All Channels',
-      telegram: '📱 Telegram',
-      discord: '💬 Discord',
-      email: '📧 Email',
-      sms: '📞 Phone/SMS',
-      desktop: '🖥️ Desktop'
+      all: 'All Channels',
+      telegram: 'Telegram',
+      discord: 'Discord',
+      email: 'Email',
+      sms: 'Phone/SMS',
+      desktop: 'Desktop'
     };
 
     return `
@@ -874,7 +874,7 @@ class CommandDeck {
         <div class="reminder-meta-row">
           <div class="reminder-tags">
             <span class="channel-tag ${channel}">${channelLabels[channel] || channel}</span>
-            <span>⏰ ${formatTime(r.remind_at) || r.remind_at}</span>
+            <span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${formatTime(r.remind_at) || r.remind_at}</span>
           </div>
           <div class="reminder-actions">
             ${r.status !== 'sent' ? `
@@ -1012,19 +1012,19 @@ class CommandDeck {
 
   getServiceIcon(name) {
     const icons = {
-      'Jellyfin': '🎬',
-      'Plex': '🎥',
-      'Sonarr': '📺',
-      'Radarr': '🎞️',
-      'qBittorrent': '⬇️',
-      'Traefik': '🚦',
-      'Uptime Kuma': '📊',
-      'Grafana': '📈',
-      'Prometheus': '⚡',
-      'FreshRSS': '📰',
-      'Home Assistant': '🏠',
+      'Jellyfin': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+      'Plex': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>',
+      'Sonarr': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+      'Radarr': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>',
+      'qBittorrent': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+      'Traefik': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      'Uptime Kuma': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+      'Grafana': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+      'Prometheus': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      'FreshRSS': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>',
+      'Home Assistant': '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
     };
-    return icons[name] || '⚙️';
+    return icons[name] || '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   }
 
   formatSize(bytes) {
