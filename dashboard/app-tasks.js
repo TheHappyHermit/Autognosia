@@ -14,7 +14,8 @@ CommandDeck.prototype.renderTasks = function() {
   else if (this.taskFilter === 'completed') filtered = filtered.filter(t => t.status === 'completed');
   else if (this.taskFilter === 'all') filtered = filtered.filter(t => t.status !== 'completed');
 
-  const renderTarget = container || viewContainer;
+  // Prefer the Tasks view container when active, fall back to dashboard sidebar
+  const renderTarget = viewContainer || container;
   if (!renderTarget) return;
 
   if (filtered.length === 0) {
