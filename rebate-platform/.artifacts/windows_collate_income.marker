@@ -1,0 +1,8 @@
+{
+  "artifact": "rebate_platform.2026-06-03.windows_collate_income",
+  "status": "completed",
+  "module": "revenue_ops/utils.py",
+  "interface": "windows, collate_income, month_purchases_dollar",
+  "verified": true,
+  "timestamp": "2026-06-03"
+}
