@@ -111,32 +111,32 @@
       <section class="hero-stats" aria-label="System metrics">
         <div class="hero-stat">
           <span class="hero-stat__label">CPU</span>
-          <span class="hero-stat__value text-tabular" id="stat-cpu">--</span>
+          <span class="hero-stat__value text-tabular" id="stat-cpu"></span>
           <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">RAM</span>
-          <span class="hero-stat__value text-tabular" id="stat-ram">--</span>
+          <span class="hero-stat__value text-tabular" id="stat-ram"></span>
           <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">DISK</span>
-          <span class="hero-stat__value text-tabular" id="stat-disk">--</span>
+          <span class="hero-stat__value text-tabular" id="stat-disk"></span>
           <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">NET</span>
-          <span class="hero-stat__value text-tabular" id="stat-network">--</span>
+          <span class="hero-stat__value text-tabular" id="stat-network"></span>
           <span class="hero-stat__unit">MB</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">GPU</span>
-          <span class="hero-stat__value text-tabular" id="stat-gpu">--</span>
+          <span class="hero-stat__value text-tabular" id="stat-gpu"></span>
           <span class="hero-stat__unit">%</span>
         </div>
         <div class="hero-stat">
           <span class="hero-stat__label">UPTIME</span>
-          <span class="hero-stat__value text-tabular" id="stat-uptime">--</span>
+          <span class="hero-stat__value text-tabular" id="stat-uptime"></span>
           <span class="hero-stat__unit">d</span>
         </div>
       </section>
@@ -145,98 +145,33 @@
       <section class="hud-metrics" aria-label="Task and intention metrics">
         <div class="hud-metric">
           <span class="hud-metric__label">Active Tasks</span>
-          <span class="hud-metric__value text-tabular" id="stat-active-tasks">--</span>
+          <span class="hud-metric__value text-tabular" id="stat-active-tasks"></span>
         </div>
         <div class="hud-metric">
           <span class="hud-metric__label">Critical</span>
-          <span class="hud-metric__value text-tabular" id="stat-critical-tasks">--</span>
+          <span class="hud-metric__value text-tabular" id="stat-critical-tasks"></span>
         </div>
         <div class="hud-metric">
           <span class="hud-metric__label">Reminders</span>
-          <span class="hud-metric__value text-tabular" id="stat-reminders">--</span>
+          <span class="hud-metric__value text-tabular" id="stat-reminders"></span>
         </div>
         <div class="hud-metric">
           <span class="hud-metric__label">Events</span>
-          <span class="hud-metric__value text-tabular" id="stat-today-events">--</span>
+          <span class="hud-metric__value text-tabular" id="stat-today-events"></span>
         </div>
         <div class="hud-metric">
           <span class="hud-metric__label">Unread</span>
-          <span class="hud-metric__value text-tabular" id="stat-unread-emails">--</span>
+          <span class="hud-metric__value text-tabular" id="stat-unread-emails"></span>
         </div>
         <div class="hud-metric">
           <span class="hud-metric__label">Intentions</span>
-          <span class="hud-metric__value text-tabular" id="stat-intentions">--</span>
+          <span class="hud-metric__value text-tabular" id="stat-intentions"></span>
         </div>
       </section>
 
       <!-- Home Lab Server Cards -->
-      <section class="server-grid" aria-label="Home lab servers">
-        <div class="server-card" id="server-main">
-          <div class="server-card__header">
-            <div class="server-card__name">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              <span>127.0.0.1</span>
-              <span class="server-card__ip">Main</span>
-            </div>
-            <span class="server-card__status online" id="server-main-status">● Online</span>
-          </div>
-          <div class="server-card__body">
-            <div class="server-card__services" id="server-main-services">
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>llama-server</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Ollama</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Graphify</span>
-            </div>
-            <div class="gpu-meter">
-              <div class="gpu-meter__label">
-                <span>V100 GPU</span>
-                <span class="gpu-meter__value" id="gpu-main-util">0%</span>
-              </div>
-              <div class="gpu-meter__bar">
-                <div class="gpu-meter__fill" id="gpu-main-bar" style="width: 0%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="server-card" id="server-agent">
-          <div class="server-card__header">
-            <div class="server-card__name">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-              <span><AGENT_SERVER_IP></span>
-              <span class="server-card__ip">Agent</span>
-            </div>
-            <span class="server-card__status online" id="server-agent-status">● Online</span>
-          </div>
-          <div class="server-card__body">
-            <div class="server-card__services" id="server-agent-services">
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Hermes</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Paperclip</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Honcho</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Meilisearch</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Qdrant</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Redis</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Postgres</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="server-card" id="server-agent-zero">
-          <div class="server-card__header">
-            <div class="server-card__name">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span><AGENT_ZERO_IP></span>
-              <span class="server-card__ip">Agent Zero</span>
-            </div>
-            <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
-          </div>
-          <div class="server-card__body">
-            <div class="server-card__services" id="server-agent-zero-services">
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Agent Zero</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>ShadowBroker</span>
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>MariaDB</span>
-            </div>
-          </div>
-        </div>
+      <section class="server-grid" aria-label="Home lab servers" id="dashboard-server-grid">
+        <div class="agent-loading">Loading server data...</div>
       </section>
 
       <!-- Briefing Bar -->
@@ -315,8 +250,8 @@
           <div class="panel-body">
             <div class="telemetry-grid" id="telemetry-grid">
               <div class="telemetry-metric">
-                <div class="telemetry-metric__value">--</div>
-                <div class="telemetry-metric__label">Loading...</div>
+                <div class="telemetry-metric__value">Loading...</div>
+                <div class="telemetry-metric__label">System Health</div>
               </div>
             </div>
           </div>
@@ -461,29 +396,8 @@
         <h1 class="view-section-title">Agents</h1>
         <p class="view-section-subtitle">Manage and monitor your AI agents</p>
       </div>
-      <div class="agents-grid">
-        <div class="agent-card">
-          <div class="agent-card__header">
-            <div class="agent-card__avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-            </div>
-            <div class="agent-card__info">
-              <div class="agent-card__name">Hermes Agent</div>
-              <div class="agent-card__model">Longcat 2.0 • Nous</div>
-            </div>
-            <span class="agent-status-pill online">Active</span>
-          </div>
-          <div class="agent-card__body">
-            <div class="agent-stat-row">
-              <span class="agent-stat-label">Sessions</span>
-              <span class="agent-stat-value">1</span>
-            </div>
-            <div class="agent-stat-row">
-              <span class="agent-stat-label">Tasks Today</span>
-              <span class="agent-stat-value">--</span>
-            </div>
-          </div>
-        </div>
+      <div class="agents-grid" id="agents-grid">
+        <div class="agent-loading">Loading agents...</div>
       </div>
     </div>
 
@@ -568,21 +482,7 @@
         <p class="view-section-subtitle">Server infrastructure and monitoring</p>
       </div>
       <div class="server-grid" id="homelab-server-grid">
-        <div class="server-card">
-          <div class="server-card__header">
-            <div class="server-card__name">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              <span>Local Server</span>
-              <span class="server-card__ip">Main</span>
-            </div>
-            <span class="server-card__status online">● Online</span>
-          </div>
-          <div class="server-card__body">
-            <div class="server-card__services" id="homelab-main-services">
-              <span class="service-pill service-pill--online"><span class="service-pill__dot"></span>Services loading...</span>
-            </div>
-          </div>
-        </div>
+        <div class="agent-loading">Loading home lab data...</div>
       </div>
     </div>
   </div>
