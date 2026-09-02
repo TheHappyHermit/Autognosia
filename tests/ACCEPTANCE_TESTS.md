@@ -44,12 +44,7 @@ for url in "${endpoints[@]}"; do
     fi
 done
 
-# GBrain CLI Check (Bun/PGLite)
-if command -v gbrain >/dev/null 2>&1 || [ -f "$HOME/.bun/bin/gbrain" ]; then
-    echo "✓ GBrain CLI available"
-else
-    echo "✗ GBrain CLI not installed"
-fi
+
 ```
 
 ## Wiki Operations

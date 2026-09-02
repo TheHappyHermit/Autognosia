@@ -103,7 +103,7 @@ Before consequential operations, Autognosia asks:
 The `pre_tool_call` hook fails closed for:
 - Deleting Oracle raw archive
 - Deleting Active knowledge before verified archive
-- Running GBrain forgetting operations
+- Running Brain Search forgetting operations
 - Destroying persistent Docker volumes containing canonical data
 - Deleting Personal Organizer database without verified backup
 - Disabling backups without explicit user instruction
@@ -244,7 +244,7 @@ Reflection only happens after meaningful evidence:
 
 Do NOT auto-upgrade:
 - Hermes
-- GBrain
+- Brain Search
 - Honcho
 - PostgreSQL major versions
 

@@ -196,7 +196,7 @@ Break a judgment into components and judge each separately.
 
 - **First Principles**: Use when you need to challenge the fundamental assumptions within your structure
 - **Epistemic Protocol**: Use when evaluating evidence within your analysis
-- **Cortex Verification**: Use when checking the conclusions of your structured analysis
+- **Verification**: Use when checking the conclusions of your structured analysis
 - **Personal Cognitive Router**: Use to decide when structured thinking is the right mode
 
 ## Quick Reference

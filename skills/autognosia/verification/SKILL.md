@@ -3,7 +3,7 @@ name: autognosia-verification
 description: Verification contracts — deterministic first, auditor last, reality over narration.
 ---
 
-# Cortex Verification
+# Verification
 
 ## Verification Hierarchy
 

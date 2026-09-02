@@ -63,10 +63,7 @@
           <span class="status-dot status-dot--ok" aria-hidden="true"></span>
           <span>Healthy</span>
         </div>
-        <div class="ws-indicator" id="ws-indicator" aria-label="Connection status">
-          <span class="ws-dot" aria-hidden="true"></span>
-          <span>LIVE</span>
-        </div>
+
       </div>
     </header>
 
@@ -165,7 +162,7 @@
         <div class="server-card" id="server-agent">
           <div class="server-card__header">
             <div class="server-card__name">
-              🤖 10.1.1.37
+              🤖 <AGENT_SERVER_IP>
               <span class="server-card__ip">Agent</span>
             </div>
             <span class="server-card__status online" id="server-agent-status">● Online</span>
@@ -186,7 +183,7 @@
         <div class="server-card" id="server-agent-zero">
           <div class="server-card__header">
             <div class="server-card__name">
-              ⚡ 10.1.1.18
+              ⚡ <AGENT_ZERO_IP>
               <span class="server-card__ip">Agent Zero</span>
             </div>
             <span class="server-card__status online" id="server-agent-zero-status">● Online</span>
@@ -410,16 +407,16 @@
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Scripts (load order: core first, then data-fetch, then UI components) -->
-  <script src="app-core.js"></script>
-  <script src="app-data-fetch.js"></script>
-  <script src="app-calendar.js"></script>
-  <script src="app-tasks.js"></script>
-  <script src="app-comms.js"></script>
-  <script src="app-crud.js"></script>
-  <script src="app-services.js"></script>
-  <script src="app-agent.js"></script>
-  <script src="app-bots.js"></script>
-  <script src="enhance.js"></script>
+  <script type="module" src="app-core.js"></script>
+  <script type="module" src="app-data-fetch.js"></script>
+  <script type="module" src="app-calendar.js"></script>
+  <script type="module" src="app-tasks.js"></script>
+  <script type="module" src="app-comms.js"></script>
+  <script type="module" src="app-crud.js"></script>
+  <script type="module" src="app-services.js"></script>
+  <script type="module" src="app-agent.js"></script>
+  <script type="module" src="app-bots.js"></script>
+  <script type="module" src="enhance.js"></script>
 
   <!-- Task Detail Modal -->
   <div class="task-detail-modal" id="task-detail-modal">

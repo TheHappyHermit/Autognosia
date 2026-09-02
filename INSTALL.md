@@ -20,7 +20,7 @@ Hermes will:
 3. Initialize databases (`organizer.db`, `autognosia.db`) with sample data
 4. Install all repo skills to `${HOME}/.hermes/skills/`
 5. Configure environment (`.env`, secrets)
-6. Start Docker services (SearXNG, Honcho, Personal Organizer) and setup GBrain (PGLite)
+6. Start Docker services (SearXNG, Honcho, Personal Organizer)
 7. Automatically start the **Command Deck Dashboard daemon** on `http://127.0.0.1:8088`
 8. Run full verification suite
 9. Report completion only after all checks pass
