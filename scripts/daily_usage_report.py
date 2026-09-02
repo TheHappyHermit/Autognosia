@@ -10,11 +10,12 @@ Usage:
 """
 
 import os
+from pathlib import Path
 import json
 import sys
 from datetime import datetime, timedelta
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
 LOGS_DIR = os.path.join(AUTOGNOSIA_HOME, "logs")
 USAGE_DB = os.environ.get("USAGE_DB", os.path.join(AUTOGNOSIA_HOME, "personal-organizer", "data", "usage.json"))
 

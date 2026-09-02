@@ -10,11 +10,12 @@ Backs up:
 """
 
 import os
+from pathlib import Path
 import shutil
 import sqlite3
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
 BACKUP_DIR = os.environ.get("BACKUP_DIR", os.path.join(AUTOGNOSIA_HOME, "backups"))
 
 def ensure_backup_dir():

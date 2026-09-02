@@ -139,7 +139,7 @@
         <div class="server-card" id="server-main">
           <div class="server-card__header">
             <div class="server-card__name">
-              🖥️ 10.1.1.10
+              🖥️ 127.0.0.1
               <span class="server-card__ip">Main</span>
             </div>
             <span class="server-card__status online" id="server-main-status">● Online</span>
@@ -409,8 +409,15 @@
   <!-- Toast Container -->
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Scripts -->
+  <!-- Scripts (load order: core first, then data-fetch, then UI components) -->
   <script src="app-core.js"></script>
+  <script src="app-data-fetch.js"></script>
+  <script src="app-calendar.js"></script>
+  <script src="app-tasks.js"></script>
+  <script src="app-comms.js"></script>
+  <script src="app-crud.js"></script>
+  <script src="app-services.js"></script>
+  <script src="app-agent.js"></script>
   <script src="app-bots.js"></script>
   <script src="enhance.js"></script>
 

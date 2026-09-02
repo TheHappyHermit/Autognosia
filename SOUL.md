@@ -20,10 +20,13 @@
 When the user asks a question requiring connections between concepts in the Active Wiki (your Obsidian vault of working memory), query the graph:
 
 ```bash
-# Active Wiki Graphify
-graphify query "How does X connect to Y?" --graph /home/<USER>/.autognosia/active-wiki/graphify-out
-graphify explain "concept-name" --graph /home/<USER>/.autognosia/active-wiki/graphify-out
-graphify path "node-a" "node-b" --graph /home/<USER>/.autognosia/active-wiki/graphify-out
+# Active Wiki Graphify (in-place within active-wiki/)
+graphify query "How does X connect to Y?" --graph ~/.autognosia/active-wiki/graphify-out
+graphify explain "concept-name" --graph ~/.autognosia/active-wiki/graphify-out
+graphify path "node-a" "node-b" --graph ~/.autognosia/active-wiki/graphify-out
+
+# Oracle Brain Graphify (in-place within oracle/brain/)
+graphify query "How does X connect to Y?" --graph ~/.autognosia/oracle/brain/graphify-out
 ```
 
 **When to use**: "What connects X to Y?", "How does A relate to B through C?", "Trace flow from X to Y"

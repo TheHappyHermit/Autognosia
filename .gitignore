@@ -53,14 +53,15 @@ vm-port-fix.sh
 wiki_engram.json
 *.pyc
 
+# ── Project source (tracked) ──
+skills/
+scripts/
+tests/
+config/
+assets/
+
 # ── Personal directories ──
 Downloads/
-deploy/
-docs/
-archive/
-research/
-research_output/
-rebate-platform/
 body_schema_*
 cd_search*
 cognitive_effort_*
@@ -110,11 +111,9 @@ node_modules/
 lightllm/
 litellm_proxy/
 firecrawl-stack/
-pending/
+
 Public/
-cron/
-cron-jobs/
-gbrain/
+
 tirith/
 repo-backup-*/
 hermes-env-backup/

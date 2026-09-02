@@ -19,7 +19,11 @@ from pathlib import Path
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 BRAIN_SYNC = REPO_DIR / "scripts" / "brain_sync.py"
+
+# Prefer venv python, fall back to sys.executable (cross-platform)
 PYTHON = REPO_DIR / ".venv" / "bin" / "python"
+if not PYTHON.exists():
+    PYTHON = Path(sys.executable)
 
 
 def rfc3339_now() -> str:
@@ -32,7 +36,7 @@ def main() -> int:
         return 0
 
     if not PYTHON.exists():
-        print(f"[brain_sync_cron] Python venv not found at {PYTHON}")
+        print(f"[brain_sync_cron] Python not found at {PYTHON}")
         return 0
 
     print(f"[brain_sync_cron] Starting sync at {rfc3339_now()}")

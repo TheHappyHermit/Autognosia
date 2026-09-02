@@ -10,6 +10,7 @@ Verifies:
 """
 
 import os
+from pathlib import Path
 import subprocess
 import sqlite3
 import sys
@@ -17,7 +18,7 @@ import urllib.request
 import urllib.error
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
 
 SERVICES = [
     ("honcho-api", "http://127.0.0.1:8000/health"),

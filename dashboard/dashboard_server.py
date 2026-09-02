@@ -101,34 +101,29 @@ async def start_reminder_background_worker():
     asyncio.create_task(reminder_loop())
 
 def _initialize_demo_databases():
-    """Generate demo databases with sample data if they don't exist."""
-    try:
-        from demo_data import initialize_organizer_db, initialize_autognosia_db
-        initialize_organizer_db(ORGANIZER_DB)
-        initialize_autognosia_db(AUTOGNOSIA_DB)
-    except Exception as e:
-        print(f"[WARN] Demo data generation failed: {e}")
+    """Legacy no-op: demo data removed. Real databases only."""
+    pass
 
 
 def get_organizer_conn() -> sqlite3.Connection:
-    if not ORGANIZER_DB.exists():
-        # Demo mode: generate sample data
-        _initialize_demo_databases()
-    if not ORGANIZER_DB.exists():
-        # Fallback: create empty schema
-        ORGANIZER_DB.parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(str(ORGANIZER_DB))
-        conn.executescript("""
-            CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', created_at TEXT);
-            CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT DEFAULT '', status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', due_at TEXT, project_id INTEGER, created_at TEXT, updated_at TEXT, completed_at TEXT);
-            CREATE TABLE IF NOT EXISTS intentions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, cue TEXT, action TEXT, status TEXT DEFAULT 'dormant', created_at TEXT);
-            CREATE TABLE IF NOT EXISTS reminders (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, remind_at TEXT, channel TEXT DEFAULT 'all', notes TEXT DEFAULT '', status TEXT DEFAULT 'pending', sent_at TEXT, created_at TEXT);
-            CREATE TABLE IF NOT EXISTS important_dates (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT, description TEXT);
-            CREATE TABLE IF NOT EXISTS subscriptions (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL, currency TEXT, next_billing_date TEXT, billing_cycle TEXT, status TEXT DEFAULT 'active');
-        """)
-        return conn
-    conn = sqlite3.connect(str(ORGANIZER_DB))
+    """Connect to the real organizer database."""
+    db_path = ORGANIZER_DB
+    if not db_path.exists():
+        # Try alternative paths
+        alternatives = [
+            Path.home() / ".autognosia" / "personal-organizer" / "data" / "organizer.db",
+            Path.home() / ".autognosia" / "organizer.db",
+        ]
+        for alt in alternatives:
+            if alt.exists():
+                db_path = alt
+                break
+    if not db_path.parent.exists():
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
+    # Enable foreign keys
+    conn.execute("PRAGMA foreign_keys=ON")
     return conn
 
 def get_autognosia_conn() -> sqlite3.Connection:
@@ -330,7 +325,7 @@ def create_task(payload: Dict[str, Any] = Body(...)):
         raise HTTPException(status_code=400, detail="Title is required")
         
     status = payload.get("status", "active")
-    if status not in ["active", "completed", "cancelled", "blocked"]:
+    if status not in ["active", "next", "in_progress", "waiting", "completed", "cancelled", "blocked"]:
         status = "active"
         
     conn = get_organizer_conn()
@@ -582,7 +577,10 @@ def search_wiki(q: str = Query("", min_length=1)):
 
 @app.get("/api/wiki/page")
 def get_wiki_page(path: str = Query(...)):
-    target = AUTOGNOSIA_HOME / path
+    target = (AUTOGNOSIA_HOME / path).resolve()
+    # Path traversal guard: resolved path must stay within AUTOGNOSIA_HOME
+    if not target.is_relative_to(AUTOGNOSIA_HOME.resolve()):
+        raise HTTPException(status_code=403, detail="Access denied")
     if not target.exists() or not target.is_file():
         raise HTTPException(status_code=404, detail="Page not found")
     return {
@@ -818,7 +816,7 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
 
 @app.get("/api/bots")
 def get_bots():
-    """List all configured bots/agents."""
+    """List all configured bots/agents from Hermes profiles."""
     import psutil
     hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
     profiles_dir = hermes_home / "profiles"
@@ -832,12 +830,20 @@ def get_bots():
             config_file = profile_dir / "config.yaml"
             agent_name = profile_name.replace("-", " ").title()
             model = "unknown"
+            provider = "unknown"
             if config_file.exists():
                 try:
                     import yaml
                     with open(config_file) as f:
                         cfg = yaml.safe_load(f) or {}
-                    model = cfg.get("model", "unknown")
+                    model_cfg = cfg.get("model", {})
+                    if isinstance(model_cfg, dict):
+                        model = model_cfg.get("default", model_cfg.get("provider", "unknown"))
+                    else:
+                        model = str(model_cfg)
+                    provider_cfg = cfg.get("providers", {})
+                    if isinstance(provider_cfg, dict) and provider_cfg:
+                        provider = list(provider_cfg.keys())[0]
                 except Exception:
                     pass
 
@@ -851,30 +857,29 @@ def get_bots():
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     pass
 
+            avatar_map = {
+                "default": "🤖",
+                "auditor": "🔍",
+                "oracle": "🧠",
+                "coder": "💻",
+                "planner": "📋",
+                "researcher": "🔬",
+                "desktop-researcher": "🖥️",
+                "desktop-worker": "⚙️",
+                "personal-organizer": "📅",
+            }
+
             bots.append({
                 "id": profile_name,
                 "name": agent_name,
                 "role": f"{profile_name.replace('-', ' ')} agent",
                 "model": model,
-                "provider": "Nous Research",
+                "provider": provider.capitalize(),
                 "status": status,
                 "current_task": None,
                 "last_activity": datetime.now(timezone.utc).isoformat(),
-                "avatar": "🤖" if profile_name == "default" else "🧠"
+                "avatar": avatar_map.get(profile_name, "🤖"),
             })
-
-    if not bots:
-        bots.append({
-            "id": "demo",
-            "name": "Demo Assistant",
-            "role": "Sample bot for UI testing",
-            "model": "demo-model",
-            "provider": "Demo",
-            "status": "idle",
-            "current_task": None,
-            "last_activity": datetime.now(timezone.utc).isoformat(),
-            "avatar": "🤖"
-        })
 
     return {"bots": bots}
 
@@ -1104,7 +1109,7 @@ def get_download_queue():
 
 HOME_LAB_SERVERS = {
     "main": {
-        "ip": "10.1.1.10",
+        "ip": "127.0.0.1",
         "name": "Main",
         "role": "LLM inference, graph processing",
         "services": {
@@ -1190,19 +1195,66 @@ def _get_nvidia_smi(host: str = "localhost") -> dict:
 @app.get("/api/homelab")
 def get_homelab_status():
     """Return full home lab status: servers, services, GPU."""
+    import psutil
+    
     # Local GPU
     gpu_info = _get_nvidia_smi("localhost")
-
+    
     result = {
         "servers": {},
         "gpu": gpu_info,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
-
+    
+    # Add Docker containers as local services
+    docker_containers = []
+    try:
+        r = subprocess.run(
+            ["docker", "ps", "--format", "{{.Names}}\t{{.Status}}\t{{.Ports}}"],
+            capture_output=True, text=True, timeout=5
+        )
+        if r.returncode == 0:
+            for line in r.stdout.strip().split("\n"):
+                if line.strip():
+                    parts = line.split("\t")
+                    docker_containers.append({
+                        "name": parts[0],
+                        "status": parts[1] if len(parts) > 1 else "running",
+                        "ports": parts[2] if len(parts) > 2 else "",
+                    })
+    except Exception:
+        pass
+    
+    # Local server entry
+    local_server = {
+        "ip": "127.0.0.1",
+        "name": "Local",
+        "role": "Dashboard host, Docker services",
+        "online": True,
+        "services": {},
+    }
+    
+    for c in docker_containers:
+        svc_name = c["name"]
+        # Extract port from ports string if available
+        port = None
+        if "->" in c.get("ports", ""):
+            port_part = c["ports"].split("->")[0].split(":")[-1].split("/")[0]
+            try:
+                port = int(port_part)
+            except:
+                pass
+        local_server["services"][svc_name] = {
+            "port": port,
+            "healthy": "Up" in c["status"],
+            "status_code": 200,
+            "response_ms": None,
+        }
+    
+    result["servers"]["local"] = local_server
+    
+    # Remote servers
     for key, server in HOME_LAB_SERVERS.items():
-        is_local = server["ip"] in ("127.0.0.1", "localhost")
-        host = "localhost" if is_local else server["ip"]
-
         server_result = {
             "ip": server["ip"],
             "name": server["name"],
@@ -1210,39 +1262,23 @@ def get_homelab_status():
             "online": True,
             "services": {},
         }
-
+        
         for svc_name, svc_info in server.get("services", {}).items():
-            if is_local:
-                health = _check_remote_service(host, svc_info["port"], svc_info.get("path"))
-            else:
-                health = _check_remote_service(host, svc_info["port"], svc_info.get("path"))
+            health = _check_remote_service(server["ip"], svc_info["port"], svc_info.get("path"))
             server_result["services"][svc_name] = {
                 "port": svc_info["port"],
                 **health,
             }
             if not health.get("healthy"):
                 server_result["online"] = False
-
+        
         # Add GPU info for main server
         if key == "main" and gpu_info["available"]:
             server_result["gpu"] = gpu_info["gpus"][0] if gpu_info["gpus"] else None
-
+        
         result["servers"][key] = server_result
-
+    
     return result
-
-
-@app.get("/api/health")
-def healthcheck():
-    """Healthcheck endpoint for Docker and monitoring."""
-    docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
-    db_ok = ORGANIZER_DB.exists()
-    return JSONResponse({
-        "status": "ok",
-        "docker": docker_ok,
-        "database": db_ok,
-        "timestamp": datetime.now(timezone.utc).isoformat()
-    })
 
 @app.get("/api/agent")
 def get_agent_status():
@@ -1294,37 +1330,32 @@ def get_agent_status():
 
 @app.get("/api/cron")
 def get_cron_jobs():
-    """List all configured cron jobs with status."""
-    cron_dir = Path.home() / ".hermes" / "cron"
+    """List all configured cron jobs from jobs.json."""
+    jobs_file = Path.home() / ".hermes" / "cron" / "jobs.json"
     cron_jobs = []
     
-    if cron_dir.exists():
-        for job_file in cron_dir.glob("*.yaml"):
-            try:
-                content = job_file.read_text(encoding="utf-8", errors="ignore")
-                name = job_file.stem.replace('_', ' ').title()
-                schedule = "Unknown"
-                enabled = True
-                
-                for line in content.split(chr(10)):
-                    if 'schedule:' in line:
-                        schedule = line.split(":", 1)[1].strip().strip(chr(34) + chr(39))
-                    if 'enabled:' in line:
-                        enabled = 'true' in line.lower()
-                
+    if jobs_file.exists():
+        try:
+            with open(jobs_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for job in data.get("jobs", []):
+                schedule = job.get("schedule", {})
+                if isinstance(schedule, dict):
+                    schedule_str = schedule.get("display", schedule.get("expr", "Unknown"))
+                else:
+                    schedule_str = str(schedule)
                 cron_jobs.append({
-                    "name": name,
-                    "schedule": schedule,
-                    "enabled": enabled,
-                    "file": job_file.name
+                    "name": job.get("name", "Untitled"),
+                    "schedule": schedule_str,
+                    "enabled": job.get("enabled", True),
+                    "file": job.get("id", ""),
                 })
-            except Exception as e:
-                cron_jobs.append({
-                    "name": job_file.stem,
-                    "schedule": "Error",
-                    "enabled": False,
-                    "error": str(e)
-                })
+        except Exception as e:
+            cron_jobs.append({
+                "name": "Error loading jobs",
+                "schedule": str(e),
+                "enabled": False,
+            })
     
     return {
         "jobs": cron_jobs,
@@ -1337,8 +1368,8 @@ def get_graphify_status():
     nodes = 0
     edges = 0
     
-    # Check oracle brain graphify
-    brain_dir = AUTOGNOSIA_HOME / "graphify-main-out"
+    # Check oracle brain graphify (in-place within oracle/brain)
+    brain_dir = AUTOGNOSIA_HOME / "oracle" / "brain" / "graphify-out"
     if brain_dir.exists():
         for out_file in brain_dir.glob("*.json"):
             try:
@@ -1475,6 +1506,38 @@ def serve_app():
 @app.get("/app-bots.js")
 def serve_app_bots():
     return FileResponse(str(DASHBOARD_DIR / "app-bots.js"), media_type="application/javascript")
+
+@app.get("/app-calendar.js")
+def serve_app_calendar():
+    return FileResponse(str(DASHBOARD_DIR / "app-calendar.js"), media_type="application/javascript")
+
+@app.get("/app-comms.js")
+def serve_app_comms():
+    return FileResponse(str(DASHBOARD_DIR / "app-comms.js"), media_type="application/javascript")
+
+@app.get("/app-data-fetch.js")
+def serve_app_data_fetch():
+    return FileResponse(str(DASHBOARD_DIR / "app-data-fetch.js"), media_type="application/javascript")
+
+@app.get("/app-crud.js")
+def serve_app_crud():
+    return FileResponse(str(DASHBOARD_DIR / "app-crud.js"), media_type="application/javascript")
+
+@app.get("/app-services.js")
+def serve_app_services():
+    return FileResponse(str(DASHBOARD_DIR / "app-services.js"), media_type="application/javascript")
+
+@app.get("/app-tasks.js")
+def serve_app_tasks():
+    return FileResponse(str(DASHBOARD_DIR / "app-tasks.js"), media_type="application/javascript")
+
+@app.get("/app-agent.js")
+def serve_app_agent():
+    return FileResponse(str(DASHBOARD_DIR / "app-agent.js"), media_type="application/javascript")
+
+@app.get("/ws-client.js")
+def serve_ws_client():
+    return FileResponse(str(DASHBOARD_DIR / "ws-client.js"), media_type="application/javascript")
 
 @app.get("/enhance.js")
 def serve_enhance():

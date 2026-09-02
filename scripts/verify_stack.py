@@ -288,7 +288,7 @@ def check_brain_search():
         import pg8000, json, urllib.request
         # Embed test query
         data = json.dumps({"model": "qwen3-embedding:8b", "input": "test", "dimensions": 2000}).encode()
-        req = urllib.request.Request("http://10.1.1.10:11434/api/embed", data=data, headers={"Content-Type": "application/json"})
+        req = urllib.request.Request("http://127.0.0.1:11434/api/embed", data=data, headers={"Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=30) as resp:
             result = json.loads(resp.read())
             emb = result["embeddings"][0]
