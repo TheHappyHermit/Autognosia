@@ -333,4 +333,4 @@ Agent tool call ──► llama.cpp /v1/chat/completions ──► [structured r
 
 ## Related
 
-[[Honcho]], [[GBrain]], [[Graphify]]
+[[Honcho]], [[Brain Search]], [[Graphify]]

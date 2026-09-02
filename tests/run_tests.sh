@@ -23,7 +23,7 @@ check() {
 check "Honcho API" "curl -sf http://127.0.0.1:8000/health"
 check "Personal Organizer API" "curl -sf http://127.0.0.1:8001/health"
 check "SearXNG" "curl -sf http://127.0.0.1:8080/healthz"
-check "GBrain CLI" "command -v gbrain >/dev/null 2>&1 || test -f ${HOME}/.bun/bin/gbrain"
+
 
 # Database
 check "organizer.db exists" "test -f ${HOME}/.autognosia/personal-organizer/data/organizer.db"

@@ -3,7 +3,7 @@ model:
   provider: nous
 providers:
   llamaCPP:
-    api: http://10.1.1.10:8080/v1
+    api: http://<V100_HOST>:8080/v1
     default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
     transport: chat_completions
 fallback_providers:

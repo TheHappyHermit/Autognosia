@@ -7,7 +7,7 @@ After deploying Autognosia, register these automated jobs with Hermes Agent.
 - Hermes Agent installed and configured
 - Autognosia repository cloned and initialized
 - Required skills available (see `skills/` directory)
-- Docker services running (SearXNG, Honcho, Personal Organizer) and GBrain CLI installed
+- Docker services running (SearXNG, Honcho, Personal Organizer)
 
 ---
 
@@ -92,7 +92,7 @@ hermes cron create \
 hermes cron create \
   --name "Memory Consolidation (Full Cascade)" \
   --schedule "0 4 * * 0" \
-  --prompt "Run full three-tier memory cascade: Honcho autobiographical -> Active Wiki curated -> Oracle specialist -> GBrain indexed -> Historical Knowledge archived. Generate cascade report." \
+  --prompt "Run full three-tier memory cascade: Honcho autobiographical -> Active Wiki curated -> Oracle specialist -> Historical Knowledge archived. Generate cascade report." \\
   --skills wiki-ingestion,wiki-maintenance \
   --enabled-toolsets file,terminal,memory \
   --deliver origin

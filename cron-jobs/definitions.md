@@ -121,7 +121,7 @@ deliver: "local"
 
 ## 5. Memory Consolidation (Daily 04:00, Full Cascade Sun 04:00)
 
-**Purpose**: Three-tier cascade — Honcho → Active Wiki → Oracle → GBrain → Historical Knowledge
+**Purpose**: Three-tier cascade — Honcho → Active Wiki → Oracle → Historical Knowledge
 
 **Implementation**: Agent job
 
@@ -137,7 +137,7 @@ deliver: "local"
 ```yaml
 name: "Memory Consolidation (Full Cascade)"
 schedule: "0 4 * * 0"
-prompt: "Run full three-tier memory cascade: Honcho autobiographical → Active Wiki curated → Oracle specialist → GBrain indexed → Historical Knowledge archived. Generate cascade report."
+prompt: "Run full three-tier memory cascade: Honcho autobiographical → Active Wiki curated → Oracle specialist → Historical Knowledge archived. Generate cascade report."
 skills: ["wiki-ingestion", "wiki-maintenance"]
 enabled_toolsets: ["file", "terminal", "memory"]
 deliver: "origin"
@@ -198,7 +198,7 @@ deliver: "origin"
 
 ## 8. Autognosia Health Check (Every 30 minutes)
 
-**Purpose**: Docker services, DB integrity, disk space, Honcho/GBrain connectivity
+**Purpose**: Docker services, DB integrity, disk space, Honcho connectivity
 
 **Implementation**: Script job (`no_agent: true`)
 
@@ -571,7 +571,7 @@ on_failure: "alert"
 
 ## 22. Daily Stack Verification (Daily 08:00)
 
-**Purpose**: High-level morning stack sanity check. Runs `verify_stack.py` and `gbrain doctor` to ensure all profiles, CLI tools, and databases remain operational.
+**Purpose**: High-level morning stack sanity check. Runs `verify_stack.py` to ensure all profiles, CLI tools, and databases remain operational.
 
 **Implementation**: Script job (`no_agent: true`)
 

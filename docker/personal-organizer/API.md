@@ -19,7 +19,7 @@ The Personal Organizer API provides a deterministic REST interface to `organizer
   ```json
   {
     "title": "Deploy Autognosia Docker stack",
-    "description": "Run SearXNG, Honcho, GBrain, and Personal Organizer",
+    "description": "Run SearXNG, Honcho, Brain Search, and Personal Organizer",
     "status": "active",
     "priority": "high",
     "due_at": "2026-08-15",
