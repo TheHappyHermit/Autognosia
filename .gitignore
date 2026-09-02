@@ -342,3 +342,9 @@ Cargo.lock
 .sudo_as_admin_successful
 .summarize/
 .wget-hsts
+schema_dump.md
+dynamic_ontology_research_2026.json
+engram_research_pubmed.json
+fca_research_output.json
+ontology_alignment_report_2026.json
+upper_ontology_research_2026.json
