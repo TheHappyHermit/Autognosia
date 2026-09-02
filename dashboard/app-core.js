@@ -288,12 +288,18 @@ export class CommandDeck {
       const res = await fetch(`${this.apiBase}/api/system`);
       if (res.ok) {
         const data = await res.json();
-        document.getElementById('stat-cpu').textContent = data.cpu_percent ?? '--';
-        document.getElementById('stat-ram').textContent = data.ram_percent ?? '--';
-        document.getElementById('stat-disk').textContent = data.disk_percent ?? '--';
-        document.getElementById('stat-network').textContent = data.network_mbps ?? '--';
-        document.getElementById('stat-agents').textContent = data.active_agents ?? '--';
-        document.getElementById('stat-uptime').textContent = data.uptime_days ?? '--';
+        const cpuEl = document.getElementById('stat-cpu');
+        if (cpuEl) cpuEl.textContent = (data.cpu_percent != null ? data.cpu_percent + '%' : 'N/A');
+        const ramEl = document.getElementById('stat-ram');
+        if (ramEl) ramEl.textContent = (data.ram_percent != null ? data.ram_percent + '%' : 'N/A');
+        const diskEl = document.getElementById('stat-disk');
+        if (diskEl) diskEl.textContent = (data.disk_percent != null ? data.disk_percent + '%' : 'N/A');
+        const netEl = document.getElementById('stat-network');
+        if (netEl) netEl.textContent = (data.network_gb != null ? data.network_gb + ' GB' : 'N/A');
+        const gpuEl = document.getElementById('stat-gpu');
+        if (gpuEl) gpuEl.textContent = 'N/A';
+        const uptimeEl = document.getElementById('stat-uptime');
+        if (uptimeEl) uptimeEl.textContent = (data.uptime_days != null ? data.uptime_days + 'd' : 'N/A');
       }
     } catch (e) {
       console.warn('System stats fetch error:', e);
