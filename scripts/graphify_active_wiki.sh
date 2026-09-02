@@ -3,9 +3,9 @@
 # iGPU-local (Ollama), NO OpenRouter fallback (per Josh's hard rule).
 set -u
 
-cd /home/<USER>/.autognosia/active-wiki || exit 1
+cd "$HOME/.autognosia/active-wiki" || exit 1
 
-LOG=/home/<USER>/.autognosia/logs/graphify-active-wiki.log
+LOG="$HOME/.autognosia/logs/graphify-active-wiki.log"
 
 {
   echo ""

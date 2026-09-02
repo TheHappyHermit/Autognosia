@@ -53,12 +53,7 @@ vm-port-fix.sh
 wiki_engram.json
 *.pyc
 
-# ── Project source (tracked) ──
-skills/
-scripts/
-tests/
-config/
-assets/
+
 
 # ── Personal directories ──
 Downloads/

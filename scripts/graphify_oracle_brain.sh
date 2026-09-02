@@ -6,9 +6,9 @@
 #
 set -u
 
-cd /home/<USER>/.autognosia/oracle/brain || exit 1
+cd "$HOME/.autognosia/oracle/brain" || exit 1
 
-LOG=/home/<USER>/.autognosia/logs/graphify-oracle-brain.log
+LOG="$HOME/.autognosia/logs/graphify-oracle-brain.log"
 
 {
   echo ""

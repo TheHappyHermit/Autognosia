@@ -20,15 +20,13 @@ RUN pip install --no-cache-dir \
     pyyaml \
     pg8000
 
-# Copy dashboard application
-COPY dashboard/ /app/dashboard/
-COPY scripts/ /app/scripts/
-COPY config/ /app/config/
+# Copy entire repository into /app so that COPY paths are valid
+COPY . /app/
 
 # Create data directories
 RUN mkdir -p /data /config
 
-EXPOSE 8088 8089
+EXPOSE 8088
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:8088/api/health || exit 1

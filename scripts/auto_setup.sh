@@ -29,13 +29,14 @@ NC='\033[0m' # No Color
 verbose=false
 dry_run=false
 
-if [[ "$1" == "--dry-run" ]]; then
-    dry_run=true
-fi
-
-if [[ "$2" == "--verbose" ]]; then
-    verbose=true
-fi
+# Proper argument parsing - handle both --dry-run and --verbose in any position
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run) dry_run=true ;;
+        --verbose) verbose=true ;;
+        *) echo "Unknown option: $arg"; exit 1 ;;
+    esac
+done
 
 log() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -60,7 +61,8 @@ run_cmd() {
     if $dry_run; then
         return 0
     fi
-    eval "$1"
+    # SECURITY: use bash -c instead of eval for safer command execution
+    bash -c "$1"
 }
 
 check_command() {
@@ -301,7 +303,8 @@ else
         log "Installing gbrain CLI..."
         bun install -g gbrain
         log "Initializing gbrain with PGLite..."
-        gbrain init --pglite
+        # Use --no-embedding for headless/deferred embedding configuration
+        gbrain init --pglite --no-embedding 2>/dev/null || gbrain init --pglite
         success "gbrain installed and initialized"
     else
         warn "bun not available, cannot install gbrain. Install manually: bun install -g gbrain"

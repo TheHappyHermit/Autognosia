@@ -15,7 +15,7 @@ import sqlite3
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("${HOME}/.autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
 DB_PATH = os.environ.get("ORGANIZER_DB", os.path.join(AUTOGNOSIA_HOME, "personal-organizer", "data", "organizer.db"))
 
 # Import notify dispatcher
@@ -32,24 +32,59 @@ def get_db():
         return None
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 def check_timed_reminders():
-    """Check and dispatch pending timed reminders whose trigger time has arrived."""
+    """Check and dispatch pending timed reminders whose trigger time has arrived.
+    
+    Uses atomic UPDATE ... RETURNING to claim reminders before dispatching,
+    preventing duplicate sends across concurrent workers.
+    """
     conn = get_db()
     if not conn:
         return []
     
     cur = conn.cursor()
-    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
     now_local = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    cur.execute("""
-        SELECT id, title, remind_at, channel, notes 
-        FROM reminders 
-        WHERE status = 'pending' AND (remind_at <= ? OR remind_at <= ?)
-    """, (now_iso, now_local))
-    due_reminders = cur.fetchall()
+    # Atomically claim due reminders (SQLite 3.35+ supports RETURNING)
+    try:
+        cur.execute("""
+            UPDATE reminders 
+            SET status = 'claiming', sent_at = strftime('%Y-%m-%dT%H:%M:%S+00:00','now')
+            WHERE id IN (
+                SELECT id FROM reminders 
+                WHERE status = 'pending' AND (remind_at <= ? OR remind_at <= ?)
+            )
+            RETURNING id, title, remind_at, channel, notes
+        """, (now_iso, now_local))
+        due_reminders = cur.fetchall()
+        conn.commit()
+    except sqlite3.OperationalError:
+        # Fallback for SQLite < 3.35: SELECT then UPDATE (non-atomic but best effort)
+        cur.execute("""
+            SELECT id, title, remind_at, channel, notes 
+            FROM reminders 
+            WHERE status = 'pending' AND (remind_at <= ? OR remind_at <= ?)
+        """, (now_iso, now_local))
+        due_reminders = cur.fetchall()
+        # Mark as claiming to reduce (not eliminate) race window
+        for r in due_reminders:
+            cur.execute("""
+                UPDATE reminders SET status = 'claiming' WHERE id = ? AND status = 'pending'
+            """, (r["id"],))
+        conn.commit()
+        # Re-fetch only those we successfully claimed
+        if due_reminders:
+            ids = [r["id"] for r in due_reminders]
+            placeholders = ",".join("?" * len(ids))
+            cur.execute(f"""
+                SELECT id, title, remind_at, channel, notes FROM reminders
+                WHERE id IN ({placeholders}) AND status = 'claiming'
+            """, ids)
+            due_reminders = cur.fetchall()
 
     dispatched = []
     for r in due_reminders:
@@ -57,18 +92,26 @@ def check_timed_reminders():
         channel = r["channel"] or "all"
         notes = r["notes"] or ""
 
-        if dispatcher:
-            results = dispatcher.dispatch(title, notes, channel=channel)
-        else:
-            print(f"[REMINDER] {title} {f'({notes})' if notes else ''}")
-            results = {"local": "dispatched"}
-
-        cur.execute("""
-            UPDATE reminders 
-            SET status = 'sent', sent_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') 
-            WHERE id = ?
-        """, (r["id"],))
-        dispatched.append({"id": r["id"], "title": title, "channel": channel, "results": results})
+        try:
+            if dispatcher:
+                results = dispatcher.dispatch(title, notes, channel=channel)
+            else:
+                print(f"[REMINDER] {title} {f'({notes})' if notes else ''}")
+                results = {"local": "dispatched"}
+            
+            # Mark as sent ONLY after successful dispatch
+            cur.execute("""
+                UPDATE reminders 
+                SET status = 'sent', sent_at = strftime('%Y-%m-%dT%H:%M:%S+00:00','now')
+                WHERE id = ?
+            """, (r["id"],))
+            dispatched.append({"id": r["id"], "title": title, "channel": channel, "results": results})
+        except Exception as e:
+            # Dispatch failed — reset to pending so it can be retried
+            cur.execute("""
+                UPDATE reminders SET status = 'pending', sent_at = NULL WHERE id = ?
+            """, (r["id"],))
+            print(f"[ERROR] Failed to dispatch reminder {r['id']}: {e}")
 
     conn.commit()
     conn.close()
