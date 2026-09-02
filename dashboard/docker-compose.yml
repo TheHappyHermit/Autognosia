@@ -1,11 +1,12 @@
 services:
   dashboard:
-    build: .
+    build:
+      context: ..
+      dockerfile: dashboard/Dockerfile
     container_name: autognosia-dashboard
     restart: unless-stopped
     ports:
       - '8088:8088'
-      - '8089:8089'
     volumes:
       - ./data:/data
       - ./config:/config
@@ -15,7 +16,7 @@ services:
       - CONFIG_PATH=/config/services.yaml
       - DOCKER_SOCKET=/var/run/docker.sock
       - DASHBOARD_PORT=8088
-      - WS_PORT=8089
+
       - TZ=UTC
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8088/api/health']

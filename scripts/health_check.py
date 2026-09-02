@@ -62,40 +62,7 @@ def check_services():
             print(f"  [WARN] {name}: HTTP {e.code}")
             all_ok = False
         except Exception as e:
-            # For services that may run in different modes (Docker vs local CLI),
-            # try fallback detection methods
-            if name == "gbrain":
-                # GBrain may run via PGLite (local CLI) without exposing HTTP
-                # port 3131. Check if gbrain CLI is available and healthy.
-                try:
-                    result = subprocess.run(
-                        ["gbrain", "doctor", "--fast"],
-                        capture_output=True, text=True, timeout=30
-                    )
-                    # GBrain doctor may return exit code 1 even when healthy
-                    # (known issue). Check the output text for confirmation.
-                    output_ok = result.returncode == 0 or (
-                        "All checks OK" in result.stdout or
-                        "Overall health score" in result.stdout
-                    )
-                    if output_ok:
-                        print(f"  [OK] {name}: GBrain PGLite (doctor healthy)")
-                        continue
-                    else:
-                        print(f"  [DOWN] {name}: gbrain doctor returned {result.returncode}")
-                        all_ok = False
-                except FileNotFoundError:
-                    print(f"  [SKIP] {name}: gbrain CLI not installed")
-                    continue
-                except subprocess.TimeoutExpired:
-                    print(f"  [WARN] {name}: gbrain doctor timed out (still running)")
-                    continue
-                except Exception:
-                    print(f"  [DOWN] {name}: {e}")
-                    all_ok = False
-            elif name == "searxng-core":
-                # SearXNG may not be deployed locally (user may use external instance)
-                # or may be deployed but not healthy yet
+            if name == "searxng-core":
                 print(f"  [SKIP] {name}: not deployed locally (may use external SearXNG)")
                 continue
             else:
@@ -136,7 +103,7 @@ def check_disk():
         if result.returncode == 0:
             print(result.stdout.strip())
         else:
-            print(f"Disk check error: {result.stderr}")
+            print(f"Disk check error: {result.stderr.strip()}")
     except Exception as e:
         print(f"Disk check failed: {e}")
 

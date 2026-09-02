@@ -14,7 +14,7 @@ pick_next_wiki_topic.py          the nightlies + frontier cron
 research agent session  ──writes──▶  oracle/brain/<Domain>/<Topic>.md
                                      (OKF v2 frontmatter, 2500–5000 words)
   │
-  ├─▶ gbrain sync (hourly cron) ──▶ GBrain index (searchable)
+  ├─▶ brain_sync.py (hourly cron) ──▶ Brain Search index (searchable)
   └─▶ logs/deep_research.log       audit trail of every page built
 ```
 

@@ -79,10 +79,18 @@ import asyncio
 
 app = FastAPI(title="Autognosia Command Deck API", version="2.6.0")
 
+# CORS: explicit origins required when credentials are enabled.
+# Override via CORS_ORIGINS env var (comma-separated) — defaults to same-origin only.
+_cors_origins_env = os.environ.get("CORS_ORIGINS", "")
+if _cors_origins_env.strip():
+    _cors_origins = [o.strip() for o in _cors_origins_env.split(",") if o.strip()]
+else:
+    _cors_origins = []  # same-origin only (no cross-origin credentialed requests)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=_cors_origins,
+    allow_credentials=bool(_cors_origins),
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -148,7 +156,7 @@ def get_system_stats():
 
     # Simple network estimation from counters (not perfect but gives a number)
     net_io = psutil.net_io_counters()
-    network_mbps = round(net_io.bytes_recv / (1024 * 1024 * 1024), 2)  # cumulative GB
+    network_gb = round(net_io.bytes_recv / (1024 * 1024 * 1024), 2)  # cumulative GB received
 
     # Active agents — check Hermes gateway
     active_agents = 1  # Hermes agent itself is always "active"
@@ -157,7 +165,7 @@ def get_system_stats():
         "cpu_percent": psutil.cpu_percent(interval=0.1),
         "ram_percent": psutil.virtual_memory().percent,
         "disk_percent": psutil.disk_usage('/').percent,
-        "network_mbps": network_mbps,
+        "network_gb": network_gb,
         "active_agents": active_agents,
         "uptime_days": uptime_days,
     }
@@ -165,11 +173,20 @@ def get_system_stats():
 
 @app.get("/api/health")
 def healthcheck():
-    """Healthcheck endpoint for Docker and monitoring."""
+    """Healthcheck endpoint for Docker and monitoring. Verifies DB is actually usable."""
     docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
-    db_ok = ORGANIZER_DB.exists()
+    db_ok = False
+    if ORGANIZER_DB.exists():
+        try:
+            conn = sqlite3.connect(str(ORGANIZER_DB))
+            conn.execute("SELECT 1 FROM tasks LIMIT 1")
+            conn.close()
+            db_ok = True
+        except Exception:
+            db_ok = False
+    status = "ok" if db_ok else "degraded"
     return JSONResponse({
-        "status": "ok",
+        "status": status,
         "docker": docker_ok,
         "database": db_ok,
         "timestamp": datetime.now(timezone.utc).isoformat()
@@ -355,14 +372,37 @@ def update_task(task_id: int, payload: Dict[str, Any] = Body(...)):
     updates = []
     params = []
     
+    # Validate status if provided
+    status_val = payload.get("status")
+    if status_val is not None and status_val not in ["active", "next", "in_progress", "waiting", "completed", "cancelled", "blocked"]:
+        conn.close()
+        raise HTTPException(status_code=400, detail=f"Invalid status: {status_val}. Must be one of: active, next, in_progress, waiting, completed, cancelled, blocked")
+    
+    # Validate priority if provided
+    priority_val = payload.get("priority")
+    if priority_val is not None and priority_val not in ["low", "medium", "high", "critical"]:
+        conn.close()
+        raise HTTPException(status_code=400, detail=f"Invalid priority: {priority_val}. Must be one of: low, medium, high, critical")
+    
+    # Verify task exists
+    existing = cur.execute("SELECT id, status FROM tasks WHERE id = ?", (task_id,)).fetchone()
+    if not existing:
+        conn.close()
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    
     for k, v in payload.items():
         if k in allowed:
             updates.append(f"{k} = ?")
             params.append(v)
-            
-    if payload.get("status") == "completed" and "completed_at" not in payload:
+        
+    if status_val == "completed" and "completed_at" not in payload:
         updates.append("completed_at = ?")
         params.append(datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
+    elif status_val and status_val != "completed":
+        # Clear completed_at if task is being moved back from completed
+        if existing["status"] == "completed":
+            updates.append("completed_at = ?")
+            params.append(None)
         
     if not updates:
         conn.close()
@@ -567,7 +607,7 @@ def search_wiki(q: str = Query("", min_length=1)):
                         "tier": label,
                         "title": file.stem.replace("-", " ").title(),
                         "path": str(rel_path),
-                        "abs_path": str(file),
+                        # SECURITY: do NOT expose absolute server paths to clients
                         "snippet": snippet
                     })
             except Exception:
@@ -629,15 +669,14 @@ def get_telemetry():
     if AUTOGNOSIA_DB.exists():
         db_stats["autognosia.db"] = f"{AUTOGNOSIA_DB.stat().st_size / 1024:.1f} KB"
 
-    # GBrain CLI
-    gbrain_installed = bool(shutil.which("gbrain") or shutil.which("gbrain.cmd"))
+    # Brain CLI (legacy — no longer used)
 
     return {
         "docker_available": docker_available,
         "containers": containers,
         "profiles": profile_status,
         "databases": db_stats,
-        "gbrain_cli": gbrain_installed,
+        "gbrain_cli": False,  # legacy — no longer used
         "server_time": datetime.now(timezone.utc).isoformat()
     }
 
@@ -909,7 +948,7 @@ SERVICE_DEFINITIONS = {
     "sonarr": {"name": "Sonarr", "port": 8989, "icon": "📺", "category": "automation"},
     "radarr": {"name": "Radarr", "port": 7878, "icon": "🎞️", "category": "automation"},
     "qbittorrent": {"name": "qBittorrent", "port": 8080, "icon": "⬇️", "category": "downloads"},
-    "traefik": {"name": "Traefik", "port": 8080, "icon": "🚦", "category": "infra"},
+    "traefik_dashboard": {"name": "Traefik Dashboard", "port": 8080, "icon": "🚦", "category": "infra"},
     "uptimekuma": {"name": "Uptime Kuma", "port": 3001, "icon": "📊", "category": "monitoring"},
     "grafana": {"name": "Grafana", "port": 3000, "icon": "📈", "category": "monitoring"},
     "prometheus": {"name": "Prometheus", "port": 9090, "icon": "⚡", "category": "monitoring"},
@@ -918,9 +957,13 @@ SERVICE_DEFINITIONS = {
 }
 
 # Map ports to service names (for health checks)
+# Note: multiple services may share a port (e.g. 8080); store as list
 PORT_TO_SERVICE = {}
 for svc_key, svc_info in SERVICE_DEFINITIONS.items():
-    PORT_TO_SERVICE[svc_info["port"]] = svc_key
+    port = svc_info["port"]
+    if port not in PORT_TO_SERVICE:
+        PORT_TO_SERVICE[port] = []
+    PORT_TO_SERVICE[port].append(svc_key)
 
 # Jellyfin auth token - set via env var or leave None for public endpoints
 JELLYFIN_TOKEN = os.environ.get("JELLYFIN_TOKEN", "")
@@ -1009,7 +1052,7 @@ def _get_sonarr_queue(page_size: int = 10) -> list:
                     "type": "Episode",
                     "title": f"{series.get('title', 'Unknown')} - S{item.get('seasonNumber', '')}E{item.get('episodeNumber', '')}",
                     "size": item.get("size", 0),
-                    "timeleft": item.get("monitored", True),
+                    "timeleft": item.get("timeleft", "00:00:00"),
                     "quality": item.get("quality", {}).get("quality", {}).get("name", "") if isinstance(item.get("quality"), dict) else "",
                 })
     except Exception:
@@ -1034,7 +1077,7 @@ def _get_radarr_queue(page_size: int = 10) -> list:
                     "type": "Movie",
                     "title": movie.get("title", "Unknown"),
                     "size": item.get("size", 0),
-                    "timeleft": item.get("monitored", True),
+                    "timeleft": item.get("timeleft", "00:00:00"),
                     "quality": item.get("quality", {}).get("quality", {}).get("name", "") if isinstance(item.get("quality"), dict) else "",
                 })
     except Exception:
@@ -1120,7 +1163,7 @@ HOME_LAB_SERVERS = {
         "gpu": {"name": "V100", "memory_mb": 32768, "type": "nvidia"},
     },
     "agent": {
-        "ip": "10.1.1.37",
+        "ip": "<AGENT_SERVER_IP>",
         "name": "Agent",
         "role": "Hermes gateway, paperclip, memory systems",
         "services": {
@@ -1134,7 +1177,7 @@ HOME_LAB_SERVERS = {
         },
     },
     "agent_zero": {
-        "ip": "10.1.1.18",
+        "ip": "<AGENT_ZERO_IP>",
         "name": "Agent Zero",
         "role": "Autonomous agent, data brokering",
         "services": {
@@ -1390,11 +1433,23 @@ def get_graphify_status():
             except:
                 pass
     
+    # Check graphify-main-out (legacy location)
+    main_dir = AUTOGNOSIA_HOME / "graphify-main-out"
+    if main_dir.exists():
+        for out_file in main_dir.glob("*.json"):
+            try:
+                data = json.loads(out_file.read_text(encoding="utf-8"))
+                nodes += len(data.get("nodes", []))
+                edges += len(data.get("edges", []))
+            except:
+                pass
+    
     return {
         "nodes": nodes,
         "edges": edges,
         "brain_dir": str(brain_dir),
         "active_wiki_dir": str(active_wiki_dir),
+        "main_dir": str(main_dir),
     }
 
 @app.get("/api/hermes")

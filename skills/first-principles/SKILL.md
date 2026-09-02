@@ -163,7 +163,7 @@ The fifth why reveals the systemic fix, not just the symptom.
 
 - **Epistemic Protocol**: Use when auditing beliefs — distinguish evidence from assumption
 - **Structured Thinking**: Use when recombining — structure the solution space
-- **Cortex Verification**: Use when experimenting — verify claims against reality
+- **Verification**: Use when experimenting — verify claims against reality
 - **Personal Cognitive Router**: Use to decide when first principles is the right mode
 
 ## Quick Reference

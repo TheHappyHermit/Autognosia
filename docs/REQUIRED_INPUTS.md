@@ -18,7 +18,7 @@ Configure the following before deploying services:
   - Command: `openssl rand -hex 32`
   - Stored in `docker/.env` as `SEARXNG_SECRET`
 
-- [ ] **GBrain API Keys** — For semantic search and fact extraction
+- [ ] **Brain Search** — For semantic search and fact extraction
   - ZeroEntropy: `ZEROENTROPY_API_KEY` (default embedding + reranker)
   - OpenAI: `OPENAI_API_KEY` (fallback for vector search)
   - Anthropic: `ANTHROPIC_API_KEY` (optional, improves search quality)
@@ -39,7 +39,7 @@ Configure the following before deploying services:
 1. Tell Hermes: "Set up the Autognosia from the repository"
 2. Hermes reads your existing `.env` file at `${HOME}/.hermes/.env` and auto-fills the provider/API key configuration
 3. Hermes generates the SearXNG secret automatically
-4. Hermes prompts you only for inputs it cannot infer (e.g., GBrain API keys if not present)
+4. Hermes prompts you only for inputs it cannot infer (e.g., Brain Search keys if not present)
 
 ### Manual Setup
 

@@ -3,6 +3,8 @@
  * Vertical stripe of agents on left, chat panel on right.
  * Inline chat (no modal).
  */
+import { escapeHtml } from './app-core.js';
+
 class BotsPage {
   constructor() {
     this.bots = [];
@@ -51,11 +53,11 @@ class BotsPage {
     const statusClass = `bot-stripe-status--${bot.status || 'idle'}`;
     const isActive = this.currentBot && this.currentBot.id === bot.id ? ' active' : '';
     return `
-      <div class="bot-stripe-item${isActive}" data-bot-id="${bot.id}" tabindex="0" role="button" aria-label="Chat with ${this.escapeHtml(bot.name)}">
+      <div class="bot-stripe-item${isActive}" data-bot-id="${bot.id}" tabindex="0" role="button" aria-label="Chat with ${escapeHtml(bot.name)}">
         <div class="bot-stripe-avatar">${bot.avatar || '🤖'}</div>
         <div class="bot-stripe-info">
-          <div class="bot-stripe-name">${this.escapeHtml(bot.name)}</div>
-          <div class="bot-stripe-role">${this.escapeHtml(bot.role)}</div>
+          <div class="bot-stripe-name">${escapeHtml(bot.name)}</div>
+          <div class="bot-stripe-role">${escapeHtml(bot.role)}</div>
         </div>
         <div class="bot-stripe-status ${statusClass}" aria-label="Status: ${bot.status || 'idle'}"></div>
       </div>
@@ -126,7 +128,7 @@ class BotsPage {
     if (messagesContainer) {
       messagesContainer.innerHTML = `
         <div class="bot-message bot-message--bot">
-          Hello! I'm ${this.escapeHtml(bot.name)}. How can I help you today?
+          Hello! I'm ${escapeHtml(bot.name)}. How can I help you today?
           <div class="bot-message-time">Just now</div>
         </div>
       `;
@@ -147,7 +149,7 @@ class BotsPage {
     // Add user message
     const userMsg = document.createElement('div');
     userMsg.className = 'bot-message bot-message--user';
-    userMsg.innerHTML = `${this.escapeHtml(message)}<div class="bot-message-time">Just now</div>`;
+    userMsg.innerHTML = `${escapeHtml(message)}<div class="bot-message-time">Just now</div>`;
     messagesContainer.appendChild(userMsg);
 
     // Show typing indicator
@@ -170,7 +172,7 @@ class BotsPage {
 
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-message bot-message--bot';
-      botMsg.innerHTML = `${this.escapeHtml(data.reply)}<div class="bot-message-time">${this.formatTime(data.timestamp)}</div>`;
+      botMsg.innerHTML = `${escapeHtml(data.reply)}<div class="bot-message-time">${this.formatTime(data.timestamp)}</div>`;
       messagesContainer.appendChild(botMsg);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } catch (e) {
@@ -196,12 +198,6 @@ class BotsPage {
     } catch {
       return iso;
     }
-  }
-
-  escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str || '';
-    return div.innerHTML;
   }
 }
 

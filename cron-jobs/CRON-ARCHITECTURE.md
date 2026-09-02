@@ -48,7 +48,7 @@ on_failure: "alert"  # alert | ignore | log
 | 05:00 | View generation | Script | `generate_views.py` | Refresh markdown views from organizer.db |
 | 06:00 (Mon) | Session audit | Agent | `wiki-ingestion` | Review recent sessions for missed knowledge |
 | 07:00 | Daily briefing | Agent | Built-in | Personal briefing delivered to user |
-| 08:00 | Stack verification | Script | `autognosia_health.py` | Daily morning verification and GBrain doctor check |
+| 08:00 | Stack verification | Script | `autognosia_health.py` | Daily morning verification |
 | 08:00 (15th) | Persona audit | Agent | `wiki-maintenance` | Verify agent's understanding matches reality |
 | 09:00 (Mon–Fri) | Prompt-me | Agent | `prompt-me` | Ask one targeted question to sharpen plans |
 | 09:00 (Sun) | Weekly review | Agent | Built-in | Weekly summary with task/project status |

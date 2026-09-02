@@ -19,7 +19,7 @@ When FreshRSS API returns 404 errors, use these steps to verify Traefik is routi
    curl -s -o /dev/null -w "%{http_code}" -H "Host: freshrss.wineandgecko.com" http://<traefik-ip>:80/api/greader.php/accounts/ClientLogin
    ```
 
-4. Test both old and new FreshRSS server IPs, as IPs may change during migrations (e.g., 10.1.1.10 → 161.153.112.27).
+4. Test both old and new FreshRSS server IPs, as IPs may change during migrations (e.g., <FRESHRSS_IP> → 161.153.112.27).
 
 ## Interpreting Results
 - **200 on root/install.php, 404 on API**: FreshRSS container may not be running, or API path is misconfigured
