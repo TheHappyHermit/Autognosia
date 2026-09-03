@@ -51,7 +51,7 @@ def _ensure_web_deps() -> None:
 
 _ensure_web_deps()
 
-from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi import FastAPI, HTTPException, Query, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -94,6 +94,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 # Background reminder dispatcher task
 @app.on_event("startup")
@@ -931,12 +939,22 @@ def get_bot_history(bot_id: str):
 
 @app.post("/api/bots/{bot_id}/message")
 def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
-    """Send a message to a specific bot."""
+    """Send a message to a specific bot, routing to Hermes Autognosia Executive Copilot."""
     message = (payload.get("message") or "").strip()
     if not message:
         raise HTTPException(status_code=400, detail="Message required")
+    
+    # Process through Autognosia / Hermes Executive engine
+    res = chat_with_hermes({"message": message})
+    
+    agent_title = bot_id.replace("-", " ").title()
+    reply = res.get("reply", "")
+    
     return {
-        "reply": f"Echo from {bot_id}: {message}",
+        "reply": reply,
+        "bot_id": bot_id,
+        "bot_name": agent_title,
+        "actions_taken": res.get("actions_taken", []),
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
@@ -1189,8 +1207,10 @@ HOME_LAB_SERVERS = {
 }
 
 
-def _check_remote_service(host: str, port: int, path: str = None, timeout: float = 2.0) -> dict:
+def _check_remote_service(host: str, port: int, path: str = None, timeout: float = 0.5) -> dict:
     """Check health of a remote service on the home lab network."""
+    if not host or "<" in host or ">" in host:
+        return {"healthy": False, "status_code": 0, "response_ms": None, "error": "Unconfigured host IP"}
     url = f"http://{host}:{port}"
     if path:
         url += path

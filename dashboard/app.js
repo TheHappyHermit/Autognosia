@@ -107,7 +107,7 @@ class CommandDeck {
     document.querySelectorAll('.view-section').forEach(s => s.style.display = 'none');
     const target = document.getElementById(`view-${viewName}`);
     if (target) {
-      target.style.display = 'block';
+      target.style.display = viewName === 'agents' ? 'flex' : 'block';
     }
 
     // Initialize view-specific content

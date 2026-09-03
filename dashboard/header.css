@@ -4,22 +4,18 @@
    ========================================================================== */
 
 .app-header {
-  position: fixed;
-  top: 0;
-  left: var(--sidebar-width, 200px);
-  right: 0;
+  grid-area: 1 / 2 / 2 / 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
   height: var(--header-height);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 0 var(--space-4);
   z-index: var(--z-sticky);
-  transition: left var(--motion-base) var(--ease-out),
-              background var(--motion-base) var(--ease-out),
+  transition: background var(--motion-base) var(--ease-out),
               border-color var(--motion-base) var(--ease-out);
 }
 

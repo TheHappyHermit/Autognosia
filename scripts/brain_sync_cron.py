@@ -2,13 +2,10 @@
 """
 brain_sync_cron.py — Cron wrapper for brain_sync.py.
 
-Runs brain_sync for all sources, exits 0 always (non-critical).
-Designed for Hermes cron jobs with no-agent mode.
+Syncs each source separately with individual timeouts.
+Exits 0 always (non-critical) — never breaks the cron pipeline.
 
-This script:
-1. Calls brain_sync.py for all sources
-2. Logs success/failure
-3. Always exits 0 (never breaks the cron pipeline)
+Sources: active-wiki, oracle-brain, exchange-research
 """
 
 import os
@@ -17,17 +14,60 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = Path("/home/josh434")
 BRAIN_SYNC = REPO_DIR / "scripts" / "brain_sync.py"
+PYTHON = Path("/home/josh434/.hermes/hermes-agent/venv/bin/python3")
 
-# Prefer venv python, fall back to sys.executable (cross-platform)
-PYTHON = REPO_DIR / ".venv" / "bin" / "python"
-if not PYTHON.exists():
-    PYTHON = Path(sys.executable)
+SOURCES = ["active-wiki", "oracle-brain", "exchange-research"]
+
+# Ollama runs on the V100 server, not localhost
+os.environ.setdefault("BRAIN_OLLAMA_URL", "http://10.1.1.10:11434")
+
+# Per-source timeout — oracle-brain has 1455 files (524MB) and needs ~1h
+# Hardcoded because env var from cron scheduler is too low
+OVERALL_TIMEOUT = 10800
+PER_SOURCE_TIMEOUT = OVERALL_TIMEOUT // len(SOURCES) - 60
 
 
 def rfc3339_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def sync_source(source: str) -> bool:
+    """Sync a single source. Returns True on success."""
+    try:
+        result = subprocess.run(
+            [str(PYTHON), str(BRAIN_SYNC), "--source", source],
+            capture_output=True, text=True, timeout=PER_SOURCE_TIMEOUT,
+            cwd=str(REPO_DIR),
+        )
+        stdout = result.stdout.strip()
+        stderr = result.stderr.strip()
+
+        # Only print if there were changes or errors
+        lines = stdout.split("\n")
+        has_changes = any("New:" in line or "Updated:" in line for line in lines
+                         if line.strip() and not line.strip().startswith("Stats:"))
+        
+        if result.returncode != 0:
+            print(f"[brain_sync_cron] {source}: ERROR rc={result.returncode}")
+            if stderr:
+                print(f"  stderr: {stderr[:200]}")
+            return False
+        
+        if has_changes:
+            # Print only the summary lines
+            for line in lines:
+                if any(k in line for k in ["New:", "Updated:", "Scanned:", "Errors:"]):
+                    print(f"  {line.strip()}")
+        
+        return True
+    except subprocess.TimeoutExpired:
+        print(f"[brain_sync_cron] {source}: TIMEOUT after {PER_SOURCE_TIMEOUT}s")
+        return False
+    except Exception as e:
+        print(f"[brain_sync_cron] {source}: ERROR {e}")
+        return False
 
 
 def main() -> int:
@@ -36,38 +76,24 @@ def main() -> int:
         return 0
 
     if not PYTHON.exists():
-        print(f"[brain_sync_cron] Python not found at {PYTHON}")
+        print(f"[brain_sync_cron] Python venv not found at {PYTHON}")
         return 0
 
     print(f"[brain_sync_cron] Starting sync at {rfc3339_now()}")
+    print(f"[brain_sync_cron] Overall timeout: {OVERALL_TIMEOUT}s, Per-source timeout: {PER_SOURCE_TIMEOUT}s")
 
-    try:
-        result = subprocess.run(
-            [str(PYTHON), str(BRAIN_SYNC)],
-            capture_output=True, text=True, timeout=600,
-            cwd=str(REPO_DIR),
-        )
-        stdout = result.stdout.strip()
-        stderr = result.stderr.strip()
+    results = {}
+    for source in SOURCES:
+        results[source] = sync_source(source)
 
-        # Print last 20 lines of stdout
-        lines = stdout.split("\n")
-        for line in lines[-20:]:
-            print(line)
+    # Summary — only show if there were failures
+    failures = [s for s, ok in results.items() if not ok]
+    if failures:
+        print(f"\n[brain_sync_cron] FAILURES: {', '.join(failures)}")
+    else:
+        print("[brain_sync_cron] All sources synced (no changes)")
 
-        if result.returncode != 0:
-            print(f"[brain_sync_cron] Sync exited with rc={result.returncode}")
-            if stderr:
-                print(f"[brain_sync_cron] stderr: {stderr[:500]}")
-
-        return 0  # Always exit 0
-
-    except subprocess.TimeoutExpired:
-        print("[brain_sync_cron] Sync timed out after 600s")
-        return 0
-    except Exception as e:
-        print(f"[brain_sync_cron] Error: {e}")
-        return 0
+    return 0  # Always exit 0
 
 
 if __name__ == "__main__":

@@ -14,15 +14,13 @@ CommandDeck.prototype.renderTasks = function() {
   else if (this.taskFilter === 'completed') filtered = filtered.filter(t => t.status === 'completed');
   else if (this.taskFilter === 'all') filtered = filtered.filter(t => t.status !== 'completed');
 
-  // Prefer the Tasks view container when active, fall back to dashboard sidebar
-  const renderTarget = viewContainer || container;
-  if (!renderTarget) return;
+  // Render HTML into both containers if they exist
+  const html = (filtered.length === 0)
+    ? '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="empty-state__title">No tasks</div><div class="empty-state__desc">Your pipeline is clear.</div></div>'
+    : filtered.map(t => this.renderTaskCard(t)).join('');
 
-  if (filtered.length === 0) {
-    renderTarget.innerHTML = '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="empty-state__title">No tasks</div><div class="empty-state__desc">Your pipeline is clear.</div></div>';
-  } else {
-    renderTarget.innerHTML = filtered.map(t => this.renderTaskCard(t)).join('');
-  }
+  if (container) container.innerHTML = html;
+  if (viewContainer) viewContainer.innerHTML = html;
 
   // Waiting / Blocked tab
   const waitingTasks = this.state.tasks.filter(t => t.status === 'waiting' || t.status === 'blocked');
@@ -34,14 +32,17 @@ CommandDeck.prototype.renderTasks = function() {
     }
   }
 
-  // Bind checkboxes
-  renderTarget.querySelectorAll('.task-checkbox').forEach(cb => {
-    cb.addEventListener('change', async (e) => {
-      const id = e.target.dataset.taskId;
-      const newStatus = e.target.checked ? 'completed' : 'next';
-      await this.updateTask(id, { status: newStatus });
-      await this.fetchTasks();
-      await this.fetchOverview();
+  // Bind checkboxes across containers
+  [container, viewContainer].forEach(target => {
+    if (!target) return;
+    target.querySelectorAll('.task-checkbox').forEach(cb => {
+      cb.addEventListener('change', async (e) => {
+        const id = e.target.dataset.taskId;
+        const newStatus = e.target.checked ? 'completed' : 'next';
+        await this.updateTask(id, { status: newStatus });
+        await this.fetchTasks();
+        await this.fetchOverview();
+      });
     });
   });
 };

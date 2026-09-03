@@ -3,10 +3,17 @@
    Premium Light-First Design — glassmorphism panels, precision spacing
    ========================================================================== */
 
+/* Main Content Area & Panel Layout
+   Premium Light-First Design — glassmorphism panels, precision spacing
+   ========================================================================== */
+
 .app-layout {
   display: grid;
   grid-template-columns: var(--sidebar-width, 200px) 1fr;
-  min-height: 100vh;
+  grid-template-rows: var(--header-height) 1fr;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   background: var(--bg-primary);
   transition: grid-template-columns var(--motion-base) var(--ease-out);
 }
@@ -22,16 +29,28 @@
 
 /* View sections */
 .view-section {
-  grid-column: 2;
-  margin-top: var(--header-height);
+  grid-area: 2 / 2 / 3 / 3;
+  height: calc(100vh - var(--header-height));
+  max-height: calc(100vh - var(--header-height));
   padding: var(--space-4) var(--space-5);
-  overflow-y: auto;
+  overflow: hidden;
   display: none;
+  flex-direction: column;
 }
 
 .view-section.active {
   display: flex;
-  flex-direction: column;
+}
+
+/* Agents view specific */
+#view-agents {
+  padding: 0;
+  overflow: hidden;
+}
+
+#view-agents .view-section-header {
+  padding: var(--space-4) var(--space-5) 0;
+  flex-shrink: 0;
 }
 
 .view-section-header {

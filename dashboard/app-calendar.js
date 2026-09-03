@@ -41,24 +41,25 @@ CommandDeck.prototype.renderCalendar = function() {
   else if (this.calFilter === 'task') events = events.filter(e => e.type === 'task' || e.category === 'task_deadline');
   else if (this.calFilter === 'subscription') events = events.filter(e => e.type === 'renewal' || e.category === 'subscription');
 
-  // Prefer the Calendar view container; fall back to dashboard calendar-stage
-  const renderTarget = viewStage || stage;
-  if (!renderTarget) return;
+  // Render to both dashboard stage and dedicated calendar view stage
+  [stage, viewStage].forEach(renderTarget => {
+    if (!renderTarget) return;
 
-  if (events.length === 0) {
-    const emptyHtml = '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="empty-state__title">No events</div><div class="empty-state__desc">Your calendar is clear.</div></div>';
-    renderTarget.innerHTML = emptyHtml;
-    if (heading) heading.textContent = 'No events';
-    return;
-  }
+    if (events.length === 0) {
+      const emptyHtml = '<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="empty-state__title">No events</div><div class="empty-state__desc">Your calendar is clear.</div></div>';
+      renderTarget.innerHTML = emptyHtml;
+      if (heading) heading.textContent = 'No events';
+      return;
+    }
 
-  if (this.selectedCalendarView === 'day') {
-    this.renderDayView(renderTarget, heading, events);
-  } else if (this.selectedCalendarView === 'week') {
-    this.renderWeekView(renderTarget, heading, events);
-  } else if (this.selectedCalendarView === 'month') {
-    this.renderMonthView(renderTarget, heading, events);
-  }
+    if (this.selectedCalendarView === 'day') {
+      this.renderDayView(renderTarget, heading, events);
+    } else if (this.selectedCalendarView === 'week') {
+      this.renderWeekView(renderTarget, heading, events);
+    } else if (this.selectedCalendarView === 'month') {
+      this.renderMonthView(renderTarget, heading, events);
+    }
+  });
 };
 
 CommandDeck.prototype.renderDayView = function(stage, heading, events) {
