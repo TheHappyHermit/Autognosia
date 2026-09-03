@@ -47,6 +47,11 @@ class BotsPage {
     }
 
     stripe.innerHTML = this.bots.map(bot => this.renderStripeItem(bot)).join('');
+    
+    // Auto-select first bot if none selected
+    if (this.bots.length > 0 && !this.currentBot) {
+      this.openChat(this.bots[0].id);
+    }
   }
 
   renderStripeItem(bot) {
@@ -170,9 +175,14 @@ class BotsPage {
 
       typing.remove();
 
+      const formattedReply = escapeHtml(data.reply || '')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/\n/g, '<br>');
+
       const botMsg = document.createElement('div');
       botMsg.className = 'bot-message bot-message--bot';
-      botMsg.innerHTML = `${escapeHtml(data.reply)}<div class="bot-message-time">${this.formatTime(data.timestamp)}</div>`;
+      botMsg.innerHTML = `${formattedReply}<div class="bot-message-time">${this.formatTime(data.timestamp)}</div>`;
       messagesContainer.appendChild(botMsg);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } catch (e) {
@@ -180,7 +190,7 @@ class BotsPage {
       console.error('Failed to send message:', e);
       const errMsg = document.createElement('div');
       errMsg.className = 'bot-message bot-message--bot';
-      errMsg.innerHTML = `<span style="color:var(--accent-rose)">Error: Could not reach agent.</span>`;
+      errMsg.innerHTML = `<span style="color:var(--danger)">Error: Could not reach agent.</span>`;
       messagesContainer.appendChild(errMsg);
     }
   }
@@ -201,7 +211,16 @@ class BotsPage {
   }
 }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-  window.botsPage = new BotsPage();
-});
+// Initialize on load with readyState check
+function bootBotsPage() {
+  if (!window.botsPage) {
+    window.botsPage = new BotsPage();
+  }
+  window.botsPage.init();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(bootBotsPage, 0));
+} else {
+  setTimeout(bootBotsPage, 0);
+}

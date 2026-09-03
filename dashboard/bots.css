@@ -13,10 +13,14 @@
 
 /* Bots View Layout: Vertical Stripe + Chat Panel */
 .bots-view {
-  grid-column: 2;
-  margin-top: var(--header-height);
-  height: calc(100vh - var(--header-height));
+  display: flex;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
 }
 
 .bots-sidebar {

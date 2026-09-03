@@ -43,10 +43,16 @@ export class CommandDeck {
   async init() {
     this.bindEvents();
     this.startClock();
-    await this.refreshAllData();
+    if (typeof this.refreshAllData === 'function') {
+      try {
+        await this.refreshAllData();
+      } catch (e) {
+        console.warn('Initial data refresh failed:', e);
+      }
+    }
     this.setupAutoRefresh();
-    this.initCollapsiblePanels();
-    this.initKeyboardShortcuts();
+    if (typeof this.initCollapsiblePanels === 'function') this.initCollapsiblePanels();
+    if (typeof this.initKeyboardShortcuts === 'function') this.initKeyboardShortcuts();
     this.initViewRouting();
   }
 
@@ -139,15 +145,19 @@ export class CommandDeck {
 
     // Initialize view-specific logic
     if (viewName === 'services') {
-      this.fetchServices();
+      if (typeof this.fetchServices === 'function') this.fetchServices();
     } else if (viewName === 'calendar') {
-      this.fetchCalendar();
+      if (typeof this.fetchCalendar === 'function') this.fetchCalendar();
     } else if (viewName === 'tasks') {
-      this.fetchTasks();
+      if (typeof this.fetchTasks === 'function') this.fetchTasks();
     } else if (viewName === 'homelab') {
-      this.renderHomeLab();
+      if (typeof this.renderHomeLab === 'function') this.renderHomeLab();
     } else if (viewName === 'agents') {
-      this.fetchBots();
+      if (window.botsPage && typeof window.botsPage.init === 'function') {
+        window.botsPage.init();
+      }
+    } else if (viewName === 'dashboard') {
+      if (typeof this.refreshAllData === 'function') this.refreshAllData();
     }
 
     // Close sidebar on mobile
@@ -538,7 +548,15 @@ export class CommandDeck {
   }
 }
 
-// Bootstrap
-document.addEventListener('DOMContentLoaded', () => {
-  window.commandDeck = new CommandDeck();
-});
+// Bootstrap CommandDeck
+function bootCommandDeck() {
+  if (!window.commandDeck) {
+    window.commandDeck = new CommandDeck();
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(bootCommandDeck, 0));
+} else {
+  setTimeout(bootCommandDeck, 0);
+}

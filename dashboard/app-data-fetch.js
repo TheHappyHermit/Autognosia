@@ -37,21 +37,28 @@ CommandDeck.prototype.renderBriefing = function() {
 };
 
 CommandDeck.prototype.refreshAllData = async function() {
+  const safe = async (fn) => {
+    try {
+      if (typeof fn === 'function') await fn();
+    } catch (e) {
+      console.warn('Fetch error:', e);
+    }
+  };
   await Promise.all([
-    this.fetchSystemStats(),
-    this.fetchOverview(),
-    this.fetchBriefing(),
-    this.fetchTasks(),
-    this.fetchReminders(),
-    this.fetchProjects(),
-    this.fetchCalendar(),
-    this.fetchEmails(),
-    this.fetchIntentions(),
-    this.fetchTelemetry(),
-    this.fetchServices(),
-    this.fetchMedia(),
-    this.fetchQueue(),
-    this.renderDashboardServers()
+    safe(() => this.fetchSystemStats && this.fetchSystemStats()),
+    safe(() => this.fetchOverview && this.fetchOverview()),
+    safe(() => this.fetchBriefing && this.fetchBriefing()),
+    safe(() => this.fetchTasks && this.fetchTasks()),
+    safe(() => this.fetchReminders && this.fetchReminders()),
+    safe(() => this.fetchProjects && this.fetchProjects()),
+    safe(() => this.fetchCalendar && this.fetchCalendar()),
+    safe(() => this.fetchEmails && this.fetchEmails()),
+    safe(() => this.fetchIntentions && this.fetchIntentions()),
+    safe(() => this.fetchTelemetry && this.fetchTelemetry()),
+    safe(() => this.fetchServices && this.fetchServices()),
+    safe(() => this.fetchMedia && this.fetchMedia()),
+    safe(() => this.fetchQueue && this.fetchQueue()),
+    safe(() => this.renderDashboardServers && this.renderDashboardServers())
   ]);
 };
 
