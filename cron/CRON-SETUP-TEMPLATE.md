@@ -64,13 +64,14 @@ Times are local. `deliver: local` writes to `~/.hermes/cron/output/`;
 | Name | Schedule | Script | Deliver |
 |---|---|---|---|
 | Brain Sync (active-wiki + exchange) | `every 60m` | `brain_sync_cron.py --sources active-wiki exchange-research` | local |
-| Brain Sync Oracle (monthly) | `0 2 1 * *` | `brain_sync.py --source oracle-brain` | origin |
-| Oracle Index Update | `30 3 * * *` | `oracle_index_update.py` | local |
+| Brain-Sync Oracle (monthly) | `0 2 1 * *` | `brain_sync.py --source oracle-brain` | origin |
+| Oracle Index Rebuild | `30 3 * * *` | `oracle_index_rebuild.py` | local |
 | Graphify Refresh | `0 4 * * 0` | `refresh_graphify.py` | local |
 | Graphify Progress Monitor | `0 10 * * *` | `verify_graphify_integrity.py` | origin |
 | Wiki Lint Daily | `0 4 * * *` | — | local |
 | Wiki Lint Weekly Deep | `0 3 * * 0` | `wiki_maintenance.py` | local |
 | Nightly raw inbox processing | `0 8 * * 1-5` | — (skills: capture-and-triage, wiki-maintenance) | local |
+| Daily Gmail Subscription Scan | `0 7 * * *` | — (skill: google-workspace) | telegram |
 
 ### Memory
 

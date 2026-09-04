@@ -14,13 +14,13 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_DIR = Path("/home/josh434")
+REPO_DIR = Path.home()
 BRAIN_SYNC = REPO_DIR / "scripts" / "brain_sync.py"
-PYTHON = Path("/home/josh434/.hermes/hermes-agent/venv/bin/python3")
+PYTHON = REPO_DIR / ".hermes/hermes-agent/venv/bin/python3"
 SOURCES = ["active-wiki", "exchange-research"]
 
 # Ollama runs on the V100 server, not localhost
-os.environ.setdefault("BRAIN_OLLAMA_URL", "http://10.1.1.10:11434")
+os.environ.setdefault("BRAIN_OLLAMA_URL", "http://<V100_HOST>:11434")
 
 # Per-source timeout — oracle-brain excluded (handled by separate monthly job)
 OVERALL_TIMEOUT = 10800
