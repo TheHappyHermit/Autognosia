@@ -63,7 +63,8 @@ Times are local. `deliver: local` writes to `~/.hermes/cron/output/`;
 
 | Name | Schedule | Script | Deliver |
 |---|---|---|---|
-| Brain Sync | `*/5 * * * *` | `brain_sync_cron.py` | local |
+| Brain Sync (active-wiki + exchange) | `every 60m` | `brain_sync_cron.py --sources active-wiki exchange-research` | local |
+| Brain Sync Oracle (monthly) | `0 2 1 * *` | `brain_sync.py --source oracle-brain` | origin |
 | Oracle Index Update | `30 3 * * *` | `oracle_index_update.py` | local |
 | Graphify Refresh | `0 4 * * 0` | `refresh_graphify.py` | local |
 | Graphify Progress Monitor | `0 10 * * *` | `verify_graphify_integrity.py` | origin |
