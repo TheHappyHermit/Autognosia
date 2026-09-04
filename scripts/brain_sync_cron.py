@@ -5,7 +5,7 @@ brain_sync_cron.py — Cron wrapper for brain_sync.py.
 Syncs each source separately with individual timeouts.
 Exits 0 always (non-critical) — never breaks the cron pipeline.
 
-Sources: active-wiki, oracle-brain, exchange-research
+Sources: active-wiki, exchange-research (oracle-brain handled by separate monthly job)
 """
 
 import os
@@ -17,14 +17,12 @@ from pathlib import Path
 REPO_DIR = Path("/home/josh434")
 BRAIN_SYNC = REPO_DIR / "scripts" / "brain_sync.py"
 PYTHON = Path("/home/josh434/.hermes/hermes-agent/venv/bin/python3")
-
-SOURCES = ["active-wiki", "oracle-brain", "exchange-research"]
+SOURCES = ["active-wiki", "exchange-research"]
 
 # Ollama runs on the V100 server, not localhost
 os.environ.setdefault("BRAIN_OLLAMA_URL", "http://10.1.1.10:11434")
 
-# Per-source timeout — oracle-brain has 1455 files (524MB) and needs ~1h
-# Hardcoded because env var from cron scheduler is too low
+# Per-source timeout — oracle-brain excluded (handled by separate monthly job)
 OVERALL_TIMEOUT = 10800
 PER_SOURCE_TIMEOUT = OVERALL_TIMEOUT // len(SOURCES) - 60
 
