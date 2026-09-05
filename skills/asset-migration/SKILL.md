@@ -9,7 +9,7 @@ Use when moving images, docs, or other assets between repositories or directorie
 
 ## Core Rule
 
-**NEVER blindly copy files from a legacy repo into a target repo.** Legacy repos often contain older versions with outdated branding (e.g., "Hermes Autognosia" vs "Autognosia"). Always verify versions before replacing.
+**NEVER blindly copy files from a legacy repo into a target repo.** Legacy repos often contain older versions with outdated branding (e.g., "Hermes Cortex" vs "Autognosia"). Always verify versions before replacing.
 
 ## Workflow
 
@@ -52,7 +52,7 @@ Use when moving images, docs, or other assets between repositories or directorie
 
 ## Pitfalls
 
-- **Legacy repo contamination:** A legacy repo (e.g., `hermes-autognosia/`) may contain old branded images. Copying them overwrites newer versions in the target repo (e.g., `autognosia-repo/`). The result is all images suddenly show the old brand name.
+- **Legacy repo contamination:** A legacy repo (e.g., the old `~/hermes-cortex/` directory) may contain old branded images. Copying them overwrites newer versions in the target repo (e.g., `autognosia-repo/`). The result is all images suddenly show the old brand name.
 - **File size is a quick check, not proof:** Different sizes suggest different versions, but you must verify which is correct (check timestamps, visual content, or source of truth).
 - **Git history corruption:** Once you commit the wrong images to the repo, reverting requires `git reset --hard` to the last clean commit. Keep a backup directory of correct versions.
 
@@ -66,4 +66,4 @@ If you accidentally overwrote correct images:
 
 ## Related
 
-- See `references/legacy-repo-trust.md` for the hermes-autognosia → autognosia case study.
+- See `references/legacy-repo-trust.md` for the legacy repo → autognosia case study.

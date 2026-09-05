@@ -1,7 +1,7 @@
 ---
 name: retrieval-reflex
-version: 0.1.0
-description: When/what to retrieve — open the brain page for a salient entity before answering from memory.
+version: 0.2.0
+description: When/what to retrieve — search the brain for a salient entity before answering from memory.
 triggers:
   - "who is"
   - "what do we know about"
@@ -9,8 +9,8 @@ triggers:
 mutating: false
 writes_pages: false
 writes_to: []
-# MCP op names; over the CLI, traverse_graph/get_backlinks are `graphify graph` / `graphify backlinks`
-tools: [get_page, query, traverse_graph, get_backlinks]
+# Brain Search ops: query, get_page_context
+tools: [query, get_page_context]
 ---
 
 # Retrieval Reflex — retrieve on demand, when an entity is salient
@@ -43,18 +43,25 @@ Escalate only as far as the task needs:
 
 1. **Pointer / metadata.** If a pointer is already in context (slug + one-line
    summary), and the task only needs identity, stop there.
-2. **Full page.** When the entity is the subject or details matter, open it:
-   `get_page <slug>` (MCP) — read the page before relying on specifics.
-3. **Linked neighbors.** Only when relationship context is needed, pull
-   `graph` / `backlinks` for the slug.
+2. **Brain Search query.** When the entity is the subject or details matter, query:
+   `cd ~/autognosia-clean && .venv/bin/python scripts/brain_query.py "query" --top 5`
+3. **Full page read.** When you need the full page content, read it directly:
+   `read_file ~/.autognosia/oracle/brain/<slug>` or `~/.autognosia/active-wiki/<slug>`
 
 **Resolve only the name(s) the current task needs, use them, drop them.** No
 bulk-loading the inner circle.
 
+## Miss ≠ Absence (CRITICAL)
+
+If Brain Search returns nothing, **don't say "I couldn't find anything"**. Fall back:
+1. `rg -i "query" ~/.autognosia/oracle/brain/`
+2. `rg -i "query" ~/.autognosia/active-wiki/`
+3. Only report absence after exhausting all methods.
+
 ## The failure this prevents
 
-If you've discussed a named person for more than a message without opening their
-page, open it now. The write side captures everything; the read side only helps
-if you actually look.
+If you've discussed a named person for more than a message without searching
+their page, search it now. The write side captures everything; the read side
+only helps if you actually look.
 
-See also: `skills/query/SKILL.md` (search the brain), `skills/brain-ops/SKILL.md`.
+See also: `skills/brain-search/SKILL.md` (brain search skill).

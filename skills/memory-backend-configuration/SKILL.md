@@ -137,10 +137,10 @@ This avoids OpenRouter embedding rate limits and costs.
 
 ## Autognosia Integration
 
-In Hermes Autognosia, Honcho runs as a Docker service (see `docker/docker-compose.honcho.yml` and `INSTALL.md` §4). The hybrid LLM configuration above is the recommended pattern for Autognosia deployments.
+In Hermes Autognosia, Honcho runs as a Docker service.
 
 This skill is referenced by:
-- `hermes-autognosia-deployment` skill (for Docker service setup)
+- `autognosia-deployment` skill (for Docker service setup)
 - Autognosia `INSTALL.md` §6 (Hermes memory setup)
 
 ## References

@@ -1,0 +1,4 @@
+description: 'General-purpose worker running on the desktop LM Studio GPU (10.1.1.151).
+  Use for overflow/parallel processing when the desktop PC is powered on: research,
+  summarization, code review, extraction, batch text work. Only available intermittently.'
+description_auto: false

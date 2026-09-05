@@ -1,6 +1,6 @@
 # OpenCode Briefing Pattern
 
-**When:** Briefing OpenCode (qwen3.8-27b via LM Studio on <DESKTOP_LMSTUDIO_IP>) for dashboard/code work.
+**When:** Briefing OpenCode (qwen3.8-27b via LM Studio on 10.1.1.151) for dashboard/code work.
 
 ## Rule: Never Exceed 30KB Combined
 

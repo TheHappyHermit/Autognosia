@@ -61,7 +61,7 @@ password_hash
 
 ### GitHub Handle Patterns
 ```
-<USER_ALT>
+openclaw434
 [any github username in issue/pr references]
 ```
 

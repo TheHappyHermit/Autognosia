@@ -30,9 +30,9 @@ Without this header, you will get:
 - 404 errors or wrong virtual host served
 
 ### 2. IP + Host Header Combination
-When accessing via IP address (<FRESHRSS_IP>):
+When accessing via IP address (10.1.1.10):
 ```bash
-curl -vk -H "Host: freshrss.wineandgecko.com" https://<FRESHRSS_IP>/api/greader.php
+curl -vk -H "Host: freshrss.wineandgecko.com" https://10.1.1.10/api/greader.php
 ```
 
 ### 3. SSL Verification
@@ -45,11 +45,11 @@ The instance uses a self-signed certificate (TRAEFIK DEFAULT CERT), so:
 ```python
 import requests
 
-FRESHRSS_IP = "<FRESHRSS_IP>"
+FRESHRSS_IP = "10.1.1.10"
 FRESHRSS_HOST = "freshrss.wineandgecko.com"
 FRESHRSS_URL = f"https://{FRESHRSS_IP}/api/greader.php"
-USERNAME = "<USER>"
-API_PASSWORD = "[REDACTED]"
+USERNAME = "josh434"
+API_PASSWORD = "J1234osh$"
 
 def get_auth_token():
     resp = requests.post(

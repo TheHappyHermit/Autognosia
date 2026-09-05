@@ -13,8 +13,8 @@ Four-pass import process for knowledge files added to the Oracle Vault.
 
 | Content type | Tier | Path |
 |---|---|---|
-| Specialist reference knowledge (technical, factual, domain-specific) | Oracle | `~/.hermes-autognosia/oracle/brain/` |
-| Personal facts, preferences, projects, decisions | Active Wiki | `~/.hermes-autognosia/active-wiki/` |
+| Specialist reference knowledge (technical, factual, domain-specific) | Oracle | `~/.autognosia/oracle/brain/` |
+| Personal facts, preferences, projects, decisions | Active Wiki | `~/.autognosia/active-wiki/` |
 
 **If content is mixed:** Split it — reference material to Oracle, personal context to Active Wiki with cross-reference links.
 

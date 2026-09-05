@@ -29,7 +29,7 @@ Define a named provider in `config.yaml`:
 ```yaml
 providers:
   llamaCPP:
-    api: http://127.0.0.1:8080/v1
+    api: http://10.1.1.10:8080/v1
     default_model: Qwen3.8-27B-UD-Q4_K_XL
     transport: chat_completions
 

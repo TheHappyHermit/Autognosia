@@ -16,7 +16,7 @@ Manage the organizer database for tasks, projects, subscriptions, and records.
 
 The organizer database path is resolved in this order:
 1. `ORGANIZER_DB_PATH` environment variable (if set)
-2. Default: `~/.hermes-autognosia/personal-state/data/organizer.db`
+2. Default: `~/.autognosia/personal-state/data/organizer.db`
 
 This works on Linux, macOS, and Windows because `~` expands to the user's home directory on all three platforms.
 
@@ -24,7 +24,7 @@ This works on Linux, macOS, and Windows because `~` expands to the user's home d
 
 ```bash
 # Cross-platform directory creation
-mkdir -p ~/.hermes-autognosia/personal-state/data
+mkdir -p ~/.autognosia/personal-state/data
 ```
 
 ### Custom Path Override
@@ -43,7 +43,7 @@ import sqlite3
 import os
 
 db_path = os.environ.get("ORGANIZER_DB_PATH", 
-                         os.path.expanduser("~/.hermes-autognosia/personal-state/data/organizer.db"))
+                         os.path.expanduser("~/.autognosia/personal-organizer/data/organizer.db"))
 conn = sqlite3.connect(db_path)
 tasks = conn.execute("SELECT * FROM tasks WHERE status != 'completed'").fetchall()
 ```

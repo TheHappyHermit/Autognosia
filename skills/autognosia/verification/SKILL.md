@@ -1,5 +1,5 @@
 ---
-name: autognosia-verification
+name: verification
 description: Verification contracts — deterministic first, auditor last, reality over narration.
 ---
 

@@ -24,12 +24,12 @@ Cron jobs that generate scripts at runtime (e.g., `/tmp/hermes-verify-graphify-i
 2. **Update the cron job to reference the permanent script:**
    ```python
    # Update the cron job definition
-   job['prompt'] = f"Run the verification script: python3 /home/<USER>/.hermes/scripts/{name}.py"
+   job['prompt'] = f"Run the verification script: python3 /home/josh434/.hermes/scripts/{name}.py"
    ```
 
 3. **Test the script manually before relying on it:**
    ```bash
-   python3 /home/<USER>/.hermes/scripts/<name>.py 2>&1
+   python3 /home/josh434/.hermes/scripts/<name>.py 2>&1
    ```
 
 4. **Clean up any temp files** from previous transient runs:

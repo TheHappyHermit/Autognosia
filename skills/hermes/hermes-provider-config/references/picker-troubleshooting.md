@@ -105,7 +105,7 @@ grep -i "error\|fail\|context" ~/.hermes/logs/gateway.log | tail -30
 ps aux | grep "gateway run" | grep -v grep
 
 # Check Telegram adapter capabilities
-/home/<USER>/.hermes/hermes-agent/venv/bin/python -c "
+/home/josh434/.hermes/hermes-agent/venv/bin/python -c "
 import hermes_plugins.telegram_platform.adapter as a
 print('has send_model_picker:', hasattr(a, 'TelegramAdapter') and getattr(a.TelegramAdapter, 'send_model_picker', None) is not None)
 "
