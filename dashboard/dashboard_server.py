@@ -861,6 +861,92 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
 
 # ── Bot Management Endpoints ───────────────────────────────────────────────────
 
+def invoke_hermes_profile(bot_id: str, message: str) -> dict:
+    """Send a message to a specific Hermes profile via the CLI.
+
+    Invokes `hermes --oneshot` with the specified profile and session continuity
+    so the agent retains conversation context across dashboard messages.
+    Returns a dict with 'reply', 'actions_taken', 'refresh_needed', 'timestamp'.
+    """
+    import subprocess as sp
+
+    session_name = f"dash-bot-{bot_id}"
+    hermes_bin = shutil.which("hermes") or str(Path.home() / ".local" / "bin" / "hermes")
+
+    # Use chat -q for session continuity (see research notes below).
+    # --oneshot + -c enters interactive mode (bug), chat -q + -c works correctly.
+    cmd = [
+        hermes_bin, "chat", "-q", message,
+        "--profile", bot_id,
+        "-c", session_name,
+        "--create-if-missing",
+    ]
+
+    try:
+        result = sp.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=180,
+            env={**os.environ, "PATH": f"{Path.home() / '.local' / 'bin'}:{os.environ.get('PATH', '')}"},
+        )
+
+        reply = result.stdout.strip()
+
+        if result.returncode != 0:
+            error_msg = result.stderr.strip() or "Unknown error"
+            reply = f"⚠️ Agent error (profile: {bot_id}): {error_msg[:300]}"
+        else:
+            # Extract just the reply text from chat -q output
+            # Format:
+            #   Query: ...
+            #   Initializing agent...
+            #   Session ...
+            #   ────────────────────────── (top separator)
+            #    ─  ⚕ Hermes  ────────── (header)
+            #   <reply>
+            #   ────────────────────────── (bottom separator)
+            #   Resume this session...
+            lines = reply.split('\n')
+            reply_lines = []
+            past_header = False
+            for line in lines:
+                # Skip until we pass the Hermes header line
+                if not past_header:
+                    if 'Hermes' in line and '─' in line:
+                        past_header = True
+                    continue
+                # Stop at the bottom separator
+                if '─' * 10 in line:
+                    break
+                # Skip empty lines and tool output
+                if line.strip() and not line.strip().startswith('┊'):
+                    reply_lines.append(line)
+            if reply_lines:
+                reply = '\n'.join(reply_lines).strip()
+
+        return {
+            "reply": reply,
+            "actions_taken": [],
+            "refresh_needed": False,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    except sp.TimeoutExpired:
+        return {
+            "reply": "⏱️ Agent timed out (180s). The profile may be busy or the model is slow.",
+            "actions_taken": [],
+            "refresh_needed": False,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        return {
+            "reply": f"⚠️ Failed to invoke agent: {str(e)[:300]}",
+            "actions_taken": [],
+            "refresh_needed": False,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
 @app.get("/api/bots")
 def get_bots():
     """List all configured bots/agents from Hermes profiles."""
@@ -939,13 +1025,23 @@ def get_bot_history(bot_id: str):
 
 @app.post("/api/bots/{bot_id}/message")
 def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
-    """Send a message to a specific bot, routing to Hermes Autognosia Executive Copilot."""
+    """Send a message to a specific bot, invoking the corresponding Hermes profile."""
     message = (payload.get("message") or "").strip()
     if not message:
         raise HTTPException(status_code=400, detail="Message required")
     
-    # Process through Autognosia / Hermes Executive engine
-    res = chat_with_hermes({"message": message})
+    # Validate profile exists
+    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    profiles_dir = hermes_home / "profiles"
+    profile_dir = profiles_dir / bot_id
+    
+    # Special case: default profile lives in ~/.hermes/ directly, not in profiles/default/
+    is_default = bot_id == "default"
+    if not is_default and (not profile_dir.exists() or not profile_dir.is_dir()):
+        raise HTTPException(status_code=404, detail=f"Bot profile '{bot_id}' not found")
+    
+    # Invoke the actual Hermes profile via CLI
+    res = invoke_hermes_profile(bot_id, message)
     
     agent_title = bot_id.replace("-", " ").title()
     reply = res.get("reply", "")
