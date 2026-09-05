@@ -277,45 +277,76 @@ CommandDeck.prototype.fetchTelemetry = async function() {
     const grid = document.getElementById('homelab-server-grid');
     if (!grid) return;
 
-    // Fetch system stats and services
-    let sysData = {};
-    let services = [];
     try {
-      const sysRes = await fetch(`${this.apiBase}/api/system`);
-      if (sysRes.ok) sysData = await sysRes.json();
-    } catch (e) { /* ignore */ }
-    try {
-      const svcRes = await fetch(`${this.apiBase}/api/services`);
-      if (svcRes.ok) services = await svcRes.json();
-    } catch (e) { /* ignore */ }
-
-    const svcList = Array.isArray(services) ? services : Object.values(services || {});
-    const hostname = window.location.hostname || 'localhost';
-
-    grid.innerHTML = `
-      <div class="server-card">
-        <div class="server-card__header">
-          <div class="server-card__name">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <span>${escapeHtml(hostname)}</span>
-            <span class="server-card__ip">Main</span>
-          </div>
-          <span class="server-card__status online">● Online</span>
-        </div>
-        <div class="server-card__body">
-          <div class="server-card__services" id="homelab-main-services">
-            ${svcList.length > 0 ? svcList.map(s => `<span class="service-pill service-pill--${s.health === 'healthy' ? 'online' : 'offline'}"><span class="service-pill__dot"></span>${escapeHtml(s.name)}</span>`).join('') : '<span class="service-pill"><span class="service-pill__dot"></span>No services detected</span>'}
-          </div>
-          <div class="gpu-meter">
-            <div class="gpu-meter__label">
-              <span>System Load</span>
-              <span class="gpu-meter__value">${sysData.cpu_percent != null ? sysData.cpu_percent + '%' : 'N/A'}</span>
+      // Fetch home lab infrastructure data
+      const res = await fetch(`${this.apiBase}/api/homelab`);
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
+      
+      const homelabData = await res.json();
+      const servers = homelabData.servers || [];
+      
+      if (!servers || servers.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
-            <div class="gpu-meter__bar">
-              <div class="gpu-meter__fill" style="width: ${sysData.cpu_percent || 0}%"></div>
+            <div class="empty-state__title">No home lab servers</div>
+            <div class="empty-state__desc">Configure your infrastructure in config.yaml</div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = servers.map(server => `
+        <div class="server-card">
+          <div class="server-card__header">
+            <div class="server-card__name">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>${escapeHtml(server.name || 'Unknown')}</span>
+              <span class="server-card__ip">${escapeHtml(server.role || 'server')}</span>
             </div>
+            <span class="server-card__status ${server.online ? 'online' : 'offline'}">● ${server.online ? 'Online' : 'Offline'}</span>
+          </div>
+          <div class="server-card__body">
+            <div class="server-card__services">
+              ${server.services && server.services.length > 0 ? server.services.map(s => `<span class="service-pill service-pill--${s.healthy ? 'online' : 'offline'}"><span class="service-pill__dot"></span>${escapeHtml(s.name)}</span>`).join('') : '<span class="service-pill"><span class="service-pill__dot"></span>No services</span>'}
+            </div>
+            ${server.gpu ? `
+            <div class="gpu-meter">
+              <div class="gpu-meter__label">
+                <span>GPU</span>
+                <span class="gpu-meter__value">${escapeHtml(server.gpu.name)}</span>
+              </div>
+              <div class="gpu-meter__bar">
+                <div class="gpu-meter__fill" style="width: ${server.gpu.utilization || 0}%"></div>
+              </div>
+            </div>
+            ` : ''}
+            ${server.cpu_percent != null ? `
+            <div class="gpu-meter">
+              <div class="gpu-meter__label">
+                <span>CPU</span>
+                <span class="gpu-meter__value">${server.cpu_percent}%</span>
+              </div>
+              <div class="gpu-meter__bar">
+                <div class="gpu-meter__fill" style="width: ${server.cpu_percent}%"></div>
+              </div>
+            </div>
+            ` : ''}
           </div>
         </div>
-      </div>
-    `;
+      `).join('');
+    } catch (e) {
+      console.warn('Home lab fetch error:', e);
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="empty-state__title">Unable to load home lab</div>
+          <div class="empty-state__desc">Check server connectivity</div>
+        </div>
+      `;
+    }
   };

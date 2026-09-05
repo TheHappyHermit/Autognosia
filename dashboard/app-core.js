@@ -546,6 +546,97 @@ export class CommandDeck {
       }
     });
   }
+
+  openTaskDetail(taskId) {
+    const modal = document.getElementById('task-detail-modal');
+    if (!modal) {
+      console.warn('Task detail modal not found');
+      return;
+    }
+    const task = this.state.tasks.find(t => t.id === taskId);
+    if (!task) return;
+    
+    const body = modal.querySelector('.task-detail-modal__body');
+    body.innerHTML = `
+      <div class="task-detail-field">
+        <label>Title</label>
+        <input type="text" id="task-detail-title" value="${escapeHtml(task.title)}" />
+      </div>
+      <div class="task-detail-field">
+        <label>Description</label>
+        <textarea id="task-detail-description">${escapeHtml(task.description || '')}</textarea>
+      </div>
+      <div class="task-detail-field">
+        <label>Notes</label>
+        <textarea id="task-detail-notes">${escapeHtml(task.notes || '')}</textarea>
+      </div>
+      <div class="task-detail-row">
+        <div class="task-detail-field">
+          <label>Status</label>
+          <select id="task-detail-status">
+            <option value="next" ${task.status === 'next' ? 'selected' : ''}>Next</option>
+            <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+            <option value="waiting" ${task.status === 'waiting' ? 'selected' : ''}>Waiting</option>
+            <option value="blocked" ${task.status === 'blocked' ? 'selected' : ''}>Blocked</option>
+            <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+          </select>
+        </div>
+        <div class="task-detail-field">
+          <label>Priority</label>
+          <select id="task-detail-priority">
+            <option value="critical" ${task.priority === 'critical' ? 'selected' : ''}>Critical</option>
+            <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+            <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+            <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="task-detail-field">
+        <label>Due Date</label>
+        <input type="datetime-local" id="task-detail-due" value="${task.due_at ? task.due_at.slice(0, 16) : ''}" />
+      </div>
+      <div class="task-detail-meta">
+        ${task.project_name ? `<span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> ${escapeHtml(task.project_name)}</span>` : ''}
+        <span>Created: ${escapeHtml(task.created_at || 'Unknown')}</span>
+      </div>
+    `;
+    
+    modal.classList.add('open');
+    modal.dataset.taskId = task.id;
+  }
+  
+  closeTaskDetailModal() {
+    const modal = document.getElementById('task-detail-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.dataset.taskId = '';
+    }
+  }
+  
+  async saveTaskDetail() {
+    const modal = document.getElementById('task-detail-modal');
+    if (!modal) return;
+    const taskId = modal.dataset.taskId;
+    if (!taskId) return;
+    
+    const payload = {
+      title: document.getElementById('task-detail-title')?.value || '',
+      description: document.getElementById('task-detail-description')?.value || '',
+      notes: document.getElementById('task-detail-notes')?.value || '',
+      status: document.getElementById('task-detail-status')?.value || 'active',
+      priority: document.getElementById('task-detail-priority')?.value || 'medium',
+    };
+    
+    const dueEl = document.getElementById('task-detail-due');
+    if (dueEl?.value) {
+      payload.due_at = new Date(dueEl.value).toISOString();
+    }
+    
+    await this.updateTask(taskId, payload);
+    this.closeTaskDetailModal();
+    await this.fetchTasks();
+    await this.fetchOverview();
+  }
 }
 
 // Bootstrap CommandDeck

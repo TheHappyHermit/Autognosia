@@ -1574,9 +1574,11 @@ def serve_home_lab_css():
 def serve_app_core():
     return FileResponse(str(DASHBOARD_DIR / "app-core.js"), media_type="application/javascript")
 
-@app.get("/app.js")
-def serve_app():
-    return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")
+# @deprecated: app.js is legacy monolithic code, superseded by modular architecture
+# Kept on disk for reference but not loaded by index.html
+# @app.get("/app.js")
+# def serve_app():
+#     return FileResponse(str(DASHBOARD_DIR / "app.js"), media_type="application/javascript")
 
 @app.get("/app-bots.js")
 def serve_app_bots():

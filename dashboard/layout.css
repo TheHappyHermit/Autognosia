@@ -33,7 +33,7 @@
   height: calc(100vh - var(--header-height));
   max-height: calc(100vh - var(--header-height));
   padding: var(--space-4) var(--space-5);
-  overflow: hidden;
+  overflow-y: auto;
   display: none;
   flex-direction: column;
 }
