@@ -16,7 +16,7 @@ Three tiers — information flows **down**, never disappears:
 |------|---------|----------------|--------|
 | **Hot** | Persistent memory | Active preferences, current conventions, things needed every turn | Always loaded |
 | **Warm** | Holographic memory (fact_store) | Facts, project details, environment info | `fact_store probe/search` |
-| **Cold** | LLM Wiki (`/home/<USER>/.autognosia/active-wiki\`) | Archived preferences, settled decisions, historical context | File reads + wiki search |
+| **Cold** | LLM Wiki (`/home/josh434/.autognosia/active-wiki\`) | Archived preferences, settled decisions, historical context | File reads + wiki search |
 
 **Key principle:** Old ≠ wrong. When consolidating, **move entries down, never delete**. The wiki is crystallized expertise — settled knowledge that doesn't need to be in hot memory but is instantly retrievable.
 
@@ -112,7 +112,7 @@ When memory is near capacity and the user triggers `/question.me`, or when hot m
    
    When archiving to cold storage (wiki), follow the **complete 8-step ingestion pipeline**:
    
-   a. **Categorize** — place in `/home/<USER>/.autognosia/active-wiki\system\memory-archive\` with the right file:
+   a. **Categorize** — place in `/home/josh434/.autognosia/active-wiki\system\memory-archive\` with the right file:
       - User preferences → `preferences.md`
       - Decisions → `decisions.md`
       - Environment facts → `environment.md`
@@ -155,8 +155,8 @@ When memory is near capacity and the user triggers `/question.me`, or when hot m
    d. **Use proper headings** — H1 for title, H2 for sections, H3 for individual entries
    
    d. **Add cross-references** — `[[wikilinks]]` to related pages
-   e. **Update wiki index** — add entry to `/home/<USER>/.autognosia/active-wiki\index.md` if the archive section doesn't exist yet
-   f. **Update log** — append to `/home/<USER>/.autognosia/active-wiki\log.md`: `## YYYY-MM-DD: memory consolidation | archived X entries from hot memory`
+   e. **Update wiki index** — add entry to `/home/josh434/.autognosia/active-wiki\index.md` if the archive section doesn't exist yet
+   f. **Update log** — append to `/home/josh434/.autognosia/active-wiki\log.md`: `## YYYY-MM-DD: memory consolidation | archived X entries from hot memory`
    g. **Verify** — check frontmatter is valid, links resolve
    h. **Obsidian sync** — files are in the Obsidian vault directory, so they're automatically visible. Confirm no files are orphaned outside the vault.
 

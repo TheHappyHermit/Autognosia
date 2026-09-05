@@ -1,0 +1,224 @@
+model:
+  default: qwen3.8-27b
+  provider: vllm
+  base_url: http://10.1.1.151:18020/v1
+  key_env: HERMES_CUSTOM_VLLM_API_KEY
+providers:
+  llamaCPP:
+    api: http://10.1.1.10:8080/v1
+    default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
+    transport: chat_completions
+  desktopLM:
+    api: http://10.1.1.151:1234/v1
+    default_model: qwen3.8-27b
+    transport: chat_completions
+  vllm:
+    name: Vllm
+    base_url: http://10.1.1.151:18020/v1
+    model: qwen3.8-27b
+    discover_models: true
+    models:
+      qwen3.8-27b: {}
+    key_env: HERMES_CUSTOM_VLLM_API_KEY
+fallback_providers: []
+toolsets:
+  - hermes-cli
+agent:
+  max_turns: 200
+  tool_use_enforcement: auto
+  verify_on_stop: false
+  reasoning_effort: high
+terminal:
+  backend: local
+  modal_mode: auto
+  cwd: .
+  timeout: 180
+  env_passthrough: []
+  docker_image: nikolaik/python-nodejs:python3.11-nodejs20
+  docker_forward_env: []
+  singularity_image: docker://nikolaik/python-nodejs:python3.11-nodejs20
+  modal_image: nikolaik/python-nodejs:python3.11-nodejs20
+  daytona_image: nikolaik/python-nodejs:python3.11-nodejs20
+  container_cpu: 1
+  container_memory: 5120
+  container_disk: 51200
+  container_persistent: true
+  docker_volumes: []
+  docker_mount_cwd_to_workspace: false
+  persistent_shell: true
+browser:
+  inactivity_timeout: 120
+  command_timeout: 30
+  record_sessions: false
+  allow_private_urls: false
+  camofox:
+    managed_persistence: false
+checkpoints:
+  enabled: true
+  max_snapshots: 50
+file_read_max_chars: 100000
+compression:
+  enabled: true
+  threshold: 0.5
+  target_ratio: 0.2
+  protect_last_n: 20
+auxiliary:
+  vision:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+    download_timeout: 30
+  compression:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 120
+  skills_hub:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  approval:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  mcp:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  web_extract:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  session_search:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+  flush_memories:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 30
+display:
+  compact: false
+  personality: ''
+  resume_display: full
+  busy_input_mode: interrupt
+  bell_on_complete: false
+  show_reasoning: false
+  streaming: false
+  inline_diffs: true
+  show_cost: false
+  skin: default
+  tool_progress_command: false
+  tool_preview_length: 0
+  tool_progress: all
+dashboard:
+  basic_auth:
+    username: josh434
+    password_hash: scrypt$16384$8$1$OoY6swvLyHJyX1eKjTBIbQ==$QBmQgho9mpj3RgDtEjYlJH0wYy2gDHhyRENqA0pVBoY=
+privacy:
+  redact_pii: false
+tts:
+  provider: edge
+  edge:
+    voice: en-US-AriaNeural
+  elevenlabs:
+    voice_id: pNInz6obpgDQGcFmaJgB
+    model_id: eleven_multilingual_v2
+  openai:
+    model: gpt-4o-mini-tts
+    voice: alloy
+  neutts:
+    ref_audio: ''
+    ref_text: ''
+    model: neuphonic/neutts-air-q4-gguf
+    device: cpu
+stt:
+  enabled: true
+  local:
+    model: base
+  openai:
+    model: whisper-1
+  provider: local
+voice:
+  record_key: ctrl+b
+  max_recording_seconds: 120
+  auto_tts: false
+  silence_threshold: 200
+  silence_duration: 3
+human_delay:
+  mode: 'off'
+  min_ms: 800
+  max_ms: 2500
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  provider: ''
+delegation:
+  model: ''
+  provider: ''
+  base_url: ''
+  api_key: ''
+  max_iterations: 250
+prefill_messages_file: ''
+skills:
+  external_dirs: []
+timezone: ''
+discord:
+  require_mention: true
+  free_response_channels: ''
+  auto_thread: true
+  reactions: true
+approvals:
+  mode: manual
+  timeout: 60
+  destructive_slash_confirm: false
+command_allowlist:
+  - hermes update (restarts gateway, kills running agents)
+  - docker restart/stop/kill (container lifecycle)
+  - docker compose restart/stop/kill/down (container lifecycle)
+security:
+  redact_secrets: true
+  tirith_enabled: true
+  tirith_path: tirith
+  tirith_timeout: 5
+  tirith_fail_open: true
+  website_blocklist:
+    enabled: false
+    domains: []
+    shared_files: []
+cron:
+  wrap_response: true
+onboarding:
+  seen:
+    openclaw_residue_cleanup: true
+    busy_input_prompt: true
+_config_version: 39
+smart_model_routing:
+  enabled: false
+  max_simple_chars: 160
+  max_simple_words: 28
+  cheap_model: {}
+session_reset:
+  mode: both
+  idle_minutes: 1440
+  at_hour: 4
+fallback_model:
+  provider: openai-compatible
+  model: qwen/qwen3.6-35b-a3b

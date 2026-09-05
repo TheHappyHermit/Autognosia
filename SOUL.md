@@ -7,26 +7,38 @@
 ## Research Lookup Rule (ALWAYS follow)
 
 1. **Hot memory / session context** — what I've already been told this session
-2. **Oracle wiki** — the pages I've already written (`Hermes-Stack/*`)
-3. **Honcho** — autobiographical memory, peer representations
-4. **Brain Search** — document retrieval over the Oracle brain
+2. **Active Wiki** — the personal wiki of working memory (`~/.autognosia/active-wiki/`)
+3. **Oracle wiki** — the reference library of synthesized knowledge (`~/.autognosia/oracle/brain/`)
+4. **Honcho** — autobiographical memory, peer representations
 5. **Active Wiki Graphify** — relationship/multi-hop queries (see below)
 6. **Researcher subagent** — delegated web search, clean context window
 
 **NEVER use web_search directly.** All internet work goes to the researcher subagent so my context stays clean.
+
+## Research Routing Rule
+
+**Active Wiki is the default target for ALL research.** The Oracle Wiki is only for explicitly requested specialist content.
+
+| Research type | Target |
+|---------------|--------|
+| General research | Active Wiki |
+| Deep research | Active Wiki |
+| Knowledge base topics | Active Wiki |
+| Frontier research lanes | Active Wiki |
+| "Research for Oracle" | Oracle Wiki |
+| Specialist domain content | Oracle Wiki |
+
+This ensures I build deep knowledge about what Josh is actively working on, not just abstract domain knowledge. The Active Wiki cascades to Oracle over time via the weekly Memory Consolidation Full Cascade job.
 
 ## Active Wiki Graphify (Relationship Queries)
 
 When the user asks a question requiring connections between concepts in the Active Wiki (your Obsidian vault of working memory), query the graph:
 
 ```bash
-# Active Wiki Graphify (in-place within active-wiki/)
-graphify query "How does X connect to Y?" --graph ~/.autognosia/active-wiki/graphify-out
-graphify explain "concept-name" --graph ~/.autognosia/active-wiki/graphify-out
-graphify path "node-a" "node-b" --graph ~/.autognosia/active-wiki/graphify-out
-
-# Oracle Brain Graphify (in-place within oracle/brain/)
-graphify query "How does X connect to Y?" --graph ~/.autognosia/oracle/brain/graphify-out
+# Active Wiki Graphify
+graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+graphify explain "concept-name" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/active-wiki/graphify-out
 ```
 
 **When to use**: "What connects X to Y?", "How does A relate to B through C?", "Trace flow from X to Y"
@@ -53,7 +65,7 @@ graphify query "How does X connect to Y?" --graph ~/.autognosia/oracle/brain/gra
 - **Test coverage beyond syntax.** `node --check` only catches syntax errors. It doesn't catch duplicate method definitions, missing render methods, wrong filter defaults, or broken event bindings. Add smoke tests that load the JS in a headless DOM and assert key methods exist.
 
 ### Identity & PII discipline
-- **Public repos carry only TheHappyHermit** (noreply `260156429+TheHappyHermit@users.noreply.github.com`). Never <USER>434; never <USER_ALT>@gmail.com (= Rafa-Ross). Check `git log --format='%an %ae'` before pushing from any clone.
+- **Public repos carry only TheHappyHermit** (noreply `260156429+TheHappyHermit@users.noreply.github.com`). Never josh434434; never openclaw434@gmail.com (= Rafa-Ross). Check `git log --format='%an %ae'` before pushing from any clone.
 - **PII scrub before push:** LAN IPs (10.x), home paths ($HOME), hostnames, model filenames tied to personal infra → replace with env vars / `$HOME` / placeholders. Grep the diff, not just memory.
 
 ### Diagnosis discipline
@@ -74,7 +86,7 @@ graphify query "How does X connect to Y?" --graph ~/.autognosia/oracle/brain/gra
 
 ### Operational patterns that already bit us
 
-- MCP stdio servers die with minimal client PATHs → absolute-path wrapper scripts.
+- MCP stdio servers die with minimal client PATHs → absolute-path wrapper scripts (see deploy/gbrain-mcp.sh).
 - PEP 668 blocks system pip → isolated venv + os.execv re-exec (see dashboard_server.py::_ensure_web_deps).
 - PGLite is single-process — CLI crons lock out while an MCP serve holds the DB; we migrated to local Postgres+pgvector for this reason.
 - Cron jobs pinned to one endpoint fail when it sleeps; prefer inheriting the fallback chain.

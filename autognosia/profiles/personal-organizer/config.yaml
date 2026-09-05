@@ -1,14 +1,26 @@
-# Personal Organizer — Thin CLI interface to the deterministic SQLite organizer.db
-#
-# MCP access: personal-organizer only
-# Excluded: all others (Personal Organizer is a pure data interface)
-#
-# Deterministic execution without probabilistic hallucinations.
-# All operations are CRUD against organizer.db via the Personal Organizer API.
-
 model:
-  main: default
-
-mcp_servers:
-  personal-organizer:
-    url: "http://127.0.0.1:8001"
+  default: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
+  provider: llamaCPP
+  base_url: http://10.1.1.10:8080/v1
+  context_length: 262144
+providers:
+  llamaCPP:
+    api: http://10.1.1.10:8080/v1
+    default_model: /models/Qwen3.6-35B-A3B-Q4_K_M.gguf
+    transport: chat_completions
+  desktopLM:
+    api: http://10.1.1.151:1234/v1
+    default_model: qwen3.8-27b
+    transport: chat_completions
+  vllm:
+    name: Vllm
+    base_url: http://10.1.1.151:18020/v1
+    model: qwen3.8-27b
+    discover_models: true
+    models:
+      qwen3.8-27b: {}
+    key_env: HERMES_CUSTOM_VLLM_API_KEY
+plugins:
+  enabled: []
+_config_version: 39
+agent: {}

@@ -15,8 +15,18 @@ Use when building, refactoring, or iterating on a single-page dashboard (HTML/CS
 - Read all existing files (CSS tokens, styles, HTML, JS, server)
 - Identify the target architecture (single HTML, component framework, etc.)
 - Document current state and known gaps
+- **MUST LOAD**: `claude-design` skill (design process, taste, anti-slop rules)
+- **MUST LOAD**: `popular-web-designs` skill (54 ready-made design systems)
 
-### Phase 1 — CSS Foundation (tokens.css + styles.css)
+### Phase 1 — Design (UI/UX) — Uses claude-design + popular-web-designs
+- **This is a Monitor surface** (dashboard) — density, glanceability, NO hero
+- Research reference designs from popular-web-designs: Linear, Vercel, Superhuman, Sentry, Raycast
+- Apply Surface-First methodology: commit to composition BEFORE tokens
+- Produce 3 variants: Conservative, Strong-fit, Divergent
+- Run slop diagnostic self-audit before finalizing
+- Do NOT give it a centered hero and 3 feature cards — that's Decide/Learn, not Monitor
+
+### Phase 1a — CSS Foundation (tokens.css + styles.css)
 1. **tokens.css** — Add CSS custom properties for the visual language:
    - Glassmorphism: `--glass-bg`, `--glass-blur`, `--glass-border`
    - Glow effects: `--shadow-glow-accent`, `--shadow-glow-success`
@@ -48,12 +58,63 @@ Use when building, refactoring, or iterating on a single-page dashboard (HTML/CS
 - Keep existing endpoints unchanged (additive only)
 - Handle missing DB gracefully
 
-### Phase 5 — Verification (MANDATORY)
+### Phase 5 — Implementation (OpenCode)
+- Load `opencode` skill — delegate implementation to OpenCode CLI
+- Work on COPIES in `/tmp/oc-work/` only
+- Read all files OpenCode wrote, run syntax checks
+
+### Phase 5a — Accessibility Audit
+- Load `wcag-accessibility` skill
+- Audit all UI changes for WCAG 2.1 AA compliance
+- Fix contrast ratios (≥4.5:1 text, ≥3:1 non-text)
+- Verify ARIA labels and keyboard navigation
+- Run `scripts/contrast-check.py` if available
+
+### Phase 5b — Code Cleanup
+- Load `simplify-code` skill
+- Parallel cleanup of verbose code OpenCode produced
+- Check for duplicate methods, dead code, overly complex logic
+
+### Phase 6 — Verification (MANDATORY)
 - Start server on a fresh port
 - Test each new API endpoint with curl
 - **Open HTML in browser using `computer_use` capture** — screenshot or AX tree, NOT just curl
 - Check all CSS classes render correctly
 - **Never report "done" on a frontend without seeing it render in a real browser**
+
+### Phase 6a — Exploratory QA
+- Load `dogfood` skill
+- Navigate all pages, click all buttons, fill all forms
+- Check console for JS errors after every interaction
+- Test edge cases: empty states, rapid clicking, long text
+- Produce structured bug report with evidence
+
+### Phase 6b — Systematic Platform Audit
+- Load `systematic-platform-audit` skill
+- Write Python audit script that tests EVERY API endpoint
+- Check all links resolve, all pages return 200
+- Verify no demo credentials exposed
+- Total passed / total checks summary
+
+### Phase 7 — Code Review
+- Load `code-review` skill
+- Review OpenCode output for security, quality, conventions
+
+### Phase 7a — Pre-commit Quality Gate
+- Load `requesting-code-review` skill
+- Security scan, quality gates, auto-fix
+- Pre-commit hooks if configured
+
+### Phase 7b — Test-Driven Development Check
+- Load `test-driven-development` skill
+- Verify critical features have tests
+- If tests missing, write them for core functionality
+- RED-GREEN-REFACTOR cycle for any new tests
+
+### Phase 8 — Ship
+- Create feature branch, commit, push, open PR
+- PII scrub before commit
+- Verify on remote
 
 ## Handoff Skepticism Rule
 
@@ -167,7 +228,7 @@ Bind to `0.0.0.0` not `127.0.0.1` so LAN clients can reach the dashboard:
 host = "0.0.0.0"
 ```
 
-### escapeHtml() Utility
+### escapeHtml() Utility — CRITICAL: ES Module Scope
 JavaScript render functions in `app.js` that output user data to the DOM MUST use an `escapeHtml()` utility to prevent XSS. Add it near the top of the file:
 
 ```javascript
@@ -178,6 +239,64 @@ function escapeHtml(str) {
 }
 ```
 
+**CRITICAL PITFALL:** If `app-core.js` uses `export function escapeHtml()`, the function is an ES module export — NOT a global. Other modules (`app-data-fetch.js`, `app-tasks.js`, `app-calendar.js`, `app-comms.js`) that call `escapeHtml()` as a global will throw `ReferenceError: escapeHtml is not defined`.
+
+**Symptom chain:**
+1. `ReferenceError` in every fetch call
+2. Errors bubble up through `Promise.all()` in `refreshAllData()`
+3. `await this.refreshAllData()` throws, breaking the entire `init()` chain
+4. `initViewRouting()` at the end of `init()` NEVER runs
+5. No click handlers get attached to sidebar links — clicking does nothing
+
+**Fix:** After the export, add:
+```javascript
+window.escapeHtml = escapeHtml;
+```
+
+**Also:** Wrap each fetch in `refreshAllData()` with a `.catch()` so one failure doesn't break everything:
+```javascript
+async refreshAllData() {
+  const safe = async (fn) => {
+    try { await fn(); } catch(e) { console.warn('Fetch error:', e.message); }
+  };
+  await Promise.all([
+    safe(() => this.fetchSystemStats()),
+    safe(() => this.fetchTasks()),
+    // ... etc
+  ]);
+}
+```
+
+## ID Mismatch After HTML Refactor — Silent Failures
+
+When the HTML structure changes during a refactor, JS that references old IDs silently fails. Common pattern:
+
+1. Old HTML had `<div class="calendar-view-heading">` — JS does `document.querySelector('.calendar-view-heading')`
+2. New HTML uses `.view-section-header .view-section-title` — old selector returns `null`
+3. JS tries `heading.textContent = dateStr` → `TypeError: Cannot set properties of null`
+4. Error may not break the view visibly, but the heading never updates
+
+**Fix pattern:** Update render functions to target the NEW container IDs. Add null guards:
+```javascript
+const heading = document.querySelector('.view-section-header .view-section-title');
+if (heading) heading.textContent = dateStr;
+```
+
+**Always verify:** After HTML refactor, grep for old IDs in JS files:
+```bash
+grep -rn 'old-id-name' *.js
+```
+
+## Workflow Rule: Never Present Unfinished Work
+
+**User preference (explicit):** When issues remain (empty states, broken views, console warnings), do NOT present the work as "done" or ask the user to review it. Instead:
+1. Identify the remaining issues
+2. Dispatch the Coder agent to fix them
+3. Re-verify after the fix
+4. Only report back when everything is fully working
+
+The user expects a complete, working product — not a list of known issues.
+
 ### FileResponse Import
 If `FileResponse` is used, ensure it's imported from `fastapi.responses`. A missing import causes a 500 on the first static file request.
 
@@ -187,7 +306,7 @@ The active wiki graphify ingestion uses `GRAPHIFY_DISABLE_THINKING=1` for faster
 
 ```bash
 # Launch graphify extract on active wiki
-export OPENAI_BASE_URL="http://127.0.0.1:8080/v1"
+export OPENAI_BASE_URL="http://10.1.1.10:8080/v1"
 export OPENAI_API_KEY="sk-local"
 export OPENAI_MODEL="/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
 export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"
@@ -217,3 +336,4 @@ Monitor with: `tail -f $HOME/.autognosia/logs/graphify-active-wiki.log`
 See `references/opencode-briefing.md` for the briefing pattern.
 See `references/graphify-configuration.md` for the disable-thinking setup.
 See `references/phase-3-agent-intelligence.md` for Agent Intelligence panel patterns.
+See `references/functional-completeness.md` for verifying that views are fully wired (HTML + fetch + render).

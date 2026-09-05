@@ -35,7 +35,7 @@
 
 4. **Complete initial setup** (browser-based):
    - Navigate to `http://freshrss.wineandgecko.com/install.php`
-   - Create admin user: username `<USER>`, password from `FRESHRSS_API_PASSWORD` in `~/.hermes/.env`
+   - Create admin user: username `josh434`, password from `FRESHRSS_API_PASSWORD` in `~/.hermes/.env`
    - Enable Google Reader API: Settings → Reading → Enable Google Reader API
    - Note: CLI initialization via `docker exec freshrss php /var/www/FreshRSS/app/install.php` returns "Forbidden" — only browser-based setup is supported.
 

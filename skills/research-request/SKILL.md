@@ -8,9 +8,20 @@ description: >
 
 # Research Request Skill
 
-## Purpose
+## Default Target: Active Wiki
 
-Delegate internet research to the Researcher profile and process the structured results.
+**All research requests write to the Active Wiki by default** (`~/.autognosia/active-wiki/`). This ensures the agent builds knowledge about what you're actively working on together. The Oracle Wiki is only used when explicitly requested (e.g., "research this for Oracle").
+
+### Routing Rules
+| Request type | Target |
+|-------------|--------|
+| General research | Active Wiki |
+| Deep research | Active Wiki |
+| Knowledge base topics | Active Wiki |
+| "Research for Oracle" | Oracle Wiki |
+| Specialist domain content | Oracle Wiki |
+
+This ensures the agent becomes deeply familiar with YOUR active projects and interests, not just abstract domain knowledge.
 
 ## When to Use
 

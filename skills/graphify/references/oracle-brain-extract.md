@@ -1,8 +1,8 @@
 # Running `graphify extract` against the Oracle brain on the V100
 
 ## Context
-The Autognosia Oracle brain (`/home/<USER>/.autognosia/oracle/brain`) is ingested by graphify's
-extract subcommand, pinned to the local V100 (`127.0.0.1:8080`) running Qwen3.6-35B-A3B. This is a
+The Autognosia Oracle brain (`/home/josh434/.autognosia/oracle/brain`) is ingested by graphify's
+`extract` subcommand, pinned to the local V100 (`10.1.1.10:8080`) running Qwen3.6-35B-A3B. This is a
 long-running daemon-style job — NOT the interactive `/graphify` slash pipeline in this skill's main body.
 
 ## Launch (via script — never hand-type the env)
@@ -10,7 +10,7 @@ long-running daemon-style job — NOT the interactive `/graphify` slash pipeline
 bash ~/.hermes/scripts/graphify_launch_48k.sh
 ```
 The script sets:
-- `OPENAI_BASE_URL=http://127.0.0.1:8080/v1`
+- `OPENAI_BASE_URL=http://10.1.1.10:8080/v1`
 - `OPENAI_API_KEY=sk-local`
 - `OPENAI_MODEL=/models/Qwen3.6-35B-A3B-Q4_K_M.gguf`
 - `GRAPHIFY_MAX_OUTPUT_TOKENS=98304`   # 96k
@@ -33,7 +33,7 @@ graphify extract . --backend openai --max-concurrency 1 --token-budget 24000 --a
 
 ## Monitoring (verified, not assumed)
 - Progress: `grep -cE "chunk [0-9]+/34 done" <log>` and `tail` the log for `chunk N/34 done`.
-- Live connection: `ss -tnp | grep '127.0.0.1:8080'` — look for ESTAB from the graphify pid.
+- Live connection: `ss -tnp | grep '10.1.1.10:8080'` — look for ESTAB from the graphify pid.
 - V100 busy: `ssh main-server "nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total --format=csv,noheader"`
   (expect ~91% util, ~26/32 GB VRAM).
 - Process: `ps -p <pid>` — a 2h+ elapsed with steady ESTAB = healthy grind, not hung.

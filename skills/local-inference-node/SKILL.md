@@ -305,7 +305,7 @@ Report format: `[0x01, PWM_byte, ...]` where PWM is 0-255.
 - **CUDA 12.8.1 is the ceiling** — CUDA 13.x dropped Volta (sm_70) support entirely. Do not upgrade.
 - **Model file corruption from interrupted downloads** — GGUF header can look valid (correct tensor count, size) but tensors are truncated. Always verify by loading the model in a container, not just checking file size or header.
 - **Orphaned llama-server processes hold VRAM after container crashes** — root-owned PIDs from old containers persist and consume ~30GB VRAM. Fix: `sudo kill -9 $(pgrep llama-server)` (sudoers NOPASSWD configured). If that fails, reboot.
-- **`sudo -S` is blocked by the terminal tool** — cannot pipe passwords. Sudoers NOPASSWD file at `/etc/sudoers.d/<USER>-nogpass` covers kill, pkill, nvidia-smi, docker, systemctl, shutdown, reboot. Use `sudo kill` directly over SSH, not `echo pw | sudo -S`.
+- **`sudo -S` is blocked by the terminal tool** — cannot pipe passwords. Sudoers NOPASSWD file at `/etc/sudoers.d/josh434-nogpass` covers kill, pkill, nvidia-smi, docker, systemctl, shutdown, reboot. Use `sudo kill` directly over SSH, not `echo pw | sudo -S`.
 
 ### Qwen3.8-27B-Q4_0 (Legacy — deprecated Aug 2026)
 

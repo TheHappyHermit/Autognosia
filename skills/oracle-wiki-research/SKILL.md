@@ -8,7 +8,7 @@ license: MIT
 
 # Oracle Wiki Research Dispatch
 
-Populate `~/.hermes-autognosia/oracle/brain/` with entity profiles, domain topics, and gap analyses.
+Populate `~/.autognosia/oracle/brain/` with entity profiles, domain topics, and gap analyses.
 
 ## When to Use
 

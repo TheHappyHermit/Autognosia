@@ -5,11 +5,11 @@ description: Use when comparing or syncing two Hermes instances.
 
 # Hermes Multi-Instance Audit & Sync
 
-Audit and sync skills, cron jobs, and knowledge bases across Josh's Hermes installs (Windows desktop ↔ agent VM) over SSH.
+Audit and sync skills, cron jobs, and knowledge bases across Josh's Hermes installs (Windows desktop ↔ agent VM 10.1.1.37) over SSH.
 
 Josh runs multiple Hermes instances that share a knowledge architecture but are NOT the same install:
 - **Windows desktop** (`C:\Users\josh4\AppData\Local\hermes`) — primary personal agent; Oracle Vault at `C:\Hermes\Oracle\Vault`, LLM wiki at `C:\Hermes\LLM_WIKI`.
-- **Agent VM** (user `<USER>`) — runs hermes-autognosia; its own Hermes instance operates autonomously 24/7.
+- **Agent VM 10.1.1.37** (user josh434) — runs Autognosia; its own Hermes instance operates autonomously 24/7.
 
 Connect per the `home-lab-ssh` skill (key: `~/.ssh/id_ed25519_agent_server`). Never touch the agent VM's running processes or config without explicit user go-ahead — file-level drops only by default.
 
@@ -24,17 +24,17 @@ Connect per the `home-lab-ssh` skill (key: `~/.ssh/id_ed25519_agent_server`). Ne
    Note: the agent VM also keeps per-profile skills under `~/.hermes/profiles/<name>/skills/` (e.g. oracle profile ~203). Check those too when answering "does it have X".
 
 2. **Cron diff.** Read `~/.hermes/cron/jobs.json` on each side; compare by function, not count — the two stacks are usually disjoint by design.
-   - **Pitfall: job lists are NOT static.** The agent VM's own Hermes self-provisioned 23 cron jobs from `hermes-autognosia/cron-jobs/definitions.md` in a single session (2026-08-16). Always re-list immediately before reporting; a list from hours ago may be stale.
+   - **Pitfall: job lists are NOT static.** The agent VM's own Hermes self-provisioned 23 cron jobs from `autognosia/cron-jobs/definitions.md` in a single session (2026-08-16). Always re-list immediately before reporting; a list from hours ago may be stale.
 
 3. **Path mapping BEFORE any transfer.** The destination is whatever the *operational components* read, not what config files claim:
-   - Read `hermes-autognosia/config/paths.yaml` for declared paths — then grep the actual scripts (`~/hermes-autognosia/scripts/*.py`) and installed skills for hardcoded paths. On the agent VM these disagree (see references/agent-server-autognosia-paths.md).
-   - Check env vars that redirect defaults: e.g. bundled llm-wiki skill reads `WIKI_PATH` (unset → `~/wiki`; on the agent VM it is now set to the autognosia active-wiki — see reference).
+   - Read `autognosia/config/paths.yaml` for declared paths — then grep the actual scripts (`~/autognosia/scripts/*.py`) and installed skills for hardcoded paths. On 10.1.1.37 these disagree (see references/agent-server-autognosia-paths.md).
+   - Check env vars that redirect defaults: e.g. bundled llm-wiki skill reads `WIKI_PATH` (unset → `~/wiki`; on 10.1.1.37 it is now set to the autognosia active-wiki — see reference).
 
 ## Transfer techniques (Windows desktop → Linux VM)
 
 - **tar-over-SSH pipe** — rsync is not installed on the agent VM; tar exists both sides:
   ```bash
-  tar -C /c/Hermes/Oracle/Vault --exclude='./~' -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server <USER>@<AGENT_SERVER_IP> "mkdir -p <dest> && tar -xf - -C <dest>"
+  tar -C /c/Hermes/Oracle/Vault --exclude='./~' -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server josh434@10.1.1.37 "mkdir -p <dest> && tar -xf - -C <dest>"
   ```
 - **Verify with counts, not exit codes:** `find <dest> -name '*.md' | wc -l` on both sides must match the source count (excluding intentional exclusions).
 - Exclude known artifacts deliberately (e.g. the stray literal `~` dir in the desktop Vault — an accidental unexpanded-tilde clone of a GitHub repo, 731 md files; designed home if ever preserved: `oracle/raw/`).
@@ -52,11 +52,11 @@ Desktop skills hardcode `C:\Hermes\...` / `/c/Hermes/...` paths — never copy t
 
 - **Quoting hell with nested SSH + python.** `ssh host "python3 -c \"...\""` mangles quotes through git-bash. Instead write the script locally and pipe via stdin:
   ```bash
-  cat /tmp/check.py | ssh -i ~/.ssh/id_ed25519_agent_server <USER>@<AGENT_SERVER_IP> "python3 -"
+  cat /tmp/check.py | ssh -i ~/.ssh/id_ed25519_agent_server josh434@10.1.1.37 "python3 -"
   ```
-- **Config files lie about where data lives.** `paths.yaml` declared `oracle_path: ~/.hermes-autognosia/oracle`, but every operational script/skill read `oracle/brain/`. Files dropped at the config-declared root were invisible to the entire pipeline. Always grep scripts for actual paths before choosing a destination.
+- **Config files lie about where data lives.** `paths.yaml` declared `oracle_path: ~/.autognosia/oracle`, but every operational script/skill read `oracle/brain/` (and GBrain + literal-search fallback hardcoded `~/personal-agent/oracle/brain`). Files dropped at the config-declared root were invisible to the entire pipeline. Always grep scripts for actual paths before choosing a destination.
 - **Terminal output truncation:** long SSH command outputs can come back as "1 lines output" in compacted context — re-run with narrower queries or write results to a file and read it.
 
 ## Reference
 
-- `references/agent-server-autognosia-paths.md` — verified path map for the agent VM (paths.yaml vs actual script paths, cron self-provisioning behavior, what was copied when).
+- `references/agent-server-autognosia-paths.md` — verified path map for 10.1.1.37 (paths.yaml vs actual script paths, GBrain hardcodes, cron self-provisioning behavior, what was copied when).
