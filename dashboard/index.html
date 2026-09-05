@@ -208,8 +208,26 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               Schedule & Calendar
             </div>
+            <div class="panel-actions">
+              <button class="filter-chip active" data-cal-filter="all">All</button>
+              <button class="filter-chip" data-cal-filter="meeting">Meetings</button>
+              <button class="filter-chip" data-cal-filter="task">Tasks</button>
+              <button class="filter-chip" data-cal-filter="subscription">Subscriptions</button>
+            </div>
           </div>
           <div class="panel-body" id="calendar-stage">
+            <div class="calendar-controls" style="margin-bottom:var(--space-3);display:flex;gap:var(--space-2);align-items:center;justify-content:space-between">
+              <div style="display:flex;gap:var(--space-1)">
+                <button class="view-tab active" data-view="day" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Day</button>
+                <button class="view-tab" data-view="week" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Week</button>
+                <button class="view-tab" data-view="month" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Month</button>
+              </div>
+              <div style="display:flex;gap:var(--space-2)">
+                <button id="cal-prev" style="width:32px;height:32px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center">◀</button>
+                <button id="cal-today" style="padding:0 var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Today</button>
+                <button id="cal-next" style="width:32px;height:32px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center">▶</button>
+              </div>
+            </div>
             <div class="empty-state">
               <div class="empty-state__icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -226,6 +244,13 @@
             <div class="panel-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
               Action Pipeline
+            </div>
+            <div class="panel-actions">
+              <button class="task-filter-pill active" data-task-filter="all" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">All</button>
+              <button class="task-filter-pill" data-task-filter="critical" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Critical</button>
+              <button class="task-filter-pill" data-task-filter="next" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Next</button>
+              <button class="task-filter-pill" data-task-filter="in_progress" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">In Progress</button>
+              <button class="task-filter-pill" data-task-filter="completed" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Completed</button>
             </div>
           </div>
           <div class="panel-body" id="task-list-container">
@@ -291,6 +316,30 @@
               </div>
               <div class="empty-state__title">No active intentions</div>
               <div class="empty-state__desc">Prospective memory is quiet.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reminders Panel -->
+        <section class="panel" aria-label="Reminders">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Reminders
+            </div>
+            <div class="panel-actions">
+              <button class="rem-filter-pill active" data-rem-filter="all" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">All</button>
+              <button class="rem-filter-pill" data-rem-filter="pending" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Pending</button>
+              <button class="rem-filter-pill" data-rem-filter="snoozed" style="padding:var(--space-1) var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:var(--bg-secondary);cursor:pointer;font-size:0.875rem">Snoozed</button>
+            </div>
+          </div>
+          <div class="panel-body" id="reminders-list-container">
+            <div class="empty-state">
+              <div class="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+              <div class="empty-state__title">No reminders</div>
+              <div class="empty-state__desc">All caught up!</div>
             </div>
           </div>
         </section>
@@ -565,5 +614,111 @@
       </div>
     </div>
   </div>
+
+  <!-- Command Palette (⌘K) -->
+  <dialog id="command-palette" class="command-palette" aria-label="Command Palette">
+    <div class="command-palette__overlay"></div>
+    <div class="command-palette__panel">
+      <div class="command-palette__header">
+        <input
+          type="text"
+          id="palette-search"
+          class="command-palette__search"
+          placeholder="⌘K Search commands, navigate, create…"
+          autocomplete="off"
+        />
+      </div>
+      <div id="palette-results" class="command-palette__results" role="listbox"></div>
+    </div>
+  </dialog>
+
+  <!-- Create Item Modal -->
+  <div class="create-modal" id="modal-create-item" style="display: none;">
+    <div class="create-modal__backdrop" id="create-backdrop"></div>
+    <div class="create-modal__panel">
+      <div class="create-modal__header">
+        <h3>Create New Item</h3>
+        <button class="create-modal__close" id="create-close">&times;</button>
+      </div>
+      <form id="form-create-item" class="create-modal__body">
+        <div class="form-field">
+          <label for="create-type">Type</label>
+          <select id="create-type">
+            <option value="task">Task</option>
+            <option value="intention">Intention</option>
+            <option value="reminder">Reminder</option>
+          </select>
+        </div>
+
+        <!-- Task Fields -->
+        <div id="fields-task" style="display: block;">
+          <div class="form-field">
+            <label for="task-title">Title</label>
+            <input type="text" id="task-title" required />
+          </div>
+          <div class="form-field">
+            <label for="task-desc">Description</label>
+            <textarea id="task-desc"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority">
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="task-due">Due Date</label>
+              <input type="datetime-local" id="task-due" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Intention Fields -->
+        <div id="fields-intention" style="display: none;">
+          <div class="form-field">
+            <label for="intention-cue">IF (Cue)</label>
+            <input type="text" id="intention-cue" placeholder="e.g., I see an email from the boss" required />
+          </div>
+          <div class="form-field">
+            <label for="intention-action">THEN (Action)</label>
+            <input type="text" id="intention-action" placeholder="e.g., I will respond within 1 hour" required />
+          </div>
+        </div>
+
+        <!-- Reminder Fields -->
+        <div id="fields-reminder" style="display: none;">
+          <div class="form-field">
+            <label for="reminder-title">Title</label>
+            <input type="text" id="reminder-title" required />
+          </div>
+          <div class="form-field">
+            <label for="reminder-time">Remind At</label>
+            <input type="datetime-local" id="reminder-time" required />
+          </div>
+          <div class="form-field">
+            <label for="reminder-channel">Channel</label>
+            <select id="reminder-channel">
+              <option value="all">All Channels</option>
+              <option value="desktop">Desktop</option>
+              <option value="email">Email</option>
+              <option value="sms">SMS</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn--ghost" id="create-cancel">Cancel</button>
+          <button type="submit" class="btn btn--primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Live Region for Screen Readers -->
+  <div id="live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
