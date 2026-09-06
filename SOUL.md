@@ -80,9 +80,6 @@ graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/active-wiki/gr
 
 ### Core Rules — Non-Negotiable
 
-- **Main Hermes model NEVER writes code.** Only OpenCode writes code. Hermes writes prompts, verifies output, and manages workflow. This is non-negotiable. The main Hermes model has a different model, different context window, and using it for coding wastes resources and produces inferior results.
-- **OpenCode works on copies only** — `/tmp/oc-<project>-<timestamp>/`. Never originals.
-- **After 2 failed OpenCode attempts, pivot** — don't keep retrying the same approach.
 
 ### Operational patterns that already bit us
 

@@ -1,0 +1,159 @@
+Cronjob Response: Weekly Review
+(job_id: 8deb9940015c)
+-------------
+
+Now I have all the information needed. Let me compile the weekly review.
+
+---
+
+# 📋 Weekly Review — Week of August 23–29, 2026
+
+## 🎯 Executive Summary
+This was a **maintenance-heavy week** with significant progress on infrastructure stabilization, wiki health, and memory consolidation. Key cron jobs ran successfully (config backup, Oracle index rebuild, view generation, memory consolidation), while graphify processing appears to be in a waiting state. No critical failures — several cron jobs failed due to provider issues but these are expected with free-tier APIs.
+
+---
+
+## ✅ Completed Tasks (from Organizer DB)
+
+| Task | Status | Priority | Due | Project |
+|------|--------|----------|-----|---------|
+| Back up NAS before migration | Active | Critical | 2026-08-30 | Homelab Migration |
+| Rotate reverse-proxy TLS certs | Active | High | 2026-08-30 | Homelab Migration |
+| Tune graphify ingestion batch size | Active | Medium | 2026-08-31 | Research Pipeline |
+| Write wiki page: backup strategy | Blocked | High | 2026-09-02 | Research Pipeline |
+| Draft Q3 research reading list | Active | Medium | 2026-09-05 | Research Pipeline |
+| Order drip irrigation fittings | Active | Low | 2026-09-12 | Garden Revamp |
+| **Archive completed garden tasks** | **Completed** | Low | — | Garden Revamp |
+| **Review monthly budget report** | **Completed** | Medium | 2026-08-28 | — |
+
+**Projects:**
+- **Homelab Migration** — Active (2 critical tasks due tomorrow)
+- **Research Pipeline** — Active (3 tasks, 1 blocked on wiki)
+- **Garden Revamp** — Archived (tasks completed)
+
+---
+
+## 📚 Wiki Changes (Active Wiki at `~/.autognosia/backups/active-wiki/`)
+
+### This Week's Ingestion Log Highlights
+
+| Date | Action | Details |
+|------|--------|---------|
+| **Aug 29** | **Maintenance** | Daily check: 0 stale pages, 0 broken links. Hot memory at 94.7% → consolidated to 1086 chars (48% reduction). Cleaned graphify-out reports (8→2). Extracted Agent Zero KB (108 files). |
+| **Aug 29** | **Consolidation** | Created `system/honcho-stack.md`, updated `system/model-config.md` (llama.cpp IP, fallback chain), updated `system/coder-profile.md`. MEMORY.md 2151→1076 chars. |
+| **Aug 23** | **Consolidation** | Hot memory at 99.4% → moved 5 facts to wiki: coder-profile, graphify-policy, autognosia-repo, oracle-research, agent-zero-kb. MEMORY.md 2186→1216 chars. |
+| **Aug 22** | **Weekly Deep Maintenance** | Checked 48 files. 0 stale pages. 4 real broken links (all in raw articles/ingestion log — not active pages). 8 orphans (graphify reports + raw articles — expected). |
+| **Aug 20** | **Fix + Update** | Fixed 8 broken wikilinks across 3 files. Added 4 unindexed pages to index.md. Noted 5 oversized cognitive-science pages (337-352 lines). |
+| **Aug 19** | **Oracle Expansion** | Ingested 5 cognitive-science reference pages (key figures, historical context, frameworks, critiques, modern applications). Fixed index.md broken Concepts section. |
+| **Aug 18** | **Consolidation** | Moved 3 system config pages from hot memory to wiki (infrastructure, model-config, wiki-configuration). Created missing .meta files. |
+
+### Wiki Health Snapshot (as of Aug 29)
+- **Active pages:** ~25 (well-linked, no stale content)
+- **Archive/Raw:** 108 files from Agent Zero KB import, 4 raw articles
+- **Total size:** ~11 MB
+- **Broken links:** 0 in active pages (only in raw/ingestion log — expected)
+- **Orphan pages:** 16 (mostly system/reference pages — expected)
+
+---
+
+## 🔬 Research Completed
+
+### Cognitive Science Oracle Expansion (Aug 19)
+**5 new reference pages** created via researcher delegation:
+1. `reference/cognitive-science-key-figures.md` — Chomsky, Minsky, Newell, Simon, Pinker, Fodor, Putnam, Piaget
+2. `reference/cognitive-science-historical-context.md` — Cognitive revolution, institutionalization, paradigms, timeline
+3. `reference/cognitive-science-related-frameworks.md` — Connectionism, embodied cognition, predictive processing, DST, enactivism, 4E
+4. `reference/cognitive-science-critiques.md` — Symbolic vs connectionist, modularity challenges, PP imperialism, scope neglects
+5. `reference/cognitive-science-modern-applications.md` — AI/ML, HCI/UX, education/ITS, computational psychiatry, CBT, NLP, cognitive architectures
+
+**Quality:** All marked **SAVE** — well-structured, cited, ready for cross-referencing.
+
+---
+
+## ⚙️ Cron Jobs This Week (Key Results)
+
+| Job | Schedule | Last Run | Status | Notes |
+|-----|----------|----------|--------|-------|
+| **Config Backup** | 01:00 daily | Aug 29 15:20 | ✅ Completed | 275 files synced, pushed to `autognosia-clean` (commit `c7293c8`) |
+| **Oracle Index Rebuild** | 03:30 daily | Aug 29 15:09 | ✅ Completed | 109 files copied from Active Wiki to Oracle brain |
+| **Memory Consolidation** | 04:00 daily | Aug 29 15:34 | ✅ Completed | Hot memory 97.8%→48.9%, 4 new wiki pages created |
+| **View Generation** | 05:00 daily | Aug 29 15:32 | ✅ Completed | 3 markdown views refreshed from organizer.db |
+| **GBrain Sync** | Hourly | Aug 29 15:04 | ⚠️ Warning | GBrain upgrade available (0.46.28→0.47.6) — run `gbrain self-upgrade` |
+| **Graphify Processing** | Continuous | Aug 29 15:34 | 🔄 Running | Cache built (semantic-deep), no graph.json yet — process not currently running |
+| **Daily Health Check** | Every 30min | Multiple | ⚠️ Mixed | Some runs failed (provider 404/502 errors — free tier limits) |
+
+---
+
+## 🔧 Decisions Made
+
+1. **Memory consolidation strategy confirmed:** Hot memory facts → wiki pages when >80% full. This week: 3 consolidations (Aug 18, 23, 29) reduced MEMORY.md from ~2150→1076 chars each time.
+2. **Wiki archival policy:** Raw articles and ingestion logs are allowed to have broken links (they're historical). Active pages must stay clean.
+3. **GBrain upgrade pending:** Version 0.47.6 available — should run `gbrain self-upgrade` soon.
+4. **Graphify approach:** Running as continuous background job with semantic-deep caching. May need manual check on progress.
+
+---
+
+## 📅 Upcoming Deadlines & Important Dates
+
+| Date | Event | Source |
+|------|-------|--------|
+| **2026-08-30** | Back up NAS before migration | Organizer (Critical) |
+| **2026-08-30** | Rotate reverse-proxy TLS certs | Organizer (High) |
+| **2026-08-31** | Tune graphify ingestion batch size | Organizer (Medium) |
+| **2026-09-02** | Write wiki page: backup strategy | Organizer (High, Blocked) |
+| **2026-09-03** | Cloud storage renewal ($9.99/mo) | Subscriptions |
+| **2026-09-05** | Draft Q3 research reading list | Organizer (Medium) |
+| **2026-09-08** | **Homelab cutover weekend** | Important Dates |
+| **2026-09-12** | Order drip irrigation fittings | Organizer (Low) |
+| **2026-09-19** | Domain renewal ($14/yr) | Subscriptions |
+| **2026-09-28** | Annual review checkpoint | Important Dates |
+
+---
+
+## 💳 Subscription Renewals (Next 30 Days)
+
+| Subscription | Amount | Cycle | Next Billing | Status |
+|--------------|--------|-------|--------------|--------|
+| Cloud storage plan | $9.99 | Monthly | **2026-09-03** | Active |
+| Domain renewal | $14.00 | Yearly | **2026-09-19** | Active |
+
+---
+
+## ⚠️ Items Needing Attention
+
+1. **Homelab Migration** — 2 critical tasks due **tomorrow (Aug 30)**. NAS backup and TLS cert rotation are blockers for the Sep 8 cutover.
+2. **Graphify** — Cron job shows "running" but no process found and no graph.json produced. May be stalled.
+3. **GBrain upgrade** — Available (0.47.6). Run `gbrain self-upgrade` to stay current.
+4. **Free-tier provider failures** — Several cron jobs hit 404/502 errors from OpenRouter/Nemotron. This is expected but worth monitoring if it blocks critical work.
+5. **Wiki page blocked** — "Write wiki page: backup strategy" is blocked (presumably waiting on Homelab Migration completion).
+
+---
+
+## 📊 System Health Snapshot
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| **llama.cpp server** | ✅ Running | 10.1.1.10:8080, Qwen3.6-35B-A3B-Q4_K_M, 256K context |
+| **Honcho stack** | ✅ Running | 3 services (DB pgvector:5433, API:8000, Deriver) |
+| **LiteLLM** | ✅ Running | Separate network, own Postgres |
+| **FreshRSS** | ✅ Running | 10.1.1.10 (direct IP) |
+| **Hermes Gateway** | ✅ Running | Port 18789 |
+| **Memory (MEMORY.md)** | ✅ Healthy | 1,076/2,200 chars (48.9%) — well under 80% threshold |
+| **Organizer DB** | ✅ Current | Views generated 2026-08-29T22:26:46Z |
+| **Active Wiki** | ✅ Healthy | 0 stale, 0 broken (active), ~25 pages |
+
+---
+
+## 🎯 Suggested Focus for Next Week
+
+1. **Complete Homelab Migration tasks** (NAS backup + TLS certs) — unlocks Sep 8 cutover
+2. **Investigate graphify stall** — check if cache is complete, manually trigger graph.json generation
+3. **Run GBrain upgrade** — `gbrain self-upgrade`
+4. **Unblock wiki backup strategy page** — depends on migration completion
+5. **Monitor free-tier provider reliability** — consider if fallback chain needs adjustment
+
+---
+
+*Generated automatically via weekly review cron job. Data sources: organizer.db, Active Wiki ingestion log, cron execution history, session transcripts.*
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Weekly Review").

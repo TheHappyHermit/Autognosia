@@ -1,6 +1,6 @@
 ---
 name: gsd-core
-description: Use gsd-core when OpenCode needs spec-driven development, phase-based project management, codebase mapping, or quality gates. Lightweight meta-prompting, context engineering, and spec-driven workflow engine for AI coding agents.
+description: Use gsd-core when Coder needs spec-driven development, phase-based project management, codebase mapping, or quality gates. Lightweight meta-prompting, context engineering, and spec-driven workflow engine for AI coding agents.
 metadata:
   hermes:
     tags: [coding, planning, spec-driven, workflow, quality-gates, phase-management, project-init, codebase-mapping, context-engineering]
@@ -25,7 +25,7 @@ It's a meta-prompting, context-engineering, and spec-driven development system t
 
 ## When to use gsd-core
 
-Use gsd-core when OpenCode needs to:
+Use gsd-core when Coder needs to:
 - Initialize a new project with deep context gathering
 - Onboard an existing codebase into a structured workflow
 - Break work into phases with clear acceptance criteria
@@ -36,7 +36,7 @@ Use gsd-core when OpenCode needs to:
 - Manage multiple workstreams or workspaces
 - Run ad-hoc tasks with GSD quality guarantees
 
-**Default preference:** When a coding task involves project initialization, phase management, or spec-driven development, prefer gsd-core over generic OpenCode prompts.
+**Default preference:** When a coding task involves project initialization, phase management, or spec-driven development, prefer gsd-core over generic Coder prompts.
 
 ## Namespace Routers
 
@@ -262,23 +262,23 @@ After verification passes, ship the phase and move to the next one.
 
 ## Consultation Protocol
 
-When OpenCode encounters a question requiring "taste" (what Josh would prefer), it should ask the main Hermes agent via structured handoff rather than guessing.
+When Coder encounters a question requiring "taste" (what Josh would prefer), it should ask the main Hermes agent via structured handoff rather than guessing.
 
 ### Handoff Template
 ```
 [CONSULTATION REQUEST]
-Context: [what OpenCode is working on]
+Context: [what Coder is working on]
 Question: [specific question requiring Josh's taste/preference]
 Options considered: [list options]
 Impact: [how this affects the deliverable]
 ```
 
 ### Process
-1. OpenCode identifies a decision requiring Josh's taste/preference
-2. OpenCode fills out the handoff template and sends to main Hermes agent
+1. Coder identifies a decision requiring Josh's taste/preference
+2. Coder fills out the handoff template and sends to main Hermes agent
 3. Main Hermes agent consults memory, Honcho, Active Wiki for relevant preferences
 4. Main Hermes agent responds with a recommendation and rationale
-5. OpenCode proceeds with the recommendation (or escalates to Josh if still unclear)
+5. Coder proceeds with the recommendation (or escalates to Josh if still unclear)
 
 ### Examples of taste decisions
 - Color palette or visual style choices

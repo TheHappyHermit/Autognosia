@@ -1,11 +1,11 @@
 ---
 name: dashboard-development
-description: "Build and iterate single-page dashboards — structured phases, modern CSS, FastAPI backends, and OpenCode collaboration."
+description: "Build and iterate single-page dashboards — structured phases, modern CSS, FastAPI backends, and Coder collaboration."
 ---
 
 # Dashboard Development
 
-Use when building, refactoring, or iterating on a single-page dashboard (HTML/CSS/JS frontend + Python/Flask/FastAPI backend). Covers phase-based development, modern CSS techniques, backend API endpoints, and collaborating with OpenCode on iterative improvements.
+Use when building, refactoring, or iterating on a single-page dashboard (HTML/CSS/JS frontend + Python/Flask/FastAPI backend). Covers phase-based development, modern CSS techniques, backend API endpoints, and collaborating with Coder on iterative improvements.
 
 ## Phase-Based Approach
 
@@ -58,10 +58,10 @@ Use when building, refactoring, or iterating on a single-page dashboard (HTML/CS
 - Keep existing endpoints unchanged (additive only)
 - Handle missing DB gracefully
 
-### Phase 5 — Implementation (OpenCode)
-- Load `opencode` skill — delegate implementation to OpenCode CLI
+### Phase 5 — Implementation (Coder)
+- Load Coder skills — delegate implementation to Coder agent
 - Work on COPIES in `/tmp/oc-work/` only
-- Read all files OpenCode wrote, run syntax checks
+- Read all files Coder wrote, run syntax checks
 
 ### Phase 5a — Accessibility Audit
 - Load `wcag-accessibility` skill
@@ -72,7 +72,7 @@ Use when building, refactoring, or iterating on a single-page dashboard (HTML/CS
 
 ### Phase 5b — Code Cleanup
 - Load `simplify-code` skill
-- Parallel cleanup of verbose code OpenCode produced
+- Parallel cleanup of verbose code Coder produced
 - Check for duplicate methods, dead code, overly complex logic
 
 ### Phase 6 — Verification (MANDATORY)
@@ -98,7 +98,7 @@ Use when building, refactoring, or iterating on a single-page dashboard (HTML/CS
 
 ### Phase 7 — Code Review
 - Load `code-review` skill
-- Review OpenCode output for security, quality, conventions
+- Review Coder output for security, quality, conventions
 
 ### Phase 7a — Pre-commit Quality Gate
 - Load `requesting-code-review` skill
@@ -179,26 +179,26 @@ Flag files >500 lines as technical debt. When working on a monolithic file:
 3. Start fresh on a new port: `python3 dashboard_server.py --port 8091`
 4. Verify with `curl http://127.0.0.1:8091/api/system` before opening browser
 
-## OpenCode Collaboration Patterns
+## Coder Collaboration Patterns
 
 ### Context Limit — Never dump >30KB
-OpenCode (qwen3.8-27b via LM Studio) chokes on massive combined briefings. **Never pass more than 30KB of combined file content in one prompt.**
+Coder (qwen3.8-27b via LM Studio) can choke on massive combined briefings. **Never pass more than 30KB of combined file content in one prompt.**
 
 **Instead:**
 1. Write focused research files (one per topic) in `$HOME/oc-work/dashboard-overhaul/`
 2. Reference them in a concise task brief: `Read GAP_ANALYSIS.md and PHASE1_PROMPT.md`
 3. Point at specific files: `Modify styles.css, app.js, and dashboard_server.py`
-4. After each OpenCode run, review changes before launching the next phase
+4. After each Coder run, review changes before launching the next phase
 
 ### Terminal I/O Issues
-OpenCode via `terminal()` with `background=true` can hang on terminal I/O. If it stalls for >2 minutes:
+Coder via `terminal()` with `background=true` can hang on terminal I/O. If it stalls for >2 minutes:
 1. Kill the process: `process(action='kill', session_id=...)`
-2. Check if it's actually running: `ps aux | grep opencode`
+2. Check if it's actually running: `ps aux | grep coder`
 3. If running, it may be processing — wait longer
 4. If not running, restart with a shorter prompt
 
-### OpenCode Failures → Pivot to Direct Patching
-OpenCode sessions frequently stall or produce silent failures with terminal I/O errors, especially when reading/writing large files (10KB+). **After 2 failed OpenCode attempts, stop trying and use `patch` + `execute_code` directly.** This session's OpenCode sessions all failed; Phase 1 was completed by direct patching instead. Do not retry OpenCode more than twice before switching.
+### Coder Failures → Pivot to Direct Patching
+Coder sessions frequently stall or produce silent failures with terminal I/O errors, especially when reading/writing large files (10KB+). **After 2 failed Coder attempts, stop trying and use `patch` + `execute_code` directly.** This session.s sessions all failed; Phase 1 was completed by direct patching instead. Do not retry Coder more than twice before switching.
 
 ### Static File Serving
 A FastAPI backend with API-only endpoints (`/api/*`) does NOT serve static HTML/CSS/JS. You MUST add explicit routes:
@@ -328,12 +328,12 @@ Monitor with: `tail -f $HOME/.autognosia/logs/graphify-active-wiki.log`
 1. Read all active wiki research files
 2. Compare against current dashboard
 3. Write GAP_ANALYSIS.md with priorities
-4. Launch OpenCode for Phase N
+4. Launch Coder for Phase N
 5. Review output in browser
 6. Iterate with next phase
 7. Repeat until satisfied or time runs out
 
-See `references/opencode-briefing.md` for the briefing pattern.
+See `references/coder-briefing.md` for the briefing pattern.
 See `references/graphify-configuration.md` for the disable-thinking setup.
 See `references/phase-3-agent-intelligence.md` for Agent Intelligence panel patterns.
 See `references/functional-completeness.md` for verifying that views are fully wired (HTML + fetch + render).

@@ -1,6 +1,6 @@
 ---
 name: gstack
-description: Use gstack when OpenCode needs specialist roles for product planning, design review, code review, QA, release management, or debugging. Garry Tan's Claude Code skill pack that turns a single AI into a virtual engineering team of 23+ specialists.
+description: Use gstack when Coder needs specialist roles for product planning, design review, code review, QA, release management, or debugging. Garry Tan's Claude Code skill pack that turns a single AI into a virtual engineering team of 23+ specialists.
 metadata:
   hermes:
     tags: [coding, design, review, qa, release, debugging, claude-code, specialist, workflow, planning]
@@ -14,13 +14,13 @@ gstack is an open-source skill pack by Garry Tan (CEO of Y Combinator) that tran
 
 Instead of one generic AI assistant, you get explicit cognitive gears: a CEO who rethinks the product, an eng manager who locks architecture, a designer who catches AI slop, a reviewer who finds production bugs, a QA lead with a real browser, a security officer who runs OWASP + STRIDE audits, and a release engineer who ships the PR.
 
-All skills are Markdown prompts (human-readable), MIT licensed, and free. Works on Claude Code, OpenCode, Codex, Cursor, and 10+ other AI coding agents.
+All skills are Markdown prompts (human-readable), MIT licensed, and free. Works on Coder, Claude Code, Codex, Cursor, and 10+ other AI coding agents.
 
 **Repository:** https://github.com/garrytan/gstack
 
 ## When to use gstack
 
-Use gstack skills when OpenCode needs to:
+Use gstack skills when Coder needs to:
 - Plan or scope a new feature with strategic product thinking
 - Review a plan from CEO, engineering, or design perspectives
 - Generate or iterate on UI/UX designs
@@ -32,7 +32,7 @@ Use gstack skills when OpenCode needs to:
 - Generate documentation
 - Run engineering retrospectives
 
-**Default preference:** When a coding task matches any gstack specialist role, prefer that gstack skill over generic OpenCode prompts.
+**Default preference:** When a coding task matches any gstack specialist role, prefer that gstack skill over generic Coder prompts.
 
 ## All Specialist Skills
 
@@ -162,7 +162,7 @@ Use gstack skills when OpenCode needs to:
 
 #### /browse
 - **Role:** QA Engineer
-- **When to invoke:** Any time OpenCode needs web browsing. **Josh-specific: always use /browse instead of claude-in-chrome.**
+- **When to invoke:** Any time Coder needs web browsing. **Josh-specific: always use /browse instead of claude-in-chrome.**
 - **What it does:** Real Chromium browser, real clicks, real screenshots. ~100ms per command after startup. Anti-bot stealth mode available via /open-gstack-browser.
 - **Key flags:** None
 
@@ -264,23 +264,23 @@ Run multiple workflows simultaneously across different features, coordinating th
 
 ## Consultation Protocol
 
-When OpenCode encounters a question requiring "taste" (what Josh would prefer), it should ask the main Hermes agent via structured handoff rather than guessing.
+When Coder encounters a question requiring "taste" (what Josh would prefer), it should ask the main Hermes agent via structured handoff rather than guessing.
 
 ### Handoff Template
 ```
 [CONSULTATION REQUEST]
-Context: [what OpenCode is working on]
+Context: [what Coder is working on]
 Question: [specific question requiring Josh's taste/preference]
 Options considered: [list options]
 Impact: [how this affects the deliverable]
 ```
 
 ### Process
-1. OpenCode identifies a decision requiring Josh's taste/preference
-2. OpenCode fills out the handoff template and sends to main Hermes agent
+1. Coder identifies a decision requiring Josh's taste/preference
+2. Coder fills out the handoff template and sends to main Hermes agent
 3. Main Hermes agent consults memory, Honcho, Active Wiki for relevant preferences
 4. Main Hermes agent responds with a recommendation and rationale
-5. OpenCode proceeds with the recommendation (or escalates to Josh if still unclear)
+5. Coder proceeds with the recommendation (or escalates to Josh if still unclear)
 
 ### Examples of taste decisions
 - Color palette or visual style choices

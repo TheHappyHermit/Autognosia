@@ -1,4 +1,2 @@
-description: 'Coding orchestrator: manages OpenCode CLI for all code writing, review,
-  and refactoring. Never writes code directly — delegates 100% to OpenCode, then verifies
-  and delivers results to the main agent.'
+description: 'Coding orchestrator: writes code directly using curated skills (gstack, gsd-core, playwright). Verifies and delivers results to the main agent.'
 description_auto: false

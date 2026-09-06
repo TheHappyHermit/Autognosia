@@ -1,0 +1,52 @@
+Cronjob Response: Evening Newsletter (9 PM)
+(job_id: 2fdcb131de85)
+-------------
+
+The newsletter has been generated successfully. Here it is:
+
+---
+
+# News Brief
+*2026-08-17 21:02*
+
+---
+
+## 🔬 Science
+
+**Russia summons Japanese ambassador over disputed island visit:** Russian Foreign Minister Sergei Lavrov summoned Japanese Ambassador Akira Muto after Prime Minister Sanae Takaichi and Foreign Minister Toshimitsu Motegi protested President Vladimir Putin's visit to Etorofu, one of four Russian-held islands off Hokkaidai claimed by Japan as the Northern Territories. The ambassador is expected to respond Tuesday after declining to appear on Friday or Monday without explanation.
+
+**Historical Japanese diets contained more key minerals than modern intake:** Ryukoku University researchers found Edo and Meiji era diets had higher concentrations of chlorine, potassium, calcium, manganese, iron, and copper, though zinc levels were lower than today's consumption.
+
+**Hugh Hefner repeatedly alerted FBI to Epstein allegations years before action:** Playboy founder Hugh Hefner contacted the FBI multiple times starting in 2005 on behalf of model Audra Lynn Christiansen, who alleged Jeffrey Epstein raped and trafficked her, but investigators did not interview her until 2020 — a year after Epstein's death. Christiansen also alleged trafficking to Macau casino billionaire Stanley Ho.
+
+**Student shooter kills one, wounds two at Philippine university high school:** A high school student armed with two firearms and wearing a body camera livestreamed an attack at Ateneo de Zamboanga University's high school campus, killing a fellow student and himself while injuring two others. Hundreds of students were evacuated from the secured campus in Zamboanga City.
+
+**Maternal age leaves molecular imprint on offspring cells:** Researchers confirm that a mother's age at conception alters physical and behavioral traits in the next generation across species, though the precise biological mechanisms behind these "maternal age effects" remain unresolved.
+
+---
+
+## 🤖 AI & Tech
+
+**CMF teases next earbuds:** Nothing's budget brand CMF posted a teaser image showing a metallic silver in-ear bud with dual microphone openings and an orange eartip, hinting at a successor to the CMF Buds Pro 2. The release pattern suggests this could be the CMF Buds Pro 3, following the Pro-first cadence of previous generations.
+
+---
+
+## 🌍 World
+
+**Trump honors California lifeguard and rescued boy at White House:** President Trump praised 16-year-old Ryder Williams and 10-year-old Nathaniel Rai for a July ocean rescue in Santa Cruz that went viral. Williams credited his training for the quick response that saved the boy from a rip current.
+
+**DOJ appeals dismissal of charges against wrongfully deported man:** The Justice Department asked the 6th Circuit to reinstate human smuggling charges against Kilmar Abrego Garcia, arguing career prosecutors had legitimate evidence-based reasons for the indictment. A Tennessee judge had dismissed the case in May, ruling the prosecution was vindictive retaliation for Abrego Garcia challenging his deportation to El Salvador.
+
+**Shasta County elections chief offers job to convicted election denier:** The top elections official in Shasta County, California, extended a job offer to Tina Peters, who was convicted in Colorado of tampering with voting machines and promoting election conspiracy theories.
+
+**Atomic bomb survivors group faces dissolution as members age:** Nihon Hidankyo, the Japan Confederation of A- and H-Bomb Sufferers Organizations, will decide by next summer whether to dissolve or continue operations as its hibakusha membership dwindles.
+
+**Student kills classmate then himself at Philippine university high school:** A high school student armed with two firearms opened fire at Ateneo de Zamboanga University High School, killing one student and wounding two others before taking his own life. The suspect appeared to be wearing a body camera and livestreaming the attack.
+
+**Supreme Court rejects Trump appeal in E. Jean Carroll case:** The Court denied Trump's bid to overturn a $5 million civil verdict for sexual abuse and defamation, leaving the judgment intact. A separate $83.3 million defamation verdict against Trump remains pending before the Court.
+
+**PJM proposes data centers switch to backup generators during grid emergencies:** The grid operator's plan would curtail data center demand before residential power is affected, aiming to protect consumers from rising costs and blackouts. PJM also seeks a registry to monitor large electricity users as data center growth strains the aging grid.
+
+**Tupac murder trial opens with witness testimony on 1996 shooting:** Prosecutors portrayed former gang leader Duane "Keffe D" Davis as seeking revenge before orchestrating the drive-by shooting that killed the rapper. Davis, 63, faces murder charges in the decades-old cold case.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Evening Newsletter (9 PM)").

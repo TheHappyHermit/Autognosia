@@ -1,0 +1,52 @@
+Cronjob Response: Evening Newsletter (9 PM)
+(job_id: 2fdcb131de85)
+-------------
+
+# News Brief
+*2026-08-08 21:17*
+
+---
+
+## 🔬 Science
+
+**USDA alerts on salmonella-tainted jalapeños in meat products** — The USDA issued a public health alert for red meat and poultry products containing jalapeños linked to a salmonella outbreak sickening hundreds across 27 states. Eighteen products from brands including Taylor Farms and Ready Meals are recalled, with more expected.
+
+**UK faces expanding drought as fifth heatwave hits** — The Environment Agency warns several English areas may enter drought status this week as temperatures reach 35°C with no significant rain forecast. The UK will break the record for most days exceeding 30°C, previously set in 1995.
+
+**Firefighting helicopter crash kills two in Utah** — A Sikorsky S-64 Skycrane contracted by the US Forest Service crashed Friday near Richfield while battling the Widemouth 2 fire, killing the pilot and one crew member. The National Interagency Fire Center confirmed the fatalities Saturday.
+
+**Iran releases video of Supreme Leader's son to counter health rumors** — Iranian state media published an undated video showing Mojtaba Khamenei appearing healthy after Israeli reports claimed he was in critical condition. The younger Khamenei assumed power in February after his father's death in US-Israeli strikes but has made no public appearances.
+
+**Iran says Oman shipping deal insufficient to reopen Strait of Hormuz** — Tehran insists the waterway will only reopen after the US accepts broader Iranian conditions, despite nearing a shipping protocol agreement with Oman. The IRGC rejected suggestions that the Oman deal alone would restore transit through the chokepoint handling a fifth of global oil shipments.
+
+**Japanese nuclear reactor automatically shuts down after alarm** — Kansai Electric's Oi Unit 3 in Fukui Prefecture stopped automatically Saturday night following an alarm indicating a magnetic field generator abnormality. The operator confirmed no radioactive leakage and is investigating the cause.
+
+---
+
+## 🤖 AI & Tech
+
+**Advocacy group pushes Chrome divestiture:** Public Knowledge filed a friend-of-the-court brief urging the D.C. Circuit to require Google to sell Chrome and bar payments to Apple for search distribution. The group argues independent Chrome ownership would open Google's controlled distribution channel and improve privacy and AI integration decisions.
+
+**Remedies order already restricts exclusive deals:** A September 2025 district court order prohibits Google from exclusive distribution contracts for Search, Chrome, Assistant, and Gemini for six years while mandating data sharing with qualified competitors.
+
+---
+
+## 🌍 World
+
+**Vietnam labour exodus strains domestic sectors** Vietnam's seafood and garment industries face worker shortages despite wage hikes, as 130,000–150,000 citizens leave annually for higher-paying overseas jobs, undermining the country's push to move up the value chain.
+
+**Australia weighs gambling inducement curbs but resists ad bans** The Albanese government is open to tightening rules on betting inducements after an inquiry revealed alcohol and cocaine offered to punters, but remains unlikely to restrict TV and online gambling advertisements.
+
+**Toronto man charged in partner's murder after international manhunt** Abdul Ghafoori, 32, was arrested at a Toronto airport and charged with first-degree murder in the December killing of Himanshi Khurana, 30, following a fugitive investigation spanning multiple countries.
+
+**US privacy activists vandalise licence-plate cameras** A grassroots movement has systematically disabled over 30 Flock Safety cameras, part of a 100,000-device national network, citing surveillance overreach and privacy violations.
+
+**Bangkok school shooting leaves students traumatised** A 14-year-old student described hearing multiple gunshots at Debsirin Nonthaburi School before teachers sheltered classes; the incident marks Thailand's latest campus attack.
+
+**Hong Kong touts Northern Metropolis as housing solution for youth** Chief Executive John Lee said the development will diversify the housing ladder for young residents while fostering a cultural sector to build a global "Hong Kong brand."
+
+**Sydney airport near-miss highlights controller shortage** A Jetstar A320 braked firmly to avoid a Qatar Airways Boeing 777 being towed across its path at 7am Sunday, renewing safety concerns at Australia's busiest airport amid staffing gaps.
+
+**Japan to issue reuse-business guidelines amid consumer disputes** The ministry will clarify reliable business standards to strengthen consumer protection as conflicts rise between customers and firms in the growing reuse market.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Evening Newsletter (9 PM)").

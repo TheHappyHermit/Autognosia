@@ -156,22 +156,6 @@ Autognosia demonstrates strong architectural thinking — three-tier memory, epi
 
 ---
 
-### 6. OpenCode
-
-**What It Is:** Delegate coding tasks to OpenCode CLI (code-only, routes to Gemini 2.5 Pro).
-
-**What Others Do:**
-- **Claude Code / Codex / Aider** — Popular coding agent CLIs.
-- **E2B sandboxing** — Cloud code execution for safety.
-
-**Best Practices Found:**
-1. Code-only delegation (no personal data sent to remote) ✓
-2. Explicit security warning in description ✓
-
-**Pitfalls Found:**
-- **Remote execution:** OpenCode routes to Gemini 2.5 Pro (cloud). User must trust the provider with code.
-
-**Suggested Improvements:**
 1. Document alternatives (local coding agent option)
 2. Add a "code isolation" mode that reviews code before sending to remote
 
@@ -373,7 +357,7 @@ Autognosia demonstrates strong architectural thinking — three-tier memory, epi
 |---------|--------|----------------|-----|
 | Memory extraction | Manual ingestion | Mem0 automatic extraction | Manual is slower but richer |
 | Semantic search | Brain Search (Postgres + pgvector) | Built-in vector DB | Native |
-| Coding agent | OpenCode (remote) | Local coding agent | Privacy trade-off |
+| Coding agent | | Local coding agent | Privacy trade-off |
 | Proactive engagement | prompt-me (daily) | Continuous monitoring | Daily may be too infinite |
 | Error recovery | Manual | Self-healing agents | No auto-retry |
 | Persona drift detection | Monthly audit | Continuous drift detection | Monthly may be too rare |

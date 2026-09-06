@@ -1,6 +1,6 @@
 # Functional Completeness Checklist
 
-When reviewing any dashboard/frontend work (by OpenCode, Coder, or manually), a feature is NOT complete until ALL layers are wired:
+When reviewing any dashboard/frontend work (by Coder or manually), a feature is NOT complete until ALL layers are wired:
 
 ## The Three-Layer Rule
 

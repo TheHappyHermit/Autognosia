@@ -19,8 +19,8 @@
 - [ ] Reference notes (`.md` files that are actual project docs, not research scratch)
 
 ## Downloaded Binaries (gitignore + remove)
-- [ ] `bin/` (downloaded CLI tools like gh, opencode, etc.)
-- [ ] `.opencode/` (OpenCode CLI binary + node_modules)
+- [ ] `bin/` (downloaded CLI tools like gh, etc.)
+- [ ] `.opencode/` (obsolete - safe to remove)
 - [ ] `.codex/` (Codex CLI)
 - [ ] `.claude/` (Claude Code)
 
@@ -35,7 +35,7 @@
 - [ ] `node_modules/` (npm deps)
 
 ## Docker-Downloaded Runtime (gitignore + remove)
-- [ ] `oc-work/` (OpenCode scratch workspace)
+- [ ] `oc-work/` (Coder scratch workspace)
 - [ ] `personal-agent/` (if Docker-pulled)
 - [ ] `honcho/` (Honcho — Docker-pulled)
 - [ ] `hermes-cortex/`, `cortex-backup/` (legacy Docker artifacts — deleted)
