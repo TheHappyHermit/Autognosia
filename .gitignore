@@ -154,7 +154,6 @@ skills/software-development/
 skills/web/
 
 # ── Large binaries ──
-.opencode/
 .vscode-server/
 
 # ── AI tool configs ──

@@ -218,25 +218,25 @@ If no agents configured:
 - Demo bot for testing UI
 
 ════════════════════════════════════════════════════════════════════════
-PHASE 4 — OpenCode Workflow
+PHASE 4 — Coder Workflow
 ════════════════════════════════════════════════════════════════════════
 
-Use OpenCode (via the opencode skill) for all code changes.
+Use the Coder agent (via the coder profile) for all code changes.
 
 Pattern:
 1. You (Hermes) write a focused TASK.md (< 2KB, specific, references research)
-2. OpenCode executes in ~/oc-work/dashboard-docker/
+2. Coder executes in ~/oc-work/dashboard-docker/
 3. You review the diff: cat files, node --check, python3 -m py_compile
 4. You verify in browser: chromium screenshot at 1920x1088 + 375x812
 5. Approve or reject with specific feedback
 6. Copy approved files to ~/autognosia-clean/dashboard/
 7. Restart server, verify live
 
-OpenCode config:
-- Use --model openrouter/meituan/longcat-2.0:free
-- Max 30KB context per task
+Coder config:
+- Model: Qwen3.8-27B via LM Studio (10.1.1.151:1234)
+- Context: 110K tokens
 - Workdir: ~/oc-work/dashboard-docker/
-- After 2 failed OpenCode attempts, you patch directly
+- After 2 failed Coder attempts, pivot to consultation
 
 ════════════════════════════════════════════════════════════════════════
 PHASE 5 — Testing & Verification
@@ -270,8 +270,8 @@ Create in repo root:
 CONSTRAINTS
 ════════════════════════════════════════════════════════════════════════
 
-- OpenCode NEVER touches live files. Always works in ~/oc-work/dashboard-docker/
-- You NEVER write code — you judge OpenCode output
+- Coder NEVER touches live files. Always works in ~/oc-work/dashboard-docker/
+- You write code directly when needed
 - All changes go through feature branch, never main directly
 - Commit messages follow conventional commits (feat:, fix:, refactor:)
 - Each commit is small and reviewable
@@ -287,7 +287,7 @@ YOUR FIRST ACTION
 
 1. Create ~/oc-work/dashboard-docker/ and copy dashboard/ into it
 2. Create TASK.md for Phase 1 (Dockerfile + docker-compose.yml)
-3. Launch OpenCode for Phase 1
+3. Launch Coder for Phase 1
 4. Review output
 5. Continue to Phase 2 (UI redesign)
 6. Loop until all phases complete

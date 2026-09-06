@@ -156,7 +156,6 @@ def check_skills():
         "hermes-config-backup",
         "library-onboarding",
         "memory-backend-configuration",
-        "opencode",
         "oracle-wiki-research",
         "organizer-state",
         "project-work",

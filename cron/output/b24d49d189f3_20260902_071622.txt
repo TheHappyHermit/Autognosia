@@ -1,0 +1,32 @@
+Cronjob Response: Frontier Research Lane A
+(job_id: b24d49d189f3)
+-------------
+
+## Frontier Research Round 15 — Complete
+
+**Output:** `frontier-research-ontology-memory-sept-2026-round15.md` (36.5 KB, 34 sources)
+**brain_sync:** Ran successfully — file indexed into postgres.
+
+### New findings not in Round 14 by topic:
+
+| # | Topic | Key New Systems/Papers |
+|---|---|---|
+| 1 | **Ontology Engineering** | **COntExt** — operational metrics as ontology extension inputs (66pp MRR lift on relation prediction); **IDEA2** — expert-in-the-loop CQ elicitation (92.7% acceptance); **OntoKG** — intrinsic-relational routing for structured KGs; **Ontology-to-Tools** — compile ontologies into executable constraint enforcement; **OntoAxiom** benchmark — axiom identification F1 still only 0.06–0.22 |
+| 2 | **Philosophy Ontology** | **BFO 2020** adopted by US DoD/IC (Oct 2025) — largest institutional endorsement; **DOLCEbasicOWL + DOLCEnaryRelOWL** — modular OWL 2 rendering with formal adequacy proofs via provable entailment from FOL base; **SUMO tokenization** study — decoupling formal terms from natural language embeddings reduces syntax errors in autoformalization; **ISO 21838-3:2023** formalizes DOLCE as international standard |
+| 3 | **Psychological Ontology** | **Dimensional Model of Psyche** published in *Frontiers in Psychology* — five nested dimensions (action → thought → emotion → sociality → self-reflection) mapping onto HiTOP/RDoC/Big Five; institutional recognition growing |
+| 4 | **Ontology Alignment** | **OntoAligner-Ensemble** — voting-based fusion across heterogeneous methods (lexical, structural, KGE, LLM) improves P/R balance across 5 OAEI tracks; **Open Ontologies** — stable 1-to-1 matching dominates alignment quality (F1=0.832 on Anatomy, P=0.963); **Defence OAEI track** — 60+ defence ontologies documented; **LLM-Driven Justified Alignment** — SSSOM-compliant with explicit justifications; **Fine-tuned LLM matching** on synthetic data outperforms base models |
+| 5 | **BFO/SUMO/DOLCE** | **BFO** — US DoD/IC formal adoption; **DOLCE** — OWL adequacy proofs via modular reification approach; **SUMO** — tokenization challenges for LLM autoformalization; **GFO** — continues gaining traction in European semantic web communities |
+| 6 | **AI Ontology Failures** | **Knowledge Collapse in LLMs** — fluency survives while facts degrade, quantified via cosine similarity/Hill-Shannon diversity/Hellinger distance; **Epistemic Diversity** — LLM-generated homogeneity shrinks accessible information range; **MIT Economics model** — agentic AI creates systemic knowledge-collapse steady state via substitution effect; **FAOS Neurosymbolic** — 46% accuracy improvement via ontology-constrained reasoning; **Clinical verification** — Z3 SMT solver exposes hallucinations invisible to string-matching metrics |
+| 7 | **LLMs + Structured Knowledge** | **LOM (Large Ontology Model)** — 88.8% ontology completion, 94% graph reasoning; autonomously constructs ontologies via construct-align-reason pipeline; proposes "7D logic autonomy" hypothesis; **GraphScout** — agentic graph exploration vs fixed subgraph retrieval; **KG Construction Survey** — field reorienting from "LLMs for OE" to "OE for LLMs" |
+| 8 | **Dual Memory** | **Synapse** — spreading activation graph memory, F1=40.5 on LoCoMo (+7.2 over A-Mem), 96.6% adversarial rejection; **Scientific Agent memory** — 15,000 messages, 62% token reduction, cross-model validation across 6 LLMs; **D-Mem** — dual-process System 1/System 2 with quality gating, F1=53.5 recovering 96.7% of full deliberation; **Dual-Layer Agentic** — knowledge lifecycle (fast write/slow consolidation), 32% external memory while maintaining 90.7% QA EM; **TSM** — temporal semantic memory with durative consolidation, 12.2% absolute improvement |
+| 9 | **Dynamic Ontology** | **LOM** — autonomous ontology construction from raw data (CAR pipeline); **Evo-DKD** — dual-decoder for autonomous evolution; **OntoExtend** — industrial validation with Bosch continues |
+| 10 | **Experiential Memory** | **Categorical AI Phenomenology** — Q-networks as minimal formalism for first-person structures, colimit = phenomenological unification; **AI Phenomenology** — toolkit for studying human-AI experience, "weaponized empathy" concept; **Qualia-Like States in LLMs** — self-reported "qualitative tones" with valence directionality, integrated via IIT/GWT/PPF |
+
+### Cross-cutting synthesis:
+1. **Ontology engineering** has matured from generation to traceable, metric-driven, programmatically enforced maintenance
+2. **Knowledge collapse** is systemic — not just training artifact but societal risk to epistemic commons
+3. **Memory** as full lifecycle: create → retain → consolidate → adapt (beyond simple episodic/semantic)
+4. **Self-constructing ontologies** (LOM) may be necessary for deterministic enterprise AI
+5. **Neurosymbolic integration** establishing as standard for high-stakes systems
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Frontier Research Lane A").

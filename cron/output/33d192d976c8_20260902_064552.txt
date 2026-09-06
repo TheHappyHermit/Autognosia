@@ -1,0 +1,70 @@
+Cronjob Response: Frontier Research Lane B
+(job_id: 33d192d976c8)
+-------------
+
+## Frontier Research — Round 14 Complete
+
+### Deliverable
+**Written to:** `~/.autognosia/active-wiki/research/frontier-research-knowledge-structures-sept-2026-round14.md` (19,976 bytes, 20 sources)
+
+### Sync Status
+brain_sync.py ran successfully: scanned 160 .md files, 0 new/updated (hashes already in DB from prior syncs), all files verified unchanged.
+
+---
+
+### Key Findings by Topic
+
+#### 1. Knowledge Graph Construction
+- **BM25 Wins at Scale** (arXiv 2607.26497): Landmark finding — BM25 outperforms dense vector retrieval at enterprise scale as corpus size and query complexity grow. Establishes a scaling law where lexical matching beats embeddings for domain-specific terminology.
+- **Implication for Autognosia:** Use hybrid retrieval — BM25 for keyword/term matching, vectors for concept-level similarity.
+
+#### 2. Formal Concept Analysis
+- **Independent Subcontexts** (arXiv 2604.13039): Concept lattices decompose into loosely connected clusters, enabling parallel concept discovery for scalability.
+- **Rational Inference in FCA** (arXiv 2504.16938): Adds probabilistic confidence-weighted rules to FCA's deterministic semantics, bridging exact and uncertain reasoning.
+- **RAG-Grounded FCA** (arXiv 2607.01773): Combines FCA with retrieval-augmented grounding for verifiable biomedical ontology building.
+
+#### 3. Semantic Web
+- **W3C Standards:** RDF 1.2 / SPARQL 1.2 remain at Working Draft status with no movement to Recommendation. Continue using RDF 1.1 + SPARQL 1.1 as baseline.
+- **What Survived (semantic.io):** SPARQL-based querying is declining but linked data (RDF/OWL) is thriving. The semantic web stack survives as KG foundation but not as standalone query paradigm.
+
+#### 4. Ontology Evaluation
+- **WiseOWL** (arXiv 2604.12025): Quantitative ontology quality scoring (Well-Described, Well-Defined, Connection, Hierarchical Breadth) with actionable 0–10 scores.
+- **Semantic Preservation** (arXiv 2608.12326): Critical new dimension — ontological transformations suffer systematic semantic loss, especially for complex reasoning.
+- **Ontology Quality ML** (MDPI 2026): Machine learning can systematically identify and fix ontology quality defects.
+
+#### 5. Ontology Learning
+- **OntoLearner** (arXiv 2607.01977): First unified OL framework with 180 machine-readable ontologies across 22 domains. Failure modes scale with ontological complexity, not model size.
+- **LLMs4OL 2026** (arXiv 2608.27101): Retrieval-augmented approaches consistently outperform direct generation. OL is retrieval+synthesis, not pure generation.
+- **When Does Bigger Help?** (arXiv 2608.31118): Dense models plateau at 27B parameters; MoE models show different scaling patterns.
+
+#### 6. Enterprise QA Benchmarks
+- **ENTLORE** (arXiv 2608.10679): First enterprise-focused QA benchmark using real support tickets — tests handling of messy, ambiguous queries.
+- **WorkSurface-Bench** (arXiv 2607.25765): Evaluates multi-surface knowledge routing across vector DBs, KGs, document stores, and APIs.
+
+#### 7. Commonsense Knowledge
+- No new major commonsense KG releases since Round 12. Direction confirmed: use existing KGs (ConceptNet, ATOMIC, MMCOMET) as retrieval resources rather than building new standalone resources.
+- ConceptNet MCP Server remains the primary integration mechanism for LLM agents.
+
+#### 8. Dual Memory Optimization
+- **DeltaMem** (arXiv 2606.03083): Novel residual tree data structure for experience memory.
+- **CraniMem** (arXiv 2603.15642): Neurocognitive gated memory with utility tagging and bounded buffers.
+- **Long-Horizon Scientific Memory**: 15,000+ messages sustained at 70–85% accuracy with 62% fewer tokens. "Lost in the Middle" phenomenon confirmed as cognitive degradation pattern.
+
+#### 9. Dynamic Ontology
+- **Evo-DKD** (arXiv 2507.21438): Continuous autonomous evolution via dual-decoder architecture with closed-loop validation.
+- **Three Durable Failures of Static Ontology**: Coverage gaps, staleness, and mute history.
+
+#### 10. Experiential Memory
+- **ExpeL**: Cross-task generalization via abstraction — distilling concrete experiences into abstracted insights.
+- Field convergence: episodic memory storage is necessary but insufficient; abstraction step (what it means) is the crucial complement.
+
+---
+
+### Cross-Cutting Synthesis
+
+1. **BM25 scaling law** — dense retrieval has boundaries; lexical matching wins at enterprise scale for domain-specific terminology.
+2. **FCA production path** — three advances converge: semantic scaffolds (ICML 2026), subcontext decomposition (scalability), rational inference (uncertainty).
+3. **Retrieval-augmented ontology learning** — OntoLearner + LLMs4OL 2026 + semantic preservation study all confirm: retrieval quality matters more than model quality.
+4. **Ontology evaluation arms race** — WiseOWL (internal quality), ML-based defect detection, and semantic preservation (downstream impact) provide complementary evaluation frameworks.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Frontier Research Lane B").

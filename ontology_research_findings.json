@@ -1,0 +1,281 @@
+{
+  "research_summary": {
+    "topic_areas": 4,
+    "sources_found": 40,
+    "date_range": "2024-2026",
+    "key_themes": [
+      "LLM-ontology integration",
+      "Neurosymbolic architectures",
+      "Dual-memory systems",
+      "Experiential memory models",
+      "Predictive processing",
+      "Complementary learning systems",
+      "Sophimatics/dynamic ontology"
+    ]
+  },
+  "area_1_ontology_engineering_tools_frameworks": {
+    "major_frameworks_tools": [
+      {
+        "name": "BFO (Basic Formal Ontology)",
+        "status": "Active, v2.0, MIT Press textbook",
+        "usage": "550+ ontology projects worldwide",
+        "recent_development": "GitHub active (925 commits), BFO 2.1 experimental with core relations"
+      },
+      {
+        "name": "SUMO (Suggested Upper Merged Ontology)",
+        "status": "Largest formal public ontology, mapped to WordNet",
+        "recent_development": "Active GitHub (ontologyportal/sumo), SUO-KIF format"
+      },
+      {
+        "name": "DOLCE",
+        "status": "Descriptive Ontology for Linguistic and Cognitive Engineering",
+        "comparison": "Ontology of particulars vs SUMO's particulars+universals"
+      },
+      {
+        "name": "LOT (Linked Open Terms) Methodology",
+        "status": "Industrial methodology for ontology development",
+        "features": "Requirements specification, implementation, publication, maintenance workflows"
+      },
+      {
+        "name": "Semantic Ontology Engineering Framework (SOEF)",
+        "year": "2025-2026",
+        "description": "Seven-stage prescriptive path from semantic debt to production semantic runtime"
+      }
+    ],
+    "key_research_programs": [
+      {
+        "name": "LLMs4OL Challenge (2024, 2025)",
+        "venue": "ISWC co-located",
+        "tasks": ["Text2Onto", "Term Typing", "Taxonomy Discovery", "Non-Taxonomic Relation Extraction"],
+        "2025_results": "Hybrid pipelines (commercial LLMs + domain-tuned embeddings) achieved strongest performance; SBU-NLP team ranked 1st overall"
+      },
+      {
+        "name": "LLM-empowered Knowledge Graph Construction Survey",
+        "source": "arXiv:2510.20345 (2025)",
+        "key_finding": "Paradigm shift from rule-driven pipelines to LLM-driven unified adaptive frameworks"
+      },
+      {
+        "name": "HyDRA (Hybrid-Driven Reasoning Architecture)",
+        "source": "arXiv:2507.15917v2 (2025)",
+        "approach": "Design-by-contract with neurosymbolic agents, verifiable KG automation"
+      },
+      {
+        "name": "OntoLLM Framework",
+        "source": "ESWA 2026",
+        "focus": "LLM grounding and digression prevention using ontologies + KGs"
+      }
+    ],
+    "recent_papers": [
+      "Large Language Models for Ontology Engineering: A Systematic Literature Review (Semantic Web Journal, 2025)",
+      "Ontology Generation using Large Language Models (Springer, 2025)",
+      "LLM-empowered knowledge graph construction: A survey (arXiv:2510.20345, 2025)",
+      "Knowledge Engineering via Large Language Models (Thesis, 2024/2025)",
+      "Ontology-Constrained Neural Reasoning in Enterprise Agentic Systems (arXiv:2604.00555, 2025)"
+    ]
+  },
+  "area_2_modern_ai_ontological_representations": {
+    "key_paradigms": [
+      {
+        "name": "Neurosymbolic Integration",
+        "patterns": [
+          "symbolic[neural] - symbolic systems enhanced by neural",
+          "neural[symbolic] - neural systems enhanced by symbolic knowledge",
+          "neural:symbolic - tight bidirectional integration"
+        ],
+        "key_paper": "Garcez & Lamb (2023) taxonomy"
+      },
+      {
+        "name": "Ontology-Grounded LLM Reasoning",
+        "approaches": [
+          "OntoLLM: Ontology + KG integration for grounding",
+          "HyDRA: Design-by-contract neurosymbolic verification",
+          "Knowledge Cards: Structured knowledge artifacts with provenance",
+          "Ontology-Enhanced KG Completion (arXiv:2507.20643v2)"
+        ]
+      },
+      {
+        "name": "RAG + KG Integration",
+        "finding": "Schema/ontology complexity fundamentally affects RAG efficacy (arXiv:2507.09389)",
+        "challenge": "Knowledge conceptualization impacts agentic RAG systems"
+      }
+    ],
+    "major_limitations_identified": [
+      {
+        "issue": "Structural hallucination in transformers",
+        "source": "arXiv:2509.16297 (2025)",
+        "claim": "Hallucination is structural consequence of transformer architecture - coherence engines without existential grounding"
+      },
+      {
+        "issue": "Out-of-context reasoning duality",
+        "source": "NeurIPS 2025",
+        "finding": "Same mechanism (OCR) drives both generalization and hallucination depending on causal relatedness"
+      },
+      {
+        "issue": "Knowledge boundary problems",
+        "source": "ACL 2025 survey",
+        "taxonomy": "Universal, Parametric, Outward knowledge boundaries with 4-type classification"
+      },
+      {
+        "issue": "LLMs lack formal semantic grounding",
+        "solution": "Neurosymbolic architectures with OWL-based KGs as symbolic deduction engines"
+      }
+    ],
+    "recent_advances": [
+      "LLMs as ontology assistants (top-down) vs KGs for LLMs (bottom-up)",
+      "Multi-agent LLM pipelines for ontology construction (KARMA, DREAM-LLMs)",
+      "Ontology-informed prompting reduces hallucinations (Pizza Ontology study)",
+      "Zero-shot neuro-symbolic KGQA outperforming LLM baselines by 26% (EMNLP 2025)"
+    ]
+  },
+  "area_3_neuroscience_psychology_computational_ontology": {
+    "predictive_processing": [
+      {
+        "paper": "Caplette & Turk-Browne (2024) Nature Communications",
+        "finding": "Computational reconstruction of mental representations using human behavior"
+      },
+      {
+        "paper": "Predictive coding in psychopathology (Frontiers 2025)",
+        "question": "Mechanistic model vs metaphorical re-description?"
+      },
+      {
+        "paper": "Sensory sharpening + semantic prediction errors unify predictive processing (bioRxiv 2025)",
+        "finding": "Hierarchical split: sharpening early sensory, prediction errors higher semantic levels"
+      },
+      {
+        "paper": "Implemented predictive coding model of lexico-semantic processing (NeuroImage 2025)",
+        "evidence": "Left ventromedial temporal lobe employs predictive coding during reading"
+      }
+    ],
+    "representation_crisis": [
+      {
+        "source": "Philosophy of Brains Blog (2024)",
+        "issue": "Uncertainty about which brain manifestations entail representations",
+        "perspective": "Enactive/dynamic social cognition vs computational representationalism"
+      },
+      {
+        "source": "Hipólito & Kirchhoff (2023)",
+        "position": "Cognition without neural representation: dynamics of complex systems"
+      }
+    ],
+    "computational_neuroscience_integration": [
+      {
+        "framework": "Successor Representation (SR) in hippocampus",
+        "papers": [
+          "Millidge (2025): Equivalence of Personalized PageRank and SR",
+          "Nature Sci Rep (2025): Scalable RL framework inspired by hippocampus",
+          "eLife (2024): Neural learning rules for flexible predictions and SR",
+          "Frontiers Computational Neuroscience (2025): Hippocampal function & RL research topic"
+        ],
+        "key_insight": "Hippocampus computes stationary distribution of random walk on graph for both memory and navigation"
+      },
+      {
+        "framework": "Complementary Learning Systems (CLS)",
+        "recent_work": [
+          "Royal Society (2026): Evidence for CLS within hippocampus (C-HORSE model)",
+          "arXiv:2507.11393: VAE+MHN model for continual learning",
+          "bioRxiv 2025: Shared vocabulary between episodic/semantic memory enhances recall"
+        ],
+        "mechanism": "Hippocampus = pattern separation (fast), Neocortex = pattern completion (slow), replay = consolidation"
+      }
+    ],
+    "dynamic_ontology_cognitive": [
+      "Mc Menemy (2025): Dynamic cognitive ontology networks with neuromorphic processing",
+      "Sophimatics (2025): Dynamic ontology, intentionality, dialectical reasoning, complex temporality",
+      "Haghighi et al. CHI 2025: Ontologies in design - pluralism, groundedness, liveliness, enactment"
+    ]
+  },
+  "area_4_experiential_memory_models": {
+    "human_psychology": [
+      {
+        "model": "Complementary Learning Systems (CLS)",
+        "components": "Hippocampus (episodic, fast, pattern separation) + Neocortex (semantic, slow, pattern completion)",
+        "recent_evidence": "Hippocampus also does structure learning (C-HORSE model), not just episodic"
+      },
+      {
+        "model": "Successor Representation",
+        "role": "Predictive map for navigation, planning, relational reasoning",
+        "neural_basis": "Place cells, grid cells, hippocampal replay"
+      },
+      {
+        "model": "Memory Consolidation as Offline RL",
+        "paper": "Lee & Jung (2025) Frontiers Computational Neuroscience",
+        "analogy": "Dyna algorithm - CA3 generates simulations, CA1 evaluates for reward maximization"
+      }
+    ],
+    "ai_systems": [
+      {
+        "architecture": "Dual-Memory Systems",
+        "papers": [
+          "EmergentMind: Dual-Memory Representations (2025)",
+          "EmergentMind: Dual-Memory Framework in AI (2026)",
+          "arXiv:2604.07269v2: Joint optimization reasoning + dual-memory for diagnostic agents",
+          "EmergentMind: Lifelong Embodied Memory System (LEMS, 2025)"
+        ],
+        "pattern": "Fast episodic (STS) + Slow semantic (LTS) with consolidation/replay"
+      },
+      {
+        "architecture": "Evolving Memory Systems",
+        "papers": [
+          "MemEvolve: Meta-evolution of agent memory systems (arXiv:2512.18746)",
+          "EmergentMind: Evolving Memory Systems (2026)",
+          "Agentic Memory Store Architecture (2025)"
+        ],
+        "innovation": "Meta-adaptation of memory architecture itself, not just contents"
+      },
+      {
+        "architecture": "Sophimatics / Dynamic Ontology",
+        "paper": "Iovane & Iovane (2025) Electronics 14(24):4812",
+        "features": "Complex temporality, multidimensional semantic modeling, hybrid symbolic-connectionist, layered memory, STCNN architecture"
+      }
+    ],
+    "key_convergence": [
+      "Dual-memory in AI directly inspired by hippocampal-neocortical CLS",
+      "Successor representation implemented in both neuroscience models and AI architectures",
+      "Memory consolidation = offline reinforcement learning (Dyna-style)",
+      "Experiential time / complex temporality as architectural requirement for genuine understanding",
+      "Ontological memory: structured world maps vs 'piles of text' (Partenit, 2025)"
+    ]
+  },
+  "cross_cutting_research_programs": [
+    {
+      "name": "Autognosia Project",
+      "relevance": "Active wiki research on ontology engineering, philosophy ontology, psychological ontology, ontology alignment, BFO/SUMO/DOLCE, AI ontology failures, LLMs + structured knowledge, Dual Memory, Dynamic Ontology, Experiential Memory"
+    },
+    {
+      "name": "Neurosymbolic Learning and Reasoning Conference (NeSy)",
+      "venue": "PMLR proceedings, 2025",
+      "focus": "OWL-based KGs as symbolic deduction engines, NeSy4VRD dataset"
+    },
+    {
+      "name": "LLMs4OL Challenge Series",
+      "venue": "ISWC co-located, 2024-2025",
+      "focus": "LLMs for ontology learning across 4-5 tasks"
+    },
+    {
+      "name": "Sophimatics Research Program",
+      "lead": "Iovane (University of Salerno)",
+      "focus": "Computational wisdom, dynamic ontology, experiential temporality, intentionality"
+    },
+    {
+      "name": "Hippocampal Function & RL Research Topic",
+      "venue": "Frontiers Computational Neuroscience, 2025",
+      "focus": "Bridging memory consolidation, successor representation, RL"
+    }
+  ],
+  "notable_books_references": [
+    "Building Ontologies with Basic Formal Ontology (MIT Press, 2015, Arp/Smith/Spear)",
+    "Making AI Intelligible: Philosophical Foundations (Oxford UP, 2021, Cappelen/Dever)",
+    "A Critical Understanding of AI: Phenomenological Foundation (Bentham, 2023, Mickunas/Pilotta)",
+    "Sophimatics: Fundamentals and Models (Aracne Editrice, 2025, Iovane/Iovane)",
+    "Meaning and Mental Representation (Bradford Book, Fodor, Churchlands, Dretske)"
+  ],
+  "open_challenges": [
+    "Ontology maintenance/evolution with static LLMs (Semantic Web Journal 2025)",
+    "Evaluation benchmarks for structural soundness vs mere retrieval (HyDRA)",
+    "Scalable neurosymbolic grounding (NeurIPS 2025 grounding methods)",
+    "Meta-adaptation of memory architectures (MemEvolve)",
+    "Experiential temporality in AI architectures (Sophimatics)",
+    "Causal vs spurious association in OCR (NeurIPS 2025)",
+    "Dynamic ontology alignment across evolving domains"
+  ]
+}
