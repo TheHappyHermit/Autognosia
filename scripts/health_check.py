@@ -10,7 +10,6 @@ Verifies:
 """
 
 import os
-from pathlib import Path
 import subprocess
 import sqlite3
 import sys
@@ -18,7 +17,7 @@ import urllib.request
 import urllib.error
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
 
 SERVICES = [
     ("honcho-api", "http://127.0.0.1:8000/health"),
@@ -62,7 +61,15 @@ def check_services():
             print(f"  [WARN] {name}: HTTP {e.code}")
             all_ok = False
         except Exception as e:
-            if name == "searxng-core":
+            # For services that may run in different modes (Docker vs local CLI),
+            # try fallback detection methods
+            if name == "gbrain":
+                # GBrain has been removed from the deployment
+                print(f"  [SKIP] {name}: GBrain removed from deployment")
+                continue
+            elif name == "searxng-core":
+                # SearXNG may not be deployed locally (user may use external instance)
+                # or may be deployed but not healthy yet
                 print(f"  [SKIP] {name}: not deployed locally (may use external SearXNG)")
                 continue
             else:
@@ -103,7 +110,7 @@ def check_disk():
         if result.returncode == 0:
             print(result.stdout.strip())
         else:
-            print(f"Disk check error: {result.stderr.strip()}")
+            print(f"Disk check error: {result.stderr}")
     except Exception as e:
         print(f"Disk check failed: {e}")
 

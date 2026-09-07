@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Initialize Autognosia Experience Index database.
+Initialize Cortex Experience Index database.
 
 The Experience Index tracks operations, verification outcomes, routing events, and reflections.
 
@@ -147,7 +147,7 @@ CREATE INDEX IF NOT EXISTS idx_decisions_timestamp ON key_decisions(timestamp);
 """
 
 def main():
-    parser = argparse.ArgumentParser(description="Initialize Autognosia Experience Index database.")
+    parser = argparse.ArgumentParser(description="Initialize Cortex Experience Index database.")
     parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm without prompting")
     args = parser.parse_args()
 

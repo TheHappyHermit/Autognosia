@@ -43,10 +43,10 @@ DB_USER = os.environ.get("HONCHO_DB_USER", "postgres")
 DB_NAME = os.environ.get("HONCHO_DB_NAME", "postgres")
 
 EMBED_URL = os.environ.get(
-    "EMBED_URL", "http://127.0.0.1:11434/v1/embeddings"
+    "EMBED_URL", "http://10.1.1.10:18082/v1/embeddings"
 )
-EMBED_MODEL = os.environ.get("EMBED_MODEL", "qwen3-embedding:8b")
-EMBED_KEY = os.environ.get("EMBED_KEY", "ollama-local")
+EMBED_MODEL = os.environ.get("EMBED_MODEL", "Qwen3-Embedding-4B-Q8_0.gguf")
+EMBED_KEY = os.environ.get("EMBED_KEY", "sk-local")
 EMBED_DIMS = int(os.environ.get("EMBED_DIMS", "1536"))
 
 BATCH_COMMIT = 10

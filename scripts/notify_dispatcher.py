@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Multi-Channel Notification Dispatcher for Autognosia.
+Multi-Channel Notification Dispatcher for Hermes Cortex.
 Dispatches reminders and alerts across user-configured communication channels:
 - Telegram Bot API
 - Discord Webhook
@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
-# Load environment variables from Autognosia/Hermes config if available
+# Load environment variables from Cortex/Hermes config if available
 def load_env_configs():
     env_files = [
         Path.home() / ".hermes" / ".env",
@@ -72,7 +72,7 @@ class NotificationDispatcher:
     def dispatch(self, title: str, body: str = "", channel: str = "all") -> Dict[str, Any]:
         """Dispatch notification across target channels."""
         results = {}
-        message_formatted = f"🔔 [Autognosia REMINDER]\n\n{title}"
+        message_formatted = f"🔔 [HERMES CORTEX REMINDER]\n\n{title}"
         if body:
             message_formatted += f"\n\nDetails: {body}"
 
@@ -174,7 +174,7 @@ class NotificationDispatcher:
 dispatcher = NotificationDispatcher()
 
 if __name__ == "__main__":
-    test_title = "Test Reminder from Autognosia"
+    test_title = "Test Reminder from Hermes Cortex"
     test_body = "This is a verification test of the multi-channel notification dispatcher."
     print("Testing Notification Dispatcher...")
     res = dispatcher.dispatch(test_title, test_body)

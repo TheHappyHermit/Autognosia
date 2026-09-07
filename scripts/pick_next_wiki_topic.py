@@ -39,7 +39,7 @@ CATALOG = [
      "The hippocampus stores indexes, not content — pointers into cortical stores. Biological provenance links.",
      "Pattern for storing pointers/evidence-links instead of duplicating knowledge."),
     ("Memory-Architecture", "Systems-Consolidation-Replay", "Sleep Replay and Systems Consolidation",
-     "Sharp-wave ripples replay waking sequences during sleep, transferring memory to autognosia. Scheduling consolidation offline.",
+     "Sharp-wave ripples replay waking sequences during sleep, transferring memory to neocortex. Scheduling consolidation offline.",
      "Model for the nightly consolidation cascade without destroying sources."),
     ("Memory-Architecture", "Episodic-Semantic-Semanticization", "How Episodes Become Semantics (Semanticization)",
      "Episodes are repeatedly retrieved until only their gist remains — natural distillation without deletion.",

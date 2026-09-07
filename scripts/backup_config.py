@@ -5,24 +5,23 @@ Config Backup — Daily Cron Script
 Backs up Hermes configuration (profiles, skills, cron definitions)
 to a local Git repository for disaster recovery.
 
-Copies from ${HOME}/.hermes/ to the Autognosia repo and commits+pushes.
+Copies from ~/.hermes/ to the Cortex repo and commits+pushes.
 
 Usage:
   python3 scripts/backup_config.py
 """
 
 import os
-from pathlib import Path
 import sys
 import shutil
 import subprocess
 from datetime import datetime
 
-HERMES_HOME = str(Path.home() / ".hermes")
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
+HERMES_HOME = os.path.expanduser("~/.hermes")
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
 LOG_FILE = os.path.join(AUTOGNOSIA_HOME, "logs", "config-backup.log")
 
-# Items to back up from ${HOME}/.hermes/
+# Items to back up from ~/.hermes/
 BACKUP_ITEMS = [
     "config.yaml",
     "SOUL.md",

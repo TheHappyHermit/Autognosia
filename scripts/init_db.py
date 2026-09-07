@@ -50,14 +50,14 @@ CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT,
-    status TEXT DEFAULT 'active' CHECK(status IN ('active', 'next', 'in_progress', 'waiting', 'completed', 'cancelled', 'blocked')),
+    status TEXT DEFAULT 'active' CHECK(status IN ('active', 'completed', 'cancelled', 'blocked')),
     priority TEXT DEFAULT 'medium' CHECK(priority IN ('low', 'medium', 'high', 'critical')),
     due_at TEXT,
     completed_at TEXT,
     project_id INTEGER,
     dependency_id INTEGER,
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
-    updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL,
     FOREIGN KEY (dependency_id) REFERENCES tasks(id) ON DELETE SET NULL
 );
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS projects (
     name TEXT NOT NULL,
     description TEXT,
     status TEXT DEFAULT 'active' CHECK(status IN ('active', 'completed', 'archived')),
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
-    updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
 );
 
 -- Subscriptions
@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     billing_cycle TEXT DEFAULT 'monthly',
     next_billing_date TEXT,
     status TEXT DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'paused')),
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
-    updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
 );
 
 -- Important dates
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS important_dates (
     title TEXT NOT NULL,
     date TEXT NOT NULL,
     description TEXT,
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+    created_at TEXT DEFAULT (datetime('now'))
 );
 
 -- Prospective intentions
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS intentions (
     cue TEXT,
     action TEXT NOT NULL,
     status TEXT DEFAULT 'dormant' CHECK(status IN ('dormant', 'active', 'expired', 'completed')),
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
+    created_at TEXT DEFAULT (datetime('now')),
     triggered_at TEXT
 );
 
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS waiting_states (
     waiting_for TEXT,
     follow_up_date TEXT,
     status TEXT DEFAULT 'waiting' CHECK(status IN ('waiting', 'resolved', 'cancelled')),
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+    created_at TEXT DEFAULT (datetime('now'))
 );
 
 -- Reminders (Multi-Channel Timed Alerts)
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS reminders (
     status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'sent', 'cancelled', 'snoozed')),
     recurring_rule TEXT,
     notes TEXT,
-    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
+    created_at TEXT DEFAULT (datetime('now')),
     sent_at TEXT
 );
 
@@ -169,10 +169,10 @@ def main():
     if conn.execute("SELECT COUNT(*) FROM tasks").fetchone()[0] == 0:
         conn.executescript("""
             INSERT INTO tasks (id, title, description, status, priority, created_at)
-            VALUES (1, 'Setup verification', 'Verify all systems are working after setup', 'active', 'high', strftime('%Y-%m-%dT%H:%M:%SZ','now'));
+            VALUES (1, 'Setup verification', 'Verify all systems are working after setup', 'active', 'high', datetime('now'));
             
             INSERT INTO projects (id, name, description, status, created_at)
-            VALUES (1, 'Autognosia Setup', 'Initial setup and configuration of Autognosia', 'active', strftime('%Y-%m-%dT%H:%M:%SZ','now'));
+            VALUES (1, 'Autognosia Setup', 'Initial setup and configuration of Autognosia', 'active', datetime('now'));
             
             INSERT INTO subscriptions (id, name, amount, billing_cycle, next_billing_date, status)
             VALUES (1, 'Example Subscription', 9.99, 'monthly', date('now', '+30 days'), 'active');
@@ -187,7 +187,7 @@ def main():
             VALUES (1, 'Awaiting feedback', 'User review on setup', date('now', '+3 days'), 'waiting');
 
             INSERT INTO reminders (id, title, remind_at, channel, status)
-            VALUES (1, 'Review Autognosia Command Deck Metrics', strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+2 hours'), 'all', 'pending');
+            VALUES (1, 'Review Autognosia Command Deck Metrics', datetime('now', '+2 hours'), 'all', 'pending');
         """)
     
     conn.close()
