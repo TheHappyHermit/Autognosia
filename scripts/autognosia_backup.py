@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Daily backup for Autognosia.
+Daily backup for Hermes Cortex.
 
 Runs in no-agent cron (daily at 3 AM on this deployment).
 Exits 0 always — never breaks the cron chain.
@@ -35,7 +35,7 @@ TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 # Directories/files to back up (cross-platform paths)
 BACKUP_TARGETS = [
-    Path.home() / ".autognosia",
+    Path.home() / "personal-agent",
     Path.home() / ".hermes" / "config.yaml",
     Path.home() / ".hermes" / "config" / "architecture.yaml",
 ]
@@ -69,7 +69,7 @@ def main() -> int:
     for t in BACKUP_TARGETS:
         t_str = str(t)
         if t_str.startswith(home):
-            relative_targets.append(t_str[len(home)+1:])  # strip ${HOME}/
+            relative_targets.append(t_str[len(home)+1:])  # strip ~/
         else:
             relative_targets.append(t_str)
 

@@ -15,6 +15,7 @@ Scheduled: Daily at 3:30am via cron job "Oracle Index Update"
 import subprocess
 import sys
 import os
+import re
 import json
 from pathlib import Path
 from datetime import datetime, timezone
@@ -26,13 +27,26 @@ GRAPHIFY_OUT = ORACLE_BRAIN / "graphify-out"
 REBUILD_LOG = ORACLE_BRAIN / "rebuild-log.md"
 
 def get_last_run_timestamp():
-    """Get the timestamp of the last successful run from the rebuild log."""
+    """Get the timestamp of the last successful run from the rebuild log.
+
+    Returns a POSIX float (comparable to st_mtime) or None on first run.
+    """
     if REBUILD_LOG.exists():
         content = REBUILD_LOG.read_text()
-        # Look for the most recent '## YYYY-MM-DD' or timestamp entry
         for line in reversed(content.split('\n')[:50]):
-            if '##' in line and any(c.isdigit() for c in line):
-                return line.strip()
+            if '##' not in line or not any(c.isdigit() for c in line):
+                continue
+            # Header format: "## YYYY-MM-DD HH:MM UTC — STATUS"
+            m = re.match(r'##\s*(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})', line)
+            if not m:
+                continue
+            try:
+                dt = datetime.strptime(
+                    f"{m.group(1)} {m.group(2)}", "%Y-%m-%d %H:%M"
+                ).replace(tzinfo=timezone.utc)
+                return dt.timestamp()
+            except ValueError:
+                continue
     return None
 
 def get_modified_files(since_timestamp=None):
@@ -58,7 +72,7 @@ def run_graphify_extract(files_to_process):
     """Run graphify extract on the modified files using incremental mode."""
     env = os.environ.copy()
     env["OPENAI_API_KEY"] = "x"
-    env["OPENAI_BASE_URL"] = "http://<V100_INFERENCE_URL>/v1"
+    env["OPENAI_BASE_URL"] = "http://10.1.1.10:8080/v1"
     env["OPENAI_MODEL"] = "/models/Qwen3.6-35B-A3B-Q4_K_M.gguf"
     
     cmd = [

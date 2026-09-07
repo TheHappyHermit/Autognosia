@@ -3,18 +3,18 @@
 # iGPU-local (Ollama), NO OpenRouter fallback (per Josh's hard rule).
 set -u
 
-cd "$HOME/.autognosia/active-wiki" || exit 1
+cd /home/josh434/.autognosia/active-wiki || exit 1
 
-LOG="$HOME/.autognosia/logs/graphify-active-wiki.log"
+LOG=/home/josh434/.autognosia/logs/graphify-active-wiki.log
 
 {
   echo ""
   echo "=== ACTIVE-WIKI GRAPHIFY $(date -u '+%Y-%m-%dT%H:%M:%SZ') — iGPU Ollama, qwen3.5:9b ==="
 } >> "$LOG"
 
-export OPENAI_BASE_URL="http://127.0.0.1:11434/v1"
+export OPENAI_BASE_URL="http://10.1.1.10:18081/v1"
 export OPENAI_API_KEY="sk-local"
-export OPENAI_MODEL="qwen3.5:9b"
+export OPENAI_MODEL="Qwen3.5-4B-UD-Q4_K_XL.gguf"
 export GRAPHIFY_DISABLE_THINKING="1"
 export GRAPHIFY_MAX_OUTPUT_TOKENS="98304"
 

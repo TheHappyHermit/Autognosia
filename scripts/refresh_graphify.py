@@ -1,89 +1,97 @@
 #!/usr/bin/env python3
 """
-Refresh Graphify knowledge graphs for Autognosia.
+Graphify refresh for Active Wiki and Oracle Brain - incremental update.
 
-This script refreshes both Main Graph (from Active Wiki) and Oracle Graph
-(from Oracle Brain) in-place using graphify extract (semantic, additive).
-Run via cron job weekly after wiki lint.
+Runs graphify update in-place on the active-wiki and oracle-brain directories.
+Uses local llama.cpp server for semantic extraction.
+Scheduled: Sundays at 4:00 AM via cron job "Graphify Refresh"
 
-Prerequisites:
-  uv tool install graphifyy
-  graphify install
+Note: graphify extracts/writes to <source>/graphify-out/ by default when run
+from within the source directory. The --graph flag (for graphify commands like
+path, explain, etc.) defaults to graphify-out/graph.json in the CWD.
 """
 
-import os
 import subprocess
 import sys
-import shutil
-from datetime import datetime
+import os
+import json
+from pathlib import Path
+from datetime import datetime, timezone
 
-AUTOGNOSIA_HOME = os.path.expanduser("~/.autognosia")
-ACTIVE_WIKI = os.path.join(AUTOGNOSIA_HOME, "active-wiki")
-ORACLE_BRAIN = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
-LOG_FILE = os.path.join(AUTOGNOSIA_HOME, "logs", "graphify-refresh.log")
-# graphify writes to <source>/graphify-out/graph.json by default (in-place)
-MAIN_GRAPH_FILE = os.path.join(ACTIVE_WIKI, "graphify-out", "graph.json")
-ORACLE_GRAPH_FILE = os.path.join(ORACLE_BRAIN, "graphify-out", "graph.json")
-
-def ensure_dirs():
-    os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
-
-def log(msg):
-    timestamp = datetime.now().isoformat()
-    with open(LOG_FILE, "a") as f:
-        f.write(f"[{timestamp}] {msg}\n")
-    print(msg)
+AUTOGNOSIA_HOME = Path.home() / ".autognosia"
+ACTIVE_WIKI = AUTOGNOSIA_HOME / "active-wiki"
+ORACLE_BRAIN = AUTOGNOSIA_HOME / "oracle" / "brain"
+# graph.json is written in-place at <source>/graphify-out/graph.json
+MAIN_GRAPH_FILE = ACTIVE_WIKI / "graphify-out" / "graph.json"
+ORACLE_GRAPH_FILE = ORACLE_BRAIN / "graphify-out" / "graph.json"
 
 def refresh_graph(name, source, graph_file):
-    """Refresh a single graph in-place."""
-    if not shutil.which("graphify"):
-        log(f"  {name}: graphify CLI not available, skipping")
-        return True
-
-    if not os.path.isdir(source) or not os.listdir(source):
-        log(f"  {name}: source empty, skipping")
+    """Refresh a single graph using graphify update (in-place)."""
+    if not source.exists() or not any(source.iterdir()):
+        print(f"[graphify-refresh] {name}: source empty, skipping")
         return True
 
     env = os.environ.copy()
     env["OPENAI_API_KEY"] = "sk-local"
-    env["OPENAI_BASE_URL"] = "http://127.0.0.1:11434/v1"
-    env["OPENAI_MODEL"] = "qwen3.5:9b"
+    env["OPENAI_BASE_URL"] = "http://10.1.1.10:18081/v1"
+    env["OPENAI_MODEL"] = "/models/Qwen3.5-4B-UD-Q4_K_XL.gguf"
     env["GRAPHIFY_DISABLE_THINKING"] = "1"
     env["GRAPHIFY_MAX_OUTPUT_TOKENS"] = "98304"
 
-    if not os.path.isfile(graph_file):
-        log(f"  {name}: graph.json not found at {graph_file}, running initial extract")
-        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "3600"]
+    if not graph_file.exists():
+        print(f"[graphify-refresh] {name}: graph.json not found at {graph_file}, running initial extract")
+        cmd = ["graphify", "extract", str(source), "--max-concurrency", "1", "--api-timeout", "600"]
     else:
-        log(f"  {name}: graph.json found, running semantic extract (additive, in-place)")
-        cmd = ["graphify", "extract", source, "--backend", "openai", "--max-concurrency", "1", "--token-budget", "24000", "--api-timeout", "3600"]
+        with open(graph_file) as f:
+            data = json.load(f)
+        nodes = data.get("nodes", [])
+        edges = data.get("edges", [])
+        print(f"[graphify-refresh] {name}: current graph: {len(nodes)} nodes, {len(edges)} edges")
+        # graphify update re-extracts code (no LLM) and updates existing graph.json
+        cmd = ["graphify", "update", str(source)]
 
-    log(f"  Refreshing {name} from {source}...")
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=source, env=env, timeout=3600)
+    print(f"[graphify-refresh] {name}: command: {' '.join(cmd)}")
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, cwd=str(source),
+        env=env, timeout=3600
+    )
 
-    if result.returncode == 0:
-        log(f"  {name}: refreshed successfully")
+    for line in (result.stdout or "").splitlines():
+        print(f"[graphify-refresh] {name}: {line}")
+    if result.stderr:
+        for line in (result.stderr).splitlines():
+            print(f"[graphify-refresh] {name}: STDERR: {line}", file=sys.stderr)
+
+    if result.returncode == 0 and graph_file.exists():
+        with open(graph_file) as f:
+            data = json.load(f)
+        nodes = data.get("nodes", [])
+        edges = data.get("edges", [])
+        print(f"[graphify-refresh] {name}: SUCCESS: {len(nodes)} nodes, {len(edges)} edges")
         return True
     else:
-        log(f"  {name}: FAILED (code {result.returncode})")
-        if result.stderr:
-            log(f"    stderr: {result.stderr[:300]}")
+        print(f"[graphify-refresh] {name}: FAILED: exit {result.returncode}")
         return False
 
 def main():
-    ensure_dirs()
-    log("=== Graphify Refresh Started ===")
+    print(f"[graphify-refresh] {datetime.now(timezone.utc).isoformat()}")
+
+    if not ACTIVE_WIKI.exists():
+        print(f"[graphify-refresh] ERROR: Active Wiki directory not found: {ACTIVE_WIKI}")
+        sys.exit(1)
 
     success = True
+    # Refresh Main Graph (from Active Wiki) — in-place at active-wiki/graphify-out/
     success &= refresh_graph("Main Graph", ACTIVE_WIKI, MAIN_GRAPH_FILE)
+    # Refresh Oracle Graph (from Oracle Brain) — in-place at oracle/brain/graphify-out/
     success &= refresh_graph("Oracle Graph", ORACLE_BRAIN, ORACLE_GRAPH_FILE)
 
     if success:
-        log("=== Graphify Refresh Complete ===")
-        return 0
+        print("[graphify-refresh] ALL GRAPHS REFRESHED SUCCESSFULLY")
+        sys.exit(0)
     else:
-        log("=== Graphify Refresh Completed with Errors ===")
-        return 1
+        print("[graphify-refresh] ONE OR MORE GRAPHS FAILED")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

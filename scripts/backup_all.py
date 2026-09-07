@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Full backup script for Autognosia.
+Full backup script for Hermes Cortex.
 
 Backs up:
 - Active Wiki (filesystem)
@@ -10,12 +10,11 @@ Backs up:
 """
 
 import os
-from pathlib import Path
 import shutil
 import sqlite3
 from datetime import datetime
 
-AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia"))
+AUTOGNOSIA_HOME = os.environ.get("AUTOGNOSIA_HOME", os.path.expanduser("~/.autognosia"))
 BACKUP_DIR = os.environ.get("BACKUP_DIR", os.path.join(AUTOGNOSIA_HOME, "backups"))
 
 def ensure_backup_dir():

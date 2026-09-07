@@ -23,7 +23,6 @@ import urllib.request
 import urllib.error
 
 HONCHO_URL = os.environ.get("HONCHO_URL", "http://127.0.0.1:8000")
-HONCHO_WORKSPACE = os.environ.get("HONCHO_WORKSPACE", "autognosia-workspace")
 
 
 def honcho_get(path, timeout=10):
@@ -57,7 +56,7 @@ def check_queue_status():
     """Check the Honcho deriver queue status (if available)."""
     print("\n=== Deriver Queue ===")
     # Honcho v3 exposes queue status for the deriver
-    data = honcho_get(f"/v3/workspaces/{HONCHO_WORKSPACE}/queue/status")
+    data = honcho_get("/v3/workspaces/josh-hermes/queue/status")
     if data is None:
         # Endpoint may not exist in all versions — not critical
         print("  Queue status endpoint not available (non-critical)")

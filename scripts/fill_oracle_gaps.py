@@ -1,210 +1,188 @@
 #!/usr/bin/env python3
 """
-Oracle Knowledge Expansion — Identify gaps and create research request packages.
+Oracle Knowledge Expansion — Nightly Cron Script
 
-This script:
-1. Scans the Oracle brain for topics with thin coverage
-2. Identifies expansion directions (historical context, modern applications,
-   critiques, related frameworks, competing theories)
-3. Creates research request packages in the exchange/research directory
-4. Only creates requests for genuinely missing content, not duplicates
+This script runs as a no-agent cron job to identify knowledge EXPANSION
+opportunities for the Oracle long-term wiki. It analyzes what's already in
+the Oracle wiki and uses the Researcher to actively learn about related
+topics, adjacent domains, and deeper context that would enrich the knowledge
+base.
 
-Accepts --batch and --limit to enable distributed nightly execution:
-  --batch N    which batch (0-4) to process — each batch picks one topic
-  --limit N    max topics to create requests for (default 1)
+This is NOT about stale pages (Oracle knowledge like "what Einstein said"
+doesn't change in 90 days). It's about actively expanding the knowledge
+space around existing Oracle content.
 
-Scheduled: 5 separate cron jobs at 0:00, 0:30, 1:00, 1:30, 2:00
+Active Wiki content eventually decants down to Oracle, so we don't need
+to cross-reference Active Wiki — we focus purely on expanding Oracle's
+long-term knowledge.
 """
 
-import argparse
-import sys
 import os
+import sys
 import json
+import subprocess
+import re
+from datetime import datetime
 from pathlib import Path
-from datetime import datetime, timezone
+from collections import Counter
 
-ORACLE_BRAIN = Path.home() / ".autognosia" / "oracle" / "brain"
-EXCHANGE_DIR = Path.home() / ".autognosia" / "exchange" / "research"
+AUTOGNOSIA_HOME = os.path.expanduser("~/.autognosia")
+ORACLE_WIKI = os.path.join(AUTOGNOSIA_HOME, "oracle", "brain")
+EXCHANGE_DIR = os.path.join(AUTOGNOSIA_HOME, "exchange", "research")
+GAP_LOG = os.path.join(AUTOGNOSIA_HOME, "logs", "oracle-expansion.log")
 
+def log(msg):
+    """Log to both stdout and log file."""
+    timestamp = datetime.now().isoformat()
+    line = f"[{timestamp}] {msg}"
+    print(line)
+    os.makedirs(os.path.dirname(GAP_LOG), exist_ok=True)
+    with open(GAP_LOG, "a") as f:
+        f.write(line + "\n")
 
-def list_topics():
-    """Get all topic directories in the Oracle brain."""
+def extract_oracle_topics():
+    """Extract key topics, concepts, and themes from Oracle wiki pages."""
     topics = []
-    for dir_path in sorted(ORACLE_BRAIN.rglob("*")):
-        if dir_path.is_dir() and not dir_path.name.startswith("."):
-            files = list(dir_path.glob("*.md"))
-            md_files = [f for f in files if f.name not in ("AGENTS.md", "index.md")]
-            total_chars = sum(f.read_text().__len__() for f in md_files)
-            topics.append(
-                {
-                    "path": str(dir_path),
-                    "name": dir_path.name,
-                    "file_count": len(md_files),
-                    "total_chars": total_chars,
-                }
-            )
-    return topics
-
-
-def analyze_topics(topics):
-    """Analyze topics for coverage gaps and expansion opportunities."""
-    gaps = []
-
-    for topic in topics:
-        if topic["total_chars"] < 500:
-            continue
-
-        topic_path = Path(topic["path"])
-        content = ""
-        for md_file in topic_path.glob("*.md"):
-            if md_file.name not in ("AGENTS.md", "index.md"):
-                content += md_file.read_text() + "\n"
-
-        expansions = []
-        if "context" not in content.lower():
-            expansions.append("historical_context")
-        if "application" not in content.lower():
-            expansions.append("modern_applications")
-        if "critic" not in content.lower() and "limit" not in content.lower():
-            expansions.append("critiques_and_limitations")
-        if "related" not in content.lower() and "framework" not in content.lower():
-            expansions.append("related_frameworks")
-        if "vs" not in content.lower() and "comparison" not in content.lower():
-            expansions.append("competing_theories")
-
-        if expansions:
-            gaps.append(
-                {
-                    "topic": topic["name"],
-                    "path": topic["path"],
-                    "current_chars": topic["total_chars"],
-                    "current_files": topic["file_count"],
-                    "expansions": expansions,
-                }
-            )
-
-    return gaps
-
-
-def get_next_sequence():
-    """Find the next available sequence number from existing request files."""
-    EXCHANGE_DIR.mkdir(parents=True, exist_ok=True)
-    max_seq = 0
-    for f in EXCHANGE_DIR.glob("oracle-gap-*.json"):
+    concept_pattern = re.compile(r'\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b')  # Title Case concepts
+    
+    for md_file in Path(ORACLE_WIKI).rglob("*.md"):
         try:
-            parts = f.stem.split("-")
-            seq = int(parts[-1])
-            if seq > max_seq:
-                max_seq = seq
-        except (ValueError, IndexError):
-            continue
-    return max_seq + 1
+            content = md_file.read_text(encoding="utf-8")
+            
+            # Extract from frontmatter
+            if content.startswith("---"):
+                parts = content.split("---", 2)
+                if len(parts) >= 2:
+                    fm = parts[1]
+                    # tags
+                    for line in fm.split("\n"):
+                        if line.startswith("tags:"):
+                            tags = [t.strip() for t in line.split(":", 1)[1].split(",")]
+                            topics.extend(tags)
+                        elif line.startswith("title:"):
+                            title = line.split(":", 1)[1].strip()
+                            topics.append(title)
+            
+            # Extract Title Case concepts from body (potential entities/topics)
+            body = content.split("---", 2)[-1] if content.startswith("---") else content
+            concepts = concept_pattern.findall(body)
+            # Filter: 2+ words, not common words
+            for c in concepts:
+                if len(c.split()) >= 2 and len(c) > 5:
+                    topics.append(c)
+                    
+        except Exception as e:
+            log(f"Error reading {md_file}: {e}")
+    
+    # Count frequency, return top topics and counts
+    topic_counts = Counter(topics)
+    top_topics = [topic for topic, count in topic_counts.most_common(50)]
+    return top_topics, topic_counts
 
+def identify_expansion_directions(topics, topic_counts):
+    """Identify directions to expand knowledge based on existing topics."""
+    expansions = []
+    
+    # Common expansion patterns
+    expansion_templates = [
+        ("historical context of {topic}", "Historical background and evolution"),
+        ("modern applications of {topic}", "Current real-world applications and use cases"),
+        ("critiques and limitations of {topic}", "Known criticisms, failures, and boundary conditions"),
+        ("related frameworks to {topic}", "Alternative or complementary frameworks and methodologies"),
+        ("key figures in {topic}", "Influential people, their contributions, and intellectual lineage"),
+        ("open problems in {topic}", "Unsolved questions and active research areas"),
+        ("case studies of {topic}", "Detailed real-world examples and lessons learned"),
+        ("prerequisites for {topic}", "Foundational knowledge needed to understand this deeply"),
+    ]
+    
+    # Select top topics and generate expansion directions
+    for topic in topics[:15]:  # Top 15 topics
+        for template, description in expansion_templates:
+            if len(expansions) >= 30:  # Cap total expansions
+                break
+            expansions.append({
+                "topic": topic,
+                "direction": template.format(topic=topic),
+                "description": description,
+                "priority": "high" if topic_counts.get(topic, 0) > 2 else "normal"
+            })
+    
+    return expansions[:20]  # Return top 20 expansion opportunities
 
-def create_research_request(gap, sequence_num):
-    """Create a research request package in the exchange directory."""
-    EXCHANGE_DIR.mkdir(parents=True, exist_ok=True)
-
-    request_id = f"oracle-gap-{sequence_num:03d}"
-    request_file = EXCHANGE_DIR / f"{request_id}.json"
-
-    # Skip if already created with completed/processing status
-    if request_file.exists():
-        try:
-            existing = json.loads(request_file.read_text())
-            if existing.get("status") in ("completed", "processing"):
-                return None
-        except (json.JSONDecodeError, KeyError):
-            pass  # corrupted file, recreate
-
+def create_research_request(topic, direction, description, priority="normal"):
+    """Create a research request package for the Researcher profile."""
+    os.makedirs(EXCHANGE_DIR, exist_ok=True)
+    
     request = {
-        "id": request_id,
-        "created": datetime.now(timezone.utc).isoformat(),
-        "status": "pending",
-        "type": "oracle_gap_expansion",
-        "topic": gap["topic"],
-        "topic_path": gap["path"],
-        "current_coverage": {
-            "chars": gap["current_chars"],
-            "files": gap["current_files"],
+        "id": f"oracle-expand-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{abs(hash(direction)) % 10000:04d}",
+        "topic": direction,
+        "context": f"Oracle knowledge expansion: {description} for '{topic}'. This expands long-term knowledge around existing Oracle content.",
+        "priority": priority,
+        "created_at": datetime.now().isoformat(),
+        "source": "oracle-knowledge-expansion",
+        "target_profile": "researcher",
+        "deliver_to": "exchange/research",
+        "requirements": {
+            "verify_citations": True,
+            "synthesize": True,
+            "target_wiki": "oracle",
+            "max_pages": 3,
+            "focus": "long-term knowledge, not current events"
         },
-        "expansion_directions": gap["expansions"],
-        "description": (
-            f"The Oracle topic '{gap['topic']}' needs expansion "
-            f"({gap['current_chars']} chars, {gap['current_files']} files). "
-            f"Directions: {', '.join(gap['expansions'])}."
-        ),
-        "priority": "medium" if gap["current_chars"] > 1000 else "high",
+        "metadata": {
+            "seed_topic": topic,
+            "expansion_type": "knowledge_expansion",
+            "oracle_anchor": topic
+        }
     }
-
-    with open(request_file, "w") as f:
+    
+    req_file = os.path.join(EXCHANGE_DIR, f"{request['id']}.json")
+    with open(req_file, "w") as f:
         json.dump(request, f, indent=2)
-
-    return request_id
-
+    
+    log(f"Created research request: {req_file} — {direction}")
+    return req_file
 
 def main():
-    parser = argparse.ArgumentParser(description="Oracle Knowledge Expansion")
-    parser.add_argument(
-        "--batch", type=int, default=0, help="Batch number (0-4), picks topic at this index"
-    )
-    parser.add_argument(
-        "--limit", type=int, default=1, help="Max topics to process per run"
-    )
-    args = parser.parse_args()
-
-    now = datetime.now(timezone.utc)
-    print(f"[oracle-expand] {now.isoformat()} batch={args.batch} limit={args.limit}")
-
-    if not ORACLE_BRAIN.exists():
-        print(f"[oracle-expand] ERROR: Oracle brain not found: {ORACLE_BRAIN}")
-        sys.exit(1)
-
-    topics = list_topics()
-    print(f"[oracle-expand] Topics found: {len(topics)}")
-
-    gaps = analyze_topics(topics)
-    print(f"[oracle-expand] Topics with gaps: {len(gaps)}")
-
-    if not gaps:
-        print("[oracle-expand] No gaps found — all topics adequately covered")
-        sys.exit(0)
-
-    # Select topics based on batch offset
-    start_idx = args.batch
-    end_idx = start_idx + args.limit
-    selected = gaps[start_idx:end_idx]
-
-    if not selected:
-        print(
-            f"[oracle-expand] No topics remaining for batch {args.batch} "
-            f"(offset {start_idx} into {len(gaps)} gaps)"
-        )
-        sys.exit(0)
-
-    # Use the global gap index for stable numbering (across batches)
-    base_seq = args.batch + 1
+    log("=== Oracle Knowledge Expansion Started ===")
+    
+    # 1. Extract existing Oracle topics
+    topics, topic_counts = extract_oracle_topics()
+    log(f"Extracted {len(topics)} key topics from Oracle wiki")
+    
+    if not topics:
+        log("No topics found in Oracle wiki — skipping expansion")
+        print(json.dumps({"timestamp": datetime.now().isoformat(), "requests_created": 0, "reason": "empty_oracle"}))
+        return
+    
+    # 2. Identify expansion directions
+    expansions = identify_expansion_directions(topics, topic_counts)
+    log(f"Identified {len(expansions)} knowledge expansion directions")
+    
+    # 3. Create research requests (max 5 per night)
     requests_created = 0
-    requests_skipped = 0
-
-    for i, gap in enumerate(selected):
-        # Each gap gets a unique seq: batch0→1, batch1→2, etc.
-        request_id = create_research_request(gap, base_seq + i)
-        if request_id:
-            requests_created += 1
-            print(f"[oracle-expand] Created: {request_id}")
-            print(f"  Topic: {gap['topic']} ({gap['current_chars']} chars)")
-            print(f"  Directions: {', '.join(gap['expansions'])}")
-        else:
-            requests_skipped += 1
-            print(f"[oracle-expand] Skipped (already exists): {gap['topic']}")
-
-    print(f"\n[oracle-expand] Summary:")
-    print(f"  New requests: {requests_created}")
-    print(f"  Skipped: {requests_skipped}")
-    print(f"  Batch {args.batch} processed {args.limit} topic(s)")
-    print(f"  Remaining gaps for future batches: {len(gaps) - start_idx - args.limit}")
-
+    for exp in expansions:
+        if requests_created >= 5:
+            break
+        create_research_request(
+            exp["topic"],
+            exp["direction"],
+            exp["description"],
+            exp["priority"]
+        )
+        requests_created += 1
+    
+    # 4. Summary
+    log(f"=== Oracle Knowledge Expansion Complete: {requests_created} research requests created ===")
+    
+    summary = {
+        "timestamp": datetime.now().isoformat(),
+        "oracle_topics_analyzed": len(topics),
+        "expansion_directions_identified": len(expansions),
+        "research_requests_created": requests_created,
+        "top_seed_topics": topics[:10]
+    }
+    print(json.dumps(summary))
 
 if __name__ == "__main__":
     main()

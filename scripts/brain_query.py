@@ -9,7 +9,7 @@ Usage:
 
 Environment (same as brain_sync.py):
   BRAIN_PG_HOST, BRAIN_PG_PORT, BRAIN_PG_USER, BRAIN_PG_PASSWORD, BRAIN_PG_DB
-  BRAIN_OLLAMA_URL, BRAIN_EMBED_MODEL
+  BRAIN_OLLAMA_URL, BRAIN_EMBED_MODEL, BRAIN_API_MODE
 """
 
 import argparse
@@ -29,8 +29,11 @@ PG_USER = os.environ.get("BRAIN_PG_USER", "brain")
 PG_PASSWORD = os.environ.get("BRAIN_PG_PASSWORD", "brain")
 PG_DB = os.environ.get("BRAIN_PG_DB", "brain")
 
-OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://127.0.0.1:11434")
-EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "qwen3-embedding:8b")
+OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.1.1.10:18082")
+EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "/models/Qwen3-Embedding-4B-Q8_0.gguf")
+
+# API mode: "ollama" for native Ollama, "openai" for llama.cpp / OpenAI-compatible
+API_MODE = os.environ.get("BRAIN_API_MODE", "openai")
 
 
 def get_db():
@@ -41,15 +44,32 @@ def get_db():
 
 
 def embed_query(text: str, dim: int = 2000) -> list[float]:
-    """Embed a single query string via Ollama with dimension truncation."""
-    data = json.dumps({"model": EMBED_MODEL, "input": text, "dimensions": dim}).encode()
+    """Embed a single query string via the embedding server with dimension truncation."""
+    if API_MODE == "ollama":
+        # Native Ollama API
+        data = json.dumps({"model": EMBED_MODEL, "input": text, "dimensions": dim}).encode()
+        url = f"{OLLAMA_URL}/api/embed"
+    else:
+        # OpenAI-compatible API (llama.cpp, vLLM, etc.)
+        data = json.dumps({"model": EMBED_MODEL, "input": text}).encode()
+        url = f"{OLLAMA_URL}/v1/embeddings"
+    
     req = urllib.request.Request(
-        f"{OLLAMA_URL}/api/embed", data=data,
+        url, data=data,
         headers={"Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=120) as resp:
         result = json.loads(resp.read())
-        return result["embeddings"][0]
+        if API_MODE == "ollama":
+            embedding = result["embeddings"][0]
+        else:
+            embedding = result["data"][0]["embedding"]
+        
+        # Truncate embeddings to the target dimension (Ollama does this natively via dimensions param)
+        if dim and len(embedding) > dim:
+            embedding = embedding[:dim]
+        
+        return embedding
 
 
 def hybrid_search(conn, query_embedding: list[float], query_text: str,
