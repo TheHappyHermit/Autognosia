@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Daily health check for Autognosia.
+Daily health check for Hermes Cortex.
 
 Runs in no-agent cron (daily at 8 AM on this deployment).
 Exits 0 if verification passes, 1 if it fails.
 
 PLATFORM: Cross-platform (Python 3)
   • All dependencies (verify_stack.py, Python) are cross-platform
-  • The verify_stack.py script must exist at ${HOME}/personal-agent/verify_stack.py
+  • The verify_stack.py script must exist at ~/personal-agent/verify_stack.py
 
 Linux-specific notes:
   • On Linux, systemctl is used — not available on macOS/Windows
@@ -24,22 +24,18 @@ import sys
 import os
 from pathlib import Path
 
-AUTOGNOSIA_HOME = Path(os.environ.get("AUTOGNOSIA_HOME", str(Path.home() / ".autognosia")))
-VERIFY_SCRIPT = AUTOGNOSIA_HOME / "scripts" / "verify_stack.py"
-if not VERIFY_SCRIPT.exists():
-    VERIFY_SCRIPT = Path(__file__).parent / "verify_stack.py"
-PERSONAL_ORGANIZER_API = "http://127.0.0.1:8001/health"
+VERIFY_SCRIPT = Path.home() / "personal-agent" / "verify_stack.py"
+PERSONAL_STATE_API = "http://127.0.0.1:8001/health"
 
 def main() -> int:
-    from datetime import datetime
     print("=== Daily Health Check ===")
-    print(f"Time: {datetime.now().isoformat()}")
+    print(f"Time: {subprocess.run(['date'], capture_output=True, text=True).stdout.strip()}")
     ok = True
 
     # Run verify_stack.py
     if VERIFY_SCRIPT.exists():
         result = subprocess.run(
-            [sys.executable, str(VERIFY_SCRIPT)],
+            ["python3", str(VERIFY_SCRIPT)],
             capture_output=True, text=True, timeout=120
         )
         if result.returncode == 0:
@@ -52,18 +48,18 @@ def main() -> int:
     else:
         print(f"[skip] verify_stack.py not found at {VERIFY_SCRIPT}")
 
-    # Check Personal Organizer API
+    # Check Personal State API
     try:
         import urllib.request
-        req = urllib.request.urlopen(PERSONAL_ORGANIZER_API, timeout=5)
+        req = urllib.request.urlopen(PERSONAL_STATE_API, timeout=5)
         if req.status == 200:
-            print("[ok] Personal Organizer API healthy")
+            print("[ok] Personal State API healthy")
         else:
-            print(f"[warn] Personal Organizer API: HTTP {req.status}")
+            print(f"[warn] Personal State API: HTTP {req.status}")
     except FileNotFoundError:
-        print("[skip] Personal Organizer API not available")
+        print("[skip] Personal State API not available")
     except Exception as e:
-        print(f"[warn] Personal Organizer API error: {e}")
+        print(f"[warn] Personal State API error: {e}")
 
     print("=== Health check complete ===")
     return 0 if ok else 1
