@@ -71,7 +71,7 @@ See [`docs/cron-jobs/definitions.md`](docs/cron-jobs/definitions.md) for canonic
 | 2 | 02:00 | Database backup | Script | Transactional SQLite backup with retention |
 | 3 | 02:30 | Integrity check | Script | PRAGMA check + foreign key validation |
 | 4 | 02:45 | Oracle Knowledge Expansion | Script | Creates expansion requests based on existing Oracle content |
-| 4a | 03:00 | Oracle Night Research | Agent | Consumes exchange requests → researches → writes to Oracle Brain |
+| 4a | 03:30 | Oracle Night Research | Agent | Consumes exchange requests → researches → writes to Oracle Brain |
 | 4a | 03:00 | Research Quality Check | Script | Daily quality audit: broken URLs, front matter, contradictions |
 | 5 | 03:30 | Oracle index rebuild | Script | Sync Active Wiki updates to Oracle vault |
 | 6 | 04:00 (Daily) / 03:00 (Sun) | Wiki lint | Agent | Broken links, orphan pages, stale detection |

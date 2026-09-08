@@ -57,7 +57,7 @@ memories, not stubs.
 | Job | Schedule | Role |
 |-----|----------|------|
 | Oracle Knowledge Expansion | 2:45 AM daily | Creates expansion requests based on existing Oracle content |
-| Oracle Night Research | 3:00 AM daily | Consumes exchange requests → researches → writes to Oracle Brain |
+| Oracle Night Research | 3:30 AM daily | Consumes exchange requests → researches → writes to Oracle Brain |
 | Frontier Research Lane A/B | Every 2h | Active Wiki research (ontology, philosophy, etc.) |
 
 Every job responds `[SILENT]` on success; failures go to
