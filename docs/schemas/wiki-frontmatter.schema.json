@@ -4,32 +4,40 @@
   "description": "JSON Schema for validating YAML frontmatter in wiki pages. Both the Active Wiki and Oracle Brain conform to this schema.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["okf_version", "id", "title", "type", "status", "created", "updated"],
+  "required": [
+    "okf_version",
+    "id",
+    "description",
+    "type",
+    "status",
+    "generated"
+  ],
   "properties": {
     "okf_version": {
       "type": "string",
       "const": "0.2",
-      "description": "OKF spec version — all pages MUST use 0.2"
+      "description": "OKF spec version \u2014 all pages MUST use 0.2"
     },
     "type": {
       "type": "string",
-      "description": "Page type — one of the allowed types below",
+      "description": "Page type \u2014 one of the allowed types below",
       "enum": [
-        "profile",
-        "person",
-        "project",
-        "decision",
-        "system",
+        "Index",
         "asset",
-        "purchase",
-        "trip",
-        "routine",
+        "decision",
         "idea",
-        "question",
-        "lesson",
-        "reference",
         "incident",
-        "Index"
+        "lesson",
+        "person",
+        "profile",
+        "project",
+        "purchase",
+        "question",
+        "reference",
+        "research_report",
+        "routine",
+        "system",
+        "trip"
       ]
     },
     "status": {
@@ -57,47 +65,49 @@
       "pattern": "^[a-z][a-z0-9-]*$",
       "description": "Unique, stable, kebab-case identifier"
     },
-    "title": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Human-readable title"
-    },
-    "created": {
-      "type": "string",
-      "format": "date",
-      "description": "RFC 3339 UTC date when page was created"
-    },
-    "updated": {
-      "type": "string",
-      "format": "date",
-      "description": "RFC 3339 UTC date of last modification"
-    },
     "description": {
       "type": "string",
-      "description": "Optional: one-line summary"
+      "minLength": 1,
+      "description": "Human-readable description (was title in earlier versions)"
     },
     "tags": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Optional: filterable tags"
     },
     "sources": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Optional: provenance URLs"
     },
     "generated": {
       "type": "object",
       "properties": {
-        "by": { "type": "string" },
-        "at": { "type": "string", "format": "date-time" }
+        "by": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
       },
-      "required": ["by", "at"],
-      "description": "Optional: auto-generated metadata"
+      "required": [
+        "by",
+        "at"
+      ],
+      "description": "Who generated this and when (replaces created/updated)"
     },
     "confidence": {
       "type": "string",
-      "enum": ["high", "medium", "low"],
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
       "description": "Optional: epistemic confidence"
     },
     "epistemic": {
@@ -115,12 +125,16 @@
     },
     "wikilinks": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Optional: explicit outbound links for graph tooling"
     },
     "aliases": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Optional: alternate names for the page"
     },
     "review_after": {
@@ -130,17 +144,46 @@
     },
     "related": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Optional: related page slugs"
     },
     "supersedes": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Optional: page IDs this one replaces"
     },
     "superseded_by": {
       "type": "string",
       "description": "Optional: page ID that replaces this one"
+    },
+    "verified": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "by": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "by",
+          "at"
+        ]
+      },
+      "description": "Independent confirmations of accuracy"
+    },
+    "stale_after": {
+      "type": "string",
+      "format": "date",
+      "description": "Date after which this content should be re-verified"
     }
   }
 }

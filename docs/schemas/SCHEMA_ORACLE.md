@@ -39,24 +39,26 @@ Every page in either wiki MUST conform to it. Nothing here is optional for new p
 ---
 okf_version: "0.2"
 id: stable-id              # unique, stable, kebab-case
-title: Human Readable Title
+description: "Human readable description"
 type: <page-type>          # see Allowed Page Types
 status: <lifecycle-status>  # see Allowed Lifecycle Statuses
-created: 2026-08-04
-updated: 2026-08-04
+generated:                 # who/when produced
+  by: "agent:researcher"
+  at: "2026-09-07T10:00:00Z"
 ---
 ```
 
 ### Recommended (use whenever relevant)
 
 ```yaml
+verified: []               # independent confirmations
+stale_after: "2026-12-07"  # review date
 description: One-line summary of the page
 tags: []
 sources: []
-generated: {by: autognosia/orchestrator, at: 2026-08-04T00:00:00Z}
-confidence: high          # high | medium | low
-epistemic: fact           # see Allowed Epistemic Labels
-wikilinks: []             # explicit outbound links for graph tooling / backlinks
+confidence: "high"         # high | medium | low (Autognosia extension)
+epistemic: fact            # see Allowed Epistemic Labels
+wikilinks: []              # explicit outbound links for graph tooling / backlinks
 aliases: []
 ```
 
@@ -82,11 +84,12 @@ purchase
 trip
 routine
 idea
-question
-lesson
-reference
-incident
-Index
+| question
+| lesson
+| reference
+| research_report
+| incident
+| Index
 ```
 
 ## Allowed Epistemic Labels

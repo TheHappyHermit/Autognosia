@@ -40,8 +40,12 @@ Autognosia implements cognitive division of labor across specialized profiles.
 - **Rule:** Read-only for Personal Organizer tasks; returns compressed evidence packages with citations.
 
 ### Researcher
-- **Role:** Internet research specialist operating via local SearXNG.
-- **Rule:** All web findings are considered untrusted evidence until verified and synthesized.
+- **Role:** Active Wiki research specialist. Writes findings directly to `~/.autognosia/active-wiki/`.
+- **Rule:** Uses local Docker research stack (Camofox → Firecrawl → SearXNG → Tavily). All web findings are untrusted until verified.
+
+### Oracle Researcher
+- **Role:** Oracle Wiki research specialist. Writes findings directly to `~/.autognosia/oracle/brain/`.
+- **Rule:** Uses local Docker research stack (Camofox → Firecrawl → SearXNG → Tavily). All web findings are untrusted until verified.
 
 ### Planner
 - **Role:** Strategic task decomposition, dependency planning, and pre-mortem analysis.
@@ -66,7 +70,8 @@ See [`docs/cron-jobs/definitions.md`](docs/cron-jobs/definitions.md) for canonic
 | 1 | 01:00 | Config backup | Script | Git backup of config, profiles, skills |
 | 2 | 02:00 | Database backup | Script | Transactional SQLite backup with retention |
 | 3 | 02:30 | Integrity check | Script | PRAGMA check + foreign key validation |
-| 4 | 02:45 | Oracle knowledge expansion | Script | Active expansion of Oracle long-term knowledge via Researcher |
+| 4 | 02:45 | Oracle knowledge expansion | Script | Active expansion of Oracle long-term knowledge via Oracle Researcher |
+| 4a | 03:00 | Research Quality Check | Script | Daily quality audit: broken URLs, front matter, contradictions |
 | 5 | 03:30 | Oracle index rebuild | Script | Sync Active Wiki updates to Oracle vault |
 | 6 | 04:00 (Daily) / 03:00 (Sun) | Wiki lint | Agent | Broken links, orphan pages, stale detection |
 | 7 | 04:00 (Daily) / 04:00 (Sun) | Memory consolidation | Agent | Three-tier cascade pass (Hot -> Warm -> Cold) |
@@ -104,17 +109,24 @@ active-wiki/
     └── content-hashes.json
 ```
 
-### Frontmatter Schema (Standard Mode)
+### Frontmatter Schema (OKF v0.2)
 
 ```yaml
 ---
-id: auto-uuid
-title: Descriptive Title
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
-type: evergreen | temporal | historical
-tags: [tag1, tag2]
-source: session:YYYYMMDD_HHMMSS
+okf_version: "0.2"
+id: stable-kebab-id
+description: "Human readable description"
+type: research_report
+status: active
+generated:
+  by: "agent:researcher"
+  at: "2026-09-07T10:00:00Z"
+verified: []
+stale_after: "2026-12-07"
+tags: [topic1, topic2]
+sources:
+  - "https://..."
+confidence: "high"
 ---
 ```
 
