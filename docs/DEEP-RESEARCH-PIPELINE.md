@@ -56,8 +56,9 @@ memories, not stubs.
 
 | Job | Schedule | Role |
 |-----|----------|------|
-| Oracle Knowledge Expansion batch 0–4 | nightly, staggered | one deep page each |
-| Frontier Research Trial | every 5 minutes (temporary) | accelerated build-out; silence on success |
+| Oracle Knowledge Expansion | 2:45 AM daily | Creates expansion requests based on existing Oracle content |
+| Oracle Night Research | 3:00 AM daily | Consumes exchange requests → researches → writes to Oracle Brain |
+| Frontier Research Lane A/B | Every 2h | Active Wiki research (ontology, philosophy, etc.) |
 
 Every job responds `[SILENT]` on success; failures go to
 `logs/deep_research_failures.log`. Nothing is delivered to chat unless a human
