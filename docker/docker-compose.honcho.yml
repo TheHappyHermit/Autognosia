@@ -49,6 +49,15 @@ services:
       - DB_CONNECTION_URI=postgresql+psycopg://${HONCHO_PG_USER:-postgres}:${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}@database:5432/${HONCHO_PG_DB:-postgres}
       - CACHE_URL=redis://redis:6379/0?suppress=true
       - CACHE_ENABLED=true
+      - LLM_EMBEDDING_PROVIDER=openai
+      - LLM_EMBEDDING_MODEL=Qwen3-Embedding-4B-Q8_0.gguf
+      - LLM_EMBEDDING_BASE_URL=http://10.x.x.x:18082/v1
+      - LLM_EMBEDDING_API_KEY=sk-local
+      - EMBEDDING_MODEL_CONFIG__MODEL=Qwen3-Embedding-4B-Q8_0.gguf
+      - EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL=http://10.x.x.x:18082/v1
+      - EMBEDDING_MODEL_CONFIG__OVERRIDES__API_KEY=sk-local
+      - EMBEDDING_MODEL_CONFIG__DIMENSIONS=2560
+      - EMBEDDING_MODEL_CONFIG__DIMENSIONS_MODE=always
     env_file:
       - path: .env
         required: true
@@ -72,6 +81,15 @@ services:
       - DB_CONNECTION_URI=postgresql+psycopg://${HONCHO_PG_USER:-postgres}:${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}@database:5432/${HONCHO_PG_DB:-postgres}
       - CACHE_URL=redis://redis:6379/0?suppress=true
       - CACHE_ENABLED=true
+      - LLM_EMBEDDING_PROVIDER=openai
+      - LLM_EMBEDDING_MODEL=Qwen3-Embedding-4B-Q8_0.gguf
+      - LLM_EMBEDDING_BASE_URL=http://10.x.x.x:18082/v1
+      - LLM_EMBEDDING_API_KEY=sk-local
+      - EMBEDDING_MODEL_CONFIG__MODEL=Qwen3-Embedding-4B-Q8_0.gguf
+      - EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL=http://10.x.x.x:18082/v1
+      - EMBEDDING_MODEL_CONFIG__OVERRIDES__API_KEY=sk-local
+      - EMBEDDING_MODEL_CONFIG__DIMENSIONS=2560
+      - EMBEDDING_MODEL_CONFIG__DIMENSIONS_MODE=always
     healthcheck:
       test:
         [
@@ -99,7 +117,7 @@ services:
     command: ["postgres", "-c", "max_connections=200"]
     environment:
       - POSTGRES_DB=${HONCHO_PG_DB:-postgres}
-      - POSTGRES_USER=${HONCHO_PG_USER:-postgres}
+      - POSTGRES_USER=${HONCHO_PG_USER:-honcho}
       - POSTGRES_PASSWORD=${HONCHO_PG_PASSWORD:?set HONCHO_PG_PASSWORD in .env}
       - POSTGRES_HOST_AUTH_METHOD=trust
       - PGDATA=/var/lib/postgresql/data/pgdata

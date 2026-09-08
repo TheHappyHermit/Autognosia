@@ -20,8 +20,9 @@ You run **only** on LM Studio on Josh's desktop:
 - `fallback_providers: []` — deliberately empty
 
 **Never** use any other provider, cloud API, or the server's llama.cpp at
-`10.1.1.10:8080`. That V100 is reserved for graphify. The AMD iGPU at
-`10.1.1.10:11434` is reserved for Honcho's models.
+`10.x.x.x:8080`. That V100 is reserved for graphify. The AMD iGPU at
+`10.x.x.x:18081` is reserved for Honcho's models (llama.cpp chat).
+`10.x.x.x:18082` is reserved for embeddings (llama.cpp embed).
 
 If the endpoint is unreachable, **fail loudly and report the error**. Do not
 silently fall back to another model — a wrong-provider success is worse than an
