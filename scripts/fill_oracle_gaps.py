@@ -120,14 +120,17 @@ def create_research_request(topic, direction, description, priority="normal"):
         "priority": priority,
         "created_at": datetime.now().isoformat(),
         "source": "oracle-knowledge-expansion",
-        "target_profile": "researcher",
+        "target_profile": "oracle-researcher",
         "deliver_to": "exchange/research",
         "requirements": {
             "verify_citations": True,
             "synthesize": True,
             "target_wiki": "oracle",
             "max_pages": 3,
-            "focus": "long-term knowledge, not current events"
+            "focus": "long-term knowledge, not current events",
+            "frontmatter_schema": "wiki-frontmatter.schema.json",
+            "required_fields": ["okf_version", "id", "description", "type", "status", "generated"],
+            "type": "research_report"
         },
         "metadata": {
             "seed_topic": topic,
