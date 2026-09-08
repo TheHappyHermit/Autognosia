@@ -1,0 +1,381 @@
+{
+  "topics": [
+    {
+      "topic_id": 1,
+      "title": "Procedural Memory in LLM Agents — The Gap Between Factual/Experiential/Working Memory and Procedural 'How-To' Knowledge",
+      "key_papers": [
+        {
+          "title": "Memp: Exploring Agent Procedural Memory",
+          "arxiv_id": "2508.06433",
+          "venue": "ACL 2026 Findings",
+          "authors": ["Runnan Fang", "Yuan Liang", "Xiaobin Wang", "Jialong Wu", "Shuofei Qiao", "Pengjun Xie", "Fei Huang", "Huajun Chen", "Ningyu Zhang"],
+          "main_claims": [
+            "LLM agents suffer from brittle procedural memory that is manually engineered or entangled in static parameters",
+            "Proposes Memp that distills past agent trajectories into fine-grained step-by-step instructions and higher-level script-like abstractions",
+            "Introduces diverse procedural-memory update strategies: ordinary addition, validation filtering, reflection, and dynamic discarding",
+            "Procedural memory built from a stronger model retains value when migrated to weaker models"
+          ],
+          "how_it_works": "Memp operates in three phases: Build (distill trajectories into procedural memory units), Retrieval (match current task to relevant memory), and Update (continuously refine memory with validation, reflection, and deprecation). Uses TravelPlanner and ALFWorld benchmarks.",
+          "numerical_results": {
+            "TravelPlanner_success_rate_improvement": "Steadily higher success rates as memory repository refines",
+            "ALFWorld_efficiency": "Substantial reductions in step count and token consumption vs. isolated execution",
+            "cross_model_transfer": "Procedural memory from stronger model yields substantial performance gains on weaker model"
+          },
+          "connections_to_existing_rounds": [
+            "Round: D-Mem dual-process with quality gating — Memp's validation filtering parallels quality gating",
+            "Round: HeLa-Mem Hebbian memory — Both explore continuous memory update mechanisms",
+            "Round: CALMem — Shared focus on memory construction from experience",
+            "Round: Memory in the Age of AI Agents survey (Round 65) — Cites Memp as key procedural memory work"
+          ]
+        },
+        {
+          "title": "LEGOMem: Modular Procedural Memory for Multi-agent LLM Systems for Workflow Automation",
+          "arxiv_id": "2510.04851",
+          "venue": "AAMAS 2026",
+          "authors": ["Dongge Han", "Camille Couturier", "Daniel Madrigal Diaz", "Xuchao Zhang", "Victor Rühle", "Saravan Rajmohan"],
+          "main_claims": [
+            "Decomposes past task trajectories into reusable memory units flexibly allocated across orchestrators and task agents",
+            "Orchestrator memory is critical for effective task decomposition and delegation",
+            "Fine-grained agent memory improves execution accuracy",
+            "Teams of smaller LLMs with procedural memory narrow the performance gap with stronger agents"
+          ],
+          "how_it_works": "LEGOMem decomposes trajectories into modular memory units. Orchestrator uses memory for planning/delegation; task agents use memory for execution. Evaluated on OfficeBench benchmark.",
+          "numerical_results": {
+            "OfficeBench": "Smaller models with procedural memory substantially narrow gap with stronger agents",
+            "Orchestrator_memory_impact": "Critical for task decomposition and delegation accuracy",
+            "Agent_memory_impact": "Improves execution accuracy"
+          },
+          "connections_to_existing_rounds": [
+            "Round: MAGMA multi-graph memory — Both explore multi-agent memory architectures",
+            "Round: Dual-Layer Agentic Memory — Shared interest in hierarchical memory organization",
+            "Round: Memory in the Age of AI Agents survey (Round 65) — Cites LEGOMem as key multi-agent procedural memory work"
+          ]
+        },
+        {
+          "title": "Neural Procedural Memory: Empowering LLM Agents with Implicit Activation Steering",
+          "arxiv_id": "2606.29824",
+          "venue": "arXiv 2026",
+          "authors": ["Authors from paper"],
+          "main_claims": [
+            "Textual procedural memory introduces text-action disconnect where agents struggle to align retrieved workflows onto execution trajectories",
+            "Proposes Neural Procedural Memory (NPM) — training-free framework using implicit activation steering instead of text retrieval",
+            "NPM extracts procedural signals from contrastive experiences into steering vectors in activation space"
+          ],
+          "how_it_works": "Identifies relevant historical tasks, extracts procedural signals from contrastive experiences (success vs failure trajectories), encodes as steering vectors in model activation space, applies at inference time without text retrieval.",
+          "numerical_results": {
+            "benchmarks": "Evaluated on multiple agent benchmarks showing improved alignment between retrieved procedures and actual execution"
+          },
+          "connections_to_existing_rounds": [
+            "Round: D-Mem dual-process with quality gating — NPM's contrastive extraction parallels dual-process discrimination",
+            "Round: EpisTwin PKG — Both explore implicit vs explicit memory representations"
+          ]
+        }
+      ],
+      "synthesis": "The procedural memory gap is the highest benchmark impact area with least production tooling. Key insight: agents remember WHAT happened (episodic) but not HOW to do things (procedural). Three complementary approaches: (1) Memp — explicit text-based procedural memory with update strategies, (2) LEGOMem — modular memory for multi-agent division of labor, (3) NPM — implicit activation steering avoiding text-action disconnect. All show procedural memory transfers across tasks and models.",
+      "backlink_suggestions": [
+        "Round: DCPM dual-process memory",
+        "Round: D-Mem dual-process with quality gating",
+        "Round: MAGMA multi-graph memory",
+        "Round: Dual-Layer Agentic Memory",
+        "Round: HeLa-Mem Hebbian memory",
+        "Round: CALMem",
+        "Round: Memory in the Age of AI Agents survey (Round 65)"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "title": "Schema-Agnostic Knowledge Graph Construction with SHACL Validation",
+      "key_papers": [
+        {
+          "title": "ANCHOR: Schema-Agnostic Knowledge Graph Construction via Hybrid Ontology Discovery for Cyber Threat Intelligence",
+          "arxiv_id": "2606.01208",
+          "venue": "arXiv 2026",
+          "authors": ["Seonwoo Kim", "Jinwoo Kim", "Daegyu Kang", "Daeseong Kim", "Insup Lee"],
+          "main_claims": [
+            "Existing CTI extraction pipelines are schema-specific, requiring manual reconfiguration when schema changes",
+            "Prompt-based schema inclusion fails to scale on large ontologies (UCO, STIX, MALOnt)",
+            "Enterprise LLM reliance conflicts with privacy for sensitive internal incident data",
+            "ANCHOR decouples extraction pipeline from schema via hybrid ontology discovery + SHACL validation"
+          ],
+          "how_it_works": "Hybrid ontology discovery combines embedding-based semantic search with LLM-guided recursive navigation to retrieve task-relevant ontology subgraphs. Closed-loop SHACL validation ensures schema-compliant type assignments. Works with local LLMs for privacy.",
+          "numerical_results": {
+            "UCO_STIX_MALOnt_typing": "Outperforms baselines in ontology typing and schema compliance",
+            "local_LLM_performance": "Closely matches enterprise LLM typing performance enabling privacy-preserving CTI analysis"
+          },
+          "connections_to_existing_rounds": [
+            "Round: ANCHOR schema-agnostic CTI (Round 64) — This IS the ANCHOR paper from the existing rounds",
+            "Round: Ontology-Constrained Reasoning — Shared focus on schema-enforced generation"
+          ]
+        },
+        {
+          "title": "From RDF Graph Validation to RDF Dataset Validation with SHACL-DS",
+          "arxiv_id": "2505.09198",
+          "venue": "arXiv 2026",
+          "authors": ["D. Chiem Dao", "et al."],
+          "main_claims": [
+            "SHACL validation defined only for single RDF graphs — inadequate for datasets with multiple named graphs",
+            "Existing workarounds (graph unions, bespoke preprocessing) collapse dataset structure or compromise declarative nature",
+            "SHACL-DS introduces lightweight vocabulary for RDF dataset validation: associate named shapes graphs with named data graphs, combine graphs via set operations, prescribe SPARQL constraint evaluation"
+          ],
+          "how_it_works": "SHACL-DS extends SHACL with explicit targeting declarations linking shapes graphs to data graphs, set operations (union/intersection/difference) for validation targets, and SPARQL evaluation semantics for cross-graph rules.",
+          "numerical_results": {},
+          "connections_to_existing_rounds": [
+            "Round: Ontology-Constrained Reasoning — SHACL-DS enables multi-graph constraint enforcement",
+            "Round: gUFO foundational ontology — Multi-graph validation relevant for foundational ontology layers"
+          ]
+        },
+        {
+          "title": "xpSHACL: Explainable SHACL Validation using Retrieval-Augmented Generation and Large Language Models",
+          "arxiv_id": "VLDB 2025 Workshop",
+          "venue": "VLDB 2025",
+          "authors": ["Gustavo Correa Publio", "José Emilio Labra Gayo"],
+          "main_claims": [
+            "Traditional SHACL validation engines provide terse reports difficult for non-technical users",
+            "xpSHACL combines rule-based justification trees with RAG and LLMs for multi-language, human-readable explanations",
+            "Addresses the 'why' behind constraint violations, not just 'what' failed"
+          ],
+          "how_it_works": "Builds justification trees from SHACL validation results, uses RAG to retrieve relevant schema/documentation context, LLM generates natural language explanations for violations.",
+          "numerical_results": {},
+          "connections_to_existing_rounds": [
+            "Round: Post-Extraction Correction — xpSHACL's explanation generation parallels correction rationale",
+            "Round: Semantic Training Gap — Making validation interpretable bridges semantic gap"
+          ]
+        }
+      ],
+      "synthesis": "Schema-agnostic KG construction addresses the critical bottleneck: extraction pipelines hardcoded to specific schemas (UCO, STIX, Schema.org) that fail when schemas evolve or new domains emerge. ANCHOR's hybrid discovery (embedding search + LLM navigation) + SHACL validation loop is the leading approach. SHACL-DS extends validation to multi-graph datasets. xpSHACL makes validation actionable for humans. Together these form a stack: schema-agnostic extraction → multi-graph validation → explainable remediation.",
+      "backlink_suggestions": [
+        "Round: ANCHOR schema-agnostic CTI (Round 64)",
+        "Round: Ontology-Constrained Reasoning",
+        "Round: gUFO foundational ontology",
+        "Round: Post-Extraction Correction",
+        "Round: Semantic Training Gap"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "title": "Experiential Reflective Learning (ERL) for Self-Improving Agents",
+      "key_papers": [
+        {
+          "title": "Experiential Reflective Learning for Self-Improving LLM Agents",
+          "arxiv_id": "2603.24639",
+          "venue": "ICLR 2026 MemAgents Workshop",
+          "authors": ["Marc-Antoine Allard", "Arnaud Teinturier", "Victor Xing", "Gautier Viaud"],
+          "main_claims": [
+            "Agents struggle to adapt to specialized environments and don't leverage past interactions",
+            "ERL reflects on task trajectories and outcomes to generate heuristics (actionable lessons transferring across tasks)",
+            "At test time, relevant heuristics retrieved and injected into context to guide execution",
+            "Heuristics from single-attempt trajectories enable efficient adaptation without curated training sets or repeated execution"
+          ],
+          "how_it_works": "Two-phase: (1) Experience accumulation — agent reflects on task trajectories (success/failure) to generate heuristics stored in persistent pool. (2) Test-time retrieval — LLM scores heuristics for relevance to current task, injects top-k into context. Uses Gaia2 benchmark with universe-based evaluation (train on 8 universes, test on 2 held-out).",
+          "numerical_results": {
+            "Gaia2_overall_success_rate": "56.1% (ERL) vs 48.3% (ReAct baseline) = +7.8% improvement",
+            "Search_split": "Failure-derived heuristics excel (+14% on Search tasks)",
+            "Execution_split": "Success-derived heuristics favor Execution tasks",
+            "heuristic_retrieval_ablation": "LLM-based retrieval (k=20) achieves 56.1%, outperforming embedding-based (53.3%) and random selection (53.8%)",
+            "heuristic_count_optimum": "Performance peaks at 40-60 heuristics, degrades with excessive inclusion"
+          },
+          "connections_to_existing_rounds": [
+            "Round: D-Mem dual-process with quality gating — ERL's heuristic generation parallels quality-gated memory formation",
+            "Round: HeLa-Mem Hebbian memory — Both extract compressed lessons from experience",
+            "Round: Memory in the Age of AI Agents survey (Round 65) — Cites experiential learning methods"
+          ]
+        },
+        {
+          "title": "SAMULE: Self-Learning Agents Enhanced by Multi-level Reflection",
+          "arxiv_id": "2509.20562",
+          "venue": "EMNLP 2025 Main Conference",
+          "authors": ["Authors from paper"],
+          "main_claims": [
+            "Well-designed reflection synthesis and failure-centric learning critical for self-improving agents",
+            "Multi-level reflection (immediate + delayed + meta) outperforms single-level reflection"
+          ],
+          "how_it_works": "Multi-level reflection framework generating heuristics at different temporal granularities, with emphasis on learning from failures.",
+          "numerical_results": {
+            "benchmarks": "Outperforms baselines on agent benchmarks (specific metrics in paper)"
+          },
+          "connections_to_existing_rounds": [
+            "Round: Experiential Reflective Learning — Directly related to ERL paper above",
+            "Round: D-Mem dual-process with quality gating — Multi-level reflection as quality filter"
+          ]
+        }
+      ],
+      "synthesis": "ERL is the cleanest formulation of single-attempt heuristic extraction + selective retrieval. Key findings: (1) Heuristics > raw trajectories for transfer, (2) Failure heuristics excel on search/exploration tasks, success heuristics on execution, (3) Selective retrieval (LLM-based) essential — more heuristics ≠ better, (4) Works with held-out universe evaluation preventing knowledge contamination. SAMULE adds multi-level reflection depth. This directly addresses the 'agents approach each task from scratch' problem.",
+      "backlink_suggestions": [
+        "Round: D-Mem dual-process with quality gating",
+        "Round: HeLa-Mem Hebbian memory",
+        "Round: CALMem",
+        "Round: Memory in the Age of AI Agents survey (Round 65)",
+        "Round: EpisTwin PKG"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "title": "Ontology Grounding as Hallucination Mitigation — Ontology-Constrained Decoding and Schema-Enforced Generation",
+      "key_papers": [
+        {
+          "title": "OG-RAG: Ontology-Grounded Retrieval-Augmented Generation for Large Language Models",
+          "arxiv_id": "EMNLP 2025",
+          "venue": "EMNLP 2025",
+          "authors": ["Kartik Sharma", "Peeyush Kumar", "Yunqing Li"],
+          "main_claims": [
+            "Existing RAG fails to capture deep conceptual relationships and nuanced facts for domain adaptation",
+            "OG-RAG constructs ontology-grounded hypergraph where hyperedges encapsulate fact clusters grounded in domain ontology",
+            "Greedy algorithm retrieves minimal hyperedge set forming compact context",
+            "Ontology grounding enables verifiable context attribution and fact-based deduction"
+          ],
+          "how_it_works": "Domain experts define ontology → documents mapped to ontology-grounded hypergraph (hyperedges = fact clusters) → query retrieves minimal covering hyperedges via greedy optimization → LLM generates with grounded context.",
+          "numerical_results": {
+            "fact_recall_improvement": "55% increase in recall of accurate facts",
+            "response_correctness_improvement": "40% improvement across 4 LLMs",
+            "attribution_speed": "30% faster attribution of responses to context",
+            "fact_based_reasoning_accuracy": "27% boost in fact-based reasoning correctness"
+          },
+          "connections_to_existing_rounds": [
+            "Round: Ontology-Constrained Reasoning — Directly implements ontology-grounded generation",
+            "Round: Generative Ontology — OG-RAG's hypergraph construction relates to generative ontology approaches",
+            "Round: Post-Extraction Correction — Attribution speedup enables correction workflows"
+          ]
+        },
+        {
+          "title": "Graph-Constrained Reasoning: Faithful Reasoning on Knowledge Graphs with Large Language Models",
+          "arxiv_id": "ICML 2025",
+          "venue": "ICML 2025 (PMLR 267:41540-41565)",
+          "authors": ["Linhao Luo", "Zicheng Zhao", "Gholamreza Haffari", "Yuan-Fang Li", "Chen Gong", "Shirui Pan"],
+          "main_claims": [
+            "Existing KG-enhanced methods struggle with accurate retrieval and efficient KG traversal at scale",
+            "GCR introduces KG-Trie: trie-based index encoding KG reasoning paths that constrains LLM decoding",
+            "Zero reasoning hallucination achieved by constraining generation to valid KG paths",
+            "Lightweight KG-specialized LLM for constrained reasoning + powerful general LLM for inductive reasoning"
+          ],
+          "how_it_works": "KG-Trie encodes all valid reasoning paths from KG as trie. During decoding, LLM's next-token predictions constrained to valid trie transitions. Two-LLM architecture: small KG-LLM generates faithful paths, large LLM does inductive reasoning over paths.",
+          "numerical_results": {
+            "KGQA_benchmarks": "State-of-the-art performance on multiple KGQA benchmarks",
+            "zero_shot_generalizability": "Strong zero-shot transfer to unseen KGs without additional training",
+            "hallucination": "Zero reasoning hallucination"
+          },
+          "connections_to_existing_rounds": [
+            "Round: Ontology-Constrained Reasoning — GCR is a direct implementation of ontology-constrained decoding",
+            "Round: OntoKG intrinsic-relational routing — KG-Trie parallels intrinsic routing",
+            "Round: Structural Hallucination Stress Test — Zero hallucination claim addresses this directly"
+          ]
+        },
+        {
+          "title": "Fact Grounded Attention (FGA)",
+          "arxiv_id": "2509.25252",
+          "venue": "arXiv 2025",
+          "authors": ["Ayush Gupta", "et al."],
+          "main_claims": [
+            "Integrates verifiable knowledge source directly into attention mechanism via grounding matrix G = B_qf · A",
+            "Learnable gate α dynamically routes between parametric and external knowledge",
+            "Hard vocabulary constraints when gate confidence exceeds threshold make hallucination mathematically impossible",
+            "Instant (<1s) knowledge updates without retraining"
+          ],
+          "how_it_works": "External KB with entity embeddings → query-fact affinity matrix B_qf → entity assignment matrix A expands to attention dimensions → grounding matrix G added to pre-softmax attention scores modulated by learnable gate α → hard constraints at output logits when α > threshold.",
+          "numerical_results": {
+            "technical_specs_zero_shot": "87.1% accuracy (vs 6.3% baseline Llama 3.2 3B)",
+            "technical_specs_fine_tuned": "99.7% accuracy (gate + projection fine-tuned, 2hrs, base frozen)",
+            "update_speed": "<1 second for knowledge updates",
+            "inference_overhead": "<3% latency increase"
+          },
+          "connections_to_existing_rounds": [
+            "Round: Ontology-Constrained Reasoning — FGA's hard constraints are schema-enforced generation at attention level",
+            "Round: Post-Extraction Correction — Gate mechanism parallels correction gating",
+            "Round: Structural Hallucination Stress Test — 99.7% on technical specs addresses structural hallucination"
+          ]
+        }
+      ],
+      "synthesis": "Three complementary ontology-grounding strategies: (1) OG-RAG — retrieval-time grounding via ontology-hypergraph (55% recall, 40% correctness), (2) GCR — decoding-time constraint via KG-Trie (zero hallucination, SOTA KGQA), (3) FGA — attention-time grounding with hard constraints (87%→99.7% on technical specs). OG-RAG best for RAG pipelines, GCR for multi-hop KG reasoning, FGA for deterministic factual accuracy. All address the core gap: LLMs lack structured domain grounding.",
+      "backlink_suggestions": [
+        "Round: Ontology-Constrained Reasoning",
+        "Round: Generative Ontology",
+        "Round: OntoKG intrinsic-relational routing",
+        "Round: Structural Hallucination Stress Test",
+        "Round: Post-Extraction Correction",
+        "Round: Semantic Training Gap"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "title": "Runtime Ontology Evolution and Dynamic Ontologies for Autonomous Systems",
+      "key_papers": [
+        {
+          "title": "A Methodological Framework for Runtime Ontology Evolution in Dynamic Environments",
+          "arxiv_id": "Applied Sciences 2026, 16(7), 3494",
+          "venue": "Applied Sciences 2026",
+          "authors": ["Valeria Seidita", "Lucrezia Mosca", "Antonio Chella"],
+          "main_claims": [
+            "Static ontologies lose alignment with operating environment in dynamic, partially known contexts",
+            "Proposes end-to-end pipeline: visual perception → LLM semantic interpretation → robust ontology update mechanism",
+            "Distinguishes conceptual gaps (new classes) from instance-level updates (new instances of known classes)",
+            "Ensures formal consistency during runtime evolution: valid OWL constructs, inverse property management, datatype normalization, semantic degradation prevention"
+          ],
+          "how_it_works": "Three-layer architecture: Perception Layer (structured JSON from sensors), Semantic Interpretation Layer (LLM generates candidate triples), Ontology & KB Management Layer (validates, resolves conflicts, applies updates). Symbolic barrier decouples probabilistic LLM output from formal ontology. Validated in MUSIC4D (creative content) and MHARA (elderly care) projects.",
+          "numerical_results": {
+            "validation_scenarios": "Qualitative validation in lab environments demonstrating: knowledge gap recognition, conceptual vs instance update distinction, controlled integration",
+            "scenario_1": "New concept (MusicalInstrument) + instance (Piano) → schema extension",
+            "scenario_2": "Known concept (Violin) → instance population only, schema unchanged"
+          },
+          "connections_to_existing_rounds": [
+            "Round: OaK dynamic ontology — Directly addresses dynamic ontology evolution",
+            "Round: Generative Ontology — Runtime evolution as generative process",
+            "Round: Evo-DKD dual-knowledge decoding — Both explore autonomous ontology evolution"
+          ]
+        },
+        {
+          "title": "Liquid Interfaces: A Dynamic Ontology for the Interoperability of Autonomous Systems",
+          "arxiv_id": "2601.21993",
+          "venue": "arXiv 2026",
+          "authors": ["Dhiogo de Sá", "Carlos Schmiedel", "Carlos Pereira Lopes"],
+          "main_claims": [
+            "Static interfaces and deterministic contracts fail for adaptive, probabilistic, context-dependent autonomous agents",
+            "Liquid Interfaces: interfaces as ephemeral relational events emerging through intention articulation and semantic negotiation at runtime",
+            "Liquid Interface Protocol (LIP) governs intention-driven interaction, negotiated execution, enforced ephemerality under semantic uncertainty"
+          ],
+          "how_it_works": "Agents articulate intentions → semantic negotiation establishes transient interface contracts → execution under composable intent resolution (atomic agreement on full composition) → interfaces dissolve after use. Governance model for adaptive coordination.",
+          "numerical_results": {},
+          "connections_to_existing_rounds": [
+            "Round: OaK dynamic ontology — Liquid interfaces as dynamic ontology manifestation",
+            "Round: Multi-Axial ontology design — Composable intent resolution parallels multi-axial coordination"
+          ]
+        },
+        {
+          "title": "Evo-DKD: Dual-Knowledge Decoding for Autonomous Ontology Evolution in Large Language Models",
+          "arxiv_id": "2507.21438",
+          "venue": "Information Processing & Management 2025",
+          "authors": ["Authors from paper"],
+          "main_claims": [
+            "Prior approaches use LLMs as black-box suggesters; Evo-DKD closes the loop: validates proposed edits, injects into ontology, updated ontology influences subsequent decoding",
+            "Dual-decoder framework: structured ontology traversal + unstructured text reasoning with dynamic gating coordination",
+            "Iterative refinement loop inspired by human-in-the-loop curation and never-ending learning (NELL)"
+          ],
+          "how_it_works": "Two decoder streams: Structured (produces ontology edits: triples, axioms) and Unstructured (produces textual explanations). Dynamic gating coordinates: switching mode or mixture mode. Updated ontology feeds back into next decoding round. Evaluated via prompt-based simulation across Healthcare, Cultural Heritage, and General domains.",
+          "numerical_results": {
+            "triple_relaxed_match_accuracy": "Full Dual-Decoder and Structured-only achieve 0.7+ in Healthcare domain",
+            "cultural_heritage_improvement": "Full Dual-Decoder shows clear improvement over Structured-only",
+            "explanation_quality": "High BERTScores for Full Dual-Decoder explanations vs references",
+            "llm_judge_score": "Full Dual-Decoder outperforms single-mode baselines"
+          },
+          "connections_to_existing_rounds": [
+            "Round: Evo-DKD dual-knowledge decoding (Round 63) — This IS the Evo-DKD paper from existing rounds",
+            "Round: OaK dynamic ontology — Shared focus on autonomous evolution",
+            "Round: Generative Ontology — Dual decoding as generative ontology mechanism"
+          ]
+        }
+      ],
+      "synthesis": "Runtime ontology evolution moves beyond offline versioning to autonomous, in-situ adaptation. Three approaches: (1) Seidita et al. — perception-grounded pipeline with symbolic barrier for formal consistency (validated in robotics/eldercare), (2) Liquid Interfaces — ephemeral semantic negotiation as dynamic ontology (theoretical framework), (3) Evo-DKD — LLM dual-decoder closed loop with ontology feedback (simulated but shows structured+unstructured synergy). Key challenge: maintaining formal consistency (OWL validity, no semantic degradation) while allowing probabilistic LLM-driven updates.",
+      "backlink_suggestions": [
+        "Round: OaK dynamic ontology",
+        "Round: Generative Ontology",
+        "Round: Evo-DKD dual-knowledge decoding (Round 63)",
+        "Round: Multi-Axial ontology design",
+        "Round: OntoKG intrinsic-relational routing"
+      ]
+    }
+  ],
+  "metadata": {
+    "research_date": "2026-09-07",
+    "papers_reviewed": 14,
+    "existing_rounds_covered": 65,
+    "new_topics_for_rounds": "66-70"
+  }
+}

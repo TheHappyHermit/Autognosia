@@ -14,13 +14,13 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_DIR = Path("/home/josh434")
+REPO_DIR = Path("/home/user")
 BRAIN_SYNC = REPO_DIR / "scripts" / "brain_sync.py"
-PYTHON = Path("/home/josh434/.hermes/hermes-agent/venv/bin/python3")
+PYTHON = Path("/home/user/.hermes/hermes-agent/venv/bin/python3")
 SOURCES = ["active-wiki", "exchange-research"]
 
-# Embeddings via llama.cpp on :18082 (V100), not localhost
-os.environ.setdefault("BRAIN_OLLAMA_URL", "http://10.1.1.10:18082")
+# Embeddings via llama.cpp on :18082 (server), not localhost
+os.environ.setdefault("BRAIN_OLLAMA_URL", "http://10.x.x.x:18082")
 # Use OpenAI-compatible API (llama.cpp) instead of native Ollama
 os.environ.setdefault("BRAIN_API_MODE", "openai")
 
@@ -91,19 +91,39 @@ def main() -> int:
         print(f"[brain_sync_cron] Python venv not found at {PYTHON}")
         return 0
 
-
-
     results = {}
     for source in SOURCES:
         results[source] = sync_source(source)
 
-    # Summary — always show a final line so cron output isn't empty
+    # Run verification after sync
+    print("\n[brain_sync_cron] Running post-sync verification...")
+    verify_script = Path("/home/user/scripts/verify_brain_sync.py")
+    if verify_script.exists():
+        for source in SOURCES:
+            try:
+                verify_result = subprocess.run(
+                    [str(PYTHON), str(verify_script), "--source", source],
+                    capture_output=True, text=True, timeout=60,
+                    cwd=str(REPO_DIR),
+                )
+                if verify_result.returncode == 0:
+                    print(f"  {source}: ✓ verified")
+                else:
+                    print(f"  {source}: ✗ verification failed")
+                    if verify_result.stderr:
+                        print(f"    {verify_result.stderr.strip()[:200]}")
+            except Exception as e:
+                print(f"  {source}: verification error: {e}")
+    else:
+        print(f"  verify_brain_sync.py not found, skipping verification")
+
+    # Summary
     failures = [s for s, ok in results.items() if not ok]
     if failures:
         print(f"\n[brain_sync_cron] FAILURES: {', '.join(failures)}")
-        return 1  # Signal failure to cron
+        return 1
     else:
-        print(f"[brain_sync_cron] All sources synced OK ({len(SOURCES)} sources)")
+        print(f"\n[brain_sync_cron] All sources synced OK ({len(SOURCES)} sources)")
         return 0
 
 

@@ -207,7 +207,53 @@ profiles/personal-organizer/skills/social-media/
 profiles/personal-organizer/skills/software-development/
 profiles/personal-organizer/skills/web/
 
-# Legacy gbrain runtime state — removed
+# Researcher profile (active wiki research)
+profiles/researcher/cache/
+profiles/researcher/logs/
+profiles/researcher/state.db*
+profiles/researcher/.env
+profiles/researcher/.skills_prompt_snapshot.json
+profiles/researcher/.update_check
+profiles/researcher/state-snapshots/
+profiles/researcher/sessions/
+profiles/researcher/runtime/
+profiles/researcher/sandboxes/
+profiles/researcher/cron/executions.db
+profiles/researcher/cron/output/
+profiles/researcher/memories/
+profiles/researcher/skills/
+profiles/researcher/image_cache/
+profiles/researcher/audio_cache/
+profiles/researcher/pairing/
+profiles/researcher/hooks/
+profiles/researcher/bin/
+profiles/researcher/auth.lock
+profiles/researcher/.backup.lock
+profiles/researcher/state.db.fts_rebuild.lock
+
+# Oracle researcher profile (renamed from research)
+profiles/oracle-researcher/cache/
+profiles/oracle-researcher/logs/
+profiles/oracle-researcher/state.db*
+profiles/oracle-researcher/.env
+profiles/oracle-researcher/.skills_prompt_snapshot.json
+profiles/oracle-researcher/.update_check
+profiles/oracle-researcher/state-snapshots/
+profiles/oracle-researcher/sessions/
+profiles/oracle-researcher/runtime/
+profiles/oracle-researcher/sandboxes/
+profiles/oracle-researcher/cron/executions.db
+profiles/oracle-researcher/cron/output/
+profiles/oracle-researcher/memories/
+profiles/oracle-researcher/skills/
+profiles/oracle-researcher/image_cache/
+profiles/oracle-researcher/audio_cache/
+profiles/oracle-researcher/pairing/
+profiles/oracle-researcher/hooks/
+profiles/oracle-researcher/bin/
+profiles/oracle-researcher/auth.lock
+profiles/oracle-researcher/.backup.lock
+profiles/oracle-researcher/state.db.fts_rebuild.lock
 
 # ═══════════════════════════════════════════════════════════
 # Environment secrets (real credentials - keep .example templates)

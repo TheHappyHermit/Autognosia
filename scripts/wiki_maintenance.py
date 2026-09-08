@@ -144,6 +144,37 @@ def main():
     else:
         log("   [FAIL] concepts folder missing from oracle/brain/")
     
+# 7. Contradiction check
+    log("\n[7] Running contradiction check...")
+    import subprocess
+    try:
+        result = subprocess.run(
+            [sys.executable, "/home/user/scripts/research_quality_check.py",
+             "--source", "active-wiki", "--sample", "20", "--check-contradictions"],
+            capture_output=True, text=True, timeout=120
+        )
+        if result.stdout:
+            for line in result.stdout.strip().split("\n")[:20]:
+                log(f"   {line}")
+        if result.returncode != 0 and result.stderr:
+            log(f"   Error: {result.stderr.strip()[:200]}")
+    except Exception as e:
+        log(f"   Contradiction check failed: {e}")
+
+    # 8. Usage analytics
+    log("\n[8] Running usage analytics...")
+    try:
+        result = subprocess.run(
+            [sys.executable, "/home/user/scripts/wiki_hit_counter.py",
+             "list", "--source", "active-wiki", "--limit", "15"],
+            capture_output=True, text=True, timeout=60
+        )
+        if result.stdout:
+            for line in result.stdout.strip().split("\n")[:20]:
+                log(f"   {line}")
+    except Exception as e:
+        log(f"   Hit counter failed: {e}")
+
     # Summary
     log("\n" + "=" * 70)
     log("Summary:")

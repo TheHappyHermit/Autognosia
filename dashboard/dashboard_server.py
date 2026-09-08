@@ -1271,7 +1271,7 @@ HOME_LAB_SERVERS = {
         "role": "LLM inference, graph processing",
         "services": {
             "llama-server": {"port": 8080, "path": "/health"},
-            "ollama": {"port": 11434, "path": "/api/tags"},
+            "llama": {"port": 18081, "path": "/health"},
             "graphify": {"port": 8081, "path": "/health"},
         },
         "gpu": {"name": "V100", "memory_mb": 32768, "type": "nvidia"},

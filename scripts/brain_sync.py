@@ -24,7 +24,7 @@ Environment:
   BRAIN_PG_USER     (default: brain)
   BRAIN_PG_PASSWORD (default: brain)
   BRAIN_PG_DB       (default: brain)
-  BRAIN_OLLAMA_URL  (default: http://10.1.1.10:18082)
+  BRAIN_OLLAMA_URL  (default: http://10.x.x.x:18082)
   BRAIN_EMBED_MODEL (default: qwen3-embedding:8b)
   BRAIN_CHUNK_TOKENS (default: 512)
   BRAIN_CHUNK_OVERLAP (default: 50)
@@ -59,8 +59,8 @@ PG_USER = os.environ.get("BRAIN_PG_USER", "brain")
 PG_PASSWORD = os.environ.get("BRAIN_PG_PASSWORD", "brain")
 PG_DB = os.environ.get("BRAIN_PG_DB", "brain")
 
-OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.1.1.10:18082")
-EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "qwen3-embedding:8b")
+OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.x.x.x:18082")
+EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "/models/Qwen3-Embedding-4B-Q8_0.gguf")
 
 CHUNK_TOKENS = int(os.environ.get("BRAIN_CHUNK_TOKENS", "512"))
 CHUNK_OVERLAP = int(os.environ.get("BRAIN_CHUNK_OVERLAP", "25"))
@@ -211,16 +211,17 @@ def embed_texts(texts: list[str], dim: int = 2000, timeout: int = None) -> list[
     data = json.dumps({
         "model": EMBED_MODEL,
         "input": texts,
-        "dimensions": dim,
+        
     }).encode()
     req = urllib.request.Request(
-        f"{OLLAMA_URL}/api/embed",
+        f"{OLLAMA_URL}/v1/embeddings",
         data=data,
         headers={"Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         result = json.loads(resp.read())
-        return result["embeddings"]
+        # Truncate to target dimension if server returns more
+        return [item["embedding"][:dim] for item in result["data"]]
 
 
 def embed_texts_with_retry(texts: list[str], dim: int = 2000) -> list[list[float]]:
@@ -571,16 +572,24 @@ def main():
     print(f"  Model: {EMBED_MODEL}")
     print(f"  PG: {PG_HOST}:{PG_PORT}/{PG_DB}")
 
-    # Check Ollama
+    # Check embedding endpoint
     try:
-        req = urllib.request.Request(f"{OLLAMA_URL}/api/tags", method="GET")
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            models = json.loads(resp.read())
-            model_names = [m["name"] for m in models.get("models", [])]
-            if EMBED_MODEL not in model_names:
-                print(f"[warn] Embed model {EMBED_MODEL} not found in Ollama. Available: {model_names[:5]}...")
+        if os.environ.get("BRAIN_API_MODE") == "openai":
+            # OpenAI-compatible API (llama.cpp)
+            req = urllib.request.Request(f"{OLLAMA_URL}/v1/models", method="GET")
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                models = json.loads(resp.read())
+                model_names = [m["id"] for m in models.get("data", [])]
+        else:
+            # Native Ollama API
+            req = urllib.request.Request(f"{OLLAMA_URL}/api/tags", method="GET")
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                models = json.loads(resp.read())
+                model_names = [m["name"] for m in models.get("models", [])]
+        if EMBED_MODEL not in model_names:
+            print(f"[warn] Embed model {EMBED_MODEL} not found. Available: {model_names[:5]}...")
     except Exception as e:
-        print(f"[error] Ollama not reachable at {OLLAMA_URL}: {e}")
+        print(f"[error] Embedding endpoint not reachable at {OLLAMA_URL}: {e}")
         sys.exit(1)
 
     # Connect to DB
