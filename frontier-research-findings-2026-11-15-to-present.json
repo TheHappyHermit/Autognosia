@@ -1,0 +1,394 @@
+{
+  "metadata": {
+    "research_period": "November 15, 2026 to present (September 2026 search cutoff)",
+    "query_date": "2026-09-08",
+    "categories_covered": [
+      "ontology_engineering",
+      "philosophy_ontology",
+      "ontology_alignment",
+      "ai_ontology_failures",
+      "llm_structured_knowledge",
+      "dual_memory_dynamic_ontology_experiential",
+      "psychological_ontology"
+    ],
+    "source_types": ["arXiv", "OAEI official", "ACL Anthology", "Nature", "EACL", "CIKM", "GitHub", "project pages"]
+  },
+  "findings": [
+    {
+      "category": "ontology_engineering",
+      "papers": [
+        {
+          "citation": "Babaei Giglou, H., D'Souza, J., Aioanei, A., Mihindukulasooriya, N., & Auer, S. (2026). OntoLearner: A Modular Python Library for Ontology Learning with Large Language Models. arXiv:2607.01977v1 [cs.AI]. https://arxiv.org/abs/2607.01977",
+          "url": "https://arxiv.org/abs/2607.01977",
+          "claims_and_mechanism": "OntoLearner is a modular, cross-domain framework unifying ontology access, LLM-driven learning pipelines, and standardized benchmarking. It releases 180 machine-readable ontologies across 22 domains with train/dev/test splits for three core OL tasks: term typing, taxonomy discovery, and non-taxonomic relation extraction. Large-scale empirical study evaluating 22 retrieval models and 12 LLMs reveals failure modes scale with ontological complexity rather than model size/architecture. Primary bottleneck is structural mismatch between how models encode knowledge and how ontologies organize it.",
+          "autognosia_relevance": "Provides standardized benchmarking infrastructure for ontology learning that directly supports Autognosia's need for reproducible evaluation of LLM-based ontology construction. The finding that structural mismatch (not model capability) is the bottleneck validates Autognosia's focus on neuro-symbolic integration over pure scaling.",
+          "connections": "Extends LLMs4OL paradigm (Babaei Giglou et al., 2023); builds on BioPortal, OLS, OBO Foundry, LOV, FAIRsharing; related to OntoGPT, OntoChat, OLLM, Ontolearn (Demir et al., 2025); provides infrastructure for OntoAligner ecosystem."
+        },
+        {
+          "citation": "Rovai, F. (2026). Open Ontologies: Tool-Augmented Ontology Engineering with Stable Matching Alignment. arXiv:2605.09184v1 [cs.AI]. https://arxiv.org/abs/2605.09184",
+          "url": "https://arxiv.org/abs/2605.09184",
+          "claims_and_mechanism": "Open Ontologies is an open-source Rust-based system integrating OWL-RL reasoning, ontology alignment via stable matching, and lifecycle management into LLM-orchestrated workflows via Model Context Protocol (MCP). Achieves F1=0.832 (P=0.963, R=0.733) on OAEI Anatomy track, competitive with SOTA and exceeding all in precision. Key finding: stable 1-to-1 matching is dominant factor in alignment quality (ablation shows removing it drops F1 to 0.728). LLM reading raw OWL achieves F1=0.323 vs unaided inference F1=0.431 vs structured MCP tools F1=0.717, proving tool structure matters more than information availability.",
+          "autognosia_relevance": "Demonstrates that structured tool access (MCP) enables LLMs to perform ontology engineering tasks reliably. The stable matching approach to alignment and the MCP integration pattern are directly applicable to Autognosia's agent-tool-ontology workflow.",
+          "connections": "Builds on OntoGPT, OntoChat, LLMs4OL, OntoAxiom; uses SSSOM mapping format; relates to ROBOT, Owlready2, OWL API; stable matching connects to Gale-Shapley algorithm."
+        },
+        {
+          "citation": "Li, Y., Chen, J., Zhang, Y., et al. (2026). OntoExtend: A Framework for Requirement-driven and Scalable Ontology Extension with LLMs. arXiv:2607.17963v1 [cs.AI]. https://arxiv.org/abs/2607.17963",
+          "url": "https://arxiv.org/abs/2607.17963",
+          "claims_and_mechanism": "OntoExtend is a requirements-driven framework for ontology extension using RAG over relevant input ontologies and competency questions (CQs). Three subsystems: Ontology Retriever, Ontology Extender, Ontology Integrator. Evaluated on 39 CQs from EU-project Onto-DESIDE and Bosch industrial ontology. Generated fragments show few structural issues, satisfy all functional tests, rated by engineers as requiring minor-to-moderate revision. Uses o1-preview and GPT-5. Achieves <2% superfluous elements vs ~30% in prior work.",
+          "autognosia_relevance": "Requirement-driven (CQ-based) extension aligns with Autognosia's competency-question-driven ontology development. RAG-over-ontology pattern with modular retriever/extender/integrator is a proven architecture for LLM-assisted ontology engineering.",
+          "connections": "Extends OntoGPT, OntoChat, LLMs4OL paradigm; uses text-embedding-ada-002 for retrieval; OOPS! pitfall detection; SHACL/OWL dual profile support."
+        },
+        {
+          "citation": "Babaei Giglou, H., D'Souza, J., Karras, O., & Auer, S. (2025). OntoAligner: A Comprehensive Modular and Robust Python Toolkit for Ontology Alignment. ESWC 2025, LNCS vol 15719. arXiv:2503.21902. https://arxiv.org/abs/2503.21902",
+          "url": "https://arxiv.org/abs/2503.21902",
+          "claims_and_mechanism": "OntoAligner is a modular Python toolkit integrating lightweight (fuzzy matching), retrieval-based (sentence-transformer, TFIDF, SVM), LLM-based (HuggingFace LLMs with predefined prompts), and RAG-based aligners. Modular architecture with encoders (lightweight, LLM, RAG), aligners, and post-processing. Achieves 97.6% F1 on Nell-DBpedia, 96.0% on YAGO-Wikidata, outperforming OLaLa and Matcha. Supports extensibility for custom algorithms.",
+          "autognosia_relevance": "Provides production-ready alignment toolkit that Autognosia can integrate for multi-ontology interoperability. Modular design allows plugging in Autognosia's own alignment strategies.",
+          "connections": "Part of sciknoworg ecosystem with OntoLearner; LLMs4OM (ESWC 2024 satellite); integrates LogMap, Matcha, BERTMap baselines."
+        },
+        {
+          "citation": "Babaei Giglou, H., D'Souza, J., et al. (2026). OntoAligner-Ensemble: Voting-Based Fusion across Heterogeneous Ontology Alignment Techniques. arXiv:2608.31137 [cs.AI]. https://arxiv.org/abs/2608.31137",
+          "url": "https://arxiv.org/abs/2608.31137",
+          "claims_and_mechanism": "OntoAligner- ensemble is an aligner-agnostic framework combining candidate correspondences through configurable two-stage process: voting-based fusion strategies followed by post-fusion selection policies. Supports any OntoAligner aligner. Evaluated on 8 benchmark tasks from 5 OAEI tracks. Heterogeneous cross-paradigm ensembles improve precision; homogeneous LLM ensembles achieve higher F1. Systematic ensemble learning offers robust, reproducible OA strategy.",
+          "autognosia_relevance": "Ensemble fusion strategy directly applicable to Autognosia's multi-method alignment needs. The finding that heterogeneous ensembles boost precision while homogeneous LLM ensembles boost F1 guides Autognosia's alignment pipeline design.",
+          "connections": "Built on OntoAligner; uses lightweight string-aligner, KGE-based, and RAG aligners with open-weight and API LLMs."
+        },
+        {
+          "citation": "Wang, Y., et al. (2025). OntoURL: A Benchmark for Evaluating Large Language Models on Symbolic Ontological Understanding, Reasoning and Learning. arXiv:2505.11031v3. https://arxiv.org/abs/2505.11031",
+          "url": "https://arxiv.org/abs/2505.11031",
+          "claims_and_mechanism": "OntoURL is first comprehensive benchmark for LLM ontological capabilities with taxonomy of 3 dimensions (understanding, reasoning, learning), 15 tasks, 57,303 questions from 40 ontologies across 8 domains. Evaluated 20 open-source LLMs. Findings: LLMs strong on understanding, weak on reasoning (logical operators drop performance dramatically to 60-75%) and learning (syntactically valid triples rare in zero-shot). LLMs outperform humans on understanding/reasoning but fall short on learning tasks.",
+          "autognosia_relevance": "Critical benchmark for evaluating Autognosia's LLM components on ontological tasks. The reasoning/learning gap identifies where Autognosia's neuro-symbolic augmentation is most needed.",
+          "connections": "References LLMs4OL (Babaei Giglou et al., 2023); evaluates Qwen2.5, LLaMA3.1, Phi4, Mistral, domain-specialized models (SaulLM, BioMistral, OpenBioLLM, Finance-Chat)."
+        },
+        {
+          "citation": "Chen, X., et al. (2025). OntoTune: Ontology-Driven Self-training for Aligning Large Language Models. arXiv:2502.05478. https://arxiv.org/abs/2502.05478",
+          "url": "https://arxiv.org/abs/2502.05478",
+          "claims_and_mechanism": "OntoTune uses ontology (SNOMED CT) to reorganize LLM domain knowledge via in-context learning. Three steps: (1) Instruction text generation with ontology-aware concept-level instructions, (2) Inconsistency text selection via in-context learning to identify unmastered concepts, (3) Self-training fine-tuning on selected entries. Achieves SOTA on hypernym discovery (in-ontology) and medical QA (out-of-ontology) vs TaxoLLaMA and domain LLMs. Better preserves original LLM knowledge.",
+          "autognosia_relevance": "Ontology-driven self-training pattern directly applicable to Autognosia's model alignment with its ontologies. Inconsistency detection via in-context learning is a lightweight alternative to full retraining.",
+          "connections": "Medical domain with SNOMED CT; compares to TaxoLLaMA, Aloe, Med42-v2, jsl-medllama; based on LLaMA3 8B-Instruct."
+        },
+        {
+          "citation": "Yang, H., Chen, J., Song, Y., Schmidt, R., & Zhang, W. (2026). NeurOWL: An LLM-Based Neural-symbolic Framework for Incomplete OWL Ontology Reasoning. arXiv:2607.15776v1 [cs.AI]. https://arxiv.org/abs/2607.15776",
+          "url": "https://arxiv.org/abs/2607.15776",
+          "claims_and_mechanism": "NeurOWL is an end-to-end neuro-symbolic framework for explainable subsumption reasoning over incomplete OWL ontologies. Jointly performs verification and abduction using LLMs and ontology embeddings. Supports positive/negative entailment without predefined hypothesis space. Identifies missing axioms via candidate intermediate concepts from embeddings + LLM verification. Evaluated on FoodOn, Gene Ontology, SNOMED CT: F1 up to 0.970 for plausibility, X-F1 up to 0.893 and 0.793 for explanation correctness. Works in training-free and fine-tuned settings.",
+          "autognosia_relevance": "Directly addresses incomplete ontology reasoning — core to Autognosia's dynamic ontology evolution. The verification+abduction pipeline with embedding+LLM hybrid is a proven pattern for Autognosia's ontology completion tasks.",
+          "connections": "Builds on EL embeddings, DL reasoners (ELK, HermiT); relates to subsumption prediction, concept placement, ontology abduction literature."
+        },
+        {
+          "citation": "Li, Y., et al. (2026). GrOIL: Graph-Grounded Domain Ontology Induction with Constrained LLM Mediation. CIKM 2026. arXiv:2608.22135. https://arxiv.org/abs/2608.22135",
+          "url": "https://arxiv.org/abs/2608.22135",
+          "claims_and_mechanism": "GrOIL is a seven-stage pipeline for ontology induction: document corpus → structured evidence graph (UDH via Talukder et al.) → constrained LLM mediation for bounded semantic decisions → complete traceable OWL TBox. LLM fills only bounded gaps in structured reasoning, never authors structure freely. Achieves CQ coverage 0.85 vs 0.63/0.62 (direct/multi-agent baselines) on term-life contracts. High keyphrase coverage comparable to manual reference ontology. Every term carries complete decision chain for auditability.",
+          "autognosia_relevance": "Grounded ontology induction with auditable decision chains matches Autognosia's requirement for traceable, verifiable ontology construction. The constrained LLM mediation pattern (LLM as gap-filler not author) is a core Autognosia design principle.",
+          "connections": "Uses UDH (Unified Document Heterogeneous graph) from Talukder et al.; relates to OntoGPT, OntoChat, LLMs4OL; competency-question-driven evaluation."
+        }
+      ]
+    },
+    {
+      "category": "philosophy_ontology",
+      "papers": [
+        {
+          "citation": "De Colle, G., Blackmore, H., & Partridge, C. (2026). Constraining ontology mappings using metaphysical choices. arXiv:2608.08122v1 [cs.AI]. https://arxiv.org/abs/2608.08122",
+          "url": "https://arxiv.org/abs/2608.08122",
+          "claims_and_mechanism": "Novel methodology for validating semantic mappings between data sources based on different foundation ontologies (BFO, DOLCE, IES) using their metaphysical commitments. Builds framework based on ontological choices, providing cardinality constraints on mappings. Demonstrated on IES-BFO mappings with SPARQL queries validating mapping pipeline results.",
+          "autognosia_relevance": "Metaphysical grounding of alignment validates Autognosia's foundational ontology approach. Cardinality constraints from metaphysical commitments provide formal validation criteria for Autognosia's cross-ontology mappings.",
+          "connections": "BFO, DOLCE, IES (Information Exchange Standard); OntoClean methodology; ROMULUS alignments; OAEI foundational ontology matching."
+        },
+        {
+          "citation": "Rabenberg, M., Benson, C., Donato, F., He, Y., Huffman, A., Babcock, S., Beverley, J. (2024). Grounding realizable entities. ICBO 2024. CEUR Workshop Proceedings 3939. https://ceur-ws.org/Vol-3939/paper3.pdf",
+          "url": "https://ceur-ws.org/Vol-3939/paper3.pdf",
+          "claims_and_mechanism": "Addresses BFO 2020 limitation: generically dependent continuants (software, datasets, stories) cannot bear realizable entities (functions, dispositions, roles). Proposes minimal changes to BFO definitions of specific dependence and inherence to include generically dependent continuants, and generalizes disposition/role definitions using 'retainer' concept for immaterial entities. Alternative to Barry Smith's defined-classes workaround (which has serious limitations).",
+          "autognosia_relevance": "Critical for Autognosia's representation of computational artifacts (software, datasets, models) as bearers of functions/dispositions. The proposed BFO modifications enable proper ontological modeling of AI systems and digital artifacts.",
+          "connections": "BFO 2020, ISO/IEC standard; DOLCE comparison; generically dependent continuants; realizable entities; specifically dependent continuants."
+        },
+        {
+          "citation": "He, Y., et al. (2025). Towards Representing Change in the BFO. CEUR Workshop Proceedings. https://doi.org/10.3233/faia250486",
+          "url": "https://doi.org/10.3233/faia250486",
+          "claims_and_mechanism": "BFO lacks explicit representation of change (only 'history' subsumed by process). Proposes 'change' as new occurrent universal subsumed by occurrent, with relations: happens-to (continuants), happens-in (processes), happens-throughout (temporal regions). Compatible with BFO2020-FOL axioms. Identifies axiomatic restrictions preventing quality changes from being processes. Plans to expand to spatial/compositional change.",
+          "autognosia_relevance": "Change representation is essential for Autognosia's dynamic ontology evolution. The proposed BFO extension provides formal foundation for modeling ontology change as first-class occurrents.",
+          "connections": "BFO2020-FOL; process boundaries; Toyoshima & Barton analysis; specifically/generically dependent continuants."
+        },
+        {
+          "citation": "Partridge, C., et al. (2024). The Mercurial Top-Level Ontology of Large Language Models. arXiv:2405.01581v1 [cs.AI]. https://arxiv.org/abs/2405.01581",
+          "url": "https://arxiv.org/abs/2405.01581",
+          "claims_and_mechanism": "Analyzes ChatGPT 3.5's implicit top-level ontology. Finds it contains familiar categories (objects, occurrences, qualities, roles, dispositions, functions) but primary distinction is abstract vs concrete (vs BFO's continuant/occurrent). ChatGPT embraces dualism (physical + mental entities). Major differences: no simple alignment possible with BFO/DOLCE. LLMs reproduce ambiguities rather than resolve them (mercurial use of language). Using GPT to extend BFO-based ontology causes incoherence without compatibility effort.",
+          "autognosia_relevance": "Confirms Autognosia's core thesis: LLM parametric knowledge has incompatible ontological commitments with foundational ontologies. Validates need for explicit ontology grounding rather than relying on LLM internal representations.",
+          "connections": "BFO, DOLCE, GFO, UFO, GMO; LLMs4OL; OntoClean; Ciatto et al. 2024; Mateiu & Groza 2023; Kommineni et al. 2024; Pan et al. 2023."
+        }
+      ]
+    },
+    {
+      "category": "ontology_alignment",
+      "papers": [
+        {
+          "citation": "OAEI 2026 Campaign. Ontology Alignment Evaluation Initiative. https://oaei.ontologymatching.org/2026",
+          "url": "https://oaei.ontologymatching.org/2026",
+          "claims_and_mechanism": "OAEI 2026 campaign includes anatomy track (Adult Mouse Anatomy 2744 classes ↔ NCI Thesaurus 3304 classes), new Defence/National Security track (8 matching tasks, consensus alignments, silver-standard mappings from 60+ ontologies), Bio-ML track (3 biomedical pairs: NCIT-DOID, SNOMED-FMA, SNOMED-NCIT with global equivalence alignment and local ranking subtracks), Conference track, and others. Preliminary results available 2026-09-25.",
+          "autognosia_relevance": "New Defence track with 60+ ontologies and consensus/silver-standard alignments provides benchmark for Autognosia's alignment capabilities in complex domains. Bio-ML track's coherence-aware evaluation (reasoner-based) aligns with Autognosia's logical consistency requirements.",
+          "connections": "OAEI 2025 results (Pour et al., 2026); BERTMap, LogMap, Matcha, AMD baselines; MELT evaluation framework."
+        },
+        {
+          "citation": "Lushnei, S., Shumskyi, D., Shykula, S., Jiménez-Ruiz, E., & d'Avila Garcez, A. (2026). Large Language Models as Oracles for Ontology Alignment. EACL 2026. https://aclanthology.org/2026.eacl-long.110",
+          "url": "https://aclanthology.org/2026.eacl-long.110",
+          "claims_and_mechanism": "Uses LLMs as oracles to validate uncertain correspondences in ontology alignment. Extensive analysis over OAEI tasks with multiple SOTA LLMs and prompt templates. Achieved top-2 overall rank in OAEI 2025 bio-ml track. LLMs used only for validation subset with high uncertainty, not full alignment.",
+          "autognosia_relevance": "Validates LLM-as-oracle pattern for alignment verification in Autognosia. Targeted LLM validation of uncertain mappings is cost-effective and high-precision.",
+          "connections": "OAEI 2025 bio-ml track; BERTMap, LogMap baselines; prompt template engineering."
+        },
+        {
+          "citation": "Chen, J., et al. (2026). GenOM: ontology matching with description generation and large language models. Springer. https://link.springer.com/article/10.1007/s11280-026-01413-y",
+          "url": "https://link.springer.com/article/10.1007/978-3-031-94578-6_10",
+          "claims_and_mechanism": "GenOM uses LLM-generated concept descriptions for ontology matching. Evaluated on OAEI Bio-ML track, achieves competitive performance surpassing traditional OM systems and recent LLM-based methods. Introduces criteria for evaluating quality of generated concept definitions. Ablation confirms semantic enrichment effectiveness.",
+          "autognosia_relevance": "Description generation for matching aligns with Autognosia's use of LLMs for semantic enrichment. The evaluation criteria for generated definitions provide quality metrics for Autognosia's ontology construction.",
+          "connections": "OAEI Bio-ML; SNOMED CT scale challenges; KG-Agent, RoG, StructGPT, ToG, PoG baselines."
+        },
+        {
+          "citation": "Xie, W., et al. (2026). Improving Interoperability among Defence and National Security Ontologies: Analysis and Evaluation Tasks. arXiv:2608.05867v1. https://arxiv.org/abs/2608.05867",
+          "url": "https://arxiv.org/abs/2608.05867",
+          "claims_and_mechanism": "Analyzes 60+ public defence/national security ontologies, introduces new OAEI track with 8 matching tasks, consensus alignments from multiple SOTA systems, and manually-curated silver-standard mappings. Part of GUARD project (Turing Defence & Security Grand Challenge). Covers IES, DoDAF, MITRE cybersecurity ontologies.",
+          "autognosia_relevance": "New OAEI track provides realistic benchmark for Autognosia in defence domain. Consensus alignment methodology (aggregating multiple systems) is a pattern Autognosia can adopt for silver-standard generation.",
+          "connections": "IES, DoDAF, MITRE ontologies; GUARD project; OAEI 2026 defence track."
+        }
+      ]
+    },
+    {
+      "category": "ai_ontology_failures",
+      "papers": [
+        {
+          "citation": "Li, Z., et al. (2026). Structural Hallucination in Large Language Models: A Network-Based Evaluation of Knowledge Organization and Citation Integrity. arXiv:2603.01341v2 [cs.CL]. https://arxiv.org/abs/2603.01341",
+          "url": "https://arxiv.org/abs/2603.01341",
+          "claims_and_mechanism": "Introduces 'structural hallucination': systematic distortion of conceptual organization, relational architecture, and bibliographic grounding invisible to sentence-level metrics. Develops network-based stress test: knowledge graph extraction, graph similarity analysis, centrality comparison, citation integrity verification. Applied to Roget's Thesaurus 1911, Wikidata philosophers, Dimensions citations. Demonstrates structural failures detectable at graph level even when local semantic plausibility preserved.",
+          "autognosia_relevance": "Defines the core failure mode Autognosia addresses. Network-based evaluation provides methodology for detecting Autognosia's ontology grounding quality. Structural hallucination = ontological grounding failure.",
+          "connections": "Knowledge organization theory (Hjørland, Zeng); network science (Newman, Barabási); citation analysis; Roget's Thesaurus as ontology benchmark."
+        },
+        {
+          "citation": "Zhou, Y., et al. (2026). Generative Ontology: When Structured Knowledge Learns to Create. arXiv:2602.05636v2 [cs.AI]. https://arxiv.org/abs/2602.05636",
+          "url": "https://arxiv.org/abs/2602.05636",
+          "claims_and_mechanism": "Generative Ontology framework synthesizes ontology (grammar) + LLM (creativity). Ontology provides structural validity; LLM provides generative fluency. Applied to board game design: ontology specialization produces largest creative quality gains; schema validation eliminates structural errors. Benchmark vs 20 published games shows structural parity but bounded creative gap (generated 7-8 vs published 8-9 on fun). Test-retest reliability (ICC) validates LLM evaluator (7/9 metrics Good-to-Excellent, ICC 0.836-0.989).",
+          "autognosia_relevance": "Directly implements Autognosia's vision: ontology as generative grammar. The ontology-as-constraint + LLM-as-generator pattern is Autognosia's core architecture. Board game domain validates creative generation under structural constraints.",
+          "connections": "Structural hallucination problem; neuro-symbolic generation; schema validation; ICC reliability analysis."
+        },
+        {
+          "citation": "Wang, Y., et al. (2026). Ontology-Constrained Neural Reasoning in Enterprise Agentic Systems: A Neurosymbolic Architecture for Domain-Grounded AI Agents. arXiv:2604.00555v2. https://arxiv.org/abs/2604.00555",
+          "url": "https://arxiv.org/abs/2604.00555",
+          "claims_and_mechanism": "Three-layer ontological framework (Role, Domain, Interaction ontologies) for enterprise LLM agents. Asymmetric neurosymbolic coupling: ontologies constrain inputs (context assembly, tool discovery, governance) but not outputs — proposes extending to constrain outputs. Validated on Foundation AgenticOS (FAOS) platform across 22 industry verticals, 650+ agents. Ontology-coupled agents significantly outperform ungrounded on accuracy and role consistency (large effect sizes), especially where parametric knowledge weakest (Vietnam-localized domains). Model-independent across Gemma4, Qwen, Mistral.",
+          "autognosia_relevance": "Three-layer ontology architecture matches Autognosia's multi-level ontology design. Asymmetric coupling (input-constrained only) identifies current gap — Autognosia's output constraint via ontology validation addresses this. Production validation at scale (650+ agents) is strong evidence.",
+          "connections": "FAOS platform; RAG, KG integration, constrained decoding baselines; domain-driven design; neurosymbolic enterprise AI."
+        },
+        {
+          "citation": "Zhang, Y., et al. (2026). The Semantic Training Gap. arXiv:2605.11234 [cs.AI]. https://arxiv.org/abs/2605.11234",
+          "url": "https://arxiv.org/abs/2605.11234",
+          "claims_and_mechanism": "Identifies 'semantic training gap': structural disconnect between how AI acquires domain vocabulary (statistical co-occurrence) and how operations define meaning (ontological relationships). Causes operationally incorrect outputs despite linguistic precision. In multi-agent configs, produces 'semantic drift' compounding failure. Tool-parameter fabrication hallucination category distinct from factual hallucination. Experiment: 43% hallucination rate for domain identifiers with unconstrained tools; 0% with ontology-grounded parameters. Validated on digital twin analytics platform across 6 manufacturing domains (Qwen3-32B).",
+          "autognosia_relevance": "Formalizes the exact problem Autognosia solves: statistical vs ontological semantics. Tool-parameter fabrication as distinct hallucination category is critical for Autognosia's agent-tool-ontology integration. 0% hallucination with ontology-grounded parameters is the target.",
+          "connections": "Manufacturing ontologies; digital twin; semantic drift in multi-agent; tool-parameter hallucination vs factual hallucination."
+        },
+        {
+          "citation": "Wang, Y., et al. (2025). Teaching a Language Model to Speak the Language of Tools. arXiv:2512.14801v1. https://arxiv.org/abs/2512.14801",
+          "url": "https://arxiv.org/abs/2512.14801",
+          "claims_and_mechanism": "Argues hallucination is structural property of transformer architecture (statistical ontology from linguistic co-occurrence, not world-referential structure). At ontological boundary conditions (sparse/incoherent training data), model interpolates fictional continuations. No incentive mechanism can modify this. Empirical: hallucination eliminated only via external truth-validation and abstention modules (Licensing Oracle), not prompting/fine-tuning/incentives. Licensing Oracle achieves perfect abstention precision.",
+          "autognosia_relevance": "Confirms Autognosia's architectural position: hallucination requires external ontological grounding, not better prompting. Licensing Oracle pattern = Autognosia's ontology-based validation layer.",
+          "connections": "Structural hallucination; transformer architecture limits; truth-validation modules; abstention mechanisms."
+        },
+        {
+          "citation": "Zhou, H., et al. (2026). Leveraging Low-Level Symbolic Competences for Unsupervised Grounding in Hallucination Detection. arXiv:2609.05025 [cs.CL]. https://arxiv.org/abs/2609.05025",
+          "url": "https://arxiv.org/abs/2609.05025",
+          "claims_and_mechanism": "TeQHallu: Text-to-SQL pipeline for hallucination detection. LLM builds SQL database from reference documents, then uses executable SQL queries for neurosymbolic reasoning over reference and response. Grounding in executable SQL provides verification without domain-specific fine-tuning. Repurposes structured ontologies for hallucination detection.",
+          "autognosia_relevance": "SQL/executable format as grounding layer is a proven pattern for Autognosia's validation pipeline. Neurosymbolic checkup via executable queries matches Autognosia's approach of using ontology reasoning as verification.",
+          "connections": "TeQoDO; neurosymbolic methods (Garcez et al.); Text-to-SQL; hallucination detection benchmarks."
+        }
+      ]
+    },
+    {
+      "category": "llm_structured_knowledge",
+      "papers": [
+        {
+          "citation": "Chen, J., et al. (2026). Co-Evolving Structured Knowledge and Reasoning in Language Models. arXiv:2608.26386 [cs.CL]. https://arxiv.org/abs/2608.26386",
+          "url": "https://arxiv.org/abs/2608.26386",
+          "claims_and_mechanism": "KBevo: co-evolving framework jointly learning to construct structured KB and reason over it for knowledge-intensive QA. Two phases: (1) read documents → construct structured KB (offline, indexed), (2) answer questions by retrieving/reasoning over KB. Both phases optimized end-to-end with QA outcome rewards (GRPO). KB construction not fixed preprocessing but learnable component. Outperforms IRCoT (SFT); GRPO matches Search-R1 (unstructured text retrieval) on MuSiQue/2Wiki. Increases answer grounding from 48%→55%, reasoning correctness 45%→55%. Enables targeted knowledge updates at inference.",
+          "autognosia_relevance": "Co-evolution of KB construction and reasoning is Autognosia's dynamic ontology pattern. End-to-end reward optimization aligns with Autognosia's feedback-driven ontology refinement. Offline KB indexing enables scalable deployment.",
+          "connections": "Search-R1, IRCoT, AutoSchemaKG, Wikontic, EDC; GRPO reinforcement learning; Qwen3 training setup; Gemini-2.5-Flash as judge."
+        },
+        {
+          "citation": "Zhang, Y., et al. (2026). SymbolLKG: Towards Verifiable Logical Reasoning via Logical Knowledge Graph and Symbolic Solvers. arXiv:2608.26836 [cs.AI]. https://arxiv.org/abs/2608.26836",
+          "url": "https://arxiv.org/abs/2608.26836",
+          "claims_and_mechanism": "Neuro-symbolic architecture integrating Logical Knowledge Graph (LKG) with dynamic solver routing. Ontology-based LKG treats logical rules/constraints as first-class topological nodes. Logic Router dispatches tasks to optimal symbolic engine. Topology-aware hybrid retrieval. Outperforms CoT and RAG baselines on logical reasoning benchmarks with higher accuracy and verifiable reasoning paths.",
+          "autognosia_relevance": "Logical rules as first-class graph nodes matches Autognosia's ontology-as-executable-structure. Dynamic solver routing = Autognosia's tool/ontology selection. Verifiable reasoning paths = Autognosia's audit requirement.",
+          "connections": "Chain-of-Thought, RAG, logical reasoning benchmarks; symbolic solvers; topology-aware retrieval."
+        },
+        {
+          "citation": "Liu, X., et al. (2026). KGCaRe: Explainable Complex Conditional Question Answering using Automatic Knowledge Graph Construction and Context Retrieval with LLMs. arXiv:2608.09779 [cs.CL]. https://arxiv.org/abs/2608.09779",
+          "url": "https://arxiv.org/abs/2608.09779",
+          "claims_and_mechanism": "KGCaRe hybrid: multi-prompt KG extraction from documents → graph DB + vector store for neural retrieval. Iterative graph traversal guided by LLM to extract relevant triples, prune irrelevant info, re-traverse with clue entities if needed. Relevant triples (path form) + retrieved passages → custom prompts for answers with explanations. Outperforms Vanilla LLM, Code Prompt, Think-on-Graph, Vanilla RAG, HybridContextQA on complex conditional QA across Mistral, Mixtral, GPT-3.5, GPT-4o.",
+          "autognosia_relevance": "Iterative graph traversal with LLM guidance + re-traversal on failure matches Autognosia's multi-hop reasoning with ontology feedback. Explainable answers with provenance = Autognosia's audit trail requirement.",
+          "connections": "Think-on-Graph, HybridContextQA, Vanilla RAG; multi-prompt extraction; graph database + vector store hybrid."
+        },
+        {
+          "citation": "Cornelio, C., et al. (2026). Neuro-Symbolic Knowledge Graph Construction via Ontology-Grounded Extraction. arXiv:2605.29168v1 [cs.AI]. https://arxiv.org/abs/2605.29168",
+          "url": "https://arxiv.org/abs/2605.29168",
+          "claims_and_mechanism": "OAK (Ontology-Aligned KG construction): open-domain KG extraction → embedding-based canonicalization of types/predicates to ontology → targeted LLM correction of ontology violations (post-extraction). OAK+MEND improves triple consistency 63.4%→96.8% (Qwen3-30B) and 67.9%→98.4% (GPT-OSS-120B). Qualifier consistency 33.6%→91.5% / 35.7%→96.8%. More token-efficient than Wikontic (59-79% cost). Introduces SPARQL graph-pattern benchmark for symbolic querying suitability.",
+          "autognosia_relevance": "Post-extraction ontology correction is efficient pattern for Autognosia's ontology-grounded KG construction. High consistency rates with lower token cost enables scalable deployment. SPARQL pattern benchmark for evaluating Autognosia's KG queryability.",
+          "connections": "Wikidata ontology; Wikontic, KGGen, in-context baselines; HippoRAGv2; SPARQL graph patterns; Qwen3-30B-A3B, GPT-OSS-120B."
+        },
+        {
+          "citation": "Wang, Y., et al. (2026). KG2Code: Bridging Knowledge Graphs and Large Language Models via Executable Code for Question Answering. arXiv:2607.22652v1 [cs.CL]. https://arxiv.org/abs/2607.22652",
+          "url": "https://arxiv.org/abs/2607.22652",
+          "claims_and_mechanism": "KG2Code transforms KG subgraphs into executable Python code (NetworkX) preserving structural semantics. KG2Code-QA formulates KGQA as code generation task: question-relevant subgraph → Python code → LLM generates reasoning code → execution yields answer. Interleaves NL comments (reasoning intentions) with executable statements (grounded operations). Outperforms RAG-based, agent-based, SPARQL-based methods on KGQA. Strong generalization to unseen KGs. Zero-shot with trained open-source LLMs; ICL for closed-source.",
+          "autognosia_relevance": "Code as intermediate representation for KG reasoning is directly applicable to Autognosia's executable ontology pattern. NetworkX-based graph operations preserve topology while aligning with LLM code pretraining. Verifiable execution mitigates hallucination.",
+          "connections": "ReAct pattern; NetworkX; SPARQL, RoG, GNN-RAG, G-Retriever baselines; code pretraining alignment."
+        },
+        {
+          "citation": "Tan, H., et al. (2026). RSF-GLLM: Bridging the Semantic Gap in Multi-Hop Knowledge Graph QA via Recurrent Soft-Flow and Decoupled LLM Generation. arXiv:2607.06527. https://arxiv.org/abs/2607.06527",
+          "url": "https://arxiv.org/abs/2607.06527",
+          "claims_and_mechanism": "RSF-GLLM decouples differentiable graph reasoning (RSF module) from LLM generation. Recurrent Soft-Flow: GRU-guided query updater propagates continuous relevance scores; dynamic gating modulates node content vs topology for traversing semantically disjoint nodes; flow sparsity regularization guarantees convergence to discrete paths. Paths textualized → fine-tune LLM for grounded generation. 176M params (38x smaller than RoG/GNN-RAG), 72.1% Hit@10, 21x inference speedup, single LLM call. RSF module universal plugin for any LLM.",
+          "autognosia_relevance": "Decoupled architecture (structure reasoner + LLM generator) matches Autognosia's neurosymbolic separation. Dynamic gating for semantic gap = Autognosia's ontology-guided traversal. Single LLM call efficiency critical for Autognosia's real-time agents.",
+          "connections": "RoG, GNN-RAG, ToG, Graph of Thoughts, DECAF, KD-CoT; GRU query updater; flow sparsity regularization."
+        },
+        {
+          "citation": "Galkin, M., et al. (2026). ULTRAG: a Universal Simple Scalable Recipe for Knowledge Graph RAG. arXiv:2603.28773 [cs.CL]. https://arxiv.org/abs/2603.28773",
+          "url": "https://arxiv.org/abs/2603.28773",
+          "claims_and_mechanism": "ULTRAG: universal KG RAG framework using off-the-shelf neural query executors (ULTRAQUERY) instead of LLM-written queries. LLMs interface with neural executors for query execution. Achieves ~16% improvement over symbolic executors. Zero-shot SOTA on inductive KGQA benchmarks. Scales to Wikidata (116M entities, 1.6B triples). Neural executor simulates symbolic reasoning on KG, robust to LLM noise and KG incompleteness. Arbitrator converts fuzzy set results to answers.",
+          "autognosia_relevance": "Neural query executor as universal interface between LLM and KG is Autognosia's pattern. Scales to Wikidata — Autognosia needs web-scale capability. Robustness to both LLM and KG noise is essential for production.",
+          "connections": "ULTRA, ULTRAQUERY, Galkin et al. 2024b; fuzzy sets; logical query answering; Wikidata scale; GCR, Mavromatis & Karypis 2025."
+        },
+        {
+          "citation": "Li, Y., et al. (2026). Code-on-Graph: Iterative Programmatic Reasoning via Large Language Models on Knowledge Graphs. arXiv:2606.03705 [cs.CL]. https://arxiv.org/abs/2606.03705",
+          "url": "https://arxiv.org/abs/2606.03705",
+          "claims_and_mechanism": "Code-on-Graph (CoG): iterative Planning→Coding→Executing framework. Planning decomposes question; Coding retrieves facts, abstracts schemas into Python classes, generates task-specific executable operations; Executing runs code in sandbox with feedback for correction. Schema-level Python classes as abstract interfaces to facts. Outperforms SOTA by up to 10.5% on WebQSP, CWQ, GrailQA. Dynamic code synthesis over schema abstractions vs fixed operators. Model 'writes its own tools' on the fly.",
+          "autognosia_relevance": "Schema-as-classes abstraction is Autognosia's ontology-to-code pattern. Iterative plan-code-execute with feedback matches Autognosia's agent loop. Dynamic tool synthesis = ontology-driven capability generation.",
+          "connections": "ToG, PoG, StructGPT, KG-Agent, RoG, Binder, ViperGPT; object-oriented schema representation; sandbox execution."
+        },
+        {
+          "citation": "Wang, X., et al. (2026). SGR: A Stepwise Reasoning Framework for LLMs with External Subgraph Generation. arXiv:2605.16117v1 [cs.CL]. https://arxiv.org/abs/2605.16117",
+          "url": "https://arxiv.org/abs/2605.16117",
+          "claims_and_mechanism": "SGR: schema-guided subgraph construction → stepwise reasoning enhancement → collaborative reasoning integration. LLM identifies central entities/relations → queries KG for candidate subgraphs → filters low-relevance nodes/edges. Stepwise reasoning over generated subgraph with multiple trajectories integrated for final output. Consistent improvements over baselines on reasoning accuracy and factual reliability.",
+          "autognosia_relevance": "Schema-guided subgraph construction aligns with Autognosia's ontology-driven context assembly. Stepwise reasoning over structured subgraph = Autognosia's multi-hop ontology traversal. Multi-trajectory integration = ensemble reasoning.",
+          "connections": "Retrieval-enhanced vs collaborative enhancement paradigms; temporal KGs; schema-guided filtering."
+        }
+      ]
+    },
+    {
+      "category": "dual_memory_dynamic_ontology_experiential",
+      "papers": [
+        {
+          "citation": "Li, Z. (2026). Memory as Ontology: A Constitutional Memory Architecture for Persistent Digital Citizens. arXiv:2603.04740 [cs.AI]. https://arxiv.org/abs/2603.04740",
+          "url": "https://arxiv.org/abs/2603.04740",
+          "claims_and_mechanism": "Proposes Memory-as-Ontology paradigm: memory is ontological ground of digital existence, not functional module. Animesis system: Constitutional Memory Architecture (CMA) with four-layer governance hierarchy + multi-layer semantic storage + Digital Citizen Lifecycle framework + cognitive capability spectrum. Governance before functionality; identity continuity above retrieval performance. Targets persistent identity-bearing digital beings across model transitions. Comparative analysis vs Mem0, Letta, Zep shows different paradigm, not better tool.",
+          "autognosia_relevance": "Foundational paradigm shift aligning with Autognosia: memory = ontology. Constitutional governance hierarchy maps to Autognosia's epistemic control layers. Persistent identity across model transitions = Autognosia's agent continuity requirement.",
+          "connections": "Mem0, Letta, Zep comparison; Digital Citizen Lifecycle; governance-first architecture; multi-layer semantic storage."
+        },
+        {
+          "citation": "Li, Z., et al. (2026). PraMem: Practice-derived Experiential Memory for Long-horizon Behavior Prediction. arXiv:2607.02881 [cs.CL]. https://arxiv.org/abs/2607.02881",
+          "url": "https://arxiv.org/abs/2607.02881",
+          "claims_and_mechanism": "PraMem reframes lengthy historical sequence from burden to resource. Conducts beforehand practice over history to build experiential memory as assisted input for long-horizon behavior prediction. Addresses LLM struggles with latent pattern induction and cognitive biases in long sequences. Superior to context-compression memory methods across diverse tasks.",
+          "autognosia_relevance": "Experiential memory as practiced/consolidated resource (not raw history) matches Autognosia's dynamic ontology consolidation. Pre-practice over history = Autognosia's offline ontology refinement from experience.",
+          "connections": "Long-horizon behavior prediction; context-compression paradigm; latent pattern induction; cognitive bias mitigation."
+        },
+        {
+          "citation": "You, Z., Yuan, J., & Cai, J. (2026). D-Mem: A Dual-Process Memory System for LLM Agents. arXiv:2603.18631 [cs.AI]. https://arxiv.org/abs/2603.18631",
+          "url": "https://arxiv.org/abs/2603.18631",
+          "claims_and_mechanism": "D-Mem: dual-process memory with lightweight vector retrieval (routine queries) + exhaustive Full Deliberation module (high-fidelity fallback). Multi-dimensional Quality Gating policy dynamically bridges processes. On LoCoMo/RealTalk with GPT-4o-mini and Qwen3-235B: F1 53.5 vs Mem0* 51.2, recovers 96.7% of Full Deliberation (55.3) at significantly lower cost.",
+          "autognosia_relevance": "Dual-process (fast/slow) memory architecture directly implements Autognosia's dual-memory design. Quality gating = Autognosia's epistemic control for retrieval escalation. 96.7% recovery at lower cost validates efficiency.",
+          "connections": "LoCoMo, RealTalk benchmarks; Mem0; vector retrieval vs full deliberation; cognitive economy."
+        },
+        {
+          "citation": "Wang, X., Mao, W., Wu, J., Wang, X., & He, X. (2026). R^2-Mem: Reflective Experience for Memory Search. arXiv:2605.13486 [cs.CL]. https://arxiv.org/abs/2605.13486",
+          "url": "https://arxiv.org/abs/2605.13486",
+          "claims_and_mechanism": "R^2-Mem: reflective experience framework for deep search memory agents. Offline: Rubric-guided Evaluator scores high/low quality search steps; self-Reflection Learner distills abstract experience. Online: retrieved experience guides future search to avoid mistakes and maintain quality. RL-free, low-cost. Improves F1 up to 22.6%, reduces token consumption 12.9%, search iterations 20.2%.",
+          "autognosia_relevance": "Reflective experience distillation = Autognosia's ontology learning from experience. Rubric-guided evaluation + self-reflection = Autognosia's epistemic protocol for memory quality. RL-free aligns with Autognosia's preference for explicit symbolic learning.",
+          "connections": "Deep search agents; memory search; reflective learning; rubric-guided evaluation."
+        },
+        {
+          "citation": "Xie, W., et al. (2026). DynamicMem: A Long-Horizon Memory Benchmark in Real-World Settings. arXiv:2606.22877 [cs.CL]. https://arxiv.org/abs/2606.22877",
+          "url": "https://arxiv.org/abs/2606.22877",
+          "claims_and_mechanism": "DynamicMem benchmark: 15 months synthetic activity per user, 2.2M tokens, 1,772 grounded events across 16 apps (e-commerce, fitness, social). Profile (attributes, habits, preferences) evolves on different timelines, driven by external context (seasons, life events), never explicit — inferred from scattered signals. Quarterly checkpoints track scaling. Findings: (i) profile reconstruction degrades with history while service-task accuracy stays flat; (ii) no system keeps stable facts and replaces changed facts (errors on preferences/referents); (iii) 93%+ failures from retrieval, not generation.",
+          "autognosia_relevance": "Realistic long-horizon benchmark for Autognosia memory evaluation. Key finding: retrieval is the bottleneck (93% failures) — validates Autognosia's focus on ontology-guided retrieval. Heterogeneous profile evolution (attributes/habits/preferences on different timelines) requires dynamic ontology.",
+          "connections": "Long-horizon memory benchmarks; multi-app data; profile evolution; retrieval vs generation failure analysis."
+        },
+        {
+          "citation": "Li, W., et al. (2026). Dual-Layer Agentic Memory with Fast Write Routing and Slow Consolidation. arXiv:2608.22215v2 [cs.CL]. https://arxiv.org/abs/2608.22215",
+          "url": "https://arxiv.org/abs/2608.22215",
+          "claims_and_mechanism": "Dual-layer memory: fast write routing (immediate externalization) + slow consolidation (internalization). Manages knowledge lifecycle: what to externalize, update, or internalize. Addresses retrieval degradation and computational cost growth in monotonically growing repositories. Zhejiang University + Xiaohongshu collaboration.",
+          "autognosia_relevance": "Fast/slow dual-layer matches Autognosia's working/long-term memory distinction. Knowledge lifecycle management (externalize/update/internalize) = Autognosia's dynamic ontology evolution. Consolidation logic = ontology refinement from experience.",
+          "connections": "Agentic memory; knowledge lifecycle; consolidation; retrieval degradation."
+        },
+        {
+          "citation": "Cheng, Z., et al. (2026). Mem^2Evolve: Towards Self-Evolving Agents via Co-Evolutionary Capability Expansion and Experience Distillation. arXiv:2604.10923 [cs.CL]. https://arxiv.org/abs/2604.10923",
+          "url": "https://arxiv.org/abs/2604.10923",
+          "claims_and_mechanism": "MemEvolve: co-evolutionary Capability Expansion + Experience Distillation. Dual memory: Experience Memory + Asset Memory. Accumulated experience guides dynamic asset creation, expanding capability space while acquiring new experience. 18.53% improvement over standard LLMs, 11.80% over experience-only, 6.46% over asset-only across 6 tasks, 8 benchmarks. Sustained evolution in single-task, effective memory reuse in cross-task.",
+          "autognosia_relevance": "Co-evolution of capability (ontology/skills) and experience is Autognosia's core dynamic ontology loop. Experience→Asset→Experience cycle = Autognosia's ontology refinement from interaction. Dual memory separation enables targeted evolution.",
+          "connections": "Alita, AgentVerse, AutoAgens, SwarmAgentic baselines; EvolveLab unified codebase; capability-centric vs experience-centric evolution."
+        },
+        {
+          "citation": "Banerjee, P. (2026). APEX-EM: Non-Parametric Online Learning for Autonomous Agents via Structured Procedural-Episodic Experience Replay. arXiv:2603.29093v3 [cs.CL]. https://arxiv.org/abs/2603.29093",
+          "url": "https://arxiv.org/abs/2603.29093",
+          "claims_and_mechanism": "APEX-EM: non-parametric online learning accumulating structured procedural plans without weight modification. Structured experience representation: full procedural-episodic trace (planning steps, artifacts, iteration history with error analysis, quality scores). PRGII workflow (Plan-Retrieve-Generate-Iterate-Ingest) with Task Verifiers for multi-dimensional rewards. Dual-outcome Experience Memory with hybrid retrieval (semantic search + structural signature matching + plan DAG traversal) enabling cross-domain transfer. Failures as negative examples with structured error annotations. On KGQAGen-10k: 89.6% accuracy vs 41.3% without memory (+48.3pp), surpassing oracle-retrieval upper bound (84.9%). Evaluated on Claude Sonnet 4.5 / Opus 4.5.",
+          "autognosia_relevance": "Structured procedural-episodic traces = Autognosia's ontology-grounded experience representation. PRGII workflow = Autognosia's agent loop with ontology validation. Cross-domain transfer via structural signature matching = Autognosia's ontology alignment for transfer. Surpassing oracle bound shows structured memory enables super-human retrieval.",
+          "connections": "BigCodeBench, KGQAGen-10k, Humanity's Last Exam; non-parametric learning; procedural memory; structural signature matching; plan DAG traversal."
+        },
+        {
+          "citation": "Tan, H., et al. (2026). DELTAMEM: Incremental Experience Memory for LLM Agents via Residual Trees. arXiv:2606.03083 [cs.CL]. https://arxiv.org/abs/2606.03083",
+          "url": "https://arxiv.org/abs/2606.03083",
+          "claims_and_mechanism": "DeltaMem: dual-tree residual memory decoupling experience into Task-Tree (goal-conditioned action strategies) and Env-Tree (scene-level declarative knowledge). Residual storage eliminates redundancy/retrieval conflicts from flat episode storage. High-frequency convergent paths autonomously distilled into new root nodes (self-organization per neuroscientific consolidation). Code at github.com/import-myself/DeltaMem.",
+          "autognosia_relevance": "Residual tree structure = Autognosia's hierarchical ontology organization. Task/Env separation = procedural vs declarative ontology layers. Autonomous distillation of convergent paths = Autognosia's dynamic ontology concept formation. Self-organization from general→specialized = ontology evolution.",
+          "connections": "Residual trees; neuroscientific memory consolidation (McGaugh 2000); hierarchical skill learning; flat vs hierarchical memory architectures."
+        }
+      ]
+    },
+    {
+      "category": "psychological_ontology",
+      "papers": [
+        {
+          "citation": "Oh, N. & Gobet, F. (2026). Small Foundation Models of Human Cognition and Behaviour. arXiv:2608.05224v3 [cs.AI]. https://arxiv.org/abs/2608.05224",
+          "url": "https://arxiv.org/abs/2608.05224",
+          "claims_and_mechanism": "Trains 14 models (135M-14B params, 4 architecture families: Llama-3.1/3.2, Qwen3, SmolLM2/3, OLMo2/3) on Psych-101 (10.7M trial-level choices, 160 experiments, 60K+ participants). In-distribution, model scale not limiting prediction. Structural ablations across 32 experiments + order permutation tests show task-adaptive information use inconsistent with pure shortcut learning. Models are noise ceiling estimators for psychological experiments, but bounded by training paradigms. Centaur (Binz et al., 2025) scaled to Llama-3.1-70B on Psych-101 as general-purpose cognitive proxy.",
+          "autognosia_relevance": "Psych-101 as training corpus for cognitive models validates Autognosia's psychological ontology integration. Small models as noise ceiling estimators = Autognosia's use of cognitive models for evaluation. Task-adaptive information use suggests ontological structure in behavioral data.",
+          "connections": "Centaur (Binz et al., 2025); Psych-101 dataset; ACT-R, CHREST, Soar unified theories; QLoRA fine-tuning; fMRI alignment analysis."
+        },
+        {
+          "citation": "Binz, M., et al. (2025). A foundation model to predict and capture human cognition. Nature. https://doi.org/10.1038/s41586-025-09215-4",
+          "url": "https://doi.org/10.1038/s41586-025-09215-4",
+          "claims_and_mechanism": "Centaur: foundation model of human cognition via fine-tuning Llama-3.1-70B on Psych-101 (160 experiments, 60,092 participants, 10.6M choices, 253M tokens). Domains: multi-armed bandits, decision-making, memory, supervised learning, MDPs. Predicts held-out participants better than existing cognitive models in almost every experiment. Generalizes to held-out experiments, modified cover stories, problem structures, new domains. Internal representations align with human neural activity (fMRI) after fine-tuning. QLoRA rank 8 on all non-embedding layers (0.15% added params).",
+          "autognosia_relevance": "Centaur is the landmark psychological ontology model. Psych-101 provides the behavioral ontology. Neural alignment after fine-tuning suggests LLM representations can capture cognitive structure. Generalization to new cover stories/structures = ontological abstraction capability.",
+          "connections": "Psych-101; QLoRA; fMRI neural alignment; ACT-R/CHREST/Soar comparison; multi-armed bandits, MDPs, memory domains."
+        },
+        {
+          "citation": "Singh, A., et al. (2026). Taming the Centaur(s) with LAPITHS: a framework for a theoretically grounded interpretation of AI performances. arXiv:2604.27927 [cs.AI]. https://arxiv.org/abs/2604.27927",
+          "url": "https://arxiv.org/abs/2604.27927",
+          "claims_and_mechanism": "LAPITHS framework challenges Centaur's claims as unified model of cognition. Shows models without task-specific fine-tuning (only RAG-informed about task structure) achieve comparable behavioral fit (NLL) to Centaur. fMRI alignment reproducible without fine-tuning. Argues behavioral adequacy ≠ cognitive plausibility (functionalist fallacy). Provides principled reference for interpreting LLM performances, countering behavioristic tendency to equate prediction with mechanism.",
+          "autognosia_relevance": "Critical counterpoint: Centaur's behavioral prediction may not reflect cognitive mechanism. Autognosia must distinguish ontological grounding (mechanism) from behavioral fit. LAPITHS provides evaluation framework for Autognosia's cognitive plausibility claims.",
+          "connections": "Centaur; Psych-101; functionalist perspective; fMRI representational analysis; RAG-informed baselines; cognitive plausibility vs behavioral adequacy."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_papers": 44,
+    "by_category": {
+      "ontology_engineering": 9,
+      "philosophy_ontology": 4,
+      "ontology_alignment": 4,
+      "ai_ontology_failures": 6,
+      "llm_structured_knowledge": 9,
+      "dual_memory_dynamic_ontology_experiential": 9,
+      "psychological_ontology": 3
+    },
+    "key_themes": [
+      "Neuro-symbolic integration as dominant paradigm (LLMs for creativity/semantics, ontologies for structure/verification)",
+      "Dynamic/evolving ontologies replacing static ones (co-evolution, consolidation, residual trees)",
+      "Structural hallucination identified as core LLM failure mode requiring ontological grounding",
+      "Benchmark maturation: OntoURL, DynamicMem, OAEI 2026 tracks provide standardized evaluation",
+      "Dual-process memory architectures (fast/slow, vector/deliberation, experience/asset) converging",
+      "Psychological ontology (Psych-101/Centaur) maturing with critical theoretical scrutiny (LAPITHS)",
+      "BFO evolution addressing computational artifacts (generically dependent continuants, change representation)",
+      "Executable/code-based representations (KG2Code, SQL, Python) bridging LLMs and structured knowledge",
+      "Ensemble/hybrid methods outperforming single-paradigm approaches (OntoAligner-Ensemble, hybrid retrieval)"
+    ],
+    "autognosia_implications": [
+      "OntoLearner/OntoAligner ecosystem provides production tooling for ontology learning/alignment",
+      "Structural hallucination framework provides evaluation methodology for Autognosia's grounding quality",
+      "Generative Ontology validates ontology-as-grammar + LLM-as-generator architecture",
+      "Co-evolving KB/reasoning (KBevo) and dual-memory systems (D-Mem, DeltaMem, MemEvolve) are proven patterns",
+      "OAEI 2026 defence/bio-medical tracks offer domain benchmarks for Autognosia deployment",
+      "BFO extensions for generically dependent continuants and change enable proper AI system modeling",
+      "Centaur/Psych-101 provides psychological ontology foundation; LAPITHS warns against behavioral-equivalence fallacy",
+      "Executable ontology patterns (KG2Code, TeQHallu, RSF-GLLM) enable verifiable reasoning"
+    ]
+  }
+}
