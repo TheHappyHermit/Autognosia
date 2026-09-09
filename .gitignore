@@ -19,6 +19,7 @@ hub/
 # ── AI tool configs ──
 .claude/
 .codex/
+.copilot/
 .cua-driver/
 .agents/
 .antigravity-server/
