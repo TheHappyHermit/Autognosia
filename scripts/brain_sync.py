@@ -318,9 +318,9 @@ def scan_source(source_name: str, source_dir: Path) -> list[dict]:
         return files
 
     for md_file in source_dir.rglob("*.md"):
-        # Skip hidden dirs, .git, graphify-out
+        # Skip hidden dirs, .git, graphify-out, _archive
         parts = md_file.relative_to(source_dir).parts
-        if any(p.startswith(".") or p == "graphify-out" for p in parts):
+        if any(p.startswith(".") or p == "graphify-out" or p == "_archive" for p in parts):
             continue
 
         try:
@@ -446,8 +446,8 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
     stats["scanned"] = len(files)
     print(f"  Scanned {len(files)} .md files")
 
-    # Embedding dimension is fixed at 2000 (pgvector HNSW max)
-    dim = 2000
+    # Embedding dimension is 2560 (native model output; stored as halfvec)
+    dim = 2560
     print(f"  Embedding dimension: {dim}")
 
     if not dry_run:
@@ -601,7 +601,7 @@ def main():
 
     # Init mode
     if args.init:
-        ensure_hnsw_index(conn, 2000)
+        ensure_hnsw_index(conn, 2560)
         print("Schema initialized.")
         conn.close()
         return
