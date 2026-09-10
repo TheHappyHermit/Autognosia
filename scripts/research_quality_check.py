@@ -27,11 +27,11 @@ WIKI_PATHS = {
 }
 
 FRONT_MATTER_PATTERN = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
-URL_PATTERN = re.compile(r"https?://[^\s\]]+")
+URL_PATTERN = re.compile(r"https?://[^\s\]`\"']+(?<![).,!?'\"])")
 WIKILINK_PATTERN = re.compile(r"\[\[([^\]]+)\]\]")
 
-REQUIRED_FRONT_MATTER = ["title", "created", "updated", "type", "tags"]
-VALID_TYPES = ["research_report", "reference", "decision", "index"]
+REQUIRED_FRONT_MATTER = ["id", "description", "type", "status", "generated", "tags", "confidence"]
+VALID_TYPES = ["research_report", "reference", "person", "project", "idea", "system", "Index", "log", "report", "decision", "comparison", "profile"]
 
 
 def get_wiki_files(source):
@@ -75,7 +75,7 @@ def check_url(url, timeout=10):
         req.add_header("User-Agent", "Mozilla/5.0 (compatible; ResearchQualityBot/1.0)")
         response = urllib.request.urlopen(req, timeout=timeout)
         return response.getcode() == 200
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError):
+    except (urllib.error.URLError, urllib.error.HTTPError, OSError, ValueError, Exception):
         return False
 
 
