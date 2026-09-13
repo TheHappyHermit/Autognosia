@@ -1,0 +1,254 @@
+{
+  "topics": [
+    {
+      "topic_name": "Taxonomy in biology for biomimetic AI design",
+      "papers": [
+        {
+          "title": "Justifying bio-inspired robotics research: A taxonomy of strategies",
+          "arxiv_id": "2605.19840",
+          "url": "https://arxiv.org/abs/2605.19840",
+          "authors": "Margaret Zhang, Justin Ting, Talia Y. Moore",
+          "key_claims": "Proposes a 7-category taxonomy of bio-inspired design motivations (Task Bio-inspiration, Mechanistic Bio-informed Design, Reductionist Biomimicry, Perceptual Biomimicry, Robotic Experimental Platform, Bio-Exploitation, Backspiration) with a decision tree for classifying research. Distinguishes approaches by their engagement with biological mechanisms versus functional goals.",
+          "why_it_matters": "Provides the first systematic framework for justifying and evaluating bio-inspired robotics research, enabling clearer grant proposals, peer review, and cross-disciplinary communication. The taxonomy maps categories to expected scientific vs. engineering contributions.",
+          "relevance_to_autognosia": "Directly relevant to Autognosia's interest in taxonomic frameworks for AI-biology integration. The decision-tree classification methodology could inform how Autognosia categorizes biomimetic design patterns in its knowledge structures."
+        },
+        {
+          "title": "A Comprehensive Survey on Bio-Inspired Algorithms: Taxonomy, Applications, and Future Directions",
+          "arxiv_id": "2506.04238",
+          "url": "https://arxiv.org/abs/2506.04238",
+          "authors": "Shriyank Somvanshi, Md Monzurul Islam, Syed Aaqib Javed, et al.",
+          "key_claims": "Categorizes bio-inspired algorithms into 8 groups (evolutionary, swarm intelligence, physics-inspired, ecosystem/plant-based, predator-prey, neural-inspired, human-inspired, hybrid). Provides critical review of novelty issues, scalability, convergence, and interpretability challenges across optimization, ML, engineering, and bioinformatics.",
+          "why_it_matters": "Serves as a comprehensive reference taxonomy for the bio-inspired algorithm landscape, exposing over-proliferation of metaphor-based algorithms and identifying authentic advances vs. repackaged ideas.",
+          "relevance_to_autognosia": "The 8-group taxonomy and critique of novelty inflation align with Autognosia's epistemic protocol for distinguishing evidence from belief. Useful for evaluating biomimetic claims in AI architecture design."
+        },
+        {
+          "title": "ODdesign: A World Model for Biomolecular Interaction Design",
+          "arxiv_id": "2510.22304",
+          "url": "https://arxiv.org/abs/2510.22304",
+          "authors": "Odin Zhang, Xujun Zhang, Haitao Lin, et al. (20+ authors)",
+          "key_claims": "Presents an all-atom generative world model for all-to-all biomolecular interaction design (proteins, nucleic acids, small molecules). Uses taxonomic organization of biomolecular entities to enable fine-grained control over epitope specification and binding partner generation.",
+          "why_it_matters": "Advances beyond modality-specific generative models by unifying biomolecular design in a single taxonomic framework. Demonstrates superior controllability and generalization to previously inaccessible interaction types.",
+          "relevance_to_autognosia": "Exemplifies taxonomy-driven generative modeling where hierarchical biological classification directly structures the latent space — a pattern Autognosia could emulate for knowledge synthesis."
+        },
+        {
+          "title": "From biodiversity to design: a phylogeny-aware, data-driven framework for biological model selection in bio-inspired design",
+          "arxiv_id": "2607.24215",
+          "url": "https://arxiv.org/abs/2607.24215",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Develops an algorithmic framework for selecting biological models in biomimetic design that integrates phylogenetic information, evidence availability, prior biomimetic utilization, and project-specific constraints. Uses evolutionary distinctness to identify overlooked taxa with high potential.",
+          "why_it_matters": "Addresses the critical model selection gap in biomimetics where practitioners default to familiar organisms. The phylogeny-aware scoring makes biological context explicit and auditable.",
+          "relevance_to_autognosia": "The multi-criteria taxonomic ranking framework (phylogenetic context, evidence, prior utilization, constraints) is directly applicable to Autognosia's knowledge retrieval and model selection mechanisms."
+        },
+        {
+          "title": "Review of Progress of AI in Biomimetics: From Biological Patterns to Closed-Loop Discovery",
+          "arxiv_id": "N/A (Biomimetics 2026, 11(5), 320)",
+          "url": "https://www.mdpi.com/2313-7673/11/5/320",
+          "authors": "Z. Hu et al.",
+          "key_claims": "Identifies five AI-biomimetics interfaces: (1) Biological Pattern Recognition, (2) Structural Optimization, (3) Generative Morphogenesis, (4) Adaptive Fabrication, (5) Data-Driven Discovery Platforms. Argues for shift toward autonomous closed-loop labs integrating biological data mining, robotic synthesis, and testing.",
+          "why_it_matters": "Provides a taxonomic map of the AI-biomimetics convergence landscape and outlines the roadmap toward self-driving laboratories where AI and biomimetic materials co-evolve.",
+          "relevance_to_autognosia": "The five-interface taxonomy offers a structural lens for Autognosia to organize knowledge about AI-driven biological design workflows and closed-loop discovery systems."
+        }
+      ]
+    },
+    {
+      "topic_name": "Taxonomy and neural network architectures (hierarchical attention, capsule networks, etc.)",
+      "papers": [
+        {
+          "title": "TreeAdapter: Hierarchical Taxonomy-Guided Adapter Composition for Fine-Grained Species Image Generation",
+          "arxiv_id": "2607.24215",
+          "url": "https://arxiv.org/abs/2607.24215",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Proposes TreeAdapter attaching lightweight adapters to every node of a taxonomic tree. Leaf-node adapters capture species-specific traits; internal-node adapters encapsulate shared semantics among descendant taxa. Two-stage training optimizes ancestor adapters for residual features unexplained by descendants.",
+          "why_it_matters": "Achieves state-of-the-art fine-grained generation quality on biodiversity benchmarks by explicitly leveraging hierarchical taxonomic structure instead of monolithic or per-species models.",
+          "relevance_to_autognosia": "The hierarchical adapter composition pattern — where taxonomic structure directly determines parameter sharing and residual learning — is a concrete architecture pattern Autognosia could adopt for hierarchical knowledge representation."
+        },
+        {
+          "title": "Taxonomy-Aware Representation Alignment for Hierarchical Visual Recognition with Large Multimodal Models",
+          "arxiv_id": "2603.00431",
+          "url": "https://arxiv.org/abs/2603.00431",
+          "authors": "PKU-ICST-MIPL team",
+          "key_claims": "Introduces TARA (Taxonomy-Aware Representation Alignment) aligning LMM internal representations with Biology Foundation Models (BioCLIP2, BioTrove-CLIP) trained via hierarchical contrastive learning. Two-level alignment: taxonomic visual representation and free-grained label representation. Enables recognition of novel categories within the tree of life.",
+          "why_it_matters": "Demonstrates that injecting taxonomic knowledge via representation alignment improves hierarchical consistency and generalization to unseen species — a principled alternative to prompt engineering for hierarchical reasoning.",
+          "relevance_to_autognosia": "The representation alignment approach — using external taxonomic embeddings as teacher signals for internal model representations — mirrors Autognosia's potential use of structured knowledge graphs to guide latent representations."
+        },
+        {
+          "title": "TaxaAdapter: Vision Taxonomy Models are Key to Fine-grained Image Generation over the Tree of Life",
+          "arxiv_id": "2603.26128",
+          "url": "https://arxiv.org/abs/2603.26128",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Injects Vision Taxonomy Model (VTM) embeddings (BioCLIP, TaxaBind, BioTrove-CLIP) into frozen diffusion models via dual conditioning (taxonomy + text). Introduces MLLM-based trait evaluation metric. Shows strong OOD generalization to unseen species.",
+          "why_it_matters": "First framework bridging diffusion models and pre-trained VTMs for scalable fine-grained generation. The decoupled cross-attention preserves text controllability while injecting morphological fidelity from taxonomic embeddings.",
+          "relevance_to_autognosia": "Dual conditioning architecture (structured taxonomy + free-form text) is directly relevant to Autognosia's hybrid symbolic-neural reasoning. The MLLM-based trait evaluation offers a metric for assessing generated knowledge quality."
+        },
+        {
+          "title": "MSPCaps: A Multi-Scale Patchify Capsule Network with Cross-Agreement Routing for Visual Recognition",
+          "arxiv_id": "2508.16922",
+          "url": "https://arxiv.org/abs/2508.16922",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Proposes Multi-Scale Patchify Capsule Network with Multi-Scale ResNet Backbone, Patchify Capsule Layer, and Cross-Agreement Routing (CAR) that fuses multi-scale capsules by selecting pairs with maximum agreement. Achieves SOTA on MNIST, FashionMNIST, CIFAR-10, SVHN.",
+          "why_it_matters": "Addresses single-resolution limitations of capsule networks. CAR routing provides implicit regularization by preventing over-reliance on fine-grained details. Demonstrates capsule networks can effectively handle multi-scale hierarchical features.",
+          "relevance_to_autognosia": "The cross-agreement routing mechanism — selecting coherent capsule pairs across scales — is a taxonomic routing principle applicable to Autognosia's hierarchical knowledge aggregation."
+        },
+        {
+          "title": "Hierarchical Self-Attention: Generalizing Neural Attention Mechanics to Multi-Scale Problems",
+          "arxiv_id": "2509.15448",
+          "url": "https://arxiv.org/abs/2509.15448",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Derives Hierarchical Self-Attention (HSA) from entropy minimization principle generalized to nested signals. HSA weights are optimal in KL-divergence sense while adhering to hierarchical structure. Reduces computational complexity for long sequences via hierarchical abstraction.",
+          "why_it_matters": "Provides a mathematically rigorous generalization of softmax attention to hierarchical data, avoiding heuristic architectures. Can be injected into pre-trained transformers post-training.",
+          "relevance_to_autognosia": "The entropy-minimization derivation of hierarchical attention offers a principled foundation for Autognosia's attention mechanisms over hierarchical knowledge structures."
+        }
+      ]
+    },
+    {
+      "topic_name": "Taxonomy and reasoning chains (deductive/inductive/abductive reasoning taxonomies)",
+      "papers": [
+        {
+          "title": "Wiring the 'Why': A Unified Taxonomy and Survey of Abductive Reasoning in LLMs",
+          "arxiv_id": "2604.08016",
+          "url": "https://arxiv.org/abs/2604.08016",
+          "authors": "Authors from Sharif University of Technology",
+          "key_claims": "Establishes first unified two-stage definition of abduction (Hypothesis Generation + Hypothesis Selection) grounded in Inference to Best Explanation. Proposes four-axis taxonomy: Task Formulation (Generation/Selection/Full Pipeline), Dataset Type (commonsense/expert/formal/multimodal), Methodology (prompting/fine-tuning/RAG/multi-agent/neuro-symbolic), Evaluation (accuracy/non-accuracy/human). Benchmarks reveal generation-selection performance gap.",
+          "why_it_matters": "Resolves widespread conceptual confusion in LLM abductive reasoning literature. The two-stage formalization and four-axis taxonomy enable cumulative progress and comparative evaluation.",
+          "relevance_to_autognosia": "Directly relevant to Autognosia's reasoning chain architecture. The Generation/Selection distinction maps to Autognosia's prospective memory (hypothesis generation) and verification (hypothesis selection) components."
+        },
+        {
+          "title": "Structured Abductive-Deductive-Inductive Reasoning for LLMs via Algebraic Invariants",
+          "arxiv_id": "2604.15727",
+          "url": "https://arxiv.org/abs/2604.15727",
+          "authors": "Sankalp Gilda, Shlok Gilda",
+          "key_claims": "Operationalizes Peirce's tripartite inference as explicit ADI protocol with five algebraic invariants (Gamma Quintet). Weakest Link bound ensures no conclusion exceeds reliability of least-supported premise. Uses Gödel t-norm for reliability propagation. Verified via 100 properties and 16 fuzz tests over 100K+ cases.",
+          "why_it_matters": "Provides a formally verified symbolic scaffold that prevents logical drift in multi-step LLM reasoning. The epistemic level system (F0-F3) with reliability ceilings enforces distinction between conjecture, verification, and empirical validation.",
+          "relevance_to_autognosia": "The ADI protocol with algebraic invariants is a direct implementation pattern for Autognosia's reasoning chains. The Weakest Link bound and epistemic descriptors (Formality, Scope, Reliability) align with Autognosia's verification contracts."
+        },
+        {
+          "title": "Knowledge Vector of Logical Reasoning in Large Language Models",
+          "arxiv_id": "2604.23877",
+          "url": "https://arxiv.org/abs/2604.23877",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Demonstrates deductive, inductive, and abductive reasoning capacities can be linearly represented as three nearly orthogonal 'knowledge vectors' in LLM activation space. Proposes complementary refinement via SAE subspace constraints allowing vectors to share commonalities while preserving uniqueness.",
+          "why_it_matters": "First evidence that distinct reasoning modes occupy separable geometric subspaces in LLMs. The orthogonalization and complementary attraction framework enables controllable steering of reasoning types.",
+          "relevance_to_autognosia": "The knowledge vector decomposition provides a mechanistic interpretability tool for Autognosia to monitor and steer reasoning mode activation in its chains."
+        },
+        {
+          "title": "Analytic Abduction: Causal Decomposition and Governed Commitment for Human-AI Coordination",
+          "arxiv_id": "2607.14641",
+          "url": "https://arxiv.org/abs/2607.14641",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Distinguishes synthetic abduction (composing hypotheses upward) from analytic abduction (decomposing observed complexity into latent causal factors). Introduces causal clusters with intra/inter-cluster interaction architecture and governed commitment at two levels. Addresses risk profile of premature commitment in human-AI coordination.",
+          "why_it_matters": "Reframes abduction as bidirectional: not just hypothesis generation but also causal decomposition of complex states. The commitment governance mechanism prevents overconfident inference from incomplete decompositions.",
+          "relevance_to_autognosia": "The analytic/synthetic abduction distinction and governed commitment layers are directly applicable to Autognosia's prospective memory (forward hypothesis) and retrospective analysis (backward decomposition) loops."
+        },
+        {
+          "title": "A Multi-Agent Framework for Abductive, Deductive, and Inductive Reasoning",
+          "arxiv_id": "2506.07106",
+          "url": "https://arxiv.org/abs/2506.07106",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Introduces Theorem-of-Thought (ToTh) modeling reasoning as collaboration among three parallel agents simulating abductive, deductive, and inductive modes. Each agent specializes in one inference type with explicit handoffs.",
+          "why_it_matters": "Moves beyond single-model CoT by distributing reasoning modes across specialized agents, enabling cleaner separation of concerns and targeted optimization per reasoning type.",
+          "relevance_to_autognosia": "The multi-agent ADI architecture aligns with Autognosia's subagent-driven development pattern and could inform specialized reasoning agents within Autognosia's orchestration."
+        }
+      ]
+    },
+    {
+      "topic_name": "Safety and alignment taxonomies for AI systems",
+      "papers": [
+        {
+          "title": "The Eticas AI Risk Taxonomy: Open Infrastructure for Operationalizing AI Audits",
+          "arxiv_id": "2607.02201",
+          "url": "https://arxiv.org/abs/2607.02201",
+          "authors": "Gemma Galdon Clavell, Pablo Accuosto, Usman Gohar (Eticas.ai)",
+          "key_claims": "Presents operationalizable risk taxonomy v2.0/v3.0 with 10 top-level categories, 20-21 sub-groups, 70-76 subcategories. Key innovation: ontological separation of risks from mechanisms (the 'contract surface' for operationalization). Maps to 18 external frameworks (EU AI Act, NIST AI RMF, ISO 42001, OWASP, MITRE ATLAS) across compliance/reference/academic tiers. Includes Agentic AI as first-class category exposing regulatory gap. Published as open semantic infrastructure (SKOS/JSON-LD).",
+          "why_it_matters": "First audit-oriented taxonomy with demonstrated end-to-end operationalization (PII leakage case study on GPT-4). The mechanism-risk separation and open-core model (open scaffold, calibrated methodology as practitioner layer) sets new standard for actionable AI risk taxonomies.",
+          "relevance_to_autognosia": "The mechanism-risk separation ontology and SKOS/JSON-LD distribution are directly implementable in Autognosia's knowledge graph. The open-core model mirrors Autognosia's skill system (open skills, calibrated execution)."
+        },
+        {
+          "title": "\"Death by a thousand taxonomies?\": AI Risk Classification In Practice",
+          "arxiv_id": "2608.06831",
+          "url": "https://arxiv.org/abs/2608.06831",
+          "authors": "Glen Berman, Ned Cooper, Angel Hsing-Chi Hwang, Wesley Hanwen Deng, Renee Shelby, Ben Hutchinson",
+          "key_claims": "Empirical study of 25 interviews with SOT (Sociotechnical Outcome Taxonomy) developers/users across industry, academia, civil society, government. Finds SOTs weakly integrated into governance. Two root causes: (1) design choices invisible to users who treat categories as exhaustive; (2) harms enumerated without linking to decision points/actors, preventing accountability. Recommends causal pathways, explicit monitoring requirements, and governance infrastructure.",
+          "why_it_matters": "Meta-analysis of taxonomy *practice* revealing why 70+ taxonomies fail operational adoption. Shifts focus from catalog design to governance integration — taxonomies must link harms to decision points and observability requirements.",
+          "relevance_to_autognosia": "The finding that taxonomy design choices must be visible and linked to decision points informs Autognosia's skill design — skills should encode not just knowledge but the decision context for its application."
+        },
+        {
+          "title": "In Quest of an Extensible Multi-Level Harm Taxonomy for Adversarial AI: Heart of Security, Ethical Risk Scoring and Resilience Analytics",
+          "arxiv_id": "2601.16930",
+          "url": "https://arxiv.org/abs/2601.16930",
+          "authors": "Javed I. Khan, Sharmila Rahman Prithula (Kent State University)",
+          "key_claims": "Introduces HARM66+: 66+ distinct harm types organized into two domains (human/nonhuman) and 11 categories, each aligned with a dominant ethical theory. Adds normative attributes: reversibility, duration, composite severity. Extends beyond CIA triad to capture cross-domain, diffused AGI harms including ontological harm.",
+          "why_it_matters": "First harm taxonomy grounded in ethical theory ensemble with explicit normative parameterization (irreversibility, durance, severity). The multi-level structure (domain → category → 66+ subtypes) enables granular risk scoring for adversarial AI.",
+          "relevance_to_autognosia": "The ethical-theory-grounded categorization with tunable severity metrics provides a template for Autognosia to embed normative reasoning in its risk assessment and verification workflows."
+        },
+        {
+          "title": "ForesightSafety Bench: A Comprehensive AI Safety Evaluation Framework",
+          "arxiv_id": "2602.14135",
+          "url": "https://arxiv.org/abs/2602.14135",
+          "authors": "Beijing AISI team",
+          "key_claims": "Proposes hierarchical safety benchmark with 3 layers (Fundamental/Extended/Industrial), 20 pillars, 94 fine-grained dimensions. Fundamental: privacy, illegal use, misinformation, harm, hate, sexual content. Extended: Embodied AI, AI4Science, Social AI, Environmental, Catastrophic/Existential. Industrial: 8 vertical domains. Evaluated 20+ frontier models revealing widespread vulnerabilities in agentic autonomy, AI4Science, embodied AI.",
+          "why_it_matters": "Most comprehensive hierarchical safety taxonomy to date with progressive structure from micro to macro, present to future. Tens of thousands of structured risk data points. Identifies forward-looking risks in biology, chemistry, self-replication, loss of human control.",
+          "relevance_to_autognosia": "The 3-layer progressive taxonomy (fundamental → extended → industrial) mirrors Autognosia's prospective memory trigger types (immediate → scheduled → conditional). The 94-dimension granularity enables fine-grained safety monitoring."
+        },
+        {
+          "title": "AgentDoG: A Diagnostic Guardrail Framework for AI Agent Safety and Security",
+          "arxiv_id": "2601.18491",
+          "url": "https://arxiv.org/abs/2601.18491",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Proposes unified three-dimensional agentic safety taxonomy: Risk Source (where), Failure Mode (how), Real-world Harm (what) — orthogonal decomposition eliminating label overlap. Introduces ATBench trajectory-level benchmark (1,575 multi-turn trajectories, 8 risk sources, 14 failure modes, 10 harm categories). AgentDoG models (4B-8B) achieve SOTA in fine-grained diagnostics and root-cause attribution.",
+          "why_it_matters": "First three-orthogonal-dimension taxonomy for agentic risks (vs. flat enumerations). Trajectory-level labeling captures multi-step failure patterns. Diagnostic guardrail provides provenance beyond binary safe/unsafe classification.",
+          "relevance_to_autognosia": "The three-dimensional orthogonal taxonomy (source/mode/harm) is a principled design pattern for Autognosia's error classification and diagnostic reasoning. Trajectory-level analysis aligns with Autognosia's session-based reasoning traces."
+        }
+      ]
+    },
+    {
+      "topic_name": "Taxonomy in cognitive science (categorization theory, prototype theory, etc.)",
+      "papers": [
+        {
+          "title": "Cognitive Foundations for Reasoning and Their Manifestation in LLMs",
+          "arxiv_id": "2511.16660",
+          "url": "https://arxiv.org/abs/2511.16660",
+          "authors": "Priyanka Kargupta, Shuyue Stella Li, Haocheng Wang, Jinu Lee, et al. (12 authors)",
+          "key_claims": "Synthesizes cognitive science into unified taxonomy of 28 cognitive elements across 4 dimensions: Reasoning Invariants (logical coherence, compositionality), Meta-cognitive Controls (self-awareness, strategy selection), Reasoning Representations (hierarchical, causal, spatial, network), Reasoning Operations (verification, backtracking, abstraction). Analyzes 192K traces from 18 models + 54 human think-alouds. Humans use hierarchical nesting + meta-cognitive monitoring; models default to shallow forward chaining. Meta-analysis of 1,598 papers shows field neglects meta-cognitive controls (16% self-awareness, 8% evaluation) despite correlation with success.",
+          "why_it_matters": "First comprehensive taxonomy bridging cognitive science and LLM reasoning evaluation. Provides shared vocabulary for diagnosing reasoning failures. Test-time guidance based on cognitive elements improves complex problem performance by up to 66.7%.",
+          "relevance_to_autognosia": "The 28-element taxonomy is a direct blueprint for Autognosia's cognitive architecture. The four dimensions map to Autognosia's epistemic protocol, prospective memory, structured thinking, and verification contracts. The empirical gap (models possess but don't deploy meta-cognitive controls) is exactly what Autognosia's scaffolding aims to fix."
+        },
+        {
+          "title": "From Tokens to Thoughts: How LLMs and Humans Trade Compression for Meaning",
+          "arxiv_id": "2505.17117",
+          "url": "https://arxiv.org/abs/2505.17117",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Bridges LLMs and human concept learning using information-theoretic framework (Rate-Distortion, Information Bottleneck). Uses classic cognitive benchmarks (Rosch 1973/1975, McCloskey & Glucksberg 1978) — 1,049 items across 34 categories. Finds: (1) LLMs achieve broad categorical alignment but fail on fine-grained typicality; (2) LLMs optimize for statistical compactness (lower entropy, better L scores); (3) Humans prioritize adaptive richness over compression. Fundamental divergence in representational strategy.",
+          "why_it_matters": "Quantifies the prototype theory alignment gap between LLMs and humans using rigorous information theory. Shows LLMs under-represent graded, prototype-centric semantic structure despite broad category competence.",
+          "relevance_to_autognosia": "The information-theoretic framework for evaluating conceptual alignment provides a metric for Autognosia's knowledge representation quality. The typicality gap identifies where Autognosia's prototype-based reasoning needs explicit scaffolding."
+        },
+        {
+          "title": "Representational alignment yields generalizable safety in language models",
+          "arxiv_id": "2609.04022",
+          "url": "https://arxiv.org/abs/2609.04022",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Shows prototype theory explains human moral categorization adaptability. Current LLMs weakly preserve moral prototype structure (fail to distinguish opposed categories, poor typicality preservation). Representational Similarity Optimization aligns latent representations with human moral judgments without supervising responses. Improves adversarial robustness across model scales and attack strategies while behavioral alignment leaves categorization structure unchanged.",
+          "why_it_matters": "Functional evidence that prototype-based categorization contributes to behavioral adaptability. Representational alignment (not behavioral) yields generalizable safety — a paradigm shift from output supervision to latent structure alignment.",
+          "relevance_to_autognosia": "Validates Autognosia's focus on representational structure over output behavior. The prototype alignment method is directly applicable to Autognosia's knowledge graph alignment with human cognitive structures."
+        },
+        {
+          "title": "A Rational Account of Categorization Based on Information Theory",
+          "arxiv_id": "2603.29895",
+          "url": "https://arxiv.org/abs/2603.29895",
+          "authors": "Authors not fully captured in search results",
+          "key_claims": "Presents new categorization theory based on information-theoretic rational analysis: categories maximize mutual information with features, organized taxonomically (hierarchically). Explains classic categorization experiments at least as well as rational model, independent cue model, and hierarchical Dirichlet process. Category utility hypothesis operationalized via pointwise mutual information guiding hierarchical concept node expansion.",
+          "why_it_matters": "Unifies categorization under information-theoretic principle with taxonomic structure as core assumption. Provides computational model where hierarchy emerges from utility maximization rather than being imposed.",
+          "relevance_to_autognosia": "The information-theoretic derivation of taxonomic hierarchy from category utility aligns with Autognosia's prospective memory valuation (utility-driven intention formation). The PMI-guided node expansion is a concrete algorithm for hierarchical knowledge growth."
+        },
+        {
+          "title": "ProtoReasoning: Prototypes as the Foundation for Generalizable Reasoning in LLMs",
+          "arxiv_id": "2506.15211",
+          "url": "https://arxiv.org/abs/2506.15211",
+          "authors": "Feng He et al. (ByteDance)",
+          "key_claims": "Hypothesizes cross-domain generalization arises from shared abstract reasoning prototypes (fundamental reasoning patterns). Proposes ProtoReasoning framework: (1) automated prototype construction (Prolog for logic, PDDL for planning), (2) verification via interpreters, (3) scalable synthesis in prototype space. Achieves 4.7% (logic), 6.3% (planning), 4.0% (MMLU), 1.0% (AIME) improvements. Ablation confirms prototype-space training transfers better than natural language to structurally similar problems.",
+          "why_it_matters": "First framework operationalizing 'reasoning prototypes' as verifiable formal representations (Prolog/PDDL) enabling scalable synthetic data generation with guaranteed correctness. Demonstrates prototype-space learning enhances structural generalization.",
+          "relevance_to_autognosia": "The prototype-as-formal-representation pattern (Prolog/PDDL) with interpreter-based verification is directly implementable in Autognosia's reasoning chains. The automated prototype construction pipeline maps to Autognosia's skill authoring workflow."
+        }
+      ]
+    }
+  ]
+}

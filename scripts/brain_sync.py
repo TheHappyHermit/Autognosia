@@ -59,7 +59,7 @@ PG_USER = os.environ.get("BRAIN_PG_USER", "brain")
 PG_PASSWORD = os.environ.get("BRAIN_PG_PASSWORD", "brain")
 PG_DB = os.environ.get("BRAIN_PG_DB", "brain")
 
-OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.x.x.x:18082")
+OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.1.1.10:18082")
 EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "/models/Qwen3-Embedding-4B-Q8_0.gguf")
 
 CHUNK_TOKENS = int(os.environ.get("BRAIN_CHUNK_TOKENS", "512"))
@@ -446,8 +446,8 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
     stats["scanned"] = len(files)
     print(f"  Scanned {len(files)} .md files")
 
-    # Embedding dimension is 2560 (native model output; stored as halfvec)
-    dim = 2560
+    # Embedding dimension: truncate to 2000 for HNSW index compatibility (pgvector max)
+    dim = 2000
     print(f"  Embedding dimension: {dim}")
 
     if not dry_run:
@@ -601,7 +601,7 @@ def main():
 
     # Init mode
     if args.init:
-        ensure_hnsw_index(conn, 2560)
+        ensure_hnsw_index(conn, 2000)
         print("Schema initialized.")
         conn.close()
         return
