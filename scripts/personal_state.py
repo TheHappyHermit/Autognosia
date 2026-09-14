@@ -13,7 +13,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-DB_PATH = Path.home() / ".autognosia" / "personal-state" / "data" / "organizer.db"
+DB_PATH = Path.home() / ".autognosia" / "personal-organizer" / "data" / "organizer.db"
 WARNING_DAYS = 14  # Subscription warning window
 
 def main() -> int:
