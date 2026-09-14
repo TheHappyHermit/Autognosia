@@ -1,0 +1,7 @@
+name: to-do-capture
+description: >
+  Detects user requests to add items to their to-do list or organizer
+  and writes them to organizer.db. Passive, non-blocking, idempotent.
+
+events:
+  - agent:end
