@@ -54,7 +54,7 @@ _ensure_web_deps()
 from fastapi import FastAPI, HTTPException, Query, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 import uvicorn
 
 # Resolve root directories
@@ -122,7 +122,7 @@ def _initialize_demo_databases():
 
 
 def get_organizer_conn() -> sqlite3.Connection:
-    """Connect to the real organizer database."""
+    """Connect to the real organizer database with concurrency protections."""
     db_path = ORGANIZER_DB
     if not db_path.exists():
         # Try alternative paths
@@ -136,10 +136,31 @@ def get_organizer_conn() -> sqlite3.Connection:
                 break
     if not db_path.parent.exists():
         db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(str(db_path), timeout=10.0)
     conn.row_factory = sqlite3.Row
-    # Enable foreign keys
     conn.execute("PRAGMA foreign_keys=ON")
+    try:
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=5000")
+    except Exception:
+        pass
+    # Ensure persistent chat_messages table exists
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                bot_id TEXT NOT NULL,
+                sender TEXT NOT NULL CHECK(sender IN ('user', 'bot', 'tool')),
+                message TEXT NOT NULL,
+                metadata TEXT,
+                created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+            );
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_chat_bot_session ON chat_messages(bot_id, session_id);")
+        conn.commit()
+    except Exception:
+        pass
     return conn
 
 def get_autognosia_conn() -> sqlite3.Connection:
@@ -1019,32 +1040,83 @@ def get_bots():
 
 @app.get("/api/bots/{bot_id}/history")
 def get_bot_history(bot_id: str):
-    """Get conversation history for a bot."""
-    return {"messages": []}
+    """Get conversation history for a bot from SQLite."""
+    conn = get_organizer_conn()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, sender, message, metadata, created_at 
+        FROM chat_messages 
+        WHERE bot_id = ? 
+        ORDER BY id ASC 
+        LIMIT 100
+    """, (bot_id,))
+    rows = cur.fetchall()
+    conn.close()
+    
+    messages = []
+    for r in rows:
+        meta = {}
+        if r["metadata"]:
+            try:
+                meta = json.loads(r["metadata"])
+            except Exception:
+                pass
+        messages.append({
+            "id": r["id"],
+            "sender": r["sender"],
+            "message": r["message"],
+            "metadata": meta,
+            "timestamp": r["created_at"]
+        })
+    return {"bot_id": bot_id, "messages": messages}
+
+
+@app.delete("/api/bots/{bot_id}/history")
+def clear_bot_history(bot_id: str):
+    """Clear conversation history for a bot."""
+    conn = get_organizer_conn()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM chat_messages WHERE bot_id = ?", (bot_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "ok", "bot_id": bot_id, "cleared": True}
 
 
 @app.post("/api/bots/{bot_id}/message")
 def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
-    """Send a message to a specific bot, invoking the corresponding Hermes profile."""
+    """Send a message to a specific bot, invoking the corresponding Hermes profile and saving to DB."""
     message = (payload.get("message") or "").strip()
     if not message:
         raise HTTPException(status_code=400, detail="Message required")
     
-    # Validate profile exists
-    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-    profiles_dir = hermes_home / "profiles"
-    profile_dir = profiles_dir / bot_id
+    session_name = f"dash-bot-{bot_id}"
     
-    # Special case: default profile lives in ~/.hermes/ directly, not in profiles/default/
-    is_default = bot_id == "default"
-    if not is_default and (not profile_dir.exists() or not profile_dir.is_dir()):
-        raise HTTPException(status_code=404, detail=f"Bot profile '{bot_id}' not found")
-    
+    # Save user message to database
+    conn = get_organizer_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'user', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
+        (session_name, bot_id, message)
+    )
+    conn.commit()
+    conn.close()
+
     # Invoke the actual Hermes profile via CLI
     res = invoke_hermes_profile(bot_id, message)
     
     agent_title = bot_id.replace("-", " ").title()
     reply = res.get("reply", "")
+    
+    # Save bot reply to database
+    if reply:
+        conn = get_organizer_conn()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'bot', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
+            (session_name, bot_id, reply)
+        )
+        conn.commit()
+        conn.close()
     
     return {
         "reply": reply,
@@ -1053,6 +1125,109 @@ def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
         "actions_taken": res.get("actions_taken", []),
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+
+
+@app.post("/api/bots/{bot_id}/stream")
+async def stream_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
+    """Stream response from Hermes agent profile with live token and tool tracing."""
+    message = (payload.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+        
+    session_name = f"dash-bot-{bot_id}"
+    
+    # Save user message to database
+    conn = get_organizer_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'user', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
+        (session_name, bot_id, message)
+    )
+    conn.commit()
+    conn.close()
+
+    hermes_bin = shutil.which("hermes") or str(Path.home() / ".local" / "bin" / "hermes")
+    
+    async def event_generator():
+        if not shutil.which("hermes") and not Path(hermes_bin).exists():
+            fallback_msg = "Hermes CLI binary not detected on system PATH. Please verify Hermes Agent installation to enable live agent generation."
+            yield f"data: {json.dumps({'type': 'token', 'content': fallback_msg})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
+            return
+
+        cmd = [
+            hermes_bin, "chat", "-q", message,
+            "--profile", bot_id,
+            "-c", session_name,
+            "--create-if-missing",
+        ]
+        
+        env = {**os.environ, "PATH": f"{Path.home() / '.local' / 'bin'}:{os.environ.get('PATH', '')}"}
+        
+        try:
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.STDOUT,
+                env=env
+            )
+            
+            full_reply = []
+            past_header = False
+            
+            while True:
+                line_bytes = await process.stdout.readline()
+                if not line_bytes:
+                    break
+                line = line_bytes.decode('utf-8', errors='replace').rstrip('\r\n')
+                
+                # Check for Hermes header separation
+                if not past_header:
+                    if 'Hermes' in line and '─' in line:
+                        past_header = True
+                    elif line.strip().startswith(('Query:', 'Initializing agent', 'Session', '─')):
+                        continue
+                    else:
+                        if not any(k in line for k in ['Initializing', 'Session']):
+                            past_header = True
+                    if not past_header:
+                        continue
+                        
+                # End separator
+                if '─' * 10 in line:
+                    break
+                    
+                # Distinguish tool execution traces from assistant output
+                if line.strip().startswith('┊') or 'Tool' in line or 'tool_call' in line or 'Calling' in line:
+                    clean_tool = line.strip().lstrip('┊').strip()
+                    if clean_tool:
+                        yield f"data: {json.dumps({'type': 'tool', 'content': clean_tool})}\n\n"
+                elif line.strip():
+                    full_reply.append(line)
+                    chunk_text = line + "\n"
+                    yield f"data: {json.dumps({'type': 'token', 'content': chunk_text})}\n\n"
+                    
+            await process.wait()
+            
+            reply_text = "\n".join(full_reply).strip()
+            if reply_text:
+                c = get_organizer_conn()
+                cr = c.cursor()
+                cr.execute(
+                    "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'bot', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
+                    (session_name, bot_id, reply_text)
+                )
+                c.commit()
+                c.close()
+                
+            yield f"data: {json.dumps({'type': 'done', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
+            
+        except Exception as err:
+            err_msg = f"Agent streaming error: {str(err)}"
+            yield f"data: {json.dumps({'type': 'token', 'content': err_msg})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 # ── Phase 2: Service Integration Endpoints ──────────────────────────────────────
 
@@ -1604,10 +1779,283 @@ def get_hermes_status():
     }
 
 
+# ── Phase 3: Memory, Knowledge Graph, Docker & Notifications ───────────────────
+
+@app.get("/api/memory/status")
+def get_memory_status():
+    """Retrieve hot memory status from MEMORY.md."""
+    candidates = [
+        Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes"))) / "MEMORY.md",
+        AUTOGNOSIA_HOME / "MEMORY.md",
+        REPO_ROOT / "MEMORY.md",
+    ]
+    memory_file = None
+    for c in candidates:
+        if c.exists() and c.is_file():
+            memory_file = c
+            break
+            
+    content = ""
+    if memory_file:
+        try:
+            content = memory_file.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            pass
+            
+    chars_used = len(content)
+    char_limit = 2200
+    threshold = 1760  # 80% capacity trigger
+    percent = round((chars_used / char_limit) * 100, 1) if char_limit > 0 else 0
+    needs_consolidation = chars_used >= threshold
+    
+    lines = [l.strip() for l in content.splitlines() if l.strip()]
+    rules_count = sum(1 for l in lines if l.startswith(("-", "*", "•", "1.", "2.", "3.", "4.", "5.")))
+    
+    return {
+        "chars_used": chars_used,
+        "char_limit": char_limit,
+        "threshold": threshold,
+        "percent_used": percent,
+        "needs_consolidation": needs_consolidation,
+        "rules_count": rules_count,
+        "file_found": memory_file is not None,
+        "file_path": str(memory_file) if memory_file else None,
+        "preview": content[:300] + ("..." if len(content) > 300 else "")
+    }
+
+
+@app.post("/api/memory/consolidate")
+def trigger_memory_consolidation():
+    """Trigger Hermes memory consolidation instruction."""
+    hermes_bin = shutil.which("hermes") or str(Path.home() / ".local" / "bin" / "hermes")
+    prompt = (
+        "Consolidate MEMORY.md: Review hot memory facts, move stable environment facts "
+        "to active-wiki pages, and trim MEMORY.md to strictly under 1,500 characters."
+    )
+    try:
+        res = subprocess.run(
+            [hermes_bin, "chat", "-q", prompt, "--profile", "default"],
+            capture_output=True, text=True, timeout=120
+        )
+        return {
+            "status": "success" if res.returncode == 0 else "error",
+            "output": res.stdout.strip() or res.stderr.strip(),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Consolidation trigger failed: {str(e)}",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+
+@app.get("/api/graphify/data")
+def get_graphify_data():
+    """Retrieve graph nodes and edges for the interactive canvas visualizer."""
+    nodes = []
+    links = []
+    seen_nodes = set()
+    
+    graph_paths = [
+        AUTOGNOSIA_HOME / "active-wiki" / "graphify-out" / "graph.json",
+        AUTOGNOSIA_HOME / "oracle" / "brain" / "graphify-out" / "graph.json",
+        AUTOGNOSIA_HOME / "graphify-main-out" / "graph.json"
+    ]
+    
+    for gp in graph_paths:
+        if gp.exists():
+            try:
+                with open(gp, "r", encoding="utf-8") as f:
+                    gdata = json.load(f)
+                    for n in gdata.get("nodes", []):
+                        nid = str(n.get("id") or n.get("name"))
+                        if nid and nid not in seen_nodes:
+                            seen_nodes.add(nid)
+                            nodes.append({
+                                "id": nid,
+                                "label": n.get("label") or n.get("name") or nid,
+                                "type": n.get("type", "concept"),
+                                "tier": "oracle" if "oracle" in str(gp) else "active-wiki",
+                                "epistemic": "fact"
+                            })
+                    for e in gdata.get("links", []) or gdata.get("edges", []):
+                        links.append({
+                            "source": str(e.get("source")),
+                            "target": str(e.get("target")),
+                            "relation": e.get("relation") or e.get("label") or "relates_to"
+                        })
+            except Exception:
+                pass
+
+    if len(nodes) < 5:
+        wiki_dirs = [
+            ("active-wiki", AUTOGNOSIA_HOME / "active-wiki"),
+            ("oracle-brain", AUTOGNOSIA_HOME / "oracle" / "brain")
+        ]
+        import re
+        link_pattern = re.compile(r'\[\[(.*?)\]\]')
+        
+        for tier_name, wdir in wiki_dirs:
+            if not wdir.exists():
+                continue
+            for md in wdir.rglob("*.md"):
+                if md.name.startswith((".", "_")) or md.name in ("SCHEMA.md", "index.md"):
+                    continue
+                node_id = md.stem
+                if node_id not in seen_nodes:
+                    seen_nodes.add(node_id)
+                    title = node_id.replace("-", " ").title()
+                    epistemic = "heuristic"
+                    try:
+                        content = md.read_text(encoding="utf-8", errors="ignore")
+                        if "epistemic: fact" in content.lower():
+                            epistemic = "fact"
+                        elif "epistemic: rule" in content.lower():
+                            epistemic = "rule"
+                            
+                        matches = link_pattern.findall(content)
+                        for target in matches:
+                            target_id = target.split("|")[0].strip().replace(" ", "-").lower()
+                            links.append({
+                                "source": node_id,
+                                "target": target_id,
+                                "relation": "references"
+                            })
+                    except Exception:
+                        pass
+                        
+                    nodes.append({
+                        "id": node_id,
+                        "label": title,
+                        "tier": tier_name,
+                        "epistemic": epistemic,
+                        "path": str(md.relative_to(AUTOGNOSIA_HOME))
+                    })
+                    
+    valid_links = [l for l in links if l["source"] in seen_nodes and l["target"] in seen_nodes]
+    if len(valid_links) == 0 and len(nodes) > 1:
+        for i in range(len(nodes) - 1):
+            valid_links.append({"source": nodes[i]["id"], "target": nodes[i+1]["id"], "relation": "connects"})
+            
+    return {
+        "nodes": nodes[:250],
+        "links": valid_links[:400],
+        "total_nodes": len(nodes),
+        "total_edges": len(valid_links)
+    }
+
+
+@app.get("/api/docker/containers/{container_name}/logs")
+def get_container_logs(container_name: str, lines: int = Query(100)):
+    """Fetch live Docker container logs."""
+    import re
+    if not re.match(r'^[a-zA-Z0-9_\-]+$', container_name):
+        raise HTTPException(status_code=400, detail="Invalid container name")
+    try:
+        r = subprocess.run(
+            ["docker", "logs", "--tail", str(min(lines, 300)), container_name],
+            capture_output=True, text=True, timeout=10
+        )
+        logs = r.stdout or r.stderr or "No log output available."
+        return {
+            "container": container_name,
+            "logs": logs,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        return {
+            "container": container_name,
+            "logs": f"Error retrieving logs: {str(e)}",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+
+@app.post("/api/docker/containers/{container_name}/restart")
+def restart_container(container_name: str):
+    """Restart a Docker container."""
+    import re
+    if not re.match(r'^[a-zA-Z0-9_\-]+$', container_name):
+        raise HTTPException(status_code=400, detail="Invalid container name")
+    try:
+        r = subprocess.run(
+            ["docker", "restart", container_name],
+            capture_output=True, text=True, timeout=30
+        )
+        if r.returncode == 0:
+            return {"status": "ok", "container": container_name, "message": f"Container '{container_name}' restarted successfully."}
+        else:
+            return {"status": "error", "container": container_name, "message": r.stderr.strip() or "Restart failed"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/notifications")
+def get_notifications():
+    """Retrieve aggregated alerts, recent reminders, and cron job statuses."""
+    notifications = []
+    
+    try:
+        conn = get_organizer_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, title, remind_at, channel, status, sent_at 
+            FROM reminders 
+            WHERE status IN ('pending', 'snoozed', 'sent') 
+            ORDER BY created_at DESC 
+            LIMIT 10
+        """)
+        for r in cur.fetchall():
+            is_pending = r["status"] in ("pending", "snoozed")
+            notifications.append({
+                "id": f"rem-{r['id']}",
+                "type": "reminder",
+                "title": f"Reminder: {r['title']}",
+                "time": r["remind_at"] or r["sent_at"] or "Scheduled",
+                "status": r["status"],
+                "unread": is_pending,
+                "badge": "⏰"
+            })
+        conn.close()
+    except Exception:
+        pass
+        
+    log_dir = AUTOGNOSIA_HOME / "logs"
+    if log_dir.exists():
+        for lf in sorted(log_dir.glob("*.log"), key=lambda p: p.stat().st_mtime, reverse=True)[:5]:
+            try:
+                mtime = datetime.fromtimestamp(lf.stat().st_mtime, tz=timezone.utc).isoformat()
+                lines = lf.read_text(encoding="utf-8", errors="ignore").strip().splitlines()
+                last_line = lines[-1] if lines else "Log active"
+                is_err = "failed" in last_line.lower() or "error" in last_line.lower()
+                notifications.append({
+                    "id": f"cron-{lf.stem}",
+                    "type": "cron",
+                    "title": f"Job: {lf.stem.replace('-', ' ').title()}",
+                    "time": mtime,
+                    "status": "error" if is_err else "ok",
+                    "message": last_line[:120],
+                    "unread": is_err,
+                    "badge": "⚠️" if is_err else "⚡"
+                })
+            except Exception:
+                pass
+
+    unread_count = sum(1 for n in notifications if n.get("unread"))
+    return {
+        "notifications": notifications,
+        "unread_count": unread_count,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
 
 # ── Static File Serving ────────────────────────────────────────────────────────
 
 DASHBOARD_DIR = Path(__file__).resolve().parent
+
+@app.get("/graph-visualizer.js")
+def serve_graph_visualizer():
+    return FileResponse(str(DASHBOARD_DIR / "graph-visualizer.js"), media_type="application/javascript")
 
 @app.get("/")
 def serve_dashboard():
@@ -1710,7 +2158,11 @@ def serve_app_agent():
 
 @app.get("/ws-client.js")
 def serve_ws_client():
-    return FileResponse(str(DASHBOARD_DIR / "ws-client.js"), media_type="application/javascript")
+    ws_file = DASHBOARD_DIR / "ws-client.js"
+    if ws_file.exists():
+        return FileResponse(str(ws_file), media_type="application/javascript")
+    from fastapi.responses import Response
+    return Response(content="// ws-client stub", media_type="application/javascript")
 
 @app.get("/enhance.js")
 def serve_enhance():

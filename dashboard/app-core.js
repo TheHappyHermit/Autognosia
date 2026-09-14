@@ -43,6 +43,11 @@ export class CommandDeck {
   async init() {
     this.bindEvents();
     this.startClock();
+    if (typeof this.initTaskViewToggle === 'function') this.initTaskViewToggle();
+    if (typeof this.initSmartTaskInput === 'function') this.initSmartTaskInput();
+    if (typeof this.initBriefingTTS === 'function') this.initBriefingTTS();
+    if (typeof this.initNotificationDrawer === 'function') this.initNotificationDrawer();
+    if (typeof this.initMemoryControls === 'function') this.initMemoryControls();
     if (typeof this.refreshAllData === 'function') {
       try {
         await this.refreshAllData();
@@ -150,6 +155,10 @@ export class CommandDeck {
       if (typeof this.fetchCalendar === 'function') this.fetchCalendar();
     } else if (viewName === 'tasks') {
       if (typeof this.fetchTasks === 'function') this.fetchTasks();
+      const tabKanban = document.getElementById('tab-task-kanban');
+      if (tabKanban && tabKanban.classList.contains('active') && typeof this.renderKanbanBoard === 'function') {
+        this.renderKanbanBoard();
+      }
     } else if (viewName === 'homelab') {
       if (typeof this.renderHomeLab === 'function') this.renderHomeLab();
     } else if (viewName === 'agents') {

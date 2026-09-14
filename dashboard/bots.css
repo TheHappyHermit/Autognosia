@@ -415,3 +415,78 @@
     text-align: center;
   }
 }
+
+/* Tool Traces in Agent Chat */
+.bot-tools-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.bot-tool-trace {
+  background: var(--bg-tertiary, #0f172a);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-left: 3px solid var(--accent, #06b6d4);
+  border-radius: var(--radius-sm, 6px);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.bot-tool-trace:hover {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.bot-tool-trace summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2, #94a3b8);
+  outline: none;
+  list-style: none;
+}
+
+.bot-tool-trace summary::-webkit-details-marker {
+  display: none;
+}
+
+.bot-tool-trace summary::after {
+  content: '▾';
+  margin-left: auto;
+  font-size: 0.75rem;
+  transition: transform 0.15s ease;
+}
+
+.bot-tool-trace[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.bot-tool-trace pre {
+  margin: 6px 0 2px 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  max-height: 200px;
+}
+
+.bot-reply-text {
+  display: inline-block;
+  line-height: 1.55;
+  color: var(--text-1);
+}
+
+.bot-typing-dots span {
+  animation: typing-bounce 1.4s infinite ease-in-out both;
+  font-size: 1.2rem;
+  margin: 0 1px;
+}
+.bot-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.bot-typing-dots span:nth-child(2) { animation-delay: -0.16s; }

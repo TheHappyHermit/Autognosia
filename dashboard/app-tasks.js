@@ -45,6 +45,10 @@ CommandDeck.prototype.renderTasks = function() {
       });
     });
   });
+
+  if (typeof this.renderKanbanBoard === 'function') {
+    this.renderKanbanBoard();
+  }
 };
 
 CommandDeck.prototype.renderTaskCard = function(t) {
@@ -188,4 +192,187 @@ CommandDeck.prototype.renderProjects = function() {
       </div>
     `;
   }).join('');
+};
+
+// ── Kanban Board ────────────────────────────────────────────────────────────
+
+const KANBAN_COLUMNS = [
+  { key: 'backlog',     label: 'Backlog',     color: 'var(--text-3)' },
+  { key: 'next',        label: 'Next',        color: 'var(--cyan)' },
+  { key: 'in_progress', label: 'In Progress', color: 'var(--amber)' },
+  { key: 'blocked',     label: 'Blocked',     color: 'var(--rose)' },
+  { key: 'completed',   label: 'Completed',   color: 'var(--emerald)' }
+];
+
+CommandDeck.prototype.renderKanbanBoard = function() {
+  const container = document.getElementById('task-kanban-container');
+  if (!container) return;
+
+  const tasks = this.state.tasks || [];
+
+  container.innerHTML = `<div class="kanban-board">${KANBAN_COLUMNS.map(col => {
+    const colTasks = tasks.filter(t => {
+      if (col.key === 'backlog') return !['next','in_progress','blocked','completed'].includes(t.status);
+      return t.status === col.key;
+    });
+    return `
+      <div class="kanban-column" data-status="${col.key}">
+        <div class="kanban-column__header">
+          <span class="kanban-column__dot" style="background:${col.color}"></span>
+          <span class="kanban-column__title">${col.label}</span>
+          <span class="kanban-column__count">${colTasks.length}</span>
+        </div>
+        <div class="kanban-column__body" data-status="${col.key}">
+          ${colTasks.map(t => `
+            <div class="kanban-card" draggable="true" data-task-id="${t.id}">
+              <div class="kanban-card__title">${escapeHtml(t.title)}</div>
+              <div class="kanban-card__meta">
+                <span class="badge badge-${t.priority || 'medium'}">${t.priority || 'medium'}</span>
+                ${t.project_name ? `<span class="kanban-card__project">${escapeHtml(t.project_name)}</span>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('')}</div>`;
+
+  this.bindKanbanDragDrop();
+};
+
+CommandDeck.prototype.bindKanbanDragDrop = function() {
+  const container = document.getElementById('task-kanban-container');
+  if (!container) return;
+
+  let draggedId = null;
+
+  container.querySelectorAll('.kanban-card').forEach(card => {
+    card.addEventListener('dragstart', (e) => {
+      draggedId = card.dataset.taskId;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      draggedId = null;
+      container.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    });
+  });
+
+  container.querySelectorAll('.kanban-column__body').forEach(col => {
+    col.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      col.classList.add('drag-over');
+    });
+    col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+    col.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      if (!draggedId) return;
+      const newStatus = col.dataset.status;
+      await this.updateTask(draggedId, { status: newStatus });
+      await this.fetchTasks();
+      await this.fetchOverview();
+    });
+  });
+};
+
+// ── View Toggle (List / Kanban) ─────────────────────────────────────────────
+
+CommandDeck.prototype.initTaskViewToggle = function() {
+  const tabList = document.getElementById('tab-task-list');
+  const tabKanban = document.getElementById('tab-task-kanban');
+  const listContainer = document.getElementById('tasks-view-container');
+  const kanbanContainer = document.getElementById('task-kanban-container');
+  if (!tabList || !tabKanban) return;
+
+  tabList.addEventListener('click', () => {
+    tabList.classList.add('active'); tabKanban.classList.remove('active');
+    if (listContainer) listContainer.style.display = '';
+    if (kanbanContainer) kanbanContainer.style.display = 'none';
+  });
+  tabKanban.addEventListener('click', () => {
+    tabKanban.classList.add('active'); tabList.classList.remove('active');
+    if (listContainer) listContainer.style.display = 'none';
+    if (kanbanContainer) kanbanContainer.style.display = '';
+    this.renderKanbanBoard();
+  });
+};
+
+// ── Smart Natural Language Task Input ───────────────────────────────────────
+
+CommandDeck.prototype.parseSmartTaskInput = function(raw) {
+  let title = raw.trim();
+  let priority = 'medium';
+  let project = null;
+  let due_at = null;
+
+  // Extract priority: !critical, !high, !low
+  const priMatch = title.match(/!(\w+)/);
+  if (priMatch) {
+    const p = priMatch[1].toLowerCase();
+    if (['critical','high','medium','low'].includes(p)) priority = p;
+    title = title.replace(priMatch[0], '').trim();
+  }
+
+  // Extract project: #projectname
+  const projMatch = title.match(/#(\S+)/);
+  if (projMatch) {
+    project = projMatch[1];
+    title = title.replace(projMatch[0], '').trim();
+  }
+
+  // Extract due dates: "tomorrow", "today", or datetime patterns
+  const tmrw = /\btomorrow\b/i;
+  const today = /\btoday\b/i;
+  const timeMatch = title.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+
+  if (tmrw.test(title)) {
+    const d = new Date(); d.setDate(d.getDate() + 1);
+    if (timeMatch) { const t = this.parseTimeStr(timeMatch[1]); if (t) { d.setHours(t.h, t.m, 0); } }
+    else { d.setHours(9, 0, 0); }
+    due_at = d.toISOString();
+    title = title.replace(tmrw, '').replace(timeMatch ? timeMatch[0] : '', '').trim();
+  } else if (today.test(title)) {
+    const d = new Date();
+    if (timeMatch) { const t = this.parseTimeStr(timeMatch[1]); if (t) { d.setHours(t.h, t.m, 0); } }
+    due_at = d.toISOString();
+    title = title.replace(today, '').replace(timeMatch ? timeMatch[0] : '', '').trim();
+  }
+
+  return { title, priority, project, due_at };
+};
+
+CommandDeck.prototype.parseTimeStr = function(str) {
+  if (!str) return null;
+  const m = str.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+  if (!m) return null;
+  let h = parseInt(m[1], 10);
+  const min = m[2] ? parseInt(m[2], 10) : 0;
+  if (m[3]) {
+    if (m[3].toLowerCase() === 'pm' && h < 12) h += 12;
+    if (m[3].toLowerCase() === 'am' && h === 12) h = 0;
+  }
+  return { h, m: min };
+};
+
+CommandDeck.prototype.initSmartTaskInput = function() {
+  const input = document.getElementById('task-smart-input');
+  const btn = document.getElementById('task-smart-submit');
+  if (!input) return;
+
+  const submit = async () => {
+    const raw = input.value.trim();
+    if (!raw) return;
+    const parsed = this.parseSmartTaskInput(raw);
+    if (!parsed.title) return;
+    await this.createTask(parsed);
+    input.value = '';
+    await this.fetchTasks();
+    await this.fetchOverview();
+  };
+
+  if (btn) btn.addEventListener('click', submit);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
 };

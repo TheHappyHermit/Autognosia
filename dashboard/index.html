@@ -91,9 +91,9 @@
           <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
-        <button class="header-btn" aria-label="Notifications" title="Notifications">
+        <button class="header-btn" aria-label="Notifications" title="Notifications" id="btn-notifications">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span class="badge-dot" aria-hidden="true"></span>
+          <span class="badge-dot" id="notification-badge-dot" aria-hidden="true"></span>
         </button>
         <div class="hud-clock" id="hud-clock" aria-label="Local time">
           <span class="clock-time">00:00:00</span>
@@ -167,6 +167,19 @@
           <span class="hud-metric__label">Intentions</span>
           <span class="hud-metric__value text-tabular" id="stat-intentions"></span>
         </div>
+        <div class="hud-metric hud-metric--memory" id="hud-memory-metric" title="Hot memory limit: 2,200 chars">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <span class="hud-metric__label">Hot Memory</span>
+            <span class="hud-metric__badge" id="stat-memory-badge" style="font-size:0.65rem; padding:1px 6px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-weight:600;">OK</span>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:4px; margin-top:2px;">
+            <span class="hud-metric__value text-tabular" id="stat-memory-chars">--</span>
+            <span style="font-size:0.75rem; color:var(--text-3);">/ 2,200</span>
+          </div>
+          <div class="memory-progress" style="width:100%; height:4px; background:var(--bg-tertiary); border-radius:2px; margin-top:4px; overflow:hidden;">
+            <div id="stat-memory-bar" style="width:0%; height:100%; background:var(--accent); transition:width 0.3s ease;"></div>
+          </div>
+        </div>
       </section>
 
       <!-- Home Lab Server Cards -->
@@ -181,9 +194,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             Daily Executive Synthesis
           </div>
-          <div class="panel-footer" style="margin:0;padding:0;border:none">
+          <div class="panel-actions" style="display:flex; align-items:center; gap:8px;">
+            <button id="btn-read-briefing" class="btn btn--ghost btn--sm" style="display:inline-flex; align-items:center; gap:6px; font-size:0.8rem; padding:3px 8px; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); cursor:pointer;">
+              <span id="briefing-tts-icon">🔊</span>
+              <span id="briefing-tts-label">Read Aloud</span>
+            </button>
             <span id="briefing-date" style="color:var(--text-3);font-size:var(--fs-sm);">Loading date...</span>
-            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:var(--fs-sm);margin-left:8px;">just now</span>
+            <span id="briefing-freshness" class="text-tabular" style="color:var(--text-3);font-size:var(--fs-sm);margin-left:4px;">just now</span>
           </div>
         </div>
         <div class="panel-body">
@@ -424,15 +441,29 @@
           </div>
         </section>
 
-        <section class="panel" aria-label="Graphify">
-          <div class="panel-header">
+        <section class="panel" aria-label="Graphify" style="grid-column: 1 / -1;">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
             <div class="panel-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="19" cy="5" r="1"/><circle cx="19" cy="19" r="1"/><circle cx="5" cy="5" r="1"/><circle cx="5" cy="19" r="1"/></svg>
-              Knowledge Graph
+              Interactive Knowledge Graph Explorer
+            </div>
+            <div class="panel-actions" style="display:flex; gap:8px; align-items:center;">
+              <span id="graph-node-count" style="font-size:0.8rem; color:var(--text-3);">-- nodes</span>
+              <button id="btn-graph-reset" class="btn btn--ghost btn--sm" style="padding:2px 8px; font-size:0.75rem; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); cursor:pointer;">Reset Zoom</button>
             </div>
           </div>
-          <div class="panel-body" id="graphify-grid">
-            <div class="agent-loading">Loading graph data...</div>
+          <div class="panel-body" style="padding:0; position:relative;">
+            <div id="graph-canvas-container" style="width:100%; height:400px; position:relative; background:var(--bg-tertiary); border-radius:0 0 var(--radius-md) var(--radius-md); overflow:hidden;">
+              <canvas id="knowledge-graph-canvas"></canvas>
+              <div class="graph-legend" style="position:absolute; top:12px; left:12px; display:flex; gap:12px; font-size:0.75rem; background:rgba(15,23,42,0.75); padding:6px 12px; border-radius:6px; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.08); z-index:5;">
+                <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px; height:8px; border-radius:50%; background:#06b6d4;"></span>Active Wiki</span>
+                <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px; height:8px; border-radius:50%; background:#a855f7;"></span>Oracle Brain</span>
+                <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span>Verified Fact</span>
+              </div>
+              <div style="position:absolute; bottom:12px; left:12px; font-size:0.75rem; color:var(--text-3); pointer-events:none;">
+                💡 Drag nodes • Scroll to zoom • Click node to inspect document
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -475,9 +506,10 @@
                 <div class="bots-chat-header-name" id="chat-bot-name">Agent Name</div>
                 <div class="bots-chat-header-model" id="chat-bot-model">model • provider</div>
               </div>
-              <div class="bots-chat-header-status">
+              <div class="bots-chat-header-status" style="display:flex; align-items:center; gap:8px;">
                 <span class="bot-status-dot" id="chat-bot-status-dot"></span>
                 <span id="chat-bot-status-text">idle</span>
+                <button class="btn btn--ghost btn--sm" id="bot-chat-clear" title="Clear conversation history" style="padding:2px 8px; font-size:0.75rem; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); cursor:pointer;">🗑️ Clear</button>
               </div>
             </div>
 
@@ -487,6 +519,7 @@
 
             <div class="bots-chat-input-bar">
               <input type="text" class="bots-chat-input" id="bot-chat-input" placeholder="Type a message to Hermes agent..." autocomplete="off" />
+              <button class="bots-chat-mic" id="bot-chat-mic" title="Voice Input (Speech-to-Text)" style="width:38px; height:38px; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); background:var(--bg-secondary); cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center;">🎙️</button>
               <button class="bots-chat-send" id="bot-chat-send" title="Send Message">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               </button>
@@ -532,12 +565,26 @@
         <p class="view-section-subtitle">Action pipeline and task management</p>
       </div>
       <div class="panel">
-        <div class="panel-header">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div class="panel-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            All Tasks
+            Action Pipeline
+          </div>
+          <div class="panel-actions" style="display:flex; gap:8px; align-items:center;">
+            <div class="view-switcher" style="display:inline-flex; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); overflow:hidden;">
+              <button class="view-tab active" id="tab-task-list" style="padding:4px 12px; font-size:0.8rem; cursor:pointer; background:var(--bg-secondary); border:none; border-right:1px solid var(--border-subtle);">List</button>
+              <button class="view-tab" id="tab-task-kanban" style="padding:4px 12px; font-size:0.8rem; cursor:pointer; background:transparent; border:none;">Kanban</button>
+            </div>
+            <button class="btn btn--primary btn--sm" id="btn-open-create-task" style="padding:4px 12px; font-size:0.8rem;">+ New Task</button>
           </div>
         </div>
+
+        <!-- Smart Natural Language Quick Add -->
+        <div style="padding:12px 16px; border-bottom:1px solid var(--border-subtle); background:var(--bg-secondary); display:flex; gap:8px; align-items:center;">
+          <input type="text" id="task-smart-input" placeholder="Quick add: 'Fix docker network tomorrow 3pm !critical #infra' (Press Enter to create)..." style="flex:1; padding:8px 12px; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); background:var(--bg-tertiary); color:var(--text-1); font-size:0.875rem;" />
+          <button id="task-smart-submit" class="btn btn--primary btn--sm" style="padding:8px 14px;">Add</button>
+        </div>
+
         <div class="panel-body" id="tasks-view-container">
           <div class="empty-state">
             <div class="empty-state__icon">
@@ -546,6 +593,11 @@
             <div class="empty-state__title">No tasks</div>
             <div class="empty-state__desc">Your pipeline is clear.</div>
           </div>
+        </div>
+
+        <!-- Kanban Board Container -->
+        <div class="panel-body" id="task-kanban-container" style="display:none; padding:16px; overflow-x:auto;">
+          <!-- Dynamically populated by app-tasks.js -->
         </div>
       </div>
     </div>
@@ -597,7 +649,61 @@
   <script type="module" src="app-services.js"></script>
   <script type="module" src="app-agent.js"></script>
   <script type="module" src="app-bots.js"></script>
+  <script type="module" src="graph-visualizer.js"></script>
   <script type="module" src="enhance.js"></script>
+
+  <!-- Notification Center Drawer -->
+  <div class="drawer" id="notification-drawer" aria-hidden="true" style="display:none;">
+    <div class="drawer__backdrop" id="notification-backdrop"></div>
+    <div class="drawer__panel" style="width:380px;">
+      <div class="drawer__header" style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border-subtle);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h3 style="margin:0; font-size:1.1rem;">Activity & Notifications</h3>
+          <span class="badge" id="notification-drawer-count">0</span>
+        </div>
+        <button class="drawer__close" id="notification-close" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-2);">&times;</button>
+      </div>
+      <div class="drawer__body" id="notification-drawer-body" style="padding:16px; overflow-y:auto; max-height:calc(100vh - 120px);">
+        <div class="agent-loading">Loading activity...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container Logs Drawer -->
+  <div class="drawer" id="container-logs-drawer" aria-hidden="true" style="display:none;">
+    <div class="drawer__backdrop" id="container-logs-backdrop"></div>
+    <div class="drawer__panel" style="width:600px; max-width:90vw;">
+      <div class="drawer__header" style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border-subtle);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.2rem;">📋</span>
+          <h3 id="container-logs-title" style="margin:0; font-size:1.1rem;">Container Logs</h3>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn--sm btn--ghost" id="container-logs-refresh">Refresh</button>
+          <button class="drawer__close" id="container-logs-close" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-2);">&times;</button>
+        </div>
+      </div>
+      <div class="drawer__body" style="padding:16px;">
+        <pre id="container-logs-content" style="background:#0f172a; color:#f8fafc; padding:12px; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:0.8rem; overflow:auto; max-height:calc(100vh - 160px); white-space:pre-wrap;"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wiki Node Inspection Drawer -->
+  <div class="drawer" id="wiki-node-drawer" aria-hidden="true" style="display:none;">
+    <div class="drawer__backdrop" id="wiki-node-backdrop"></div>
+    <div class="drawer__panel" style="width:500px; max-width:90vw;">
+      <div class="drawer__header" style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border-subtle);">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.2rem;">📄</span>
+          <h3 id="wiki-node-title" style="margin:0; font-size:1.1rem;">Wiki Document</h3>
+        </div>
+        <button class="drawer__close" id="wiki-node-close" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-2);">&times;</button>
+      </div>
+      <div class="drawer__body" id="wiki-node-body" style="padding:16px; overflow-y:auto; max-height:calc(100vh - 120px); font-size:0.9rem; line-height:1.6;">
+      </div>
+    </div>
+  </div>
 
   <!-- Task Detail Modal -->
   <div class="task-detail-modal" id="task-detail-modal">
