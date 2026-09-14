@@ -32,7 +32,7 @@
       "deliver": "telegram",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null
       },
@@ -80,7 +80,7 @@
       "deliver": "telegram",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null
       },
@@ -136,10 +136,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -192,10 +192,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -243,15 +243,15 @@
       "next_run_at": "2026-09-14T08:00:00-07:00",
       "last_run_at": "2026-09-13T08:00:02.958589-07:00",
       "last_status": "error",
-      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: Sun Sep 13 08:00:02 AM PDT 2026\n[fail] Verification failed\nresent\n[OK] Honcho — All 4 Honcho containers healthy (compose stack)\n[OK] GBrain CLI — GBrain removed from deployment (skip check)\n[OK] GBrain Health — GBrain removed from deployment (skip check)\n[FAIL] Directories\n[OK] Secrets Dir — permissions 700\n[OK] Personal State — Personal State API running (openapi.json)\n[OK] Skills — All 7 skills present\n[OK] Plugin — Plugin optional in native profile mode\n[OK] Profiles Config — Specialist profiles configured\n\n=== Summary ===\nPassed: 10/11\nFailed: 1/11\n\n[ok] Personal State API healthy\n=== Health check complete ===",
+      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: Sun Sep 13 08:00:02 AM PDT 2026\n[fail] Verification failed\nresent\n[OK] Honcho \u2014 All 4 Honcho containers healthy (compose stack)\n[OK] GBrain CLI \u2014 GBrain removed from deployment (skip check)\n[OK] GBrain Health \u2014 GBrain removed from deployment (skip check)\n[FAIL] Directories\n[OK] Secrets Dir \u2014 permissions 700\n[OK] Personal State \u2014 Personal State API running (openapi.json)\n[OK] Skills \u2014 All 7 skills present\n[OK] Plugin \u2014 Plugin optional in native profile mode\n[OK] Profiles Config \u2014 Specialist profiles configured\n\n=== Summary ===\nPassed: 10/11\nFailed: 1/11\n\n[ok] Personal State API healthy\n=== Health check complete ===",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -294,7 +294,7 @@
       "enabled": false,
       "state": "paused",
       "paused_at": "2026-09-13T13:30:00-07:00",
-      "paused_reason": "Paused by user request — automatic GitHub uploads disabled",
+      "paused_reason": "Paused by user request \u2014 automatic GitHub uploads disabled",
       "created_at": "2026-08-16T21:29:15.263560-07:00",
       "next_run_at": "2026-09-14T01:00:00-07:00",
       "last_run_at": "2026-09-13T01:09:01.904902-07:00",
@@ -304,10 +304,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -355,15 +355,15 @@
       "next_run_at": "2026-09-14T02:00:00-07:00",
       "last_run_at": "2026-09-12T02:00:50.993657-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -419,10 +419,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -470,15 +470,15 @@
       "next_run_at": "2026-09-14T02:45:00-07:00",
       "last_run_at": "2026-09-13T02:45:49.935829-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -531,10 +531,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -587,10 +587,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -643,10 +643,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -694,15 +694,15 @@
       "next_run_at": "2026-09-14T05:00:00-07:00",
       "last_run_at": "2026-09-13T05:00:55.704814-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -718,7 +718,7 @@
     {
       "id": "d6bc81139794",
       "name": "Memory Consolidation Full Cascade",
-      "prompt": "Run full three-tier memory cascade: Honcho autobiographical → Active Wiki curated → Oracle specialist → Historical Knowledge archived. Generate cascade report. Use the wiki-ingestion and wiki-maintenance skills.",
+      "prompt": "Run full three-tier memory cascade: Honcho autobiographical \u2192 Active Wiki curated \u2192 Oracle specialist \u2192 Historical Knowledge archived. Generate cascade report. Use the wiki-ingestion and wiki-maintenance skills.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -750,15 +750,15 @@
       "next_run_at": "2026-09-20T04:00:00-07:00",
       "last_run_at": "2026-09-13T04:01:09.205218-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -811,10 +811,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -867,10 +867,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -918,15 +918,15 @@
       "next_run_at": "2026-09-14T07:00:00-07:00",
       "last_run_at": "2026-09-13T07:01:48.003124-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -974,15 +974,15 @@
       "next_run_at": "2026-09-14T08:30:00-07:00",
       "last_run_at": "2026-09-13T08:30:12.649869-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -998,7 +998,7 @@
     {
       "id": "ab26e06eee12",
       "name": "Weekday Prompt-Me",
-      "prompt": "Use the prompt-me skill to ask one targeted question. Review recent sessions for context about what's currently at stake. Pick the most impactful single question that helps the user — something they haven't considered, a weak spot in a plan, a missing piece of context. Deliver the question directly to the user via the configured messaging service.",
+      "prompt": "Use the prompt-me skill to ask one targeted question. Review recent sessions for context about what's currently at stake. Pick the most impactful single question that helps the user \u2014 something they haven't considered, a weak spot in a plan, a missing piece of context. Deliver the question directly to the user via the configured messaging service.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1035,10 +1035,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1080,15 +1080,15 @@
       "next_run_at": "2026-09-20T09:00:00-07:00",
       "last_run_at": "2026-09-13T09:00:20.902276-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1141,10 +1141,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1191,10 +1191,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -1210,7 +1210,7 @@
     {
       "id": "703dd7f07c60",
       "name": "Graphify Active Wiki Ingestion",
-      "prompt": "Run graphify incremental ingestion on the Active Wiki, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/active-wiki/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/home_user/.hermes/scripts/graphify_active_wiki_py.py >> /home/home_user/.autognosia/logs/graphify-active-wiki.log 2>&1 &\n\nThis processes all .md and .json files in the active wiki and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. New files added since the last run will be ingested; files moved to the Oracle wiki will naturally drop out (graphify only scans what's on disk).\n\nThe wrapper runs for a long time (hours) — launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry — just report the error with the full output.\n",
+      "prompt": "Run graphify incremental ingestion on the Active Wiki, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/active-wiki/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/home_user/.hermes/scripts/graphify_active_wiki_py.py >> /home/home_user/.autognosia/logs/graphify-active-wiki.log 2>&1 &\n\nThis processes all .md and .json files in the active wiki and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. New files added since the last run will be ingested; files moved to the Oracle wiki will naturally drop out (graphify only scans what's on disk).\n\nThe wrapper runs for a long time (hours) \u2014 launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry \u2014 just report the error with the full output.\n",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1247,10 +1247,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "~/.autognosia/active-wiki/",
@@ -1266,7 +1266,7 @@
     {
       "id": "b0c1d2e3f4a0",
       "name": "Graphify Oracle Brain Ingestion",
-      "prompt": "Run graphify incremental ingestion on the Oracle Brain, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/oracle/brain/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/home_user/.hermes/scripts/graphify_oracle_brain_py.py >> /home/home_user/.autognosia/logs/graphify-oracle-brain.log 2>&1 &\n\nThis processes all .md and .json files in the oracle brain and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. The Oracle Brain has ~1,558 tracked files and ~30K nodes — this will take many hours to complete.\n\nThe wrapper runs for a very long time (many hours) — launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry — just report the error with the full output.\n",
+      "prompt": "Run graphify incremental ingestion on the Oracle Brain, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/oracle/brain/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/home_user/.hermes/scripts/graphify_oracle_brain_py.py >> /home/home_user/.autognosia/logs/graphify-oracle-brain.log 2>&1 &\n\nThis processes all .md and .json files in the oracle brain and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. The Oracle Brain has ~1,558 tracked files and ~30K nodes \u2014 this will take many hours to complete.\n\nThe wrapper runs for a very long time (many hours) \u2014 launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry \u2014 just report the error with the full output.\n",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1293,7 +1293,7 @@
       "enabled": false,
       "state": "paused",
       "paused_at": "2026-09-13T14:40:00-07:00",
-      "paused_reason": "Paused — active wiki ingestion must complete first before Oracle Brain graphify runs",
+      "paused_reason": "Paused \u2014 active wiki ingestion must complete first before Oracle Brain graphify runs",
       "created_at": "2026-09-13T14:40:00.000000-07:00",
       "next_run_at": "2026-09-14T04:00:00-07:00",
       "last_run_at": null,
@@ -1303,10 +1303,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "~/.autognosia/oracle/brain/",
@@ -1354,10 +1354,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1404,10 +1404,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null
@@ -1452,10 +1452,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1497,15 +1497,15 @@
       "next_run_at": "2026-09-13T21:00:00-07:00",
       "last_run_at": "2026-09-13T20:30:43.776455-07:00",
       "last_status": "error",
-      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: Sun Sep 13 08:30:43 PM PDT 2026\n[fail] Verification failed\nresent\n[OK] Honcho — All 4 Honcho containers healthy (compose stack)\n[OK] GBrain CLI — GBrain removed from deployment (skip check)\n[OK] GBrain Health — GBrain removed from deployment (skip check)\n[FAIL] Directories\n[OK] Secrets Dir — permissions 700\n[OK] Personal State — Personal State API running (openapi.json)\n[OK] Skills — All 7 skills present\n[OK] Plugin — Plugin optional in native profile mode\n[OK] Profiles Config — Specialist profiles configured\n\n=== Summary ===\nPassed: 10/11\nFailed: 1/11\n\n[ok] Personal State API healthy\n=== Health check complete ===",
+      "last_error": "Script exited with code 1\nstdout:\n=== Daily Health Check ===\nTime: Sun Sep 13 08:30:43 PM PDT 2026\n[fail] Verification failed\nresent\n[OK] Honcho \u2014 All 4 Honcho containers healthy (compose stack)\n[OK] GBrain CLI \u2014 GBrain removed from deployment (skip check)\n[OK] GBrain Health \u2014 GBrain removed from deployment (skip check)\n[FAIL] Directories\n[OK] Secrets Dir \u2014 permissions 700\n[OK] Personal State \u2014 Personal State API running (openapi.json)\n[OK] Skills \u2014 All 7 skills present\n[OK] Plugin \u2014 Plugin optional in native profile mode\n[OK] Profiles Config \u2014 Specialist profiles configured\n\n=== Summary ===\nPassed: 10/11\nFailed: 1/11\n\n[ok] Personal State API healthy\n=== Health check complete ===",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -1558,10 +1558,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1608,10 +1608,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": "/home/home_user/.hermes/scripts",
@@ -1627,7 +1627,7 @@
     {
       "id": "5f2468a5d037",
       "name": "Graphify Status",
-      "prompt": "Check graphify health for BOTH graphs and report a real operational status, not just file size.\n\n1. Load and validate both graph.json files:\n   - Active Wiki: ~/.autognosia/active-wiki/graphify-out/graph.json\n   - Oracle Brain: ~/.autognosia/oracle/brain/graphify-out/graph.json\n\n   For each, parse the JSON and report:\n   - File size in bytes (and human-readable)\n   - Valid JSON: yes/no (if not, report the parse error)\n   - Top-level keys present\n   - nodes (count and first 3 node IDs)\n   - links (count)\n   - edges (count)\n   - extracted_sources (count)\n   - Whether the data looks internally consistent (e.g. links reference node IDs that exist)\n\n2. Check the manifests:\n   - Active Wiki: ~/.autognosia/active-wiki/graphify-out/manifest.json\n   - Oracle Brain: ~/.autognosia/oracle/brain/graphify-out/manifest.json\n\n   For each:\n   - Entry count\n   - A few example entries (file path / source id)\n\n3. Cross-check manifest vs graph:\n   - Does the manifest file count roughly correspond to the graph node count?\n   - Flag if manifest has many entries but graph has 0 nodes (that means ingestion wrote a manifest but produced no graph — a failure sign).\n\n4. Check for a running graphify process:\n   - ps aux | grep graphify | grep -v grep\n   - Report PID and command line if running, otherwise \"no graphify process running\"\n\n5. Check the most recent graphify ingestion log:\n   - ~/.autognosia/logs/graphify-active-wiki.log\n   - ~/.autognosia/logs/graphify-oracle-brain.log\n   - Report the last 5 non-empty lines from each, or say the log file is missing / empty\n\n6. Overall verdict:\n   - A graph is only HEALTHY if: valid JSON, nodes > 0, links corresponding to those nodes, manifest exists and has entries, and the log shows a recent successful run.\n   - A graph is DEGRADED if: valid JSON but 0 nodes, or manifest has entries but graph is empty, or log shows repeated failures.\n   - A graph is MISSING if: graph.json or manifest.json does not exist.\n\nReport concisely but with enough detail to tell whether each graph is actually operational.\n\nDo not use any fixed node/link count threshold as a substitute for actually loading and inspecting the files. A graph with many nodes can still be stale or broken.\n",
+      "prompt": "Check graphify health for BOTH graphs and report a real operational status, not just file size.\n\n1. Load and validate both graph.json files:\n   - Active Wiki: ~/.autognosia/active-wiki/graphify-out/graph.json\n   - Oracle Brain: ~/.autognosia/oracle/brain/graphify-out/graph.json\n\n   For each, parse the JSON and report:\n   - File size in bytes (and human-readable)\n   - Valid JSON: yes/no (if not, report the parse error)\n   - Top-level keys present\n   - nodes (count and first 3 node IDs)\n   - links (count)\n   - edges (count)\n   - extracted_sources (count)\n   - Whether the data looks internally consistent (e.g. links reference node IDs that exist)\n\n2. Check the manifests:\n   - Active Wiki: ~/.autognosia/active-wiki/graphify-out/manifest.json\n   - Oracle Brain: ~/.autognosia/oracle/brain/graphify-out/manifest.json\n\n   For each:\n   - Entry count\n   - A few example entries (file path / source id)\n\n3. Cross-check manifest vs graph:\n   - Does the manifest file count roughly correspond to the graph node count?\n   - Flag if manifest has many entries but graph has 0 nodes (that means ingestion wrote a manifest but produced no graph \u2014 a failure sign).\n\n4. Check for a running graphify process:\n   - ps aux | grep graphify | grep -v grep\n   - Report PID and command line if running, otherwise \"no graphify process running\"\n\n5. Check the most recent graphify ingestion log:\n   - ~/.autognosia/logs/graphify-active-wiki.log\n   - ~/.autognosia/logs/graphify-oracle-brain.log\n   - Report the last 5 non-empty lines from each, or say the log file is missing / empty\n\n6. Overall verdict:\n   - A graph is only HEALTHY if: valid JSON, nodes > 0, links corresponding to those nodes, manifest exists and has entries, and the log shows a recent successful run.\n   - A graph is DEGRADED if: valid JSON but 0 nodes, or manifest has entries but graph is empty, or log shows repeated failures.\n   - A graph is MISSING if: graph.json or manifest.json does not exist.\n\nReport concisely but with enough detail to tell whether each graph is actually operational.\n\nDo not use any fixed node/link count threshold as a substitute for actually loading and inspecting the files. A graph with many nodes can still be stale or broken.\n",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -1664,10 +1664,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261"
+        "user_id": "YOUR_TELEGRAM_USER_ID"
       },
       "enabled_toolsets": null,
       "workdir": null,
@@ -1715,16 +1715,16 @@
       "next_run_at": "2026-09-14T07:00:00-07:00",
       "last_run_at": "2026-09-13T07:01:49.226830-07:00",
       "last_status": "error",
-      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings → Providers → Local models, or switch to another model.",
+      "last_error": "RuntimeError: The local model server is turned off. Turn it back on in Settings \u2192 Providers \u2192 Local models, or switch to another model.",
       "last_delivery_error": null,
       "failure_streak": 2,
       "deliver": "telegram",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -1778,10 +1778,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -1797,7 +1797,7 @@
     {
       "id": "b24d49d189f3",
       "name": "Frontier Research Lane A",
-      "prompt": "You are Frontier Research Lane A. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [⏳] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [⏳] items (skip any with claimed_by or [✅])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [✅], add research file path, keep claim fields for audit\n7. Add 2-5 new [⏳] items discovered during research to the agenda\n8. If all items are [✅] or claimed: pick oldest [✅] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [⏳] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [⏳] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis — what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
+      "prompt": "You are Frontier Research Lane A. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [\u23f3] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [\u23f3] items (skip any with claimed_by or [\u2705])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [\u2705], add research file path, keep claim fields for audit\n7. Add 2-5 new [\u23f3] items discovered during research to the agenda\n8. If all items are [\u2705] or claimed: pick oldest [\u2705] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [\u23f3] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [\u23f3] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis \u2014 what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
       "skills": [
         "researcher"
       ],
@@ -1837,10 +1837,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -1857,7 +1857,7 @@
     {
       "id": "33d192d976c8",
       "name": "Frontier Research Lane B",
-      "prompt": "You are Frontier Research Lane B. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [⏳] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [⏳] items (skip any with claimed_by or [✅])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [✅], add research file path, keep claim fields for audit\n7. Add 2-5 new [⏳] items discovered during research to the agenda\n8. If all items are [✅] or claimed: pick oldest [✅] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [⏳] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [⏳] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis — what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
+      "prompt": "You are Frontier Research Lane B. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [\u23f3] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [\u23f3] items (skip any with claimed_by or [\u2705])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [\u2705], add research file path, keep claim fields for audit\n7. Add 2-5 new [\u23f3] items discovered during research to the agenda\n8. If all items are [\u2705] or claimed: pick oldest [\u2705] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [\u23f3] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [\u23f3] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis \u2014 what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
       "skills": [
         "researcher"
       ],
@@ -1897,10 +1897,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -1954,10 +1954,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2006,10 +2006,10 @@
       "deliver": "local",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2066,10 +2066,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2085,7 +2085,7 @@
     {
       "id": "50bf431feaea",
       "name": "Oracle Night Research",
-      "prompt": "Night research job for Oracle Brain expansion. Steps:\n\n1. Check for pending exchange requests:\n   ```bash\n   ls /home/home_user/.autognosia/exchange/research/*.json 2>/dev/null | head -5\n   ```\n\n2. If pending requests exist:\n   - Read the oldest request file (by filename/timestamp)\n   - Extract the topic and expansion directions\n   - Research the topic using the local Docker research stack (Camofox → Firecrawl → SearXNG → Tavily)\n   - Write findings directly to Oracle Brain at the path specified in the request\n   - Use standardized front matter (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence)\n   - Archive the completed request: move from exchange/research/ to exchange/research/archive/\n\n3. If no pending requests:\n   - Run: python3 /home/home_user/scripts/pick_next_wiki_topic.py\n   - Research the returned topic\n   - Write to Oracle Brain at the returned target_path\n\n4. Output format:\n   ```\n   STATUS: COMPLETE | PARTIAL | FAILED\n   TOPIC: (what was researched)\n   FILE_CREATED: (path to new file)\n   REQUEST_CONSUMED: (request ID or \"frontier_catalog\")\n   ```\n\nIf no work was available (exhausted catalog), respond with [SILENT].",
+      "prompt": "Night research job for Oracle Brain expansion. Steps:\n\n1. Check for pending exchange requests:\n   ```bash\n   ls /home/home_user/.autognosia/exchange/research/*.json 2>/dev/null | head -5\n   ```\n\n2. If pending requests exist:\n   - Read the oldest request file (by filename/timestamp)\n   - Extract the topic and expansion directions\n   - Research the topic using the local Docker research stack (Camofox \u2192 Firecrawl \u2192 SearXNG \u2192 Tavily)\n   - Write findings directly to Oracle Brain at the path specified in the request\n   - Use standardized front matter (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence)\n   - Archive the completed request: move from exchange/research/ to exchange/research/archive/\n\n3. If no pending requests:\n   - Run: python3 /home/home_user/scripts/pick_next_wiki_topic.py\n   - Research the returned topic\n   - Write to Oracle Brain at the returned target_path\n\n4. Output format:\n   ```\n   STATUS: COMPLETE | PARTIAL | FAILED\n   TOPIC: (what was researched)\n   FILE_CREATED: (path to new file)\n   REQUEST_CONSUMED: (request ID or \"frontier_catalog\")\n   ```\n\nIf no work was available (exhausted catalog), respond with [SILENT].",
       "skills": [
         "oracle-researcher"
       ],
@@ -2125,10 +2125,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2144,7 +2144,7 @@
     {
       "id": "c7342bb30048",
       "name": "Online Lane A",
-      "prompt": "You are Online Lane A. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [⏳] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [⏳] items (skip any with claimed_by or [✅])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [✅], add research file path, keep claim fields for audit\n7. Add 2-5 new [⏳] items discovered during research to the agenda\n8. If all items are [✅] or claimed: pick oldest [✅] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [⏳] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [⏳] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis — what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
+      "prompt": "You are Online Lane A. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [\u23f3] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [\u23f3] items (skip any with claimed_by or [\u2705])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [\u2705], add research file path, keep claim fields for audit\n7. Add 2-5 new [\u23f3] items discovered during research to the agenda\n8. If all items are [\u2705] or claimed: pick oldest [\u2705] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [\u23f3] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [\u23f3] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis \u2014 what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
       "skills": [
         "google-researcher"
       ],
@@ -2184,10 +2184,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2204,7 +2204,7 @@
     {
       "id": "36d0ff501181",
       "name": "Online Lane B",
-      "prompt": "You are Online Lane B. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [⏳] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [⏳] items (skip any with claimed_by or [✅])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [✅], add research file path, keep claim fields for audit\n7. Add 2-5 new [⏳] items discovered during research to the agenda\n8. If all items are [✅] or claimed: pick oldest [✅] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [⏳] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [⏳] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis — what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
+      "prompt": "You are Online Lane B. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [\u23f3] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [\u23f3] items (skip any with claimed_by or [\u2705])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [\u2705], add research file path, keep claim fields for audit\n7. Add 2-5 new [\u23f3] items discovered during research to the agenda\n8. If all items are [\u2705] or claimed: pick oldest [\u2705] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [\u23f3] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [\u23f3] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis \u2014 what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/. Every major concept, paper, or idea must link to at least 2-3 other research files in that folder.\n- Use web_search and web_extract for internet sources. arXiv is available as an additional source for academic content.\n- Every wiki file MUST include proper YAML front matter matching the wiki-frontmatter.schema.json (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence).\n\nOutput format:\nSTATUS: COMPLETE | PARTIAL | FAILED\nQUESTION: (the research question)\nDIRECT_ANSWER: (brief answer)\nKEY_FINDINGS: (list)\nWHAT_CHANGED: (what's new)\nCONFLICTS: (any conflicting info found)\nUNCERTAINTIES: (what couldn't be verified)\nSOURCES: (URLs and arXiv IDs)\nSOURCE_QUALITY: (assessment of source reliability)\nTEMPORALITY: (how current is this info)\nTIERS_USED: (which search tiers were used)\nSUGGESTED_REVIEW_DATE: (when to re-verify)\nFILES_CREATED:\n  - path: (file path)\n    status: created | updated | skipped\nBACKLINKS_ADDED: N links to other research files\nTOPICS_COVERED:\n  - topic1: N papers/ideas\n  - topic2: N papers/ideas\n",
       "skills": [
         "openrouter-researcher"
       ],
@@ -2244,10 +2244,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2264,7 +2264,7 @@
     {
       "id": "04ea71395847",
       "name": "Desktop Research A",
-      "prompt": "You are Desktop Research A. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nINFERENCE: Use ONLY the local GPU endpoint at http://10.1.1.151:8080/v1 (Qwen3.5-9B, llama.cpp server). No API key needed. Use the `desktopLM_9B` provider with model `qwen3.5-9b` and base_url `http://10.1.1.151:8080/v1`.\n\nCRITICAL RULE: DO NOT FALL BACK TO ANY OTHER MODEL. If the desktop endpoint fails or returns errors, FAIL THIS JOB. Do not use the primary Hermes model, do not use OpenRouter, do not use any other provider. Use ONLY the desktop endpoint.\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [⏳] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [⏳] items (skip any with claimed_by or [✅])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [✅], add research file path, keep claim fields for audit\n7. Add 2-5 new [⏳] items discovered during research to the agenda\n8. If all items are [✅] or claimed: pick oldest [✅] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [⏳] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [⏳] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis — what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/ and update the research index.\n- Write findings to ~/.autognosia/active-wiki/research/ as a new .md file with OKF v0.2 frontmatter.\n\nDELIVER: Summary of what was researched and where findings were written.\n",
+      "prompt": "You are Desktop Research A. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nINFERENCE: Use ONLY the local GPU endpoint at http://10.1.1.151:8080/v1 (Qwen3.5-9B, llama.cpp server). No API key needed. Use the `desktopLM_9B` provider with model `qwen3.5-9b` and base_url `http://10.1.1.151:8080/v1`.\n\nCRITICAL RULE: DO NOT FALL BACK TO ANY OTHER MODEL. If the desktop endpoint fails or returns errors, FAIL THIS JOB. Do not use the primary Hermes model, do not use OpenRouter, do not use any other provider. Use ONLY the desktop endpoint.\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [\u23f3] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [\u23f3] items (skip any with claimed_by or [\u2705])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [\u2705], add research file path, keep claim fields for audit\n7. Add 2-5 new [\u23f3] items discovered during research to the agenda\n8. If all items are [\u2705] or claimed: pick oldest [\u2705] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [\u23f3] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [\u23f3] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis \u2014 what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/ and update the research index.\n- Write findings to ~/.autognosia/active-wiki/research/ as a new .md file with OKF v0.2 frontmatter.\n\nDELIVER: Summary of what was researched and where findings were written.\n",
       "skills": [
         "5060-researcher"
       ],
@@ -2304,10 +2304,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,
@@ -2324,7 +2324,7 @@
     {
       "id": "ba9fb14c07af",
       "name": "Desktop Research B",
-      "prompt": "You are Desktop Research B. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nINFERENCE: Use the local GPU endpoint at http://10.1.1.151:18020/v1 (Qwen3.8-27B, vLLM server). Use the `vllm` provider with model `qwen3.8-27b` and base_url `http://10.1.1.151:18020/v1`. Do NOT send any Authorization header.\n\nCRITICAL RULE: DO NOT FALL BACK TO ANY OTHER MODEL. If the desktop endpoint fails or returns errors, FAIL THIS JOB. Do not use the primary Hermes model, do not use OpenRouter, do not use any other provider. Use ONLY the desktop endpoint.\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [⏳] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [⏳] items (skip any with claimed_by or [✅])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [✅], add research file path, keep claim fields for audit\n7. Add 2-5 new [⏳] items discovered during research to the agenda\n8. If all items are [✅] or claimed: pick oldest [✅] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [⏳] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [⏳] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis — what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/ and update the research index.\n- Write findings to ~/.autognosia/active-wiki/research/ as a new .md file with OKF v0.2 frontmatter.\n\nDELIVER: Summary of what was researched and where findings were written.\n",
+      "prompt": "You are Desktop Research B. Frontier researcher for Autognosia. Write all research findings as markdown files directly into ~/.autognosia/active-wiki/research/\n\nINFERENCE: Use the local GPU endpoint at http://10.1.1.151:18020/v1 (Qwen3.8-27B, vLLM server). Use the `vllm` provider with model `qwen3.8-27b` and base_url `http://10.1.1.151:18020/v1`. Do NOT send any Authorization header.\n\nCRITICAL RULE: DO NOT FALL BACK TO ANY OTHER MODEL. If the desktop endpoint fails or returns errors, FAIL THIS JOB. Do not use the primary Hermes model, do not use OpenRouter, do not use any other provider. Use ONLY the desktop endpoint.\n\nAGENDA PROTOCOL:\n1. Read the agenda file: ~/.autognosia/active-wiki/research/BUILD-PLAN-AGENDA.md\n2. Find all items marked [\u23f3] (pending, unclaimed)\n3. Using your lane's spread factor offset, pick the item at that position in the list:\n   - Count only [\u23f3] items (skip any with claimed_by or [\u2705])\n   - If fewer items than offset, wrap around: offset % queue_size\n   - If queue is empty or all items claimed, see step 6\n4. Claim your chosen item by adding these fields to its line:\n     claimed_by: <lane_id>\n     claimed_at: <ISO UTC timestamp>\n     claim_expires: <ISO UTC timestamp + 4 hours>\n5. Research the item (see RESEARCH PROTOCOL below)\n6. On completion: mark [\u2705], add research file path, keep claim fields for audit\n7. Add 2-5 new [\u23f3] items discovered during research to the agenda\n8. If all items are [\u2705] or claimed: pick oldest [\u2705] for deeper follow-up research\n\nCLAIM RULES:\n- Only claim items that are [\u23f3] (not claimed, not complete)\n- If claim_expires has passed, another lane may override the claim\n- On failure: remove claim fields, add failure note, leave as [\u23f3] for retry\n\nRESEARCH PROTOCOL:\n- For each idea/paper: provide FULL analysis \u2014 what it claims, how it works, why it matters, and how it connects to other ideas. Do not write abstracts; write explanations that let someone understand the idea from your text alone.\n- Cite sources with URLs or arXiv IDs.\n- MANDATORY: Add [[backlinks]] to related research files in ~/.autognosia/active-wiki/research/ and update the research index.\n- Write findings to ~/.autognosia/active-wiki/research/ as a new .md file with OKF v0.2 frontmatter.\n\nDELIVER: Summary of what was researched and where findings were written.\n",
       "skills": [
         "3090-researcher"
       ],
@@ -2364,10 +2364,10 @@
       "deliver": "origin",
       "origin": {
         "platform": "telegram",
-        "chat_id": "7791814261",
+        "chat_id": "YOUR_TELEGRAM_CHAT_ID",
         "chat_name": "Josh",
         "thread_id": null,
-        "user_id": "7791814261",
+        "user_id": "YOUR_TELEGRAM_USER_ID",
         "scope_id": null
       },
       "enabled_toolsets": null,

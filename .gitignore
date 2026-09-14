@@ -398,3 +398,37 @@ ontology_alignment_report_2026.json
 upper_ontology_research_2026.json
 dashboard/autognosia
 autognosia/
+
+# ── Cron runtime (not source) ──
+cron/output/
+cron/*.lock
+cron/*.db
+cron/notepad.db
+cron/usage_audit.jsonl
+cron/catch_up_occurrences
+cron/ticker_heartbeat
+cron/ticker_last_success
+cron/persisted_error_recoveries.jsonl
+cron/jobs.json.bak-audit
+
+# ── Dashboard runtime ──
+dashboard/dashboard.log
+dashboard/*.log
+
+# ── Editor ──
+.vscode/
+
+# ── Docker / temp ──
+docker_files/
+temp/
+
+# ── Research scratch files (additional) ──
+*_research.json
+*_research.md
+*_research_summary.md
+*_research_results.json
+*_papers_output.json
+ontology*research*.md
+ontology*research*.json
+*_research_*.md
+*_research_*.json
