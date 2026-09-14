@@ -1,0 +1,18 @@
+{
+  "name": "Decision Synthesis Nightly",
+  "description": "Run the decision_logger synthesis script nightly to scan the decisions table for contradictions, stance drift, and entity promotion patterns. Results saved to ~/.hermes/cron/output/decision_synthesis_<date>.json",
+  "prompt": "Run the decision synthesis job:\n\nDECISION_SYNTH_OUTPUT=/home/josh434/.hermes/cron/output /home/josh434/.hermes/hermes-agent/venv/bin/python3 /home/josh434/decision_logger/synthesis.py\n\nThis scans the decisions table in brain-postgres (localhost:5433) and produces a synthesis report about contradictions, stance drift, and entity changes. Results written to ~/.hermes/cron/output/decisions-synth-*.md\n\nRespond with [SILENT] on success. If there are errors, report them.",
+  "script": "decision_logger/synthesis.py",
+  "workdir": "/home/josh434",
+  "no_agent": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 2 * * *",
+    "display": "0 2 * * *"
+  },
+  "schedule_display": "0 2 * * * (nightly at 2 AM)",
+  "enabled": true,
+  "deliver": "local",
+  "model": null,
+  "provider": null
+}

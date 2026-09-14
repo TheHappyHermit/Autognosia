@@ -1,0 +1,26 @@
+# decision_logger — Hermes Agent plugin manifest
+#
+# Install:  copy this directory to ~/.hermes/plugins/decision_logger/
+#           (or symlink it from the repo)
+#
+# Load:     Hermes auto-discovers plugins on startup.  No extra config.
+#
+# Env vars (all optional — sane defaults for the brain DB on localhost):
+#
+#   DECISION_DB_HOST     Postgres host (default: localhost)
+#   DECISION_DB_PORT     Postgres port (default: 5433)
+#   DECISION_DB_USER     Postgres user (default: brain)
+#   DECISION_DB_PASS     Postgres password (default: brain)
+#   DECISION_DB_NAME     Postgres database (default: brain)
+#   DECISION_SCAN_TAIL_CHARS   Chars to scan from response tail (default: 4000)
+#   DECISION_CONFIDENCE_THRESHOLD  Min confidence to write (default: 0.65)
+#   DECISION_WIKI_OUTPUT_DIR  Optional dir to write markdown pages
+#
+# The plugin registers on the agent:end hook.  It scans the agent's
+# final response for decision-like sentences and writes them to the
+# brain DB decisions table.  It never blocks the agent loop.
+name: decision_logger
+version: 0.1.0
+description: >
+  Detects decisions made by the agent during a session and writes them
+  to the brain DB decisions table.  Passive, non-blocking, idempotent.
