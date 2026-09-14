@@ -51,7 +51,7 @@ When designing or building dashboards, the target aesthetic is:
 - **Layout:** Grid-based, modular panels with thin borders, high information density without clutter
 - **Accents:** Cyan (#0891b2), green (#16a34a), amber (#f59e0b) — simple, bright, not neon
 
-Reference images at `/home/josh434/tmp/deck.png` and `/home/josh434/tmp/deck2.png` show the current state. The goal is **significant** improvement — this is a personal command center, not a generic template. Think "the most beautiful monitoring dashboard you've ever seen."
+Reference images at `/home/home_user/tmp/deck.png` and `/home/home_user/tmp/deck2.png` show the current state. The goal is **significant** improvement — this is a personal command center, not a generic template. Think "the most beautiful monitoring dashboard you've ever seen."
 
 ## Home Lab Services to Include
 

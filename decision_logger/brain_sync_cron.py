@@ -14,9 +14,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_DIR = Path("/home/josh434")
+REPO_DIR = Path("/home/home_user")
 BRAIN_SYNC = REPO_DIR / "scripts" / "brain_sync.py"
-PYTHON = Path("/home/josh434/.hermes/hermes-agent/venv/bin/python3")
+PYTHON = Path("/home/home_user/.hermes/hermes-agent/venv/bin/python3")
 SOURCES = ["active-wiki", "exchange-research", "decisions"]
 
 # Embeddings via llama.cpp on :18082 (server), not localhost

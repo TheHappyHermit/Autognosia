@@ -143,7 +143,7 @@ display:
 dashboard:
   basic_auth:
     username: user
-    password_hash: scrypt$16384$8$1$OoY6swvLyHJyX1eKjTBIbQ==$QBmQgho9mpj3RgDtEjYlJH0wYy2gDHhyRENqA0pVBoY=
+    password_hash: CHANGE_ME
 privacy:
   redact_pii: false
 tts:

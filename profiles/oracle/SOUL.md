@@ -33,18 +33,18 @@ Long-term librarian, historian, retrieval specialist, source/provenance checker,
 ### Graphs Available
 | Graph | Location | Source |
 |-------|----------|--------|
-| **Oracle Graph** | `/home/josh434/.autognosia/oracle/brain/graphify-out/graph.json` | Oracle Brain wiki |
-| **Main Graph** | `/home/josh434/.autognosia/active-wiki/graphify-out/graph.json` | Active Wiki |
+| **Oracle Graph** | `/home/home_user/.autognosia/oracle/brain/graphify-out/graph.json` | Oracle Brain wiki |
+| **Main Graph** | `/home/home_user/.autognosia/active-wiki/graphify-out/graph.json` | Active Wiki |
 
 ### Query Commands
 ```bash
 # Oracle Graph (relationship queries)
-graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/oracle/brain/graphify-out
-graphify explain "concept-name" --graph /home/josh434/.autognosia/oracle/brain/graphify-out
-graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/oracle/brain/graphify-out
+graphify query "How does X connect to Y?" --graph /home/home_user/.autognosia/oracle/brain/graphify-out
+graphify explain "concept-name" --graph /home/home_user/.autognosia/oracle/brain/graphify-out
+graphify path "node-a" "node-b" --graph /home/home_user/.autognosia/oracle/brain/graphify-out
 
 # Main Graph (relationship queries)
-graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+graphify query "How does X connect to Y?" --graph /home/home_user/.autognosia/active-wiki/graphify-out
 ```
 
 ### Fallback

@@ -128,8 +128,8 @@ display:
   tool_progress: all
 dashboard:
   basic_auth:
-    username: josh434
-    password_hash: scrypt$16384$8$1$OoY6swvLyHJyX1eKjTBIbQ==$QBmQgho9mpj3RgDtEjYlJH0wYy2gDHhyRENqA0pVBoY=
+    username: home_user
+    password_hash: CHANGE_ME
 privacy:
   redact_pii: false
 tts:

@@ -128,8 +128,8 @@ research_output/
 # ── Vault and backups ──
 Documents/
 backups/
-_home_josh434_*/
-_home_josh434_*
+_home_home_user_*/
+_home_home_user_*
 venv/
 .venv/
 site-packages/

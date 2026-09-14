@@ -1,0 +1,76 @@
+Cronjob Response: Morning Newsletter (6 AM)
+(job_id: eebf16fd600a)
+-------------
+
+# News Brief
+*2026-07-11 06:05*
+
+---
+
+## 🔬 Science
+
+- **Pregnant mom cancer dismissal**: Jenney Bitner, 22 weeks pregnant, was diagnosed with a brain tumor after urgent cares attributed symptoms to pregnancy; doctors scheduled surgery. Concrete step: tumor operation planned upon return from San Diego.
+
+- **City air haze**: Nitric oxide found to play a larger role in rapid urban haze formation than previously understood. Implication: may shift air pollution control strategies.
+
+- **Cursive myths**: Cursive is not faster than printing, shows no unique cognitive benefits, and isn't legally required for signatures. Implication: recent North American school mandates rest on false premises.
+
+- **California coast**: NOAA holds public hearings in Santa Monica next month on coastal management as Trump administration threatens Coastal Act protections that created 2,500 beach access points. Concrete next: public can comment at hearings.
+
+- **GLP-1 implant**: Vivani Medical and Novo Nordisk agreed to evaluate a semaglutide implant (NPM-139) for weight-loss maintenance after patients stop injections. Status: early development, not yet available.
+
+- **Dopamine patch**: Chinese Academy of Sciences team developed a painless wearable microneedle sensor for dopamine. Potential use: at-home tracking of Parkinson's and depression.
+
+- **Neanderthal bottleneck**: Study shows Neanderthals nearly vanished 75,000 years ago then repopulated Europe from one group. Implication: revises genetic history of late Neanderthals.
+
+- **Vietnam speedboat**: Speedboat capsized near southern Vietnam, killing 15 Indian tourists. No further concrete steps reported.
+
+---
+
+## 🤖 AI & Tech
+
+- **Spotify Release Radar**: Spot1fy rolled out updated Release Radar with user-selectable filters (e.g., "Discover new artists," "Pop") on mobile/desktop. Users can narrow recommendations via up to five options at the playlist top; overall recommendation system and cover also updated.
+
+- **Apple weekend deals**: Discounts available on AirPods 4 (~25% off), Apple Watch Ultra 3, iPhone 17 Pro/Max (up to $449 off), Magic Keyboard, black Magic Mouse, and Anker accessories. Deals are live at retailers including Amazon.
+
+- **AI misuse**: Researchers report terrorist groups used popular AI tools for bomb-making despite built-in safeguards. Indicates current protections are inadequate; no specific countermeasures announced.
+
+- **Trump–Iran**: Trump threatened "complete decimation" of Iran with 1,000 missiles locked if an assassination plot against him is carried out; U.S. military directed to prepare. Escalation likely if plot proceeds.
+
+- **Democrats/Platner**: Graham Platner, an inexperienced candidate recruited by out-of-state activists, failed in Maine Senate race, upsetting party voters. Recruitment process under question; race destabilized.
+
+- **Amazon layoffs**: Amazon laid off ~30,000 total in recent rounds (largest in history); laid-off workers face AI-reshaped job market with competition from other tech firms. Some former roles no longer exist.
+
+- **M1 MacBook Air**: M1 MacBook Air remains usable beyond typical 4-year lifecycle, longest of any Apple laptop. Organizations may extend deployment cycles as Mac prices rise.
+
+- **Trump Accounts**: "Fostering the Future" shows federal-state partnership can enroll children into Trump Accounts to close participation gap. Model available for replication.
+
+- **Apple sues OpenAI**: Apple filed lawsuit against OpenAI alleging trade secret theft; article text corrupted so specifics unavailable. Legal response forthcoming.
+
+---
+
+## 🌍 World
+
+- Dermot Murnaghan, 68, former BBC and Sky News presenter, died at home from prostate cancer. No further actions noted.
+
+- A speedboat capsized near Vietnam's Phu Quoc Island, killing 15 Indian tourists and injuring others; some were trapped underwater. PM Modi said India is providing assistance and coordinating with Vietnamese authorities; rescue operations concluded.
+
+- Typhoon Bavi passed Taiwan with rough seas and damage, now tracking to China's east coast with landfall expected Sunday. China is preparing for the storm.
+
+- US Rep. Ro Khanna was detained by armed Israeli settlers near a destroyed Palestinian village; Israeli forces dispersed them. Khanna said the trip strengthened his presidential run plans and he criticized US support for Israel, calling for action against alleged genocide.
+
+- Sen. Mitch McConnell's health status is unclear after hospitalization; a columnist questioned the lack of clear information. No concrete next steps disclosed.
+
+- UK MP Nigel Farage resigned over financial questions and is running for re-election in his constituency; satirical candidate Count Binface is a rival. A by-election will be held.
+
+- Democrats lost a Senate candidate in Maine after Platner's implosion, exposing missed warning signs. The party now faces a recruitment void for that seat.
+
+- In some Indian towns, post offices are offering eye tests to people squinting at text, addressing unmet glasses needs. This may expand basic vision care access locally.
+
+- Russia struck Kyiv and Odesa with missiles/drones, wounding at least 11, while Ukraine attacked Russian vessels and is low on counter-munitions. Zelenskyy urged NATO to fulfill summit promises; implication is urgent ammunition deliveries needed.
+
+- Zimbabweans are returning home due to xenophobic violence in South Africa; 21,300 were repatriated by government and 56,800 self-repatriated in five weeks. Further returns are ongoing.
+
+- Iran's Mojtaba Khamenei vowed revenge for his father's killing; Trump threatened to "decimate" Iran if it targets him. Tensions between the US and Iran are elevated.
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Morning Newsletter (6 AM)").

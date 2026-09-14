@@ -9,7 +9,7 @@ Writes an adapted tree to <tempdir>/autognosia_skills_push, prints how many file
 changed, then verifies no Windows paths remain. Push with:
 
     cd /tmp/autognosia_skills_push   # MSYS view of C:\\tmp\\autognosia_skills_push
-    tar -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server josh434@10.1.1.37 \
+    tar -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server home_user@10.1.1.37 \
         "mkdir -p ~/.hermes/skills/research ~/.autognosia/incoming && tar -xf - -C ~/.hermes/skills/"
 
 Windows notes: run with `python` (no python3 on this box). MSYS /tmp maps to
@@ -26,11 +26,11 @@ DST = os.path.join(tempfile.gettempdir(), "autognosia_skills_push")
 
 # (pattern, replacement) — order matters: longest/most specific first.
 RULES = [
-    (r"C:\\Hermes\\Oracle\\Vault", "/home/josh434/.autognosia/oracle/brain"),
-    (r"/c/Hermes/Oracle/Vault", "/home/josh434/.autognosia/oracle/brain"),
-    (r"C:\\Hermes\\LLM_WIKI", "/home/josh434/.autognosia/active-wiki"),
-    (r"/c/Hermes/LLM_WIKI", "/home/josh434/.autognosia/active-wiki"),
-    (r"C:\\Hermes\\Oracle\\Incoming", "/home/josh434/.autognosia/incoming"),
+    (r"C:\\Hermes\\Oracle\\Vault", "/home/home_user/.autognosia/oracle/brain"),
+    (r"/c/Hermes/Oracle/Vault", "/home/home_user/.autognosia/oracle/brain"),
+    (r"C:\\Hermes\\LLM_WIKI", "/home/home_user/.autognosia/active-wiki"),
+    (r"/c/Hermes/LLM_WIKI", "/home/home_user/.autognosia/active-wiki"),
+    (r"C:\\Hermes\\Oracle\\Incoming", "/home/home_user/.autognosia/incoming"),
     (r"/c/Hermes/Backups/Daily/", "~/backups/"),
     (r"~/AppData/Local/hermes/logs/", "~/.hermes/logs/"),
     (r"~/AppData/Local/hermes/cron/jobs.json", "~/.hermes/cron/jobs.json"),

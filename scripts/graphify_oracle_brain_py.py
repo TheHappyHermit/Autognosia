@@ -31,8 +31,8 @@ os.environ['GRAPHIFY_MAX_OUTPUT_TOKENS'] = '131072'
 os.environ['GRAPHIFY_MAX_RETRIES'] = '0'
 os.environ['GRAPHIFY_API_TIMEOUT'] = '900'
 
-ORACLE_BRAIN = Path('/home/josh434/.autognosia/oracle/brain')
-LOG_DIR = Path('/home/josh434/.autognosia/logs')
+ORACLE_BRAIN = Path('/home/home_user/.autognosia/oracle/brain')
+LOG_DIR = Path('/home/home_user/.autognosia/logs')
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOG_FILE = LOG_DIR / 'graphify-oracle-brain.log'
 

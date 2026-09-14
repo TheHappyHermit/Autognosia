@@ -24,8 +24,8 @@ os.environ['GRAPHIFY_MAX_OUTPUT_TOKENS'] = '131072'
 os.environ['GRAPHIFY_MAX_RETRIES'] = '0'
 os.environ['GRAPHIFY_API_TIMEOUT'] = '900'
 
-ACTIVE_WIKI = Path('/home/josh434/.autognosia/active-wiki')
-LOG_DIR = Path('/home/josh434/.autognosia/logs')
+ACTIVE_WIKI = Path('/home/home_user/.autognosia/active-wiki')
+LOG_DIR = Path('/home/home_user/.autognosia/logs')
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOG_FILE = LOG_DIR / 'graphify-active-wiki.log'
 

@@ -1,7 +1,7 @@
 UPDATED 2026-08-23 (post-autognosia-migration, re-verified live on .37):
-- Active Wiki: /home/josh434/.autognosia/active-wiki (WIKI_PATH in ~/.bashrc)
-- Oracle brain: /home/josh434/.autognosia/oracle/brain
-- organizer.db: /home/josh434/.autognosia/personal-organizer/data/organizer.db (tables: tasks, projects, subscriptions, important_dates, intentions, waiting_states, reminders — NO source_records)
+- Active Wiki: /home/home_user/.autognosia/active-wiki (WIKI_PATH in ~/.bashrc)
+- Oracle brain: /home/home_user/.autognosia/oracle/brain
+- organizer.db: /home/home_user/.autognosia/personal-organizer/data/organizer.db (tables: tasks, projects, subscriptions, important_dates, intentions, waiting_states, reminders — NO source_records)
 - ~/.autognosia now holds only autognosia.db/exchange/logs/personal-organizer (stale path map below is history)
 
 # Agent Server (10.1.1.37) — Hermes Cortex Path Map
@@ -32,7 +32,7 @@ Verified 2026-08-16. Repo: `~/autognosia` (github.com/TheHappyHermit/autognosia)
 **Rule:** vault content must live in `oracle/brain/` AND be copied to `~/personal-agent/oracle/brain` (GBrain + literal search). Both locations, no config edits needed.
 
 ## LLM Wiki location
-- `WIKI_PATH` IS set in `~/.hermes/.env` (added 2026-08-16): `/home/josh434/.autognosia/active-wiki`. Backup of pre-edit .env: `~/.hermes/.env.bak-20260816`.
+- `WIKI_PATH` IS set in `~/.hermes/.env` (added 2026-08-16): `/home/home_user/.autognosia/active-wiki`. Backup of pre-edit .env: `~/.hermes/.env.bak-20260816`.
 - Design intent per paths.yaml: hot wiki at `active-wiki/`; `rebuild_oracle_index.py` is the conveyor that copies active-wiki → oracle/brain.
 
 ## Cron self-provisioning behavior

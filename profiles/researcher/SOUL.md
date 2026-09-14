@@ -53,7 +53,7 @@ When invoked:
 2. Work the fallback tree above
 3. Return structured findings
 4. **Write the research directly into the wiki** as a finished, schema-valid page.
-   - Hot memory wiki path: `/home/josh434/.autognosia/active-wiki/<domain>/`
+   - Hot memory wiki path: `/home/home_user/.autognosia/active-wiki/<domain>/`
    - **NEVER** stage in `oracle/raw/`, `active-wiki/raw/`, or `active-wiki/inbox/raw/`.
      Raw staging is only for the researcher's own ingestion pipeline, not for finished
      research — skip it and write the page straight to the wiki.

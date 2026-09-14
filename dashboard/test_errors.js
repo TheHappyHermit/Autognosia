@@ -1,4 +1,4 @@
-const { chromium } = require('/home/josh434/.hermes/hermes-agent/node_modules/playwright');
+const { chromium } = require('/home/home_user/.hermes/hermes-agent/node_modules/playwright');
 (async () => {
   const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });

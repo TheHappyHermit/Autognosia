@@ -1,0 +1,503 @@
+{
+  "new_papers": [
+    {
+      "arxiv_id": "2602.13530",
+      "title": "REMem: Reasoning with Episodic Memory in Language Agent",
+      "authors": ["Yiheng Shu", "Saisri Padmaja Jonnalagedda", "Xiang Gao", "Bernal Jiménez Gutiérrez", "Weijian Qi", "Kamalika Das", "Huan Sun", "Yu Su"],
+      "date": "2026-02-13 (v1), 2026-02-28 (v3)",
+      "venue": "ICLR 2026 (Poster)",
+      "key_findings": [
+        "Two-phase framework for episodic memory: indexing (converts experiences into hybrid memory graph linking time-aware gists and facts) and agentic inference (agentic retriever with curated tools for iterative retrieval over memory graph)",
+        "Achieves 3.4% and 13.4% absolute improvements on episodic recollection and reasoning tasks vs. Mem0 and HippoRAG 2",
+        "Only method to exceed 90% exact match on Test of Time benchmark",
+        "More robust refusal behavior for unanswerable questions"
+      ],
+      "categories": ["experiential memory", "episodic memory", "dual memory systems", "agent memory"]
+    },
+    {
+      "arxiv_id": "2603.01341",
+      "title": "Structural Hallucination in Large Language Models: A Network-Based Evaluation of Knowledge Organization and Citation Integrity",
+      "authors": ["Moses Boudourides"],
+      "date": "2026-03-02",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Introduces 'structural hallucination': systematic distortion of conceptual organization, relational architecture, and bibliographic grounding invisible to sentence-level metrics",
+        "Network-based stress test: knowledge graph extraction, graph similarity analysis, centrality comparison, citation integrity verification",
+        "Three benchmarks: Roget's Thesaurus (lexical ontology), Wikidata philosophers (biographical KG), Dimensions.ai citations (bibliometric)",
+        "Roget: macro-F1 < 0.05, node-set Jaccard 0.028, 94.3% node fabrication rate",
+        "Wikidata: hallucination rates exceed 93% in biographical benchmark",
+        "Bibliometric: citation omission reaches 91.9%",
+        "Structural fidelity cannot be inferred from local fluency alone"
+      ],
+      "categories": ["structural hallucination", "ontology failures", "knowledge graph evaluation", "AI ontology failures"]
+    },
+    {
+      "arxiv_id": "2606.12945",
+      "title": "Learning What to Remember: A Cognitively Grounded Multi-Factor Value Model for Agentic Memory",
+      "authors": ["(authors from search result - need to verify)"],
+      "date": "2026-06-12",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Multi-factor memory value function with seven interpretable factors: emotional intensity, goal relevance, value alignment, self/user relevance, task utility, reliability, usage history",
+        "Single scalar uniformly drives encoding depth, forgetting, and retrieval",
+        "Separates consolidation-time (no query) from retrieval-time (query exists) decision regimes",
+        "Learned multi-factor value retains gold-standard memories far better than single-factor baselines (similarity, recency) at consolidation time"
+      ],
+      "categories": ["dual memory systems", "agent memory", "cognitive memory", "forgetting policies"]
+    },
+    {
+      "arxiv_id": "2607.13884",
+      "title": "Experience Memory Graph: One-Shot Error Correction for Agents",
+      "authors": ["Wenjun Wang", "Yuchen Fang", "Fengrui Liu", "Zibo Liang"],
+      "date": "2027",
+      "venue": "arXiv preprint (2027)",
+      "key_findings": [
+        "Reformulates agent failure recovery as graph matching problem",
+        "Converts failed and successful trajectories into directed action decision graphs at training time",
+        "Extracts common subgraphs (successful workflows) and graph edit paths (corrective actions for failures)",
+        "At test time: retrieves relevant insights and guides agent in single loop-free execution",
+        "Outperforms reflection baselines on ALFWorld and ScienceWorld in success rate and average reward",
+        "No test-time trial-and-error required"
+      ],
+      "categories": ["experiential memory", "agent memory", "error correction", "graph memory", "dynamic ontology"]
+    },
+    {
+      "arxiv_id": "2608.00007",
+      "title": "MemoryForge: Synthesize Lifelong Memory for Human-Like LLM Agents",
+      "authors": ["(authors from search result)"],
+      "date": "2026-08-01",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Memory-based conditioning paradigm: replaces abstract profiles with autobiographical memory base",
+        "Formalizes customized lifelong memory synthesis: given brief persona description, produce memory base spanning full developmental trajectory",
+        "Multi-resolution simulator generates specific experiences, general events, life periods from brief persona",
+        "Enables frozen LLMs to dynamically retrieve situation-relevant memory for behavior guidance",
+        "Addresses limitations of trait labels and scripted dialogues by grounding dispositions in accumulated experiences"
+      ],
+      "categories": ["experiential memory", "lifelong memory", "persona synthesis", "autobiographical memory"]
+    },
+    {
+      "arxiv_id": "2605.28773",
+      "title": "Rethinking Memory as Continuously Evolving Connectivity",
+      "authors": ["Ningyu Zhang", "et al."],
+      "date": "2026-05-27",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "FluxMem: connectivity-evolving memory framework modeling memory as heterogeneous graph",
+        "Three stages: initial connection formation, feedback-driven refinement, long-term consolidation",
+        "During execution: repairs missing links, prunes interference, aligns abstraction granularity, distills recurrent successful trajectories into reusable procedural circuits",
+        "Guided by metric for memory generalizability and evolutionary maturity",
+        "Memory emerges as self-organizing structure where units and connections continuously adapt and evolve"
+      ],
+      "categories": ["dynamic ontology", "memory evolution", "graph memory", "continual learning"]
+    },
+    {
+      "arxiv_id": "2606.03787",
+      "title": "Worth Remembering: Surprise-Gated Robot Episodic Memory",
+      "authors": ["(authors from search result)"],
+      "date": "2026-06-02",
+      "venue": "arXiv preprint (cs.RO)",
+      "key_findings": [
+        "Episodic memory system for robotics using Bayesian surprise of V-JEPA-2 latent space embeddings",
+        "Selectively stores high-utility experiences during long-horizon (>30 min) robot rollouts",
+        "Surprise gate is causal, unsupervised, augments 4D scene graph (DAAAM) with generically useful events",
+        "Robust threshold (median absolute deviation) on surprise signal gates which frames stored as episodic traces"
+      ],
+      "categories": ["episodic memory", "robotics", "surprise-gated memory", "embodied AI"]
+    },
+    {
+      "arxiv_id": "2604.12167",
+      "title": "EMBER: Autonomous Cognitive Behaviour from Learned Spiking Neural Network Dynamics in a Hybrid LLM Architecture",
+      "authors": ["(authors from search result)"],
+      "date": "2026-04-20",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Reorganizes LLM-memory relationship: LLM as replaceable reasoning engine, associative memory in biologically-grounded SNN substrate",
+        "Associations learned through STDP (spike-timing-dependent plasticity), expressed through lateral propagation",
+        "Three complementary stores: episodic memory (temporal sequences replayed for testing effect), perfect recall (exact fact storage), personal journal (system's own reflections)",
+        "Consolidation follows complementary learning systems theory: fast hippocampal learning + slow cortical learning with interleaved replay"
+      ],
+      "categories": ["neural-symbolic", "spiking neural networks", "episodic memory", "hybrid architecture", "dual memory systems"]
+    },
+    {
+      "arxiv_id": "2607.00006",
+      "title": "Persona Without Substrate: Regime-Dependence and the LLM Individuation Problem",
+      "authors": ["(authors from search result)"],
+      "date": "2026-07-01",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Addresses LLM individuation problem: when we speak of 'the LLM', what exactly do we refer to? (weights, virtual instance, persona region, model-level character)",
+        "Uses mechanistic interpretability results (Anthropic's persona vectors, Persona Selection Model, Assistant Axis, emergent misalignment) as empirical ground for ontological argument",
+        "Reveals tacit commitment in persona-vectors literature that 'persona vector' picks out same content-bearing object across elicitation regimes",
+        "Challenges this commitment showing regime-dependence of persona attribution"
+      ],
+      "categories": ["philosophy ontology", "psychological ontology", "LLM individuation", "persona"]
+    },
+    {
+      "arxiv_id": "2607.23927",
+      "title": "Reality Monitoring in Large Language Models: Self-Knowledge That Transforms with Conversation Memory",
+      "authors": ["(authors from search result)"],
+      "date": "2026-07-27",
+      "venue": "arXiv preprint (cs.AI)",
+      "key_findings": [
+        "Adapts reality monitoring (RM) framework from human cognitive psychology to assess source monitoring in LLMs",
+        "Word-pair task: LLMs encode pairs with second word externally provided (perceived) or internally generated (imagined), then attribute source",
+        "Ceiling accuracy for self-generated content under minimal memory demands reverses to fragile external-item advantage once episodic delay removes shortcut",
+        "Feedback exposes failures: internal/external judgments swap, or accuracy improves while confidence decouples from correctness",
+        "RM failures associated with hallucinations/delusions in schizophrenia; conceptually adjacent to LLM hallucinations"
+      ],
+      "categories": ["reality monitoring", "source attribution", "hallucination", "psychological ontology", "metacognition"]
+    },
+    {
+      "arxiv_id": "2608.07438",
+      "title": "PsychoAgent: An Affect-Sensitive Cognitive Architecture for Conflict-Aware Memory in LLM Agents",
+      "authors": ["(authors from search result)"],
+      "date": "2026-08-31",
+      "venue": "arXiv preprint (cs.AI)",
+      "key_findings": [
+        "Separates factual and affective memory, integrates both through conflict-aware executive controller",
+        "Affective memories filtered by semantic relevance then re-ranked by salience, preserving topical fit while allowing emotionally important traces",
+        "Three-day trace shows persistent affect, offline memory recombination, selective memory reweighting",
+        "Supports affect-sensitive retrieval as inspectable mechanism for modeling human-like conflict effects"
+      ],
+      "categories": ["affective memory", "conflict-aware memory", "psychological ontology", "dual memory systems"]
+    },
+    {
+      "arxiv_id": "2606.30306",
+      "title": "Always-On Agents: A Survey of Persistent Memory, State, and Governance in LLM Agents",
+      "authors": ["Tianyu Ding", "Aditya Nannapaneni", "Bingfan Liu", "Ling Zhang"],
+      "date": "2026-06-29",
+      "venue": "arXiv preprint (cs.MA)",
+      "key_findings": [
+        "Comprehensive survey of persistent-state systems (always-on agents) including retrievable memories, task ledgers, permissions, credentials, commitments, provenance, audit records, shared state, trigger conditions, externally committed effects",
+        "Five adjacent system classes: agentic databases, agent OS, LLM serving runtimes, orchestration frameworks, capability security",
+        "Covers multimodal memory, agentic-OS/serving runtimes, systems cost and resource governance, cross-substrate synthesis"
+      ],
+      "categories": ["agent memory survey", "persistent memory", "governance", "agent OS", "always-on agents"]
+    },
+    {
+      "arxiv_id": "2608.04843",
+      "title": "MemoryCPT: An End-to-End Agent Memory Framework for Cost-Performance Trade-off",
+      "authors": ["(authors from search result)"],
+      "date": "2026-08-05",
+      "venue": "arXiv preprint (cs.IR)",
+      "key_findings": [
+        "End-to-end trainable agent memory pipeline spanning offline memory construction and online query-conditioned context generation",
+        "Query-aware Retrieval and Summarization (QAR): reciprocal rank fusion (RRF) + LoRA-based summarizer trained via GRPO under cost-aware reward",
+        "Introduces Quality per Cost (QPC) metric for answer quality per unit inference cost",
+        "Improves cost-performance trade-off on LoCoMo and LongMemEval"
+      ],
+      "categories": ["agent memory", "cost-performance", "end-to-end training", "GRPO", "memory optimization"]
+    },
+    {
+      "arxiv_id": "2606.06090",
+      "title": "Beyond Semantic Organization: Memory as Execution State Management for Long-Horizon Agents",
+      "authors": ["Yuru Feng"],
+      "date": "2026-06-10",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Mage: active execution-state manager storing interactions in hierarchical state tree",
+        "Agent derives state from active root-to-current path combining subgoal summaries, recent traces, hints from prior branches",
+        "Four coupled operations: Grow (records new traces), Compress (summarizes completed subgoals), Maintain (validates summaries), Revise (restores target boundary and resumes on new branch)",
+        "Shifts memory from similarity-driven archive to execution-state manager for interdependent long-horizon tasks"
+      ],
+      "categories": ["execution state management", "hierarchical memory", "long-horizon agents", "dynamic memory"]
+    },
+    {
+      "arxiv_id": "2607.15776",
+      "title": "NeurOWL: An LLM-Based Neural-symbolic Framework for Incomplete OWL Ontology Reasoning",
+      "authors": ["Hui Yang", "Jiaoyan Chen", "Yiping Song", "Renate Schmidt", "Wen Zhang"],
+      "date": "2026-07-20",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "End-to-end neuro-symbolic framework for explainable subsumption reasoning over incomplete OWL ontologies",
+        "Jointly performs verification and abduction: identifies meaningful missing components compatible with existing information",
+        "Operates in training-free and fine-tuned settings, adapts across domains",
+        "Iteratively recovers subset- and entailment-minimal solutions as missing axioms",
+        "Evaluated on FoodOn, Gene Ontology, SNOMED CT with F1 scores 0.893-0.970"
+      ],
+      "categories": ["ontology reasoning", "OWL", "neuro-symbolic", "incomplete ontologies", "abduction"]
+    },
+    {
+      "arxiv_id": "2604.05468",
+      "title": "OntoTKGE: Ontology-Enhanced Temporal Knowledge Graph Extrapolation",
+      "authors": ["(authors from search result)"],
+      "date": "2026-04-07",
+      "venue": "arXiv preprint (cs.AI)",
+      "key_findings": [
+        "Integrates ontological knowledge into temporal KG extrapolation via CompGCN entity/concept embeddings",
+        "Feeds ontology-enhanced embeddings into TKG extrapolation model encoder at first timestamp",
+        "Enables entity embedding prediction at timestamp t+1 with ontological grounding"
+      ],
+      "categories": ["temporal KG", "ontology-enhanced", "extrapolation", "knowledge graph"]
+    },
+    {
+      "arxiv_id": "2605.29168",
+      "title": "Better Later Than Sooner: Neuro-Symbolic Knowledge Graph Construction via Ontology-grounded Post-extraction Correction",
+      "authors": ["Lorenzo Loconte", "Timothy Hospedales", "Cristina Cornelio"],
+      "date": "2026-05-31",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Neuro-symbolic framework for ontology-grounded KG construction: open-domain extraction, embedding-based canonicalization, targeted LLM-based correction of ontology violations",
+        "Defers corrections to post-extraction stage, avoiding repeated LLM calls",
+        "OAK+MEND method: improves ontology consistency of triples from 63.4% to 96.8% (Qwen3-30B-A3B) and 67.9% to 98.4% (GPT-OSS-120B)",
+        "Qualifiers: 33.6% to 91.5% (Qwen) and 35.7% to 96.8% (GPT-OSS)",
+        "More token efficient than in-context and Wikontic baselines (59-79% of Wikontic cost)",
+        "Introduces SPARQL graph-patterns benchmark for symbolic querying evaluation"
+      ],
+      "categories": ["ontology engineering", "KG construction", "neuro-symbolic", "post-extraction correction", "ontology alignment"]
+    },
+    {
+      "arxiv_id": "2602.15353",
+      "title": "NeuroSymActive: Differentiable Neural-Symbolic Reasoning with Active Exploration for Knowledge Graph Question Answering",
+      "authors": ["Rong Fu"],
+      "date": "2026-02-15 (v1), 2026-04-?? (v4)",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Modular framework: differentiable neural-symbolic reasoning layer + neural path evaluator + Monte-Carlo active exploration controller",
+        "Soft-unification style symbolic modules with differentiable rule scoring",
+        "Neural path evaluator assigns value estimates to partial reasoning trajectories",
+        "Active exploration prioritizes high-value path expansions, reduces expensive KG queries",
+        "Two coupled loops: inner (fast differentiable neural-symbolic exploration) and outer (human oracle queries when uncertainty exceeds threshold)",
+        "Gumbel-Softmax relaxations for end-to-end differentiability"
+      ],
+      "categories": ["neural-symbolic", "KGQA", "active exploration", "differentiable reasoning", "MCTS"]
+    },
+    {
+      "arxiv_id": "2606.30175",
+      "title": "CORTEX: High-Quality Cross-Domain Organization of Web-Scale Corpora through Ontological Corpus Graph",
+      "authors": ["(authors from search result)"],
+      "date": "2026-06-??",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Ontological Corpus Graph (OCG): three-layer heterogeneous structure unifying quality-refined content layer, hierarchical lightweight ontology layer (LLM-driven automated evolution), cross-domain alignment layer",
+        "Enables inter-domain association at arbitrary taxonomic resolution via Typicality-Fidelity-Specificity (TFS) weighted linkages",
+        "Evaluated across eight frontier LLMs validating quality refinement, domain organization, cross-domain data synthesis",
+        "Public release: 24.14B-token refined corpus with OCG and CortexBench"
+      ],
+      "categories": ["ontology engineering", "web-scale corpora", "cross-domain alignment", "lightweight ontology", "corpus organization"]
+    },
+    {
+      "arxiv_id": "2603.20948",
+      "title": "gUFO: A Gentle Foundational Ontology for Semantic Web Knowledge Graphs",
+      "authors": ["Almeida", "Guizzardi", "Sales", "Fonseca"],
+      "date": "2026-03-??",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Lightweight implementation of Unified Foundational Ontology (UFO) for OWL 2 DL applications",
+        "Unique support for typology of types (operationalizing OntoClean guidelines), reification patterns for intrinsic/relational aspects, situations and high-order types",
+        "51 classes, 40 object properties, 7 data properties",
+        "Two disjoint taxonomies: Taxonomy of Individuals (Object, Quality, Situation, Event) and Taxonomy of Types (Kind, Phase, Role, Category)",
+        "Explicit support for temporary instantiation/parthood/relationship situations addressing temporal problem in OWL 2 DL",
+        "UFO in process of ISO/IEC standardization as CD 21838-5"
+      ],
+      "categories": ["foundational ontology", "UFO", "gUFO", "OWL 2 DL", "ontology alignment", "temporal ontology"]
+    },
+    {
+      "arxiv_id": "2604.14881",
+      "title": "The Missing Knowledge Layer in AI: A Framework for Stable Human-AI Reasoning",
+      "authors": ["(authors from search result)"],
+      "date": "2026-04-??",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Argues humans systematically under-track uncertainty and conflate inference with fact (structural feature of cognition)",
+        "LLMs inherit this cognitive vulnerability: epistemic markers sparse/implicit/inconsistent in training data",
+        "Structural absence explains patterned LLM failures: hallucinations = unrecognized transitions from grounded retrieval to speculative interpolation; overconfidence = undifferentiated surface confidence; false coherence = linguistically smooth but internally unstable trajectories",
+        "Improving factual accuracy, scaling capacity, or more training data does not resolve underlying epistemic representation problem"
+      ],
+      "categories": ["epistemic representation", "structural hallucination", "AI reasoning", "cognitive vulnerability"]
+    },
+    {
+      "arxiv_id": "2602.05636",
+      "title": "Generative Ontology: When Structured Knowledge Learns to Create",
+      "authors": ["(authors from search result)"],
+      "date": "2026-02-??",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Introduces Generative Ontology framework synthesizing ontology (grammar) and LLM (creativity)",
+        "Traditional ontologies passive (describe what exists); LLMs generate fluently but lack structural validity",
+        "Structural hallucination in creative domains: LLMs generate appearance of game designs without substance (mechanisms without components, goals without end conditions)",
+        "Ontology provides grammar for valid generation; LLM provides creativity within structural constraints"
+      ],
+      "categories": ["generative ontology", "structural hallucination", "creative AI", "ontology engineering"]
+    },
+    {
+      "arxiv_id": "2607.06055",
+      "title": "Nested Episodic State Topology (NEST): A Graph-Theoretic Architecture of Cognitive States",
+      "authors": ["Ishant (from search context)"],
+      "date": "2026-07-08",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Graph-theoretic representational ontology modeling cognition as structured state formation",
+        "Six relation types: causal, containment, temporal, associative, evidential, spatial",
+        "Typed, weighted graphs where nodes may carry subgraph payloads",
+        "Separates durable belief graphs from capacity-limited working-memory graphs",
+        "Formal belief-update operators and conflict catalogs",
+        "Maps multiple cognitive architectures (ACT-R, Soar, Sigma, Global Workspace Theory, chunking) as constrained regions of one unified language"
+      ],
+      "categories": ["cognitive architecture", "graph-theoretic ontology", "working memory", "belief graphs", "unified cognitive framework"]
+    },
+    {
+      "arxiv_id": "2603.29023",
+      "title": "Human-Like Lifelong Memory: A Neuroscience-Grounded Architecture for Infinite Interaction",
+      "authors": ["Diego C. Lerma-Torres"],
+      "date": "2026-03-??",
+      "venue": "ICLR 2026",
+      "key_findings": [
+        "Integrates 12 principles from cognitive neuroscience and clinical psychology into computational mechanisms",
+        "Dual-store architecture: capacity-limited working memory buffer + persistent knowledge graph (hippocampal-neocortical complementary learning systems)",
+        "CBT-inspired belief hierarchy for identity (core/intermediate/automatic thoughts as weighted gists)",
+        "System 1/2 retrieval routing with epistemic self-awareness, curiosity-driven gist formation, identity persistence",
+        "Thalamic gateway tags and routes information between stores",
+        "Reconsolidation via cathartic modification (not append-only)",
+        "Converges toward System 1 processing over time (computational analog of clinical expertise)"
+      ],
+      "categories": ["lifelong memory", "neuroscience-grounded", "dual memory systems", "cognitive architecture", "identity"]
+    },
+    {
+      "arxiv_id": "N/A (ICML 2026)",
+      "title": "OG-MAR: Ontology-Grounded Multi-Agent Reasoning",
+      "authors": ["Wonduk Seo", "Wonseok Choi", "Junseo Koh", "Juhyeon Lee", "Hyunjin An", "Minhyeong Yu", "Jian Park", "Qingshan Zhou", "Seunghyun Lee", "Yi Bu"],
+      "date": "2026",
+      "venue": "ICML 2026",
+      "key_findings": [
+        "Framework using ontology to surface right personas and assemble them into multi-agent system",
+        "Combines ontology and multi-agent systems for grounded reasoning",
+        "From Enhans research group (Wonduk Seo)"
+      ],
+      "categories": ["ontology-grounded agents", "multi-agent reasoning", "persona-based agents"]
+    },
+    {
+      "arxiv_id": "N/A (ACL 2026)",
+      "title": "SPIO: Ensemble and Selective Strategies via LLM-based Multi-Agent Planning in Automated Data Science",
+      "authors": ["Wonduk Seo", "Juhyeon Lee", "Yanjun Shao", "Qingshan Zhou", "Seunghyun Lee", "Yi Bu"],
+      "date": "2026",
+      "venue": "ACL 2026 Main",
+      "key_findings": [
+        "Multi-agent framework where LLMs build memory over time and use it to construct full data science scenarios",
+        "Goes beyond simple code generation to memory-augmented multi-agent planning"
+      ],
+      "categories": ["multi-agent", "automated data science", "memory-augmented planning"]
+    },
+    {
+      "arxiv_id": "N/A (ACL 2026 Findings)",
+      "title": "StructHallu-Drift: Benchmarking Structured Hallucinations Under Schema Evolution in LLMs",
+      "authors": ["(authors from search result)"],
+      "date": "2026",
+      "venue": "ACL 2026 Findings",
+      "key_findings": [
+        "Six-category hallucination taxonomy disentangling syntactic validity from semantic fidelity",
+        "Controlled evaluation suite applying realistic schema mutations at three severity levels to NL-to-structure datasets",
+        "1,200 schema-model evaluation instances across 4 LLMs (7B-70B) and 3 structured output tasks",
+        "Key findings: 39-54% of structured outputs contain semantic hallucination; schema drift severity has minimal effect (~44% across levels, p=0.59); output format dominant factor (SQL ~85% semantic validity vs schema-grounded records 7-24%); each model has distinct hallucination fingerprint"
+      ],
+      "categories": ["structured hallucination", "schema evolution", "benchmark", "hallucination taxonomy"]
+    },
+    {
+      "arxiv_id": "N/A (ACL 2026)",
+      "title": "Why LLMs Hallucinate on Structured Knowledge: A Mechanistic Analysis of Reasoning over Linearized Representations",
+      "authors": ["Shanghao Li", "Jinda Han", "Yibo Wang", "Yuanjie Zhu", "Zihe Song", "Langzhou He", "Kenan Kamel A Alghythee", "Philip S. Yu"],
+      "date": "2026",
+      "venue": "ACL 2026",
+      "key_findings": [
+        "Two mechanistic signals: Structural Shortcut Reliance (SSR) - attention over-concentrates on shortcut-like structural cues; Semantic Alignment Score (SAS) - FFN representations fail to maintain semantic grounding, revert to parametric memory",
+        "SSR varies with task complexity/format; SAS more stable role in mitigating hallucination",
+        "Lightweight hallucination detector based on SSR/SAS outperforms confidence/consistency baselines without model modification",
+        "Generalizes beyond single-hop to multi-hop graphs and tabular settings"
+      ],
+      "categories": ["structural hallucination", "mechanistic interpretability", "linearized representations", "attention", "feed-forward networks"]
+    },
+    {
+      "arxiv_id": "N/A (ACL 2026 Findings)",
+      "title": "EMA: An Episodic Memory Agent for Efficient and Selective Memory",
+      "authors": ["(authors from search result)"],
+      "date": "2026",
+      "venue": "ACL 2026 Findings",
+      "key_findings": [
+        "Episodic Memory Units (EMUs) abstract conversational context with event content, time/location, participants, subjective importance",
+        "MemDecider filtering decision module for selective retention",
+        "Competitive performance on LoCoMo and Long-MT-Bench+ while reducing token usage by 11.48% average"
+      ],
+      "categories": ["episodic memory", "memory efficiency", "selective memory", "conversational agents"]
+    },
+    {
+      "arxiv_id": "N/A (ACL 2026)",
+      "title": "Reasoning with Ontology Graph: Toward Type-Constrained Knowledge Graph Question Answering",
+      "authors": ["Yongxue Shan", "Jie Peng", "Zixuan Dong", "Fei Hu", "Xiaodong Wang"],
+      "date": "2026",
+      "venue": "ACL 2026",
+      "key_findings": [
+        "Planner-judge architecture with generative backoff: type planner proposes head-tail type pairs, judge verifies candidates/paths, generator invoked only when all candidates rejected",
+        "Type-constrained reasoning: constrains both endpoints in type space",
+        "SOTA on WebQSP (87.7%→91.5% Hit@1) and CWQ (67.6%→74.6% Hit@1)",
+        "Produces ontology-grounded reasoning chains"
+      ],
+      "categories": ["KGQA", "type-constrained reasoning", "ontology graph", "planner-judge architecture"]
+    },
+    {
+      "arxiv_id": "2502.03283v2",
+      "title": "SymAgent: A Neural-Symbolic Self-Learning Agent Framework for Complex Reasoning over Knowledge Graphs",
+      "authors": ["(authors from search result)"],
+      "date": "2026-02-?? (v2)",
+      "venue": "arXiv preprint",
+      "key_findings": [
+        "Neural-symbolic agent with Agent-Planner (extracts symbolic rules from KG for question decomposition) and Agent-Executor (invokes action tools for KG + external documents)",
+        "Treats KG as dynamic environment, transforms reasoning into multi-step interactive process",
+        "Self-learning framework: online exploration + offline iterative policy updating",
+        "Identifies missing triples facilitating automatic KG updates",
+        "Weak LLM backbones (7B) achieve better/comparable performance to strong baselines"
+      ],
+      "categories": ["neural-symbolic agents", "KG reasoning", "self-learning", "dynamic KG", "missing triple identification"]
+    },
+    {
+      "arxiv_id": "N/A (ICLR 2026 Workshop)",
+      "title": "Memory Is Reconstructed, Not Retrieved: Graph Memory for LLM Agents",
+      "authors": ["Shuo Ji", "Yibo Li", "Bryan Hooi"],
+      "date": "2026-04-27",
+      "venue": "ICLR 2026 Workshop on Memory for LLM-Based Agentic Systems (MemAgents)",
+      "key_findings": [
+        "MRAgent: associative memory graph (Cue-Tag-Content) with active reconstruction mechanism",
+        "Associative tags as semantic bridges connecting fine-grained cues to memory contents",
+        "Integrates LLM reasoning directly into memory access, iteratively explores/prunes retrieval paths",
+        "Up to 23% improvement on LoCoMo and LongMemEval, substantially reducing token/runtime cost"
+      ],
+      "categories": ["graph memory", "active reconstruction", "associative memory", "agent memory"]
+    },
+    {
+      "arxiv_id": "N/A (ICLR 2026)",
+      "title": "Knowledge Reasoning Language Model: Unifying Knowledge and Language for Inductive Knowledge Graph Reasoning",
+      "authors": ["Xingrui Zhuo", "Jiapu Wang", "Gongqing Wu", "Zhongyuan Wang", "Jichen Zhang", "Shirui Pan", "Xindong Wu"],
+      "date": "2026",
+      "venue": "ICLR 2026",
+      "key_findings": [
+        "KRLM: unifies LLM knowledge with KG context for inductive KGR",
+        "Knowledge Reasoning Language (KRL) instruction format and KRL tokenizer to align LLM knowledge with KG representations",
+        "KRL attention layer coordinates intrinsic LLM knowledge with KG context via dynamic knowledge memory mechanism",
+        "Structure-aware next-entity predictor constrains reasoning within trustworthy knowledge domain",
+        "SOTA on 25 real-world inductive KGR datasets in zero-shot and fine-tuning"
+      ],
+      "categories": ["inductive KGR", "knowledge reasoning language", "LLM-KG unification", "structure-aware reasoning"]
+    }
+  ],
+  "summary": {
+    "total_new_papers": 33,
+    "by_category": {
+      "experiential/episodic memory": 8,
+      "dual memory systems": 6,
+      "structural hallucination": 5,
+      "ontology engineering/alignment": 7,
+      "neural-symbolic/reasoning": 6,
+      "cognitive architecture/philosophy": 4,
+      "agent memory systems": 9,
+      "dynamic ontology": 4,
+      "knowledge graph construction": 5
+    },
+    "by_venue": {
+      "arXiv 2026": 22,
+      "ICLR 2026": 4,
+      "ACL 2026": 5,
+      "ICML 2026": 1,
+      "arXiv 2027": 1
+    }
+  }
+}

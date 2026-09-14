@@ -1,0 +1,499 @@
+{
+  "ontology_engineering_with_llms": [
+    {
+      "title": "Generative Ontology Induction: Domain-Agnostic Schema Discovery from Document Corpora Using Large Language Models",
+      "authors": ["Hamed Babaei Giglou", "Jennifer D'Souza", "Oliver Karras", "Sören Auer"],
+      "date": "2026-05-01",
+      "arxiv_id": "2607.16201",
+      "url": "https://arxiv.org/abs/2607.16201",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    },
+    {
+      "title": "OntoLearner: A Modular Python Library for Ontology Learning with Large Language Models",
+      "authors": ["Hamed Babaei Giglou", "Jennifer D'Souza", "Oliver Karras", "Sören Auer"],
+      "date": "2026-07-02",
+      "arxiv_id": "2607.01977",
+      "url": "https://arxiv.org/abs/2607.01977",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv (under review at Nature Communications)"
+    },
+    {
+      "title": "OntoExtend: A Framework for Requirement-driven and Scalable Ontology Extension with LLMs",
+      "authors": ["Yiping Song", "Jiaoyan Chen", "Renate Schmidt", "Hui Yang", "Wen Zhang"],
+      "date": "2026-07-20",
+      "arxiv_id": "2607.17963",
+      "url": "https://arxiv.org/abs/2607.17963",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Open Ontologies: Tool-Augmented Ontology Engineering with Stable Matching Alignment",
+      "authors": ["Fabio Rovai"],
+      "date": "2026-05-09",
+      "arxiv_id": "2605.09184",
+      "url": "https://arxiv.org/abs/2605.09184",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    },
+    {
+      "title": "LLM-Driven Ontology Construction for Enterprise Knowledge Graphs",
+      "authors": ["Sergiy Lunyakin"],
+      "date": "2026-02-02",
+      "arxiv_id": "2602.01276",
+      "url": "https://arxiv.org/abs/2602.01276",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Automatic Ontology Construction Using LLMs as an External Layer of Memory, Verification, and Planning for Hybrid Intelligent Systems",
+      "authors": ["Paul Salovsky"],
+      "date": "2026-04-22",
+      "arxiv_id": "2604.20795",
+      "url": "https://arxiv.org/abs/2604.20795",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    },
+    {
+      "title": "GrOIL: Graph-Grounded Domain Ontology Induction with Constrained LLM Mediation",
+      "authors": ["Maruf Ahmed Mridul", "Abid Talukder", "Oshani Seneviratne"],
+      "date": "2026-08-22",
+      "arxiv_id": "2608.22135",
+      "url": "https://arxiv.org/abs/2608.22135",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    },
+    {
+      "title": "LLM-empowered knowledge graph construction: A survey",
+      "authors": ["Jeff Z. Pan", "et al."],
+      "date": "2025-10-27",
+      "arxiv_id": "2510.20345",
+      "url": "https://arxiv.org/abs/2510.20345",
+      "topic": "ontology_engineering_with_llms",
+      "venue": "arXiv"
+    }
+  ],
+  "bfo_sumo_dolce_alignment": [
+    {
+      "title": "Consistency Is Not Coherence: Orientation Search for Certified Alignments Between 4D Defence Upper Ontologies",
+      "authors": ["Fabio Rovai"],
+      "date": "2026-08-22",
+      "arxiv_id": "2608.21914",
+      "url": "https://arxiv.org/abs/2608.21914",
+      "topic": "bfo_sumo_dolce_alignment",
+      "venue": "OM-2026 Workshop at ISWC 2026"
+    },
+    {
+      "title": "Constraining ontology mappings using metaphysical choices",
+      "authors": ["Giacomo De Colle", "Helena Blackmore", "Chris Partridge"],
+      "date": "2026-08-08",
+      "arxiv_id": "2608.08122",
+      "url": "https://arxiv.org/abs/2608.08122",
+      "topic": "bfo_sumo_dolce_alignment",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Matching BFO, DOLCE, GFO and SUMO: an evaluation of OAEI 2018 matching systems",
+      "authors": ["Zubeida Khan", "C. Maria Keet"],
+      "date": "2019",
+      "arxiv_id": "N/A (CEUR-WS)",
+      "url": "https://ceur-ws.org/Vol-2519/paper7.pdf",
+      "topic": "bfo_sumo_dolce_alignment",
+      "venue": "CEUR Workshop Proceedings"
+    },
+    {
+      "title": "Hypernym relation extraction for establishing subsumptions: preliminary results on matching foundational ontologies",
+      "authors": ["Zubeida Khan", "C. Maria Keet"],
+      "date": "2019",
+      "arxiv_id": "N/A (CEUR-WS)",
+      "url": "https://ceur-ws.org/Vol-2536/om2019_STpaper1.pdf",
+      "topic": "bfo_sumo_dolce_alignment",
+      "venue": "OM 2019 Workshop"
+    }
+  ],
+  "structural_hallucination": [
+    {
+      "title": "Structural Hallucination in Large Language Models: A Network-Based Evaluation of Knowledge Organization and Citation Integrity",
+      "authors": ["Moses Boudourides"],
+      "date": "2026-03-02",
+      "arxiv_id": "2603.01341",
+      "url": "https://arxiv.org/abs/2603.01341",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "How Large Language Models are Designed to Hallucinate",
+      "authors": ["Anonymous"],
+      "date": "2025-12-18",
+      "arxiv_id": "2509.16297",
+      "url": "https://arxiv.org/abs/2509.16297",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Incentives or Ontology? A Structural Rebuttal to OpenAI's Hallucination Thesis",
+      "authors": ["Anonymous"],
+      "date": "2025-12-18",
+      "arxiv_id": "2512.14801",
+      "url": "https://arxiv.org/abs/2512.14801",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "From Architecture to Output: Structural Origins of Hallucination in Large Language Models and the Amplifying Role of Data",
+      "authors": ["Md. Rejaul Korim Sadi", "Toufiqur Rahman Tasin", "Golam Mostofa Naeem"],
+      "date": "2026-04-29",
+      "arxiv_id": "2606.07537",
+      "url": "https://arxiv.org/abs/2606.07537",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Detecting Hallucinations for Large Language Model-based Knowledge Graph Reasoning",
+      "authors": ["Anonymous"],
+      "date": "2026-06-19",
+      "arxiv_id": "2606.19351",
+      "url": "https://arxiv.org/abs/2606.19351",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "KG-Guard: Graph-Based Hallucination Detection for Knowledge Base Question Answering",
+      "authors": ["Anonymous"],
+      "date": "2026-06-05",
+      "arxiv_id": "2606.00328",
+      "url": "https://arxiv.org/abs/2606.00328",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Why LLMs Hallucinate on Structured Knowledge: A Mechanistic Analysis of Reasoning over Linearized Representations",
+      "authors": ["Anonymous"],
+      "date": "2026-05-30",
+      "arxiv_id": "2605.26362",
+      "url": "https://arxiv.org/abs/2605.26362",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "GRACE: Graph-Grounded Reflective Agent Copilot Engine for Expert-in-the-Loop Knowledge Expansion",
+      "authors": ["Anonymous"],
+      "date": "2026-09-04",
+      "arxiv_id": "2609.04442",
+      "url": "https://arxiv.org/abs/2609.04442",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    },
+    {
+      "title": "KGHaluBench: A Knowledge Graph-Based Hallucination Benchmark for Evaluating the Breadth and Depth of LLM Knowledge",
+      "authors": ["Anonymous"],
+      "date": "2026-02-19",
+      "arxiv_id": "2602.19643",
+      "url": "https://arxiv.org/abs/2602.19643",
+      "topic": "structural_hallucination",
+      "venue": "arXiv"
+    }
+  ],
+  "dual_memory_systems": [
+    {
+      "title": "D-Mem: A Dual-Process Memory System for LLM Agents",
+      "authors": ["Anonymous"],
+      "date": "2026-03-18",
+      "arxiv_id": "2603.18631",
+      "url": "https://arxiv.org/abs/2603.18631",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents",
+      "authors": ["Anonymous"],
+      "date": "2026-06-09",
+      "arxiv_id": "2606.09483",
+      "url": "https://arxiv.org/abs/2606.09483",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv (SIGKDD 2027)"
+    },
+    {
+      "title": "Dual-Layer Agentic Memory with Fast Write Routing and Slow Consolidation",
+      "authors": ["Anonymous"],
+      "date": "2026-08-23",
+      "arxiv_id": "2608.22215",
+      "url": "https://arxiv.org/abs/2608.22215",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Dual-Grained Agent Memory and Shapley Context Attribution for Multimodal Agentic Learner",
+      "authors": ["Anonymous"],
+      "date": "2026-08-24",
+      "arxiv_id": "2608.23268",
+      "url": "https://arxiv.org/abs/2608.23268",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv"
+    },
+    {
+      "title": "MemSIF: From Structured Interactions to Dual-Track Fact Memory for LLM Agents",
+      "authors": ["Anonymous"],
+      "date": "2026-08-01",
+      "arxiv_id": "2608.01742",
+      "url": "https://arxiv.org/abs/2608.01742",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv (Submitted to AAAI 2027)"
+    },
+    {
+      "title": "Aligning Progress and Feasibility: A Neuro-Symbolic Dual Memory Framework for Long-Horizon LLM Agents",
+      "authors": ["Anonymous"],
+      "date": "2026-04-02",
+      "arxiv_id": "2604.02734",
+      "url": "https://arxiv.org/abs/2604.02734",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv"
+    },
+    {
+      "title": "M^2: Dual-Memory Augmentation for Long-Horizon Web Agents via Trajectory Summarization and Insight Retrieval",
+      "authors": ["Anonymous"],
+      "date": "2026-03-01",
+      "arxiv_id": "2603.00503",
+      "url": "https://arxiv.org/abs/2603.00503",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv (ICML)"
+    },
+    {
+      "title": "Governed Memory: A Production Architecture for Multi-Agent Workflows",
+      "authors": ["Anonymous"],
+      "date": "2026-03-17",
+      "arxiv_id": "2603.17787",
+      "url": "https://arxiv.org/abs/2603.17787",
+      "topic": "dual_memory_systems",
+      "venue": "arXiv"
+    }
+  ],
+  "dynamic_ontology_architectures": [
+    {
+      "title": "Toward Effective and Reliable LLM Agents via Dynamic Ontology",
+      "authors": ["Xiaohui Zhang", "Zequn Sun", "Chengyuan Yang", "Yuanning Cui", "Lingbing Guo", "Wei Hu"],
+      "date": "2026-08-24",
+      "arxiv_id": "2608.22974",
+      "url": "https://arxiv.org/abs/2608.22974",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Liquid Interfaces: A Dynamic Ontology for the Interoperability of Autonomous Systems",
+      "authors": ["Fabio Rovai"],
+      "date": "2026-01-21",
+      "arxiv_id": "2601.21993",
+      "url": "https://arxiv.org/abs/2601.21993",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "arXiv"
+    },
+    {
+      "title": "A hybrid pipeline for dynamic ontology-based semantic mapping",
+      "authors": ["Konstantinos Dimit"],
+      "date": "2026-09-03",
+      "arxiv_id": "2609.03891",
+      "url": "https://arxiv.org/abs/2609.03891",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Unifying Ontology Construction and Semantic Alignment for Deterministic Enterprise Reasoning at Scale",
+      "authors": ["Anonymous"],
+      "date": "2026-04-09",
+      "arxiv_id": "2604.09608",
+      "url": "https://arxiv.org/abs/2604.09608",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "arXiv"
+    },
+    {
+      "title": "DIAL-KG: Schema-Free Incremental Knowledge Graph Construction via Dynamic Schema Induction and Evolution-Intent Assessment",
+      "authors": ["Anonymous"],
+      "date": "2026-03-20",
+      "arxiv_id": "2603.20059",
+      "url": "https://arxiv.org/abs/2603.20059",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "arXiv"
+    },
+    {
+      "title": "A Framework for Dynamic Knowledge Graph Ontology Incremental Alignment based on Large Language Model Agents",
+      "authors": ["Anonymous"],
+      "date": "2026",
+      "arxiv_id": "N/A (ResearchSquare)",
+      "url": "https://doi.org/10.21203/rs.3.rs-9503150/v1",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "ResearchSquare"
+    },
+    {
+      "title": "A Methodological Framework for Runtime Ontology Evolution in Dynamic Environments",
+      "authors": ["Roua Jabla", "Maha Khemaja", "Félix Buendía", "Sami Faïz"],
+      "date": "2026-04-03",
+      "arxiv_id": "N/A (Applied Sciences)",
+      "url": "https://doi.org/10.3390/app16073494",
+      "topic": "dynamic_ontology_architectures",
+      "venue": "Applied Sciences"
+    }
+  ],
+  "experiential_memory": [
+    {
+      "title": "Experience Memory Graph: One-Shot Error Correction for Agents",
+      "authors": ["Anonymous"],
+      "date": "2026-07-13",
+      "arxiv_id": "2607.13884",
+      "url": "https://arxiv.org/abs/2607.13884",
+      "topic": "experiential_memory",
+      "venue": "arXiv (SIGKDD 2027)"
+    },
+    {
+      "title": "Self-Evolving LLM Agents via Hypergraph-Structured Skill Memory",
+      "authors": ["Ruiyao Xu", "Tiankai Yang", "Wei-Chieh Huang"],
+      "date": "2026-08-17",
+      "arxiv_id": "2608.16114",
+      "url": "https://arxiv.org/abs/2608.16114",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Recursive Experiential–Working Memory Evolution for Long-Horizon Agent Harnesses",
+      "authors": ["Anonymous"],
+      "date": "2026-08-24",
+      "arxiv_id": "2608.24876",
+      "url": "https://arxiv.org/abs/2608.24876",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Test-Time Adaptive Memory for Language Agents (AdaMEM)",
+      "authors": ["Anonymous"],
+      "date": "2026-06-05",
+      "arxiv_id": "2606.05684",
+      "url": "https://arxiv.org/abs/2606.05684",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Experiential Reflective Learning for Self-Improving LLM Agents",
+      "authors": ["Anonymous"],
+      "date": "2026-03-24",
+      "arxiv_id": "2603.24639",
+      "url": "https://arxiv.org/abs/2603.24639",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Continual Self-Improvement with Lightweight Experiential Latent Memories",
+      "authors": ["Anonymous"],
+      "date": "2026-06-17",
+      "arxiv_id": "2606.17803",
+      "url": "https://arxiv.org/abs/2606.17803",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "PraMem: Practice-derived Experiential Memory for Long-horizon Behavior Prediction",
+      "authors": ["Anonymous"],
+      "date": "2026-07-02",
+      "arxiv_id": "2607.02881",
+      "url": "https://arxiv.org/abs/2607.02881",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "MemHarness: Reconstructive Memory for Agent Decision-Making",
+      "authors": ["Anonymous"],
+      "date": "2026-07-28",
+      "arxiv_id": "2607.28272",
+      "url": "https://arxiv.org/abs/2607.28272",
+      "topic": "experiential_memory",
+      "venue": "arXiv"
+    },
+    {
+      "title": "RRM: Experience-Driven Reflective Retrieval Memory for Long-Horizon Multimodal Reasoning",
+      "authors": ["Anonymous"],
+      "date": "2026-07-30",
+      "arxiv_id": "2607.28156",
+      "url": "https://arxiv.org/abs/2607.28156",
+      "topic": "experiential_memory",
+      "venue": "arXiv (AAAI 2027)"
+    }
+  ],
+  "ontology_alignment_benchmarks_tools": [
+    {
+      "title": "OntoAligner: A Comprehensive Modular and Robust Python Toolkit for Ontology Alignment",
+      "authors": ["Hamed Babaei Giglou", "Jennifer D'Souza", "Oliver Karras", "Sören Auer"],
+      "date": "2025-03-27",
+      "arxiv_id": "2503.21902",
+      "url": "https://arxiv.org/abs/2503.21902",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "ESWC 2025 Resource Track"
+    },
+    {
+      "title": "OntoAligner-Ensemble: Voting-Based Fusion across Heterogeneous Ontology Alignment Techniques",
+      "authors": ["Hamed Babaei Giglou", "Sören Auer", "Peio Popov", "Mahsa Sanaei", "Jennifer D'Souza"],
+      "date": "2026-08-31",
+      "arxiv_id": "2608.31137",
+      "url": "https://arxiv.org/abs/2608.31137",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "OM 2026 Workshop at ISWC 2026"
+    },
+    {
+      "title": "OntoAligner Meets Knowledge Graph Embedding Aligners",
+      "authors": ["Hamed Babaei Giglou", "et al."],
+      "date": "2025-09-26",
+      "arxiv_id": "2509.26417",
+      "url": "https://arxiv.org/abs/2509.26417",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Large Language Models as Oracles for Ontology Alignment",
+      "authors": ["Sviatoslav Lushnei", "Dmytro Shumskyi", "Severyn Shykula", "Ernesto Jiménez-Ruiz", "Artur d'Avila Garcez"],
+      "date": "2026",
+      "arxiv_id": "2508.08500",
+      "url": "https://arxiv.org/abs/2508.08500",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "EACL 2026 / arXiv"
+    },
+    {
+      "title": "AgentMap: Joint Equivalence and Subsumption Discovery for Ontology Matching",
+      "authors": ["Yiping Song", "Jiaoyan Chen", "Renate Schmidt", "Hui Yang", "Wen Zhang"],
+      "date": "2026-07-29",
+      "arxiv_id": "2607.27130",
+      "url": "https://arxiv.org/abs/2607.27130",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "arXiv"
+    },
+    {
+      "title": "OAEI-LLM: A Benchmark Dataset for Understanding Large Language Model Hallucinations in Ontology Matching",
+      "authors": ["Anonymous"],
+      "date": "2024-09-20",
+      "arxiv_id": "2409.14038",
+      "url": "https://arxiv.org/abs/2409.14038",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "arXiv"
+    },
+    {
+      "title": "BLINKG: A Benchmark for LLM-Integrated Knowledge Graph Generation",
+      "authors": ["Anonymous"],
+      "date": "2026-05-19",
+      "arxiv_id": "2605.19518",
+      "url": "https://arxiv.org/abs/2605.19518",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "arXiv"
+    },
+    {
+      "title": "Crowd-OM: Crowdsourcing for Ontology Matching Validation",
+      "authors": ["Zhangcheng Qiang", "Weiqing Wang", "Kerry Taylor"],
+      "date": "2026-05-12",
+      "arxiv_id": "2605.12226",
+      "url": "https://arxiv.org/abs/2605.12226",
+      "topic": "ontology_alignment_benchmarks_tools",
+      "venue": "CIDR 2027"
+    }
+  ],
+  "metadata": {
+    "search_date": "2027-09-10",
+    "date_range": "2026-01-01 to 2026-09-10 (covering papers submitted through Sep 2026, with conference appearances in 2027)",
+    "note": "Most papers found were submitted to arXiv in 2026 (Jan-Sep) with conference venues in 2027 (AAAI 2027, SIGKDD 2027, CIDR 2027, ISWC 2026, EACL 2026). No papers with arXiv submission dates in Sep-Dec 2027 were found in current searches, likely because the search was performed from a 2026 perspective. The collection represents the latest available research as of the search date.",
+    "total_papers": 53
+  }
+}

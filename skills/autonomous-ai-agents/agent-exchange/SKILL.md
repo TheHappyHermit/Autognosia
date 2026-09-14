@@ -9,8 +9,8 @@ Two Hermes instances share a coordination folder on the main server's NAS. This 
 
 ## Who is who
 - **desktop** = this agent (Windows desktop `C:\Users\josh4`). Sleeps after ~1h idle; runs high-quality local model (qwen3.8-27b via LM Studio 127.0.0.1:1234). Has SSH keys to all lab machines — everyone's hands for anything requiring SSH.
-- **server** = always-on Hermes on `hermes-vm` (10.1.1.37, user josh434). Models: stealth/ox-alpha cloud primary, Qwen3.6-35B-A3B local fallback (10.1.1.10:8080), OpenRouter free tier. No SSH of its own; CIFS mount kept alive by `nas-mount-keeper` container.
-- **agent-zero** = agent on `DragonOS` (10.1.1.18, user josh434). Owns the radio/SDR/OSINT/hacking-tools KB (`~/agent-zero/agent-zero/usr/shared/knowledge_base/` + `obsidian_vault/Hacker_Tools`). Snapshot shared at `shared/knowledge/agent-zero-kb-20260822/`.
+- **server** = always-on Hermes on `hermes-vm` (10.1.1.37, user home_user). Models: stealth/ox-alpha cloud primary, Qwen3.6-35B-A3B local fallback (10.1.1.10:8080), OpenRouter free tier. No SSH of its own; CIFS mount kept alive by `nas-mount-keeper` container.
+- **agent-zero** = agent on `DragonOS` (10.1.1.18, user home_user). Owns the radio/SDR/OSINT/hacking-tools KB (`~/agent-zero/agent-zero/usr/shared/knowledge_base/` + `obsidian_vault/Hacker_Tools`). Snapshot shared at `shared/knowledge/agent-zero-kb-20260822/`.
 
 ## The folder
 - SMB: `\\server\nas\agent-exchange` → map as needed (`net use Z: \\server\nas`).

@@ -1,0 +1,132 @@
+{
+  "papers": [
+    {
+      "title": "ROAM: Robust Organization of Atomic Memories for Agents through Semantic Relations",
+      "authors": ["Jianjie Zheng", "Peng Lai", "Sijie Cheng", "Jiehui Zhao", "Lei Yang", "Guanhua Chen"],
+      "arxiv_id": "2609.09778",
+      "date": "2026-09-09",
+      "core_contribution": "Introduces ROAM, a relation-guided framework for atomic memory management that decouples semantic relation inference from deterministic state control. ROAM classifies incoming-stored atom pairs into five fine-grained relations (independent, equivalent, directional subsumption, conflict), organizes memories into Primary and Evidence roles, and fuses complementary details into compact read views. This replaces black-box LLM memory mutations with explicit relation-guided control.",
+      "results_numbers": "Across three manager models and multiple evaluation settings (controlled intervention, LongMemEval, MEME-Post), ROAM improves answer accuracy by up to 29.8 percentage points. Achieves 15.6-point higher answer-critical source recall and 11.5-point lower confounder-token share. Ablations show complementary gains from equivalence, directional containment, conflict, and fused representations."
+    },
+    {
+      "title": "Procedural Memory Under Change: Reuse and Interference in Controlled Web Tasks",
+      "authors": ["Yanze Cao"],
+      "arxiv_id": "2609.09774",
+      "date": "2026-09-09",
+      "core_contribution": "Systematic empirical study of procedural memory interference when stored routines become mismatched with current tasks. Separates memory-task mismatch from observable error and memory-caused error. Combines retrospective interface-adaptation case study (BrowserGym TimeWarp, WebShop V1-V6) with controlled frozen-memory comparisons testing four mismatch types: changed quantities, different evidence representation, local vs global optimization conflict, and distributed promotion evidence.",
+      "results_numbers": "Across 32 formal cells (qwen3:8b, temperature 0, no adaptive retries), none of the predefined interference signatures appeared on diagnostic tasks under explicit and sufficient current-task evidence. Pair 01/02: 8/8 reference-compatible selections. Pair 03: 8/8 global optimization correct. Pair 04: 8/8 global/task correctness with explicit composition in all 4 distributed-evidence cells. Identifies a tested region of non-interference where mismatched procedural memory does not become behaviorally disruptive."
+    },
+    {
+      "title": "Procedural Graphs: Self-Evolving Execution Structures for LLM Agents",
+      "authors": ["Yuxing Lu", "Yicheng Chen", "Shanchan Wu", "Sercan Ö. Arık"],
+      "arxiv_id": "2609.09153",
+      "date": "2026-09-08",
+      "core_contribution": "Introduces Procedural Graphs (PG), an explicit editable graph of procedural knowledge organized as (procedure, relation, procedure) triplets answering 'what-to-do' questions. Mirrors knowledge graph structure for procedural knowledge. Features Generative PG Guidance (online step-level situational guidance from local subgraph) and self-evolution loop (LLM refiner contrasts failed/successful trajectories, proposes topology/attribute edits validated on held-out set). Graphs built from scratch match or surpass hand-designed ones; can repair flawed expert priors.",
+      "results_numbers": "Across multiple datasets, task types, and LLMs, PG consistently outperforms memory-based baselines. Self-evolution from scratch produces graphs matching hand-designed performance (e.g., 94.9% validation accuracy vs 93.9% for repaired expert prior). On BFCL stopping task, PG agent correctly stops after quote while baseline over-executes. On MultiChallenge, graph revision shifts behavior from meta-evaluation to answering user (success 0→1)."
+    },
+    {
+      "title": "MeClear: Cooperative Game-Theoretic Attribution and Risk-Aware Memory Clearance for Long-Horizon LLM Agents",
+      "authors": ["Boyu Yang", "Jiazheng Sun", "Zilong Lu", "Zhi Qiu", "Xin Peng", "Jun Zheng"],
+      "arxiv_id": "2609.09115",
+      "date": "2026-09-08",
+      "core_contribution": "Presents MeClear, a task-conditioned memory clearance framework using cooperative Shapley attribution to identify memories with negative downstream utility. Combines Leave-One-Out screening with sampled cooperative Shapley estimation to resolve redundant conflict masking where single-record deletion fails. Executes query-scoped minimal clearance over nested filtration with verified task recovery, without permanently altering persistent memory bank.",
+      "results_numbers": "Across 10 long dialogue memory pools: achieves 85.9% injected target recall and 82.3% overall task recovery rate, representing 25.5 percentage point improvement over Leave-One-Out baselines. Improves Recall@|M| by 47.6pp, Complete Set Recall by 22.6pp, Exact Set Match by 12.8pp, Recovery by 25.5pp over LOO. Lowest residual-error risk (13.3%) and highest Binary Task Recovery (82.3%) while selecting only 0.623 extra background memories per case. Stronger multi-rank concentration: 88.1% and 93.6% target coverage at ranks 2 and 3."
+    },
+    {
+      "title": "Graph-Based Personalized Memory for LLM Agents: Representation, Evolution, Retrieval, and Evaluation",
+      "authors": ["Dac Duy Anh Nguyen", "Zhangchi Qiu", "Shigeng Chen", "Alan Wee-Chung Liew"],
+      "arxiv_id": "2609.08599",
+      "date": "2026-09-08",
+      "core_contribution": "Survey developing a lifecycle-oriented taxonomy for graph-based personalized memory organized around four dimensions: representation (semantic, temporal, relational, experiential, affective), evolution (ingestion, consolidation, update, forgetting), retrieval (semantic, structural, hybrid), and evaluation (benchmarks, metrics, gaps). Synthesizes fragmented literature across personalized agents and generic graph memory frameworks. Identifies open challenges in graph quality, user control, lifecycle validity, and realistic personalization.",
+      "results_numbers": "Categorizes 50+ systems across the lifecycle taxonomy. Documents benchmarks: LoCoMo, LongMemEval, MemoryAgentBench, BEAM, PersonaMem, EngramaBench, EvoMemBench, EvoArena, ActMem, MeMo. Identifies key evaluation gaps: structural/graph quality metrics missing, user control under-evaluated, lifecycle validity rarely tested, realistic personalization benchmarks lacking. Repository: https://github.com/icedpanda/awesome-personalized-graph-memory"
+    },
+    {
+      "title": "Revoked but Still Authoritative: An Empirical Study of Revocation Enforcement in Agent-Memory Systems",
+      "authors": ["Yi Ting Shen", "Kentaroh Toyoda", "Alex Leung"],
+      "arxiv_id": "2609.08258",
+      "date": "2026-09-08",
+      "core_contribution": "First empirical measurement of whether soft revocation (marking facts invalid rather than deleting) is enforced at retrieval time in five major agent-memory systems (Graphiti/Zep, mem0, langmem, cognee). Finds no system enforces revocation by default: revoked facts are returned wherever revocation label is visible to retrieval layer, outrank replacements, and lead agents to unsafe actions. Develops a retrieval-time guard that intercepts reads and withholds revoked/conflicting records.",
+      "results_numbers": "Tested 5 systems × 9 scenarios × 9 models × 6 defense conditions. Zero systems enforce revocation in all cases. Two systems (Graphiti/Zep, mem0) returned both revoked and replacement records in every scenario, ranking revoked above current, leading agents to unsafe action in >40% of trials. Guard withholds revoked facts wherever backend's revocation label is visible at retrieval or facts state incompatible values. Code: https://github.com/VulcanLab/Memory-Rebirth-Attack"
+    },
+    {
+      "title": "What Should an Agent Forget? Separating What Is Stored from What Is Used",
+      "authors": ["Yuhang Li", "Yuchen Li"],
+      "arxiv_id": "2609.10263",
+      "date": "2026-09-09",
+      "core_contribution": "Introduces RD-Forget, a training-free framework separating stored history from used evidence via query-conditioned memory views. Retained source archive preserves observations; frozen LLM curator extracts relevant evidence, groups facts into semantic slots (subject|relation|scope), and uses same-slot replacement links to suppress superseded values in current-state contexts while preserving historical access via intent-aware retrieval. Rate-distortion formulation guides answer-time view construction within memory budget.",
+      "results_numbers": "Evaluated on 5 task suites (conversational memory, knowledge updating, fact consolidation, long-context reasoning, personalization) with 4 language models. On fact consolidation, gains over better baseline range 11.00-26.00 percentage points across backbones. Configuration without forgetting scores lowest; query-unconditioned configuration second lowest. Slot grouping, historical access, and relation preservation contribute complementary functions."
+    },
+    {
+      "title": "Kernel-Managed Shared Memory for System-Wide Personalization",
+      "authors": ["Ryan Lum", "Yongfeng Zhang"],
+      "arxiv_id": "2609.10144",
+      "date": "2026-09-09",
+      "core_contribution": "Proposes kernel-managed shared memory as a system-level abstraction where specialized agents write structured, tagged memories while the agent-system kernel (not individual agents) governs retrieval, privacy enforcement, and prompt injection. Implements on AIOS with standardized metadata (owner_agent, user_id, memory_type, sharing_policy). Centralizes write ordering, identity resolution, visibility filtering, ranking, token-budget control, and injection.",
+      "results_numbers": "Evaluated against 3 alternatives (unmanaged Mem0 backend, standard RAG injection, full unfiltered context) across 3 models (GPT-4o, Llama-3.1:8B, Qwen-2.5:7B) and 1,800 trials. Kernel-managed retrieval/injection improves personalization scores by significant margins on 5-point scale (all comparisons significant at p<0.05). Against full unfiltered context (soft ceiling), statistically matches performance on 2/3 models with small deficit on third, while using substantially shorter prompts: end-to-end latency lower across all models with corresponding token usage and cost reductions."
+    },
+    {
+      "title": "From Retrieval to Weights: Parametric Individualization of Small Language Models with Individual Text Corpora",
+      "authors": ["Christoph Wigbels", "Ali Abusaleh", "Markus T. Jansen", "Alexander Mehler", "Markus J. Hofmann"],
+      "arxiv_id": "2609.10155",
+      "date": "2026-09-09",
+      "core_contribution": "Investigates parametric individualization of semantic memory by consolidating individual text corpora (ITC, from web-crawled search histories) into small language model weights via per-participant DoRA adapters. Tests three hypotheses: (H1) parametric individualization improves match with participant answers, (H2) adapter and retrieval reach individual signal through different routes (substitution vs complement), (H3) effects persist when ITC size statistically controlled. Uses cognitive simulation perspective on episodic/semantic memory with OFCI model framing.",
+      "results_numbers": "515 participants, 36 multiple-choice items, 150 stratified subsample. DoRA adapter fits own participant's held-out text better than others' (individuality effect increasing with ITC size in rank order). On generalized knowledge test: log-loss match improves, but bias-corrected PMI readout match accuracy does not, and retrieval adds nothing on top. Adapter measurably writes ITC into weights; 24-item contaminated core test set used for contamination control."
+    },
+    {
+      "title": "Hi-FLoop: Hierarchical State-Feedback Loops for Multi-Timescale World Modeling",
+      "authors": ["Z Han"],
+      "arxiv_id": "2609.08796",
+      "date": "2026-09-08",
+      "core_contribution": "Presents Hi-FLoop, a branch-consistent multi-timescale state-feedback framework for closed-loop traffic simulation. Eight scene-level Worlds represent joint hypotheses; all agents share one selected World identity throughout 16 commits of 8-second rollout while Goal (8s), Preview (2s), and Control (1s) states adapt within branch. 0.5s commits feed back only executed prefix as new facts; unexecuted hypotheses never enter factual memory. Joint Preview Interaction induces sparse directed future graph with conflict probabilities and signed arrival-time differences. Prefix-frozen AB cascade transfers typed physical state and branch index for generated-state recovery.",
+      "results_numbers": "On full H-D public-validation split (955 scenarios), S2.1 cascade achieves 8-second scene-joint ADE-at-joint-minFDE@8 of 2.048m. Agent-centric oracle-minADE@8: 0.526m at 6s, 0.875m at 8s. Analytical decomposition confirms each contract condition (persistent joint branch, World semantics, executed-state feedback, multi-timescale state, future-graph message) is necessary for cross-scale consistency, branch consistency, adaptation, temporal decomposition, and interaction reasoning respectively."
+    },
+    {
+      "title": "OntologyAligner: Ontology-Aligned Retrieval and Hierarchy-Guided Large Language Model Reranking for Biomedical Ontology Normalization",
+      "authors": ["Jie Song", "Zhichuan Xu", "Ziyu Lu"],
+      "arxiv_id": "2609.10055",
+      "date": "2026-09-09",
+      "core_contribution": "Introduces OntologyAligner for biomedical ontology normalization mapping free-text expressions to standardized concepts. Uses ontology-aligned retrieval with hierarchy-guided LLM reranking. Leverages ontology hierarchy structure to guide retrieval and reranking, addressing lexical variation challenges in biomedical concept normalization.",
+      "results_numbers": "Evaluated on biomedical ontology normalization tasks. Ontology-aligned retrieval with hierarchy-guided reranking improves normalization accuracy over standard retrieval and LLM-only baselines. Specific metrics from paper: hierarchy-guided reranking leverages parent-child and sibling relations in ontology to disambiguate lexical variants. Paper accepted at EMNLP 2026."
+    },
+    {
+      "title": "On Measuring Semantic Preservation in Legal Ontology Learning",
+      "authors": ["Anonymous authors (blind review)"],
+      "arxiv_id": "2608.12326",
+      "date": "2026-08-14",
+      "core_contribution": "Proposes evaluation methodology for measuring semantic preservation in ontology learning by comparing LLM task performance on source documents against performance on transformed ontological representations. The difference quantifies semantic loss. Addresses critical gap: current evaluation focuses on structural correctness but cannot detect whether meaning survives transformation. Applied to legal domain with complex language and precise semantic requirements.",
+      "results_numbers": "Evaluation spans 6 language models across 3 ontology learning methods. Results reveal systematic semantic loss across all approaches with significant variation based on reasoning complexity and model-method interactions. Particularly severe degradation for complex legal reasoning tasks. Provides framework for measuring semantic preservation and guidance for selecting optimal model-method configurations in legal knowledge systems."
+    },
+    {
+      "title": "AVA Benchmark: Do General NLP Embeddings Capture Ontological Reasoning?",
+      "authors": ["Hamed Babaei Giglou", "Jennifer D'Souza", "Sören Auer"],
+      "arxiv_id": "2609.00177",
+      "date": "2026-09-01",
+      "core_contribution": "Introduces AVA, a systematic framework evaluating whether embeddings distinguish logic-sensitive relational semantics in ontologies and knowledge graphs. Comprises 171,007 contrastive triplets from 163 heterogeneous ontologies using hierarchy inversion, relation substitution, and disjointness injection. Evaluates 25+ state-of-the-art embedding models on ontology-sensitive similarity judgments.",
+      "results_numbers": "Best model achieves only 0.739 triplet accuracy; hard negative accuracy falls to 0.135. Fine-tuning improves discrimination dramatically (hyperbolic objectives achieve near-perfect), but transfers poorly to downstream Semantic Web tasks (taxonomy discovery, ontology alignment). Improvements stem partly from perturbation-specific pattern recognition rather than robust ontological understanding. Cross-ontology generalization remains a fundamental challenge."
+    },
+    {
+      "title": "Human-Centric Image Captioning with Subject-Centered Spatial Understanding",
+      "authors": ["Bozhou Li", "Jiahang Zhang", "Yue Ding", "Yushuo Guan", "Bohan Zeng", "Yiyan Ji", "Xinlong Chen", "Yang Shi", "Yifan Dai", "Yuran Wang", "Chengzhuo Tong", "Pengfei Wan", "Yuanxing Zhang", "Wentao Zhang"],
+      "arxiv_id": "2609.08300",
+      "date": "2026-09-08",
+      "core_contribution": "Identifies structural hallucination in multimodal LLMs for human-centric scenarios: models frequently hallucinate spatial relations (egocentric left/right, body-part positions) despite strong generic captioning performance. Proposes subject-centered spatial understanding framework requiring highly precise spatial grounding. Introduces benchmark and methods for accurate human subject modeling critical for avatar/video/image generation and fine-grained action understanding.",
+      "results_numbers": "Evaluates MLLMs on human-centric captioning with spatial grounding metrics. Standard models fail on egocentric left/right distinction and body-part spatial relations. Proposed subject-centered approach significantly reduces structural hallucinations in spatial domain. Demonstrates that generic captioning metrics do not capture structural spatial failures."
+    },
+    {
+      "title": "LLMs4OL 2026 Challenge: Retrieval-Augmented Generation and Vocabulary-Constrained Filtering for Ontology Learning",
+      "authors": ["pro-team (LLMs4OL 2026 Task Participant)"],
+      "arxiv_id": "2608.27101",
+      "date": "2026-08-31",
+      "core_contribution": "Addresses LLMs4OL 2026 Challenge Flagship Task (end-to-end ontology construction from raw text) and Reuse Task (incremental ontology extension) using offline RAG few-shot prompting pipeline. For Reuse Task, generated triples undergo deterministic vocabulary-constrained filtering retaining triples when at least one endpoint belongs to sample's closed term/type vocabulary. Highlights limitations of closed taxonomy-oriented relation vocabularies: no non-taxonomic relations extracted.",
+      "results_numbers": "Task B (Reuse): Semantic Graph Similarity 0.8692, Term-Typing F1 0.9200, Taxonomy Discovery F1 0.8540. Task A (Flagship): Semantic Graph Similarity 0.7416. Zero non-taxonomic relations extracted across both tasks, demonstrating limitation of vocabulary-constrained approach for associative relations. Shows RAG + vocabulary filtering effective for taxonomic but not non-taxonomic relation learning."
+    },
+    {
+      "title": "PEARL: Path-Entity Aligned Relational Learning with Contextual Subgraphs for Inductive Knowledge Graph Completion",
+      "authors": ["Yunchi Yang", "Longlong Li", "Cunquan Qu"],
+      "arxiv_id": "2609.02216",
+      "date": "2026-09-02",
+      "core_contribution": "Introduces PEARL for inductive knowledge graph completion (predicting missing links with unseen entities). Models paths as context-conditioned rather than independent of query subgraph. Path-Entity Aligned Relational Learning framework encodes relational paths jointly with their surrounding query subgraphs using contextual subgraph encoding, capturing how predictive relevance of a path varies across structural contexts.",
+      "results_numbers": "Evaluated on standard inductive KG completion benchmarks. PEARL outperforms subgraph- and path-based baselines by modeling path-context alignment. Demonstrates that encoding paths independently of query subgraph loses structural context critical for unseen entity prediction. Contextual subgraph encoding captures transferable relational and structural patterns for inductive reasoning."
+    }
+  ]
+}

@@ -1,0 +1,585 @@
+---
+created: 2026-08-05
+id: oracle/radio-rf/osint/osint_free_apis
+related: []
+source: Agent Zero server (10.1.1.18)
+status: installed
+tags:
+- osint
+- sdr
+- radio
+- dump1090
+- satdump
+- maritime
+- amateur
+- satellite
+- rf-engineer
+- seattle
+- noaa
+- security
+- dragonos
+- iridium
+title: Free APIs for OSINT and Related Tasks
+type: reference
+updated: 2026-08-05
+---
+
+# Free APIs for OSINT and Related Tasks
+
+## Overview
+This document provides a **comprehensive list of free APIs** for **OSINT (Open-Source Intelligence)**, **radio signal analysis**, **geospatial data**, and **other related tasks**. These APIs are **cost-effective**, **easily accessible**, and **valuable** for enhancing OSINT capabilities without relying on paid services.
+
+---
+
+## Table of Contents
+1. [Geospatial and Mapping APIs](#1-geospatial-and-mapping-apis)
+2. [Maritime and Aviation APIs](#2-maritime-and-aviation-apis)
+3. [Weather and Environmental APIs](#3-weather-and-environmental-apis)
+4. [Radio and Satellite APIs](#4-radio-and-satellite-apis)
+5. [Network and IP APIs](#5-network-and-ip-apis)
+6. [Social Media and Web APIs](#6-social-media-and-web-apis)
+7. [Government and Public Data APIs](#7-government-and-public-data-apis)
+8. [Miscellaneous OSINT APIs](#8-miscellaneous-osint-apis)
+9. [Usage Examples](#9-usage-examples)
+10. [Integration with Agent Zero](#10-integration-with-agent-zero)
+11. [Legal and Ethical Considerations](#11-legal-and-ethical-considerations)
+
+---
+
+## 1. Geospatial and Mapping APIs
+
+### 1.1 OpenStreetMap (Nominatim)
+- **URL**: `https://nominatim.openstreetmap.org/`
+- **Description**: Geocoding and reverse geocoding service based on OpenStreetMap data.
+- **Rate Limits**: 1 request per second.
+- **Use Cases**:
+  - Convert addresses to coordinates (geocoding).
+  - Convert coordinates to addresses (reverse geocoding).
+  - Map OSINT findings to physical locations.
+
+**Example Request**:
+```bash
+curl "https://nominatim.openstreetmap.org/search?format=json&q=Seattle"
+```
+
+### 1.2 Overpass API
+- **URL**: `https://overpass-api.de/api/`
+- **Description**: Query OpenStreetMap data directly using a custom query language.
+- **Rate Limits**: Public instances have usage limits; consider running your own instance.
+- **Use Cases**:
+  - Extract specific OSM data (e.g., all Wi-Fi hotspots in Seattle).
+  - Find points of interest (e.g., radio towers, emergency services).
+
+**Example Request**:
+```bash
+curl "https://overpass-api.de/api/interpreter?data=[out:json];node['amenity'='restaurant'](47.6,-122.3,47.7,-122.2);out;"
+```
+
+### 1.3 USGS Earthquake API
+- **URL**: `https://earthquake.usgs.gov/fdsnws/event/1/`
+- **Description**: Real-time and historical earthquake data.
+- **Rate Limits**: None for basic queries.
+- **Use Cases**:
+  - Monitor seismic activity in the Pacific Northwest.
+  - Correlate earthquakes with emergency radio traffic.
+
+**Example Request**:
+```bash
+curl "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=47.6&longitude=-122.3&maxradiuskm=200"
+```
+
+### 1.4 NASA Earthdata
+- **URL**: `https://earthdata.nasa.gov/`
+- **Description**: Access to NASA's satellite imagery and environmental data.
+- **Rate Limits**: Free registration required for some datasets.
+- **Use Cases**:
+  - Satellite imagery for environmental OSINT.
+  - Weather and climate data analysis.
+
+**Example Request**:
+```bash
+# Requires registration and API key
+curl -H "Authorization: Bearer YOUR_API_KEY" "https://api.nasa.gov/planetary/earth/imagery?lon=-122.3&lat=47.6&date=2023-01-01&api_key=YOUR_API_KEY"
+```
+
+---
+
+## 2. Maritime and Aviation APIs
+
+### 2.1 MarineTraffic
+- **URL**: `https://www.marinetraffic.com/en/p/partner/api`
+- **Description**: AIS vessel tracking data.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Track vessels in Puget Sound.
+  - Correlate AIS data with SDR captures.
+
+**Example Request**:
+```bash
+curl "https://services.marinetraffic.com/api/exportvessels/v:7/timespan:2/area:47.6,-122.3,47.7,-122.2/x:YOUR_API_KEY/protocol:json"
+```
+
+### 2.2 OpenSky Network
+- **URL**: `https://opensky-network.org/api/`
+- **Description**: Real-time and historical ADS-B aircraft tracking data.
+- **Rate Limits**: Free for non-commercial use.
+- **Use Cases**:
+  - Track aircraft over Seattle-Tacoma Airport (KSEA).
+  - Analyze flight patterns and anomalies.
+
+**Example Request**:
+```bash
+curl "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800"
+```
+
+### 2.3 FlightAware
+- **URL**: `https://www.flightaware.com/commercial/flightxml/`
+- **Description**: Flight tracking and aviation data.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Track commercial and private flights.
+  - Correlate with ADS-B data from SDR captures.
+
+**Example Request**:
+```bash
+curl "https://flightxml.flightaware.com/json/FlightXML3/InFlightInfo?ident=UAL123&howMany=15&offset=0" -H "Authorization: Basic YOUR_API_KEY"
+```
+
+---
+
+## 3. Weather and Environmental APIs
+
+### 3.1 NOAA Tides and Currents
+- **URL**: `https://api.tidesandcurrents.noaa.gov/api/prod/`
+- **Description**: Tide, current, and water level data.
+- **Rate Limits**: None for basic queries.
+- **Use Cases**:
+  - Monitor Puget Sound water conditions.
+  - Correlate with maritime traffic data.
+
+**Example Request**:
+```bash
+curl "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=today&station=9447130&product=predictions&datum=MLLW&time_zone=lst_ldt&units=metric&format=json"
+```
+
+### 3.2 OpenWeatherMap
+- **URL**: `https://openweathermap.org/api`
+- **Description**: Weather data and forecasts.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Correlate weather data with radio signal propagation.
+  - Monitor weather conditions for emergency preparedness.
+
+**Example Request**:
+```bash
+curl "https://api.openweathermap.org/data/2.5/weather?lat=47.6&lon=-122.3&appid=YOUR_API_KEY"
+```
+
+### 3.3 AirNow
+- **URL**: `https://www.airnowapi.org/`
+- **Description**: Air quality data.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Monitor air quality in Seattle.
+  - Correlate with environmental sensor data.
+
+**Example Request**:
+```bash
+curl "http://www.airnowapi.org/aq/observation/latLong/current/?format=application/json&latitude=47.6&longitude=-122.3&distance=25&API_KEY=YOUR_API_KEY"
+```
+
+---
+
+## 4. Radio and Satellite APIs
+
+### 4.1 Celestrak
+- **URL**: `https://celestrak.org/NORAD/elements/`
+- **Description**: Satellite Two-Line Element (TLE) data.
+- **Rate Limits**: None.
+- **Use Cases**:
+  - Track satellites visible from Seattle.
+  - Predict satellite passes for SDR captures.
+
+**Example Request**:
+```bash
+curl "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle"
+```
+
+### 4.2 N2YO
+- **URL**: `https://www.n2yo.com/api/`
+- **Description**: Real-time satellite tracking.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Visualize satellite positions in real-time.
+  - Correlate with SDR satellite signal captures.
+
+**Example Request**:
+```bash
+curl "https://www.n2yo.com/rest/v1/satellite/positions/25544/47.6/-122.3/0/2/&apiKey=YOUR_API_KEY"
+```
+
+### 4.3 SatNOGS
+- **URL**: `https://db.satnogs.org/api/`
+- **Description**: Open-source satellite ground station network data.
+- **Rate Limits**: None for public data.
+- **Use Cases**:
+  - Access satellite telemetry and observations.
+  - Correlate with local SDR captures.
+
+**Example Request**:
+```bash
+curl "https://db.satnogs.org/api/transmitters/?format=json"
+```
+
+---
+
+## 5. Network and IP APIs
+
+### 5.1 IPInfo.io
+- **URL**: `https://ipinfo.io/`
+- **Description**: IP geolocation and ASN data.
+- **Rate Limits**: 50,000 requests/month on free tier.
+- **Use Cases**:
+  - Geolocate IP addresses.
+  - Identify ISPs and network owners.
+
+**Example Request**:
+```bash
+curl "https://ipinfo.io/8.8.8.8/json?token=YOUR_API_KEY"
+```
+
+### 5.2 Shodan
+- **URL**: `https://api.shodan.io/`
+- **Description**: Search engine for internet-connected devices.
+- **Rate Limits**: Free tier available with limited queries.
+- **Use Cases**:
+  - Discover exposed devices and services.
+  - Correlate with network OSINT.
+
+**Example Request**:
+```bash
+curl "https://api.shodan.io/shodan/host/8.8.8.8?key=YOUR_API_KEY"
+```
+
+### 5.3 Censys
+- **URL**: `https://www.censys.io/api/`
+- **Description**: Internet-wide scan data.
+- **Rate Limits**: Free tier available with limited queries.
+- **Use Cases**:
+  - Analyze internet-exposed hosts and services.
+  - Correlate with cybersecurity OSINT.
+
+**Example Request**:
+```bash
+curl -u YOUR_API_ID:YOUR_API_SECRET "https://www.censys.io/api/v1/view/ipv4/8.8.8.8"
+```
+
+---
+
+## 6. Social Media and Web APIs
+
+### 6.1 Twitter API (v2)
+- **URL**: `https://developer.twitter.com/en/docs/twitter-api`
+- **Description**: Access to Twitter data.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Monitor social media for OSINT.
+  - Track trends and events in real-time.
+
+**Example Request**:
+```bash
+curl -X GET "https://api.twitter.com/2/tweets/search/recent?query=seattle&tweet.fields=created_at&max_results=10" -H "Authorization: Bearer YOUR_BEARER_TOKEN"
+```
+
+### 6.2 Reddit API
+- **URL**: `https://www.reddit.com/dev/api/`
+- **Description**: Access to Reddit posts and comments.
+- **Rate Limits**: Free with rate limits.
+- **Use Cases**:
+  - Monitor discussions and trends.
+  - Gather OSINT from public forums.
+
+**Example Request**:
+```bash
+curl -A "python:com.example.myreddit:v1.0 (by /u/USERNAME)" -H "User-Agent: python:com.example.myreddit:v1.0 (by /u/USERNAME)" "https://oauth.reddit.com/r/Seattle/new.json?limit=10" -H "Authorization: bearer YOUR_ACCESS_TOKEN"
+```
+
+### 6.3 Wayback Machine (Archive.org)
+- **URL**: `https://archive.org/help/json.php`
+- **Description**: Access to historical web pages.
+- **Rate Limits**: Free with reasonable usage limits.
+- **Use Cases**:
+  - Retrieve historical versions of websites.
+  - Track changes in web content over time.
+
+**Example Request**:
+```bash
+curl "https://web.archive.org/cdx/search/cdx?url=https://example.com&output=json"
+```
+
+---
+
+## 7. Government and Public Data APIs
+
+### 7.1 Data.gov
+- **URL**: `https://www.data.gov/developer/api`
+- **Description**: U.S. government open data.
+- **Rate Limits**: Varies by dataset.
+- **Use Cases**:
+  - Access public government datasets.
+  - Correlate with other OSINT data.
+
+**Example Request**:
+```bash
+curl "https://catalog.data.gov/api/3/action/package_search?q=seattle"
+```
+
+### 7.2 FCC Licensing Data
+- **URL**: `https://www.fcc.gov/developer`
+- **Description**: FCC license data.
+- **Rate Limits**: None for public data.
+- **Use Cases**:
+  - Look up radio license holders.
+  - Identify frequency allocations.
+
+**Example Request**:
+```bash
+curl "https://data.fcc.gov/api/license-view/basicSearch/getLicenses?searchValue=Seattle"
+```
+
+### 7.3 USGS Water Services
+- **URL**: `https://waterservices.usgs.gov/`
+- **Description**: Water resource data.
+- **Rate Limits**: None for basic queries.
+- **Use Cases**:
+  - Monitor water levels and quality.
+  - Correlate with environmental OSINT.
+
+**Example Request**:
+```bash
+curl "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=12113445&parameterCd=00060,00065"
+```
+
+---
+
+## 8. Miscellaneous OSINT APIs
+
+### 8.1 Have I Been Pwned
+- **URL**: `https://haveibeenpwned.com/API/v3`
+- **Description**: Check if email addresses or phone numbers have been compromised in data breaches.
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Verify if personal data has been exposed.
+  - Correlate with cybersecurity OSINT.
+
+**Example Request**:
+```bash
+curl "https://haveibeenpwned.com/api/v3/breachedaccount/test@example.com" -H "hibp-api-key: YOUR_API_KEY"
+```
+
+### 8.2 QRZ.com
+- **URL**: `https://xmldata.qrz.com/xml/current/`
+- **Description**: Amateur radio callsign lookup.
+- **Rate Limits**: Free for personal use.
+- **Use Cases**:
+  - Look up ham radio operator details.
+  - Correlate with radio signal captures.
+
+**Example Request**:
+```bash
+curl "https://xmldata.qrz.com/xml/current/?username=YOUR_USERNAME;password=YOUR_PASSWORD;s=K7XYZ"
+```
+
+### 8.3 WiGLE
+- **URL**: `https://api.wigle.net/api/v2/`
+- **Description**: Wireless network database (Wi-Fi, Bluetooth, cell towers).
+- **Rate Limits**: Free tier available with limited requests.
+- **Use Cases**:
+  - Map wireless networks in Seattle.
+  - Correlate with Flipper Zero Wi-Fi scans.
+
+**Example Request**:
+```bash
+curl -u YOUR_API_NAME:YOUR_API_TOKEN "https://api.wigle.net/api/v2/network/search?ssid=linksys"
+```
+
+---
+
+## 9. Usage Examples
+
+### 9.1 Correlating AIS and ADS-B Data
+```python
+import requests
+import pandas as pd
+
+# Fetch AIS data from MarineTraffic
+ais_url = "https://services.marinetraffic.com/api/exportvessels/v:7/timespan:2/area:47.6,-122.3,47.7,-122.2/x:YOUR_MARINETRAFFIC_API_KEY/protocol:json"
+ais_response = requests.get(ais_url)
+ais_data = ais_response.json()
+
+# Fetch ADS-B data from OpenSky
+adsb_url = "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800"
+adsb_response = requests.get(adsb_url)
+adsb_data = adsb_response.json()
+
+# Convert to DataFrames
+ais_df = pd.DataFrame(ais_data)
+adsb_df = pd.DataFrame(adsb_data['states'])
+
+# Correlate by timestamp and location
+merged = pd.merge_asof(
+    ais_df.sort_values('TIMESTAMP'),
+    adsb_df.sort_values('time'),
+    left_on='TIMESTAMP',
+    right_on='time',
+    tolerance=pd.Timedelta('1s'),
+    direction='nearest'
+)
+
+# Save to CSV
+merged.to_csv('correlated_ais_adsb.csv', index=False)
+print("Correlated AIS and ADS-B data saved to correlated_ais_adsb.csv")
+```
+
+### 9.2 Geocoding Addresses with OpenStreetMap
+```python
+import requests
+
+def geocode_address(address):
+    url = f"https://nominatim.openstreetmap.org/search?format=json&q={address}"
+    response = requests.get(url).json()
+    if response:
+        return {
+            'lat': response[0]['lat'],
+            'lon': response[0]['lon'],
+            'display_name': response[0]['display_name']
+        }
+    return None
+
+# Example usage
+location = geocode_address("Space Needle, Seattle")
+print(f"Space Needle coordinates: {location['lat']}, {location['lon']}")
+```
+
+### 9.3 Tracking Satellites with Celestrak
+```python
+import requests
+
+def get_satellite_tle(satellite_id):
+    url = f"https://celestrak.org/NORAD/elements/gp.php?CATNR={satellite_id}&FORMAT=tle"
+    response = requests.get(url).text
+    return response.splitlines()
+
+# Example: ISS (ID 25544)
+tle_lines = get_satellite_tle(25544)
+print("TLE for ISS:")
+for line in tle_lines:
+    print(line)
+```
+
+---
+
+## 10. Integration with Agent Zero
+
+### 10.1 Automated AIS Monitoring
+```json
+{
+  "tool_name": "scheduler:create_scheduled_task",
+  "tool_args": {
+    "name": "Puget Sound AIS Monitor",
+    "prompt": "\n      1. Query MarineTraffic API for AIS data in Puget Sound (47.6,-122.3 to 47.7,-122.2).\n      2. Store results in PostgreSQL with timestamp and geolocation.\n      3. Generate a Folium map of vessel positions.\n      4. Alert if vessels are detected in restricted zones (e.g., near naval bases).\n    ",
+    "schedule": {"minute": "*/15"}  # Every 15 minutes
+  }
+}
+```
+
+### 10.2 Emergency Alert System
+```json
+{
+  "tool_name": "scheduler:create_scheduled_task",
+  "tool_args": {
+    "name": "Seattle Emergency Alerts",
+    "prompt": "\n      1. Check USGS Earthquake API for seismic activity near Seattle.\n      2. Check NOAA Tides API for extreme water levels in Puget Sound.\n      3. If alerts are found, notify the user with details and recommended actions.\n    ",
+    "schedule": {"hour": "*/1"}  # Hourly
+  }
+}
+```
+
+### 10.3 IP Geolocation Lookup
+```json
+{
+  "tool_name": "call_subordinate",
+  "tool_args": {
+    "profile": "developer",
+    "message": "\n      Create a Python script to:
+      1. Query IPInfo.io API for geolocation data on a given IP address.
+      2. Store results in PostgreSQL with timestamp.
+      3. Generate a report with a Folium map of the IP's location.\n    ",
+    "reset": "true"
+  }
+}
+```
+
+---
+
+## 11. Legal and Ethical Considerations
+
+### 11.1 Legal Compliance
+- **Data Privacy**: Ensure compliance with **GDPR**, **CCPA**, and other privacy laws when handling personal data.
+- **API Terms**: Always review and comply with the **terms of service** for each API.
+- **Rate Limits**: Respect API rate limits to avoid being blocked.
+
+### 11.2 Ethical Guidelines
+- **Transparency**: Be transparent about data collection and usage.
+- **Consent**: Obtain consent when collecting data on individuals.
+- **Minimization**: Collect only the data necessary for your analysis.
+- **Anonymization**: Anonymize personal data in reports and logs.
+
+---
+
+## Summary
+This document provides a **comprehensive list of free APIs** for enhancing OSINT capabilities. These APIs cover a wide range of domains, including **geospatial data**, **maritime and aviation tracking**, **weather and environmental data**, **radio and satellite information**, **network and IP data**, **social media**, and **government datasets**.
+
+### Next Steps
+
+1. **Integrate APIs with Agent Zero**:
+   ```json
+   {
+     "tool_name": "scheduler:create_scheduled_task",
+     "tool_args": {
+       "name": "API Data Collection",
+       "prompt": "\n         1. Query OpenSky API for ADS-B data over Seattle.\n         2. Query MarineTraffic API for AIS data in Puget Sound.\n         3. Store both datasets in PostgreSQL with timestamps.\n         4. Generate a combined Folium map of aircraft and vessel positions.\n       ",
+       "schedule": {"minute": "*/30"}  # Every 30 minutes
+     }
+   }
+   ```
+
+2. **Create Custom Scripts**:
+   ```json
+   {
+     "tool_name": "call_subordinate",
+     "tool_args": {
+       "profile": "developer",
+       "message": "\n         Write a Python script to:
+         1. Query the USGS Earthquake API for seismic activity near Seattle.\n         2. Query the NOAA Tides API for water levels in Puget Sound.\n         3. Correlate the data and generate an alert if both indicate potential hazards.\n       ",
+       "reset": "true"
+     }
+   }
+   ```
+
+3. **Explore Advanced Projects**:
+   - **Satellite Tracking Dashboard**: Combine Celestrak TLE data with real-time SDR captures.
+   - **Maritime Traffic Analysis**: Correlate AIS data with weather and tide data.
+   - **Automated OSINT Reports**: Use multiple APIs to generate comprehensive OSINT reports.
+
+**Which API would you like to integrate first?** 🚀
+- [ ] MarineTraffic (AIS data)
+- [ ] OpenSky Network (ADS-B data)
+- [ ] USGS Earthquake API
+- [ ] OpenStreetMap (geocoding)
+- [ ] Celestrak (satellite tracking)
+- [ ] [Custom Request]
+
+## Related
+
+[[dragon-os-sdr-osint-expert]] [[osint_agent_design]] [[osint_dashboards]] [[osint_execution_plan]] [[osint_implementation_plan]]

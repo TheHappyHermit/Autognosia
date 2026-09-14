@@ -1,7 +1,7 @@
 # Running `graphify extract` against the Oracle brain on the V100
 
 ## Context
-The Autognosia Oracle brain (`/home/josh434/.autognosia/oracle/brain`) is ingested by graphify's
+The Autognosia Oracle brain (`/home/home_user/.autognosia/oracle/brain`) is ingested by graphify's
 `extract` subcommand, pinned to the local V100 (`10.1.1.10:8080`) running Qwen3.6-35B-A3B. This is a
 long-running daemon-style job — NOT the interactive `/graphify` slash pipeline in this skill's main body.
 

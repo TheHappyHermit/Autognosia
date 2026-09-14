@@ -116,7 +116,7 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
    Key indicators:
    - `HERMES_SESSION_SOURCE=desktop` — the interface is the desktop GUI app (does NOT mean the GUI host = the execution host).
    - `HERMES_DESKTOP=1` — a desktop session is active (same caveat).
-   - `HERMES_REAL_HOME=/home/josh434` — the persistent home path. Compare this to the local filesystem layout.
+   - `HERMES_REAL_HOME=/home/home_user` — the persistent home path. Compare this to the local filesystem layout.
    - `_HERMES_GATEWAY=1` — the in-process gateway is active (could be the desktop's embedded gateway or a tunneled remote one).
 
 2. **Verify the execution host** directly:
@@ -135,7 +135,7 @@ This is NOT a bug — it's the intended multi-frontend topology. Do not confuse 
    echo $SSH_CONNECTION $SSH_CLIENT         # set if tunneled
    ```
 
-4. **Confirm via filesystem** — if `/home/josh434` resolves to the same path on a remote Ubuntu host and the desktop is Windows, the tools execute on the remote Linux host.
+4. **Confirm via filesystem** — if `/home/home_user` resolves to the same path on a remote Ubuntu host and the desktop is Windows, the tools execute on the remote Linux host.
 
 ### Correct Mental Model
 
@@ -161,7 +161,7 @@ Do NOT assume the IP returned by `ip addr` in a terminal call is the machine you
 
 2. **Script uses relative paths based on `__file__`** (e.g., `os.path.dirname(os.path.abspath(__file__))`). When Hermes copies the script to `~/.hermes/scripts/`, those relative paths resolve to the wrong location.
 
-3. **Script path drift (post-migration):** Scripts were moved from the old project directory to `.autognosia/scripts/`. If a cron job's `script` field reports `Script not found`, set `workdir` to `/home/josh434/.autognosia/scripts`.
+3. **Script path drift (post-migration):** Scripts were moved from the old project directory to `.autognosia/scripts/`. If a cron job's `script` field reports `Script not found`, set `workdir` to `/home/home_user/.autognosia/scripts`.
 
 ### Fix
 

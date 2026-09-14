@@ -86,7 +86,7 @@ export DECISION_SCAN_TAIL_CHARS=4000        # default
 export DECISION_CONFIDENCE_THRESHOLD=0.60   # default
 
 # Optionally write a markdown page per decision to a directory
-export DECISION_WIKI_OUTPUT_DIR=/home/josh434/Documents/Hermes-Vault/decisions
+export DECISION_WIKI_OUTPUT_DIR=/home/home_user/Documents/Hermes-Vault/decisions
 ```
 
 ### Brain sync integration

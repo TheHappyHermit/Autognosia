@@ -1,0 +1,4724 @@
+---
+created: 2026-08-05
+id: oracle/radio-rf/osint/osint_execution_plan
+related: []
+source: Agent Zero server (10.1.1.18)
+status: installed
+tags:
+- osint
+- sdr
+- radio
+- gnuradio
+- dump1090
+- trunk-recorder
+- rtl-sdr
+- maritime
+- amateur
+- broadcast
+- rf-engineer
+- seattle
+- noaa
+- hardware
+- dragonos
+title: OSINT Execution Plan
+type: reference
+updated: 2026-08-05
+---
+
+# OSINT Execution Plan
+
+## Overview
+This document provides a **step-by-step execution plan** for implementing the **OSINT System** and **OSINT Agent** as outlined in the `osint_implementation_plan.md`. Each phase includes **detailed instructions**, **commands**, **validation steps**, and **troubleshooting tips** to ensure successful deployment.
+
+---
+
+## Table of Contents
+1. [Phase 1: System Design and Setup](#1-phase-1-system-design-and-setup)
+2. [Phase 2: Core OSINT System Development](#2-phase-2-core-osint-system-development)
+3. [Phase 3: OSINT Agent Development](#3-phase-3-osint-agent-development)
+4. [Phase 4: Integration and Testing](#4-phase-4-integration-and-testing)
+5. [Phase 5: Seattle-Specific Workflows](#5-phase-5-seattle-specific-workflows)
+6. [Phase 6: Deployment and Monitoring](#6-phase-6-deployment-and-monitoring)
+
+---
+
+## 1. Phase 1: System Design and Setup
+
+### Step 1: Finalize System Architecture
+**Objective**: Review and approve the high-level design for the OSINT system and agent.
+
+**Actions**:
+1. Open the `osint_system_design.md` and `osint_agent_design.md` files.
+2. Review the architecture diagrams and component specifications.
+3. Confirm the design meets the project objectives and Seattle-specific requirements.
+
+**Commands**:
+```bash
+# Navigate to the project directory
+cd /a0/usr/projects/knowledge_base
+
+# Review system design documents
+cat osint_system_design.md | grep -A 20 "## 3. Agent Architecture"
+cat osint_agent_design.md | grep -A 20 "## 3. Agent Architecture"
+```
+
+**Validation**:
+- [ ] Architecture diagrams are clear and comprehensive.
+- [ ] Component specifications align with project goals.
+- [ ] Seattle-specific workflows are included.
+
+---
+
+### Step 2: Set Up Development Environment
+**Objective**: Install and configure tools (Python, GNU Radio, SQLite, etc.) on the Intel N355.
+
+**Actions**:
+1. Update the system and install required packages.
+2. Verify the installation of each tool.
+
+**Commands**:
+```bash
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Install core dependencies
+sudo apt install -y python3 python3-pip python3-venv sqlite3 gnuradio rtl-sdr libsqlite3-dev
+
+# Install Python packages
+pip3 install beautifulsoup4 folium pandas matplotlib requests aiohttp sqlalchemy
+
+# Verify installations
+python3 --version  # Should be 3.10+
+sqlite3 --version  # Should be 3.35+
+rtl_test -t  # Should detect RTL-SDR
+```
+
+**Validation**:
+- [ ] Python 3.10+ is installed.
+- [ ] SQLite3 is installed and accessible.
+- [ ] GNU Radio and RTL-SDR are functional.
+- [ ] Python packages are installed without errors.
+
+---
+
+### Step 3: Define Database Schemas
+**Objective**: Design SQLite, InfluxDB, and Elasticsearch schemas for OSINT data.
+
+**Actions**:
+1. Create SQL scripts for each database schema.
+2. Document the schema design in a markdown file.
+
+**Commands**:
+```bash
+# Create directory for database schemas
+mkdir -p /a0/usr/projects/knowledge_base/database_schemas
+
+# Create SQLite schema
+cat > /a0/usr/projects/knowledge_base/database_schemas/sqlite_schema.sql << 'EOF'
+-- SQLite schema for OSINT data
+PRAGMA journal_mode = WAL;
+
+-- Aircraft data (ADS-B)
+CREATE TABLE IF NOT EXISTS aircraft (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    hex TEXT NOT NULL,
+    flight TEXT,
+    lat REAL,
+    lon REAL,
+    alt REAL,
+    speed REAL,
+    track REAL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Vessel data (AIS)
+CREATE TABLE IF NOT EXISTS vessels (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    mmsi INTEGER NOT NULL,
+    name TEXT,
+    lat REAL,
+    lon REAL,
+    speed REAL,
+    course REAL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Web scraping data
+CREATE TABLE IF NOT EXISTS web_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url TEXT NOT NULL,
+    title TEXT,
+    content TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Radio signal captures
+CREATE TABLE IF NOT EXISTS radio_captures (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    frequency REAL NOT NULL,
+    modulation TEXT,
+    raw_data BLOB,
+    metadata JSON,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+EOF
+
+# Create InfluxDB schema documentation
+cat > /a0/usr/projects/knowledge_base/database_schemas/influxdb_schema.md << 'EOF'
+# InfluxDB Schema for OSINT Time-Series Data
+
+## Measurement: `radio_signals`
+- **Tags**:
+  - `frequency` (string): Frequency in MHz (e.g., "1090" for ADS-B)
+  - `modulation` (string): Modulation type (e.g., "ADS-B", "AIS")
+  - `source` (string): Source of data (e.g., "rtl_sdr", "dump1090")
+
+- **Fields**:
+  - `signal_strength` (float): Signal strength in dB
+  - `snr` (float): Signal-to-noise ratio
+  - `messages` (int): Number of messages decoded
+
+- **Example Query**:
+  ```sql
+  SELECT mean(signal_strength) FROM radio_signals WHERE frequency = '1090' AND time > now() - 1h GROUP BY time(10m)
+  ```
+
+## Measurement: `system_metrics`
+- **Tags**:
+  - `host` (string): Hostname of the system
+  - `component` (string): Component (e.g., "adsb", "ais")
+
+- **Fields**:
+  - `cpu_usage` (float): CPU usage percentage
+  - `memory_usage` (float): Memory usage percentage
+  - `disk_usage` (float): Disk usage percentage
+EOF
+
+# Create Elasticsearch schema documentation
+cat > /a0/usr/projects/knowledge_base/database_schemas/elasticsearch_schema.md << 'EOF'
+# Elasticsearch Schema for OSINT Data
+
+## Index: `osint_aircraft`
+- **Mappings**:
+  ```json
+  {
+    "properties": {
+      "hex": {"type": "keyword"},
+      "flight": {"type": "text"},
+      "lat": {"type": "float"},
+      "lon": {"type": "float"},
+      "alt": {"type": "float"},
+      "speed": {"type": "float"},
+      "track": {"type": "float"},
+      "timestamp": {"type": "date"}
+    }
+  }
+  ```
+
+## Index: `osint_vessels`
+- **Mappings**:
+  ```json
+  {
+    "properties": {
+      "mmsi": {"type": "keyword"},
+      "name": {"type": "text"},
+      "lat": {"type": "float"},
+      "lon": {"type": "float"},
+      "speed": {"type": "float"},
+      "course": {"type": "float"},
+      "timestamp": {"type": "date"}
+    }
+  }
+  ```
+EOF
+```
+
+**Validation**:
+- [ ] SQLite schema is defined and saved.
+- [ ] InfluxDB schema is documented.
+- [ ] Elasticsearch schema is documented.
+
+---
+
+### Step 4: Establish Legal and Ethical Guidelines
+**Objective**: Document compliance requirements for data collection and analysis.
+
+**Actions**:
+1. Create a `legal_ethical_guidelines.md` file.
+2. Outline FCC regulations, privacy laws, and ethical considerations.
+
+**Commands**:
+```bash
+# Create legal and ethical guidelines document
+cat > /a0/usr/projects/knowledge_base/legal_ethical_guidelines.md << 'EOF'
+# Legal and Ethical Guidelines for OSINT System
+
+## FCC Regulations
+- **Part 15**: Unlicensed devices (e.g., RTL-SDR, Wi-Fi) must not cause harmful interference.
+- **Part 97**: Amateur radio operations require a license for transmitting.
+- **Part 90**: Private land mobile radio services (e.g., P25) may have encryption restrictions.
+
+### Permitted Activities
+| **Activity**               | **Legal Status**               | **Notes**                                  |
+|----------------------------|--------------------------------|--------------------------------------------|
+| ADS-B Monitoring           | Legal                          | Unencrypted aircraft transponders.        |
+| AIS Monitoring             | Legal                          | Unencrypted maritime transponders.        |
+| NOAA Weather Radio         | Legal                          | Public broadcast.                          |
+| FM Radio Monitoring        | Legal                          | Unencrypted broadcasts.                   |
+| Amateur Radio Monitoring   | Legal                          | Public bands (e.g., 144–148 MHz).           |
+| P25 Phase 1 Monitoring      | Legal                          | Unencrypted public safety comms.          |
+| P25 Phase 2 Monitoring      | **Illegal**                    | Encrypted; decryption prohibited.         |
+| Cellular Monitoring         | **Illegal**                    | Requires carrier authorization.           |
+| GPS Jamming/Spoofing        | **Illegal**                    | FCC Part 15/18 violations.                  |
+
+### Privacy Considerations
+- **PII**: Avoid collecting personally identifiable information without consent.
+- **Persistent Tracking**: Do not track individuals or specific devices over time.
+- **Data Retention**: Delete raw captures after processing unless required for analysis.
+
+### Ethical Guidelines
+- **Transparency**: Disclose data collection methods in reports.
+- **Consent**: Obtain consent when possible (e.g., for localized studies).
+- **Minimize Harm**: Avoid actions that could cause harm or disruption.
+- **Responsible Disclosure**: Report vulnerabilities to responsible parties before public disclosure.
+- **Community Benefit**: Design projects to serve local needs (e.g., emergency communications, public safety).
+
+### Seattle-Specific Notes
+- **Seattle Police/Fire**: P25 Phase 2 is encrypted; monitoring is legal but decryption is prohibited.
+- **Port of Seattle**: AIS monitoring is permitted for public vessels.
+- **NOAA Weather Radio**: KIG89 (162.475 MHz) covers the Seattle area.
+
+### Compliance Checklist
+- [ ] Verify frequencies are unencrypted and publicly accessible.
+- [ ] Avoid collecting PII or sensitive data.
+- [ ] Document data sources and collection methods.
+- [ ] Obtain necessary licenses for transmitting (e.g., amateur radio).
+- [ ] Comply with API terms of service (e.g., rate limits, attribution).
+EOF
+```
+
+**Validation**:
+- [ ] Legal and ethical guidelines are documented.
+- [ ] FCC regulations are clearly outlined.
+- [ ] Privacy considerations are addressed.
+- [ ] Seattle-specific notes are included.
+
+---
+
+### Step 5: Create Project Repository
+**Objective**: Set up a Git repository for code, scripts, and documentation.
+
+**Actions**:
+1. Initialize a Git repository in the project directory.
+2. Create an initial directory structure.
+3. Add a `.gitignore` file to exclude sensitive or large files.
+
+**Commands**:
+```bash
+# Initialize Git repository
+cd /a0/usr/projects/knowledge_base
+git init
+
+# Create initial directory structure
+mkdir -p {scripts,configs,docs,database_schemas,tests}
+
+# Create .gitignore file
+cat > .gitignore << 'EOF'
+# Ignore sensitive files
+secrets.env
+*.db
+*.log
+
+# Ignore large files
+*.wav
+*.iq
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore Node.js modules
+node_modules/
+
+# Ignore Docker files
+*.tar
+EOF
+
+# Add initial files to Git
+git add .gitignore README.md database_schemas/ legal_ethical_guidelines.md
+git commit -m "Initial project setup: directories, schemas, and legal guidelines"
+```
+
+**Validation**:
+- [ ] Git repository is initialized.
+- [ ] Directory structure is created.
+- [ ] `.gitignore` file excludes sensitive and large files.
+- [ ] Initial files are committed to Git.
+
+---
+
+### Step 6: Draft Initial Documentation
+**Objective**: Create a README and high-level design documents.
+
+**Actions**:
+1. Create a `README.md` file with project overview and setup instructions.
+2. Document the high-level design in a separate markdown file.
+
+**Commands**:
+```bash
+# Create README.md
+cat > /a0/usr/projects/knowledge_base/README.md << 'EOF'
+# OSINT System and Agent
+
+## Overview
+This project implements an **Open-Source Intelligence (OSINT) system** and **agent** for automated data collection, processing, and analysis. The system integrates with **Agent Zero** for advanced reasoning and task delegation, focusing on **Seattle-specific** use cases such as aircraft monitoring, maritime tracking, and emergency alerts.
+
+## Features
+- **Radio Signal Monitoring**: ADS-B, AIS, P25, NOAA, and more.
+- **API Data Collection**: OpenSky, MarineTraffic, NOAA, and other free APIs.
+- **Web Scraping**: Local news, social media, and public datasets.
+- **Data Processing**: Normalization, filtering, and enrichment.
+- **Agent Zero Integration**: Advanced analysis and reasoning.
+- **Alert Generation**: Notifications for critical findings.
+- **Visualization**: Maps, charts, and reports.
+- **Seattle-Specific Workflows**: KSEA aircraft monitoring, Puget Sound maritime tracking, and emergency alerts.
+
+## Setup
+### Prerequisites
+- Intel N355 (or equivalent) with 16GB RAM and 1TB SSD.
+- RTL-SDR, HackRF, or similar SDR hardware.
+- Antennas for target frequencies (e.g., discone for 20–3000 MHz).
+- GNU Radio, Python 3.10+, and other dependencies (see `requirements.txt`).
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd osint-system
+   ```
+
+2. Install dependencies:
+   ```bash
+   sudo apt update && sudo apt install -y python3 python3-pip sqlite3 gnuradio rtl-sdr
+   pip3 install -r requirements.txt
+   ```
+
+3. Set up databases:
+   ```bash
+   sqlite3 osint.db < database_schemas/sqlite_schema.sql
+   ```
+
+4. Configure the system:
+   ```bash
+   cp configs/example_config.yaml configs/config.yaml
+   # Edit configs/config.yaml with your settings
+   ```
+
+5. Start the OSINT system:
+   ```bash
+   python3 osint_system/main.py
+   ```
+
+6. Start the OSINT agent:
+   ```bash
+   python3 osint_agent/main.py
+   ```
+
+## Documentation
+- [System Design](docs/system_design.md)
+- [Agent Design](docs/agent_design.md)
+- [Implementation Plan](docs/implementation_plan.md)
+- [Legal and Ethical Guidelines](legal_ethical_guidelines.md)
+- [Database Schemas](database_schemas/)
+
+## License
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+EOF
+
+# Create high-level design document
+cat > /a0/usr/projects/knowledge_base/docs/system_design.md << 'EOF'
+# OSINT System Design
+
+## Overview
+The OSINT system is designed to **automate the collection, processing, and analysis** of open-source intelligence data from various sources, including radio signals, APIs, and web scraping. The system is **modular**, **scalable**, and **integrated with Agent Zero** for advanced reasoning.
+
+## Architecture
+The system consists of the following layers:
+
+1. **Data Collection Layer**:
+   - Radio signal capture (ADS-B, AIS, P25, etc.).
+   - API data collection (OpenSky, MarineTraffic, NOAA, etc.).
+   - Web scraping (Seattle Times, Reddit, etc.).
+
+2. **Data Processing Layer**:
+   - Normalization of data formats.
+   - Filtering and enrichment.
+   - Storage in SQLite, InfluxDB, and Elasticsearch.
+
+3. **Analysis Layer**:
+   - Local analysis with Python scripts.
+   - Advanced reasoning via Agent Zero.
+
+4. **Output Layer**:
+   - Alert generation for critical findings.
+   - Visualization with Folium and Matplotlib.
+   - Reporting and notifications.
+
+## Components
+
+### Radio Signal Collector
+- **Tools**: RTL-SDR, HackRF, GNU Radio, `dump1090`, `rtl_ais`, `trunk-recorder`.
+- **Frequencies**: 1090 MHz (ADS-B), 162 MHz (AIS), 851 MHz (Seattle P25), 162.475 MHz (NOAA Weather).
+- **Output**: Decoded messages stored in SQLite/InfluxDB.
+
+### API Handler
+- **Tools**: Python `requests`, `aiohttp`.
+- **APIs**: OpenSky, MarineTraffic, NOAA, NASA.
+- **Output**: Structured data stored in SQLite.
+
+### Web Scraper
+- **Tools**: BeautifulSoup, Scrapy, Selenium.
+- **Targets**: Seattle Times, Reddit, Twitter.
+- **Output**: Extracted content stored in SQLite.
+
+### Data Processor
+- **Tools**: Python, Pandas, NumPy.
+- **Tasks**: Normalization, filtering, enrichment.
+- **Output**: Processed data ready for analysis.
+
+### Database Manager
+- **Tools**: SQLite, InfluxDB, Elasticsearch.
+- **Schemas**: Defined in `database_schemas/`.
+- **Output**: Structured, queryable data.
+
+### Agent Zero Interface
+- **Tools**: Custom Python tools registered with Agent Zero.
+- **Tasks**: Advanced analysis, reasoning, and task delegation.
+- **Output**: Insights, alerts, and reports.
+
+### Visualization Engine
+- **Tools**: Folium, Matplotlib, Plotly.
+- **Tasks**: Generate maps, charts, and reports.
+- **Output**: Visualizations saved as PNG/HTML.
+
+### Alert Generator
+- **Tools**: Agent Zero `notify_user` tool, email/SMS APIs.
+- **Tasks**: Generate and deliver alerts for critical findings.
+- **Output**: Notifications sent to users.
+
+## Data Flow
+```
+Radio/API/Web → Collector → Processor → Database → Agent Zero → Alerts/Visualizations
+```
+
+## Seattle-Specific Workflows
+
+### KSEA Aircraft Monitoring
+- **Data Sources**: ADS-B (1090 MHz), OpenSky API.
+- **Analysis**: Detect unusual flight patterns (e.g., circling, low altitude).
+- **Output**: Alerts and maps of aircraft activity.
+
+### Puget Sound Maritime Tracking
+- **Data Sources**: AIS (162 MHz), MarineTraffic API.
+- **Analysis**: Identify suspicious vessel activity.
+- **Output**: Alerts and vessel tracks on maps.
+
+### Emergency Alerts
+- **Data Sources**: NOAA Weather Radio (162.475 MHz), P25 radio.
+- **Analysis**: Detect and classify emergency alerts.
+- **Output**: Notifications to users and stakeholders.
+EOF
+```
+
+**Validation**:
+- [ ] `README.md` is created with project overview and setup instructions.
+- [ ] High-level design document is created and saved.
+
+---
+
+## 2. Phase 2: Core OSINT System Development
+
+### Step 1: Develop Radio Signal Collector
+**Objective**: Implement ADS-B, AIS, and P25 capture using RTL-SDR and GNU Radio.
+
+**Actions**:
+1. Install and configure `dump1090` for ADS-B.
+2. Install and configure `rtl_ais` for AIS.
+3. Install and configure `trunk-recorder` for P25.
+4. Create scripts to capture and store data.
+
+**Commands**:
+```bash
+# Install ADS-B decoder (dump1090)
+sudo apt install -y dump1090
+
+# Install AIS decoder (rtl_ais)
+git clone https://github.com/dgiardini/rtl-ais.git
+cd rtl-ais
+make
+sudo make install
+
+# Install P25 decoder (trunk-recorder)
+sudo apt install -y build-essential libboost-all-dev libcppunit-dev liblog4cpp5-dev
+git clone https://github.com/robotastic/trunk-recorder.git
+cd trunk-recorder
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+sudo make install
+
+# Create script to capture ADS-B data
+cat > /a0/usr/projects/knowledge_base/scripts/capture_adsb.sh << 'EOF'
+#!/bin/bash
+# Capture ADS-B data for Seattle-Tacoma Airport (KSEA)
+
+# Configuration
+LAT=47.449
+LON=-122.309
+OUTPUT_DIR=/tmp/adsb/ksea
+
+# Create output directory
+mkdir -p $OUTPUT_DIR
+
+# Run dump1090
+dump1090 --lat $LAT --lon $LON --write-json $OUTPUT_DIR --json-location-accuracy 2
+
+# Log start
+echo "$(date): Started ADS-B capture for KSEA" >> /var/log/sdr/adsb.log
+EOF
+
+chmod +x /a0/usr/projects/knowledge_base/scripts/capture_adsb.sh
+
+# Create script to capture AIS data
+cat > /a0/usr/projects/knowledge_base/scripts/capture_ais.sh << 'EOF'
+#!/bin/bash
+# Capture AIS data for Puget Sound
+
+# Configuration
+OUTPUT_FILE=/tmp/ais/puget_sound.csv
+
+# Create output directory
+mkdir -p /tmp/ais
+
+# Run rtl_ais
+rtl_ais -n -o $OUTPUT_FILE
+
+# Log start
+echo "$(date): Started AIS capture for Puget Sound" >> /var/log/sdr/ais.log
+EOF
+
+chmod +x /a0/usr/projects/knowledge_base/scripts/capture_ais.sh
+
+# Create script to capture P25 data
+cat > /a0/usr/projects/knowledge_base/scripts/capture_p25.sh << 'EOF'
+#!/bin/bash
+# Capture P25 data for Seattle public safety
+
+# Configuration
+CONFIG_FILE=/a0/usr/projects/knowledge_base/configs/seattle_p25.json
+OUTPUT_DIR=/tmp/p25/seattle
+
+# Create output directory
+mkdir -p $OUTPUT_DIR
+
+# Run trunk-recorder
+trunk-recorder --config $CONFIG_FILE
+
+# Log start
+echo "$(date): Started P25 capture for Seattle" >> /var/log/sdr/p25.log
+EOF
+
+chmod +x /a0/usr/projects/knowledge_base/scripts/capture_p25.sh
+
+# Create Seattle P25 configuration
+mkdir -p /a0/usr/projects/knowledge_base/configs
+cat > /a0/usr/projects/knowledge_base/configs/seattle_p25.json << 'EOF'
+{
+  "systems": [
+    {
+      "controlChannels": [851.0125],
+      "systemType": "p25",
+      "outputDirectory": "/tmp/p25/seattle",
+      "sourceConfig": {
+        "device": "rtl=0",
+        "gain": 30,
+        "sampleRate": 2000000
+      }
+    }
+  ]
+}
+EOF
+```
+
+**Validation**:
+- [ ] `dump1090` is installed and functional.
+- [ ] `rtl_ais` is installed and functional.
+- [ ] `trunk-recorder` is installed and functional.
+- [ ] Scripts for capturing ADS-B, AIS, and P25 are created and executable.
+- [ ] Seattle P25 configuration file is created.
+
+---
+
+### Step 2: Build API Handlers
+**Objective**: Create Python modules to interface with OpenSky, MarineTraffic, and NOAA APIs.
+
+**Actions**:
+1. Create a Python module for API interactions.
+2. Implement functions to fetch and store data from each API.
+3. Handle rate limits and errors gracefully.
+
+**Commands**:
+```bash
+# Create API handler module
+mkdir -p /a0/usr/projects/knowledge_base/scripts/api_handlers
+cat > /a0/usr/projects/knowledge_base/scripts/api_handlers/__init__.py << 'EOF'
+"""
+API handlers for OSINT data collection.
+"""
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/api_handlers/opensky_handler.py << 'EOF'
+"""
+Handler for OpenSky API (aircraft data).
+"""
+
+import requests
+import sqlite3
+import logging
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class OpenSkyHandler:
+    """Handles interactions with the OpenSky API."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the handler with database path."""
+        self.db_path = db_path
+        self.base_url = "https://opensky-network.org/api"
+
+    def get_flights(self, lat_min, lat_max, lon_min, lon_max):
+        """Fetch flights within a bounding box."""
+        url = f"{self.base_url}/flights/all"
+        params = {
+            "lamin": lat_min,
+            "lamax": lat_max,
+            "lomin": lon_min,
+            "lomax": lon_max,
+            "begin": int(datetime.now().timestamp() - 3600),  # Last hour
+            "end": int(datetime.now().timestamp())
+        }
+        
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            flights = response.json()
+            self._store_flights(flights)
+            return flights
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error fetching flights: {e}")
+            return []
+
+    def _store_flights(self, flights):
+        """Store flights in the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            for flight in flights.get("states", []):
+                cursor.execute(
+                    """
+                    INSERT INTO aircraft (
+                        hex, flight, lat, lon, alt, speed, track, timestamp
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        flight[0],  # ICAO24 (hex)
+                        flight[1],  # callsign
+                        flight[6],  # latitude
+                        flight[5],  # longitude
+                        flight[7],  # altitude
+                        flight[9],  # velocity
+                        flight[10], # heading
+                        datetime.fromtimestamp(flight[3]).isoformat()  # timestamp
+                    )
+                )
+            
+            conn.commit()
+            logger.info(f"Stored {len(flights.get('states', []))} flights in database.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    def get_flight_details(self, icao24):
+        """Fetch details for a specific flight."""
+        url = f"{self.base_url}/flights/detail"
+        params = {"icao24": icao24}
+        
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error fetching flight details: {e}")
+            return None
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/api_handlers/marinetraffic_handler.py << 'EOF'
+"""
+Handler for MarineTraffic API (vessel data).
+"""
+
+import requests
+import sqlite3
+import logging
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class MarineTrafficHandler:
+    """Handles interactions with the MarineTraffic API."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db", api_key=None):
+        """Initialize the handler with database path and optional API key."""
+        self.db_path = db_path
+        self.api_key = api_key
+        self.base_url = "https://www.marinetraffic.com/en/p/export_api"
+
+    def get_vessels(self, lat_min, lat_max, lon_min, lon_max):
+        """Fetch vessels within a bounding box."""
+        # Note: MarineTraffic API requires an API key for most endpoints
+        # This is a placeholder for the actual API call
+        logger.warning("MarineTraffic API requires an API key. Using placeholder data.")
+        
+        # Placeholder: Return mock data
+        mock_vessels = [
+            {
+                "mmsi": 367000000,
+                "name": "Mock Vessel",
+                "lat": (lat_min + lat_max) / 2,
+                "lon": (lon_min + lon_max) / 2,
+                "speed": 10.5,
+                "course": 180,
+                "timestamp": datetime.now().isoformat()
+            }
+        ]
+        self._store_vessels(mock_vessels)
+        return mock_vessels
+
+    def _store_vessels(self, vessels):
+        """Store vessels in the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            for vessel in vessels:
+                cursor.execute(
+                    """
+                    INSERT INTO vessels (
+                        mmsi, name, lat, lon, speed, course, timestamp
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        vessel["mmsi"],
+                        vessel["name"],
+                        vessel["lat"],
+                        vessel["lon"],
+                        vessel["speed"],
+                        vessel["course"],
+                        vessel["timestamp"]
+                    )
+                )
+            
+            conn.commit()
+            logger.info(f"Stored {len(vessels)} vessels in database.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    def get_vessel_details(self, mmsi):
+        """Fetch details for a specific vessel."""
+        # Placeholder: Return mock data
+        logger.warning("MarineTraffic API requires an API key. Using placeholder data.")
+        return {
+            "mmsi": mmsi,
+            "name": f"Vessel {mmsi}",
+            "type": "Cargo",
+            "destination": "Seattle"
+        }
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/api_handlers/noaa_handler.py << 'EOF'
+"""
+Handler for NOAA API (weather data).
+"""
+
+import requests
+import sqlite3
+import logging
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class NOAAHandler:
+    """Handles interactions with the NOAA API."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the handler with database path."""
+        self.db_path = db_path
+        self.base_url = "https://www.ncdc.noaa.gov/cdo-web/api/v2"
+
+    def get_weather_stations(self, lat, lon, radius=50):
+        """Fetch weather stations within a radius of a location."""
+        # Note: NOAA API requires a token for most endpoints
+        logger.warning("NOAA API requires a token. Using placeholder data.")
+        
+        # Placeholder: Return mock data
+        mock_stations = [
+            {
+                "id": "USW00024233",
+                "name": "Seattle-Tacoma International Airport",
+                "lat": lat,
+                "lon": lon,
+                "distance": 10.5
+            }
+        ]
+        return mock_stations
+
+    def get_weather_data(self, station_id, start_date, end_date):
+        """Fetch weather data for a station and date range."""
+        # Placeholder: Return mock data
+        logger.warning("NOAA API requires a token. Using placeholder data.")
+        
+        mock_data = {
+            "station": station_id,
+            "observations": [
+                {
+                    "date": start_date,
+                    "temp": 15.5,
+                    "wind_speed": 10.2,
+                    "precipitation": 0.0
+                }
+            ]
+        }
+        self._store_weather_data(mock_data)
+        return mock_data
+
+    def _store_weather_data(self, data):
+        """Store weather data in the database."""
+        # Note: This is a simplified example. A real implementation would need a weather_data table.
+        logger.info(f"Weather data for station {data['station']} would be stored here.")
+
+    def get_alerts(self, lat, lon):
+        """Fetch active weather alerts for a location."""
+        # Placeholder: Return mock data
+        logger.warning("NOAA API requires a token. Using placeholder data.")
+        
+        mock_alerts = [
+            {
+                "id": "SEA20230101",
+                "type": "Flood Watch",
+                "headline": "Flood Watch in effect for Seattle",
+                "description": "Heavy rainfall expected. Monitor local water levels.",
+                "effective": datetime.now().isoformat(),
+                "expires": (datetime.now() + timedelta(hours=24)).isoformat()
+            }
+        ]
+        return mock_alerts
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/api_handlers/__init__.py << 'EOF'
+"""
+API handlers for OSINT data collection.
+
+Available handlers:
+- OpenSkyHandler: Aircraft data from OpenSky API.
+- MarineTrafficHandler: Vessel data from MarineTraffic API.
+- NOAAHandler: Weather data from NOAA API.
+"""
+
+from .opensky_handler import OpenSkyHandler
+from .marinetraffic_handler import MarineTrafficHandler
+from .noaa_handler import NOAAHandler
+
+__all__ = ["OpenSkyHandler", "MarineTrafficHandler", "NOAAHandler"]
+EOF
+```
+
+**Validation**:
+- [ ] API handler module is created.
+- [ ] `OpenSkyHandler` is implemented and functional.
+- [ ] `MarineTrafficHandler` is implemented (placeholder for now).
+- [ ] `NOAAHandler` is implemented (placeholder for now).
+- [ ] Module imports are set up in `__init__.py`.
+
+---
+
+### Step 3: Develop Web Scraping Tools
+**Objective**: Build BeautifulSoup/Scrapy-based scrapers for Seattle Times and Reddit.
+
+**Actions**:
+1. Create a Python module for web scraping.
+2. Implement functions to scrape and store data from target websites.
+3. Handle errors and respect `robots.txt`.
+
+**Commands**:
+```bash
+# Create web scraping module
+mkdir -p /a0/usr/projects/knowledge_base/scripts/web_scrapers
+cat > /a0/usr/projects/knowledge_base/scripts/web_scrapers/__init__.py << 'EOF'
+"""
+Web scrapers for OSINT data collection.
+"""
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/web_scrapers/seattle_times_scraper.py << 'EOF'
+"""
+Scraper for Seattle Times news articles.
+"""
+
+import requests
+from bs4 import BeautifulSoup
+import sqlite3
+import logging
+from datetime import datetime
+from urllib.parse import urljoin
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class SeattleTimesScraper:
+    """Scrapes news articles from Seattle Times."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the scraper with database path."""
+        self.db_path = db_path
+        self.base_url = "https://www.seattletimes.com"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+    def scrape_latest_news(self, keywords=None, max_articles=10):
+        """Scrape latest news articles, optionally filtered by keywords."""
+        url = urljoin(self.base_url, "/seattle-news/")
+        articles = []
+        
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # Extract article links (adjust selectors as needed)
+            article_links = []
+            for link in soup.select("a.story-link"):
+                href = link.get("href")
+                if href and href.startswith("/"):
+                    article_links.append(urljoin(self.base_url, href))
+                    if len(article_links) >= max_articles:
+                        break
+            
+            # Scrape each article
+            for link in article_links:
+                article = self._scrape_article(link)
+                if article and (not keywords or any(keyword.lower() in article["content"].lower() for keyword in keywords)):
+                    articles.append(article)
+            
+            self._store_articles(articles)
+            return articles
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error scraping Seattle Times: {e}")
+            return []
+
+    def _scrape_article(self, url):
+        """Scrape a single article."""
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # Extract article data (adjust selectors as needed)
+            title = soup.select_one("h1.headline").get_text(strip=True) if soup.select_one("h1.headline") else "No title"
+            content = " ".join([p.get_text(strip=True) for p in soup.select("div.article-body p")])
+            
+            return {
+                "url": url,
+                "title": title,
+                "content": content,
+                "timestamp": datetime.now().isoformat()
+            }
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error scraping article {url}: {e}")
+            return None
+
+    def _store_articles(self, articles):
+        """Store articles in the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            for article in articles:
+                cursor.execute(
+                    """
+                    INSERT INTO web_data (
+                        url, title, content, timestamp
+                    ) VALUES (?, ?, ?, ?)
+                    """,
+                    (
+                        article["url"],
+                        article["title"],
+                        article["content"],
+                        article["timestamp"]
+                    )
+                )
+            
+            conn.commit()
+            logger.info(f"Stored {len(articles)} articles in database.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/web_scrapers/reddit_scraper.py << 'EOF'
+"""
+Scraper for Reddit posts (e.g., r/Seattle).
+"""
+
+import requests
+import sqlite3
+import logging
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class RedditScraper:
+    """Scrapes posts from Reddit (e.g., r/Seattle)."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the scraper with database path."""
+        self.db_path = db_path
+        self.base_url = "https://www.reddit.com"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+    def scrape_subreddit(self, subreddit="Seattle", limit=10):
+        """Scrape recent posts from a subreddit."""
+        url = f"{self.base_url}/r/{subreddit}/.json?limit={limit}"
+        posts = []
+        
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            response.raise_for_status()
+            
+            data = response.json()
+            for post in data["data"]["children"]:
+                post_data = post["data"]
+                posts.append({
+                    "id": post_data["id"],
+                    "title": post_data["title"],
+                    "url": f"{self.base_url}{post_data['permalink']}",
+                    "content": post_data.get("selftext", ""),
+                    "score": post_data["score"],
+                    "timestamp": datetime.fromtimestamp(post_data["created_utc"]).isoformat()
+                })
+            
+            self._store_posts(posts)
+            return posts
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error scraping r/{subreddit}: {e}")
+            return []
+
+    def _store_posts(self, posts):
+        """Store posts in the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            for post in posts:
+                cursor.execute(
+                    """
+                    INSERT INTO web_data (
+                        url, title, content, timestamp
+                    ) VALUES (?, ?, ?, ?)
+                    """,
+                    (
+                        post["url"],
+                        post["title"],
+                        post["content"],
+                        post["timestamp"]
+                    )
+                )
+            
+            conn.commit()
+            logger.info(f"Stored {len(posts)} Reddit posts in database.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/web_scrapers/__init__.py << 'EOF'
+"""
+Web scrapers for OSINT data collection.
+
+Available scrapers:
+- SeattleTimesScraper: News articles from Seattle Times.
+- RedditScraper: Posts from Reddit (e.g., r/Seattle).
+"""
+
+from .seattle_times_scraper import SeattleTimesScraper
+from .reddit_scraper import RedditScraper
+
+__all__ = ["SeattleTimesScraper", "RedditScraper"]
+EOF
+```
+
+**Validation**:
+- [ ] Web scraping module is created.
+- [ ] `SeattleTimesScraper` is implemented and functional.
+- [ ] `RedditScraper` is implemented and functional.
+- [ ] Module imports are set up in `__init__.py`.
+
+---
+
+### Step 4: Implement Data Processing Pipeline
+**Objective**: Develop normalization, filtering, and enrichment functions for collected data.
+
+**Actions**:
+1. Create a Python module for data processing.
+2. Implement functions to normalize, filter, and enrich data.
+3. Test the pipeline with sample data.
+
+**Commands**:
+```bash
+# Create data processing module
+mkdir -p /a0/usr/projects/knowledge_base/scripts/data_processing
+cat > /a0/usr/projects/knowledge_base/scripts/data_processing/__init__.py << 'EOF'
+"""
+Data processing pipeline for OSINT system.
+"""
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/data_processing/processor.py << 'EOF'
+"""
+Data processor for normalizing, filtering, and enriching OSINT data.
+"""
+
+import sqlite3
+import logging
+from datetime import datetime, timedelta
+import pandas as pd
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class DataProcessor:
+    """Processes OSINT data: normalization, filtering, enrichment."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the processor with database path."""
+        self.db_path = db_path
+
+    def normalize_flight_data(self, raw_data):
+        """Normalize flight data from various sources."""
+        # Example: Convert raw ADS-B or OpenSky data to standardized format
+        normalized = []
+        for flight in raw_data:
+            normalized.append({
+                "hex": flight.get("hex", flight.get("icao24", "")),
+                "flight": flight.get("flight", flight.get("callsign", "")),
+                "lat": flight.get("lat", 0.0),
+                "lon": flight.get("lon", 0.0),
+                "alt": flight.get("altitude", flight.get("alt", 0.0)),
+                "speed": flight.get("velocity", flight.get("speed", 0.0)),
+                "track": flight.get("heading", flight.get("track", 0.0)),
+                "timestamp": flight.get("timestamp", datetime.now().isoformat())
+            })
+        return normalized
+
+    def filter_seattle_flights(self, flights, lat_range=(47.0, 48.0), lon_range=(-123.0, -122.0)):
+        """Filter flights to Seattle area."""
+        seattle_flights = []
+        for flight in flights:
+            if (lat_range[0] <= flight["lat"] <= lat_range[1] and
+                lon_range[0] <= flight["lon"] <= lon_range[1]):
+                seattle_flights.append(flight)
+        return seattle_flights
+
+    def enrich_flight_data(self, flights):
+        """Enrich flight data with additional context."""
+        # Example: Add weather data, airport info, etc.
+        enriched = []
+        for flight in flights:
+            enriched_flight = flight.copy()
+            # Add airport info if near KSEA
+            if (47.4 <= flight["lat"] <= 47.5 and
+                -122.35 <= flight["lon"] <= -122.25):
+                enriched_flight["near_airport"] = "KSEA"
+            else:
+                enriched_flight["near_airport"] = None
+            enriched.append(enriched_flight)
+        return enriched
+
+    def normalize_vessel_data(self, raw_data):
+        """Normalize vessel data from various sources."""
+        normalized = []
+        for vessel in raw_data:
+            normalized.append({
+                "mmsi": vessel.get("mmsi", 0),
+                "name": vessel.get("name", ""),
+                "lat": vessel.get("lat", 0.0),
+                "lon": vessel.get("lon", 0.0),
+                "speed": vessel.get("speed", 0.0),
+                "course": vessel.get("course", 0.0),
+                "timestamp": vessel.get("timestamp", datetime.now().isoformat())
+            })
+        return normalized
+
+    def filter_puget_sound_vessels(self, vessels, lat_range=(47.0, 48.5), lon_range=(-123.0, -122.0)):
+        """Filter vessels to Puget Sound area."""
+        puget_sound_vessels = []
+        for vessel in vessels:
+            if (lat_range[0] <= vessel["lat"] <= lat_range[1] and
+                lon_range[0] <= vessel["lon"] <= lon_range[1]):
+                puget_sound_vessels.append(vessel)
+        return puget_sound_vessels
+
+    def enrich_vessel_data(self, vessels):
+        """Enrich vessel data with additional context."""
+        enriched = []
+        for vessel in vessels:
+            enriched_vessel = vessel.copy()
+            # Add port info if near Seattle/Tacoma
+            if vessel["lat"] < 47.3:  # South of Seattle
+                enriched_vessel["near_port"] = "Tacoma"
+            elif 47.5 <= vessel["lat"] <= 47.7:  # Seattle area
+                enriched_vessel["near_port"] = "Seattle"
+            else:
+                enriched_vessel["near_port"] = None
+            enriched.append(enriched_vessel)
+        return enriched
+
+    def process_aircraft_data(self, raw_data):
+        """Full pipeline for aircraft data."""
+        normalized = self.normalize_flight_data(raw_data)
+        filtered = self.filter_seattle_flights(normalized)
+        enriched = self.enrich_flight_data(filtered)
+        self._store_processed_data(enriched, "aircraft")
+        return enriched
+
+    def process_vessel_data(self, raw_data):
+        """Full pipeline for vessel data."""
+        normalized = self.normalize_vessel_data(raw_data)
+        filtered = self.filter_puget_sound_vessels(normalized)
+        enriched = self.enrich_vessel_data(filtered)
+        self._store_processed_data(enriched, "vessels")
+        return enriched
+
+    def _store_processed_data(self, data, table_name):
+        """Store processed data in the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            if table_name == "aircraft":
+                for flight in data:
+                    cursor.execute(
+                        """
+                        INSERT INTO processed_aircraft (
+                            hex, flight, lat, lon, alt, speed, track, near_airport, timestamp
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            flight["hex"],
+                            flight["flight"],
+                            flight["lat"],
+                            flight["lon"],
+                            flight["alt"],
+                            flight["speed"],
+                            flight["track"],
+                            flight["near_airport"],
+                            flight["timestamp"]
+                        )
+                    )
+            elif table_name == "vessels":
+                for vessel in data:
+                    cursor.execute(
+                        """
+                        INSERT INTO processed_vessels (
+                            mmsi, name, lat, lon, speed, course, near_port, timestamp
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            vessel["mmsi"],
+                            vessel["name"],
+                            vessel["lat"],
+                            vessel["lon"],
+                            vessel["speed"],
+                            vessel["course"],
+                            vessel["near_port"],
+                            vessel["timestamp"]
+                        )
+                    )
+            
+            conn.commit()
+            logger.info(f"Stored {len(data)} processed {table_name} in database.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    def create_processed_tables(self):
+        """Create tables for processed data if they don't exist."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Create processed_aircraft table
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS processed_aircraft (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    hex TEXT NOT NULL,
+                    flight TEXT,
+                    lat REAL,
+                    lon REAL,
+                    alt REAL,
+                    speed REAL,
+                    track REAL,
+                    near_airport TEXT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            # Create processed_vessels table
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS processed_vessels (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    mmsi INTEGER NOT NULL,
+                    name TEXT,
+                    lat REAL,
+                    lon REAL,
+                    speed REAL,
+                    course REAL,
+                    near_port TEXT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            conn.commit()
+            logger.info("Created processed data tables if they didn't exist.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/data_processing/__init__.py << 'EOF'
+"""
+Data processing pipeline for OSINT system.
+
+Classes:
+- DataProcessor: Normalizes, filters, and enriches OSINT data.
+"""
+
+from .processor import DataProcessor
+
+__all__ = ["DataProcessor"]
+EOF
+```
+
+**Validation**:
+- [ ] Data processing module is created.
+- [ ] `DataProcessor` class is implemented with normalization, filtering, and enrichment functions.
+- [ ] Full processing pipelines for aircraft and vessel data are implemented.
+- [ ] Database storage functions are implemented.
+- [ ] Module imports are set up in `__init__.py`.
+
+---
+
+### Step 5: Set Up Database Infrastructure
+**Objective**: Configure SQLite, InfluxDB, and Elasticsearch for OSINT data storage.
+
+**Actions**:
+1. Initialize the SQLite database with the defined schema.
+2. Set up InfluxDB and Elasticsearch (if needed).
+3. Test database connectivity and basic operations.
+
+**Commands**:
+```bash
+# Initialize SQLite database
+sqlite3 /a0/usr/projects/knowledge_base/osint.db < /a0/usr/projects/knowledge_base/database_schemas/sqlite_schema.sql
+
+# Test SQLite connectivity
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT name FROM sqlite_master WHERE type='table';"
+
+# Set up InfluxDB (using Docker)
+sudo apt install -y docker.io
+sudo systemctl enable docker
+sudo systemctl start docker
+
+docker run -d -p 8086:8086 --name influxdb influxdb
+
+# Test InfluxDB connectivity
+curl -I http://localhost:8086/ping
+
+# Set up Elasticsearch (optional for now)
+# docker run -d -p 9200:9200 -p 9300:9300 --name elasticsearch elasticsearch:8.12.0
+
+# Create processed data tables in SQLite
+python3 -c "
+from data_processing.processor import DataProcessor
+processor = DataProcessor()
+processor.create_processed_tables()
+"
+```
+
+**Validation**:
+- [ ] SQLite database is initialized with the defined schema.
+- [ ] InfluxDB is running and accessible.
+- [ ] Processed data tables are created in SQLite.
+
+---
+
+### Step 6: Develop Data Visualization Tools
+**Objective**: Create Folium and Matplotlib scripts for mapping and charting OSINT data.
+
+**Actions**:
+1. Create a Python module for data visualization.
+2. Implement functions to generate maps and charts.
+3. Test visualization scripts with sample data.
+
+**Commands**:
+```bash
+# Create visualization module
+mkdir -p /a0/usr/projects/knowledge_base/scripts/visualization
+cat > /a0/usr/projects/knowledge_base/scripts/visualization/__init__.py << 'EOF'
+"""
+Data visualization tools for OSINT system.
+"""
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/visualization/mapper.py << 'EOF'
+"""
+Generates maps for OSINT data using Folium.
+"""
+
+import folium
+import sqlite3
+import logging
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class OSINTMapper:
+    """Generates maps for OSINT data."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the mapper with database path."""
+        self.db_path = db_path
+
+    def create_aircraft_map(self, output_file="aircraft_map.html", time_window_hours=1):
+        """Create a map of aircraft in the Seattle area."""
+        try:
+            # Query recent aircraft data
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                SELECT lat, lon, flight, alt, speed, track, timestamp
+                FROM processed_aircraft
+                WHERE timestamp >= datetime('now', '-{0} hours')
+                AND lat BETWEEN 47.0 AND 48.0
+                AND lon BETWEEN -123.0 AND -122.0
+            """.format(time_window_hours))
+            
+            aircraft = cursor.fetchall()
+            
+            if not aircraft:
+                logger.warning("No aircraft data found for the specified time window.")
+                return None
+            
+            # Create map centered on Seattle
+            m = folium.Map(location=[47.6062, -122.3321], zoom_start=10)
+            
+            # Add aircraft markers
+            for ac in aircraft:
+                lat, lon, flight, alt, speed, track, timestamp = ac
+                popup_text = (
+                    f"Flight: {flight}<br>"
+                    f"Altitude: {alt} ft<br>"
+                    f"Speed: {speed} knots<br>"
+                    f"Track: {track}°<br>"
+                    f"Time: {timestamp}"
+                )
+                folium.Marker(
+                    location=[lat, lon],
+                    popup=popup_text,
+                    icon=folium.Icon(color="blue", icon="plane", prefix="fa")
+                ).add_to(m)
+            
+            # Save map
+            m.save(output_file)
+            logger.info(f"Aircraft map saved to {output_file}")
+            return output_file
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def create_vessel_map(self, output_file="vessel_map.html", time_window_hours=1):
+        """Create a map of vessels in Puget Sound."""
+        try:
+            # Query recent vessel data
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                SELECT lat, lon, name, speed, course, timestamp
+                FROM processed_vessels
+                WHERE timestamp >= datetime('now', '-{0} hours')
+                AND lat BETWEEN 47.0 AND 48.5
+                AND lon BETWEEN -123.0 AND -122.0
+            """.format(time_window_hours))
+            
+            vessels = cursor.fetchall()
+            
+            if not vessels:
+                logger.warning("No vessel data found for the specified time window.")
+                return None
+            
+            # Create map centered on Puget Sound
+            m = folium.Map(location=[47.6062, -122.3321], zoom_start=9)
+            
+            # Add vessel markers
+            for vessel in vessels:
+                lat, lon, name, speed, course, timestamp = vessel
+                popup_text = (
+                    f"Vessel: {name}<br>"
+                    f"Speed: {speed} knots<br>"
+                    f"Course: {course}°<br>"
+                    f"Time: {timestamp}"
+                )
+                folium.Marker(
+                    location=[lat, lon],
+                    popup=popup_text,
+                    icon=folium.Icon(color="green", icon="ship", prefix="fa")
+                ).add_to(m)
+            
+            # Save map
+            m.save(output_file)
+            logger.info(f"Vessel map saved to {output_file}")
+            return output_file
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def create_heatmap(self, data_type="aircraft", output_file="heatmap.html", time_window_hours=24):
+        """Create a heatmap of aircraft or vessel activity."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            if data_type == "aircraft":
+                cursor.execute("""
+                    SELECT lat, lon
+                    FROM processed_aircraft
+                    WHERE timestamp >= datetime('now', '-{0} hours')
+                    AND lat BETWEEN 47.0 AND 48.0
+                    AND lon BETWEEN -123.0 AND -122.0
+                """.format(time_window_hours))
+                title = "Aircraft Activity Heatmap"           else:
+                cursor.execute("""
+                    SELECT lat, lon
+                    FROM processed_vessels
+                    WHERE timestamp >= datetime('now', '-{0} hours')
+                    AND lat BETWEEN 47.0 AND 48.5
+                    AND lon BETWEEN -123.0 AND -122.0
+                """.format(time_window_hours))
+                title = "Vessel Activity Heatmap"
+            
+            points = cursor.fetchall()
+            
+            if not points:
+                logger.warning(f"No {data_type} data found for the specified time window.")
+                return None
+            
+            # Create map
+            m = folium.Map(location=[47.6062, -122.3321], zoom_start=9)
+            
+            # Add heatmap
+            folium.plugins.HeatMap(
+                [[lat, lon] for lat, lon in points],
+                radius=15,
+                blur=10
+            ).add_to(m)
+            
+            # Add title
+            title_html = f"""
+                <h3 align="center" style="font-size:16px"><b>{title}</b></h3>
+                <h4 align="center" style="font-size:12px">Last {time_window_hours} hours</h4>
+            """
+            m.get_root().html.add_child(folium.Element(title_html))
+            
+            # Save map
+            m.save(output_file)
+            logger.info(f"{title} saved to {output_file}")
+            return output_file
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/visualization/plotter.py << 'EOF'
+"""
+Generates charts for OSINT data using Matplotlib.
+"""
+
+import matplotlib.pyplot as plt
+import sqlite3
+import logging
+from datetime import datetime
+import pandas as pd
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class OSINTPlotter:
+    """Generates charts for OSINT data."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the plotter with database path."""
+        self.db_path = db_path
+
+    def plot_aircraft_altitude(self, output_file="aircraft_altitude.png", time_window_hours=1):
+        """Plot aircraft altitude distribution."""
+        try:
+            # Query aircraft data
+            conn = sqlite3.connect(self.db_path)
+            df = pd.read_sql("""
+                SELECT alt, speed, timestamp
+                FROM processed_aircraft
+                WHERE timestamp >= datetime('now', '-{0} hours')
+                AND lat BETWEEN 47.0 AND 48.0
+                AND lon BETWEEN -123.0 AND -122.0
+            """.format(time_window_hours), conn)
+            
+            if df.empty:
+                logger.warning("No aircraft data found for the specified time window.")
+                return None
+            
+            # Create plot
+            plt.figure(figsize=(10, 6))
+            plt.hist(df['alt'].dropna(), bins=20, edgecolor='black')
+            plt.title(f'Aircraft Altitude Distribution (Last {time_window_hours} Hours)')
+            plt.xlabel('Altitude (ft)')
+            plt.ylabel('Number of Aircraft')
+            plt.grid(True)
+            
+            # Save plot
+            plt.savefig(output_file)
+            plt.close()
+            logger.info(f"Aircraft altitude plot saved to {output_file}")
+            return output_file
+        except Exception as e:
+            logger.error(f"Error generating altitude plot: {e}")
+            return None
+        finally:
+            if 'conn' in locals():
+                conn.close()
+
+    def plot_vessel_speed(self, output_file="vessel_speed.png", time_window_hours=1):
+        """Plot vessel speed distribution."""
+        try:
+            # Query vessel data
+            conn = sqlite3.connect(self.db_path)
+            df = pd.read_sql("""
+                SELECT speed, course, timestamp
+                FROM processed_vessels
+                WHERE timestamp >= datetime('now', '-{0} hours')
+                AND lat BETWEEN 47.0 AND 48.5
+                AND lon BETWEEN -123.0 AND -122.0
+            """.format(time_window_hours), conn)
+            
+            if df.empty:
+                logger.warning("No vessel data found for the specified time window.")
+                return None
+            
+            # Create plot
+            plt.figure(figsize=(10, 6))
+            plt.hist(df['speed'].dropna(), bins=20, edgecolor='black')
+            plt.title(f'Vessel Speed Distribution (Last {time_window_hours} Hours)')
+            plt.xlabel('Speed (knots)')
+            plt.ylabel('Number of Vessels')
+            plt.grid(True)
+            
+            # Save plot
+            plt.savefig(output_file)
+            plt.close()
+            logger.info(f"Vessel speed plot saved to {output_file}")
+            return output_file
+        except Exception as e:
+            logger.error(f"Error generating speed plot: {e}")
+            return None
+        finally:
+            if 'conn' in locals():
+                conn.close()
+
+    def plot_activity_over_time(self, data_type="aircraft", output_file="activity_over_time.png", time_window_hours=24):
+        """Plot activity over time for aircraft or vessels."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            
+            if data_type == "aircraft":
+                df = pd.read_sql("""
+                    SELECT strftime('%H', timestamp) as hour, COUNT(*) as count
+                    FROM processed_aircraft
+                    WHERE timestamp >= datetime('now', '-{0} hours')
+                    AND lat BETWEEN 47.0 AND 48.0
+                    AND lon BETWEEN -123.0 AND -122.0
+                    GROUP BY hour
+                    ORDER BY hour
+                """.format(time_window_hours), conn)
+                title = "Aircraft Activity Over Time"
+                ylabel = "Number of Aircraft"
+            else:
+                df = pd.read_sql("""
+                    SELECT strftime('%H', timestamp) as hour, COUNT(*) as count
+                    FROM processed_vessels
+                    WHERE timestamp >= datetime('now', '-{0} hours')
+                    AND lat BETWEEN 47.0 AND 48.5
+                    AND lon BETWEEN -123.0 AND -122.0
+                    GROUP BY hour
+                    ORDER BY hour
+                """.format(time_window_hours), conn)
+                title = "Vessel Activity Over Time"
+                ylabel = "Number of Vessels"
+            
+            if df.empty:
+                logger.warning(f"No {data_type} data found for the specified time window.")
+                return None
+            
+            # Create plot
+            plt.figure(figsize=(10, 6))
+            plt.plot(df['hour'], df['count'], marker='o')
+            plt.title(f'{title} (Last {time_window_hours} Hours)')
+            plt.xlabel('Hour of Day')
+            plt.ylabel(ylabel)
+            plt.xticks(range(0, 24))
+            plt.grid(True)
+            
+            # Save plot
+            plt.savefig(output_file)
+            plt.close()
+            logger.info(f"{title} plot saved to {output_file}")
+            return output_file
+        except Exception as e:
+            logger.error(f"Error generating activity plot: {e}")
+            return None
+        finally:
+            if 'conn' in locals():
+                conn.close()
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/visualization/__init__.py << 'EOF'
+"""
+Data visualization tools for OSINT system.
+
+Classes:
+- OSINTMapper: Generates maps using Folium.
+- OSINTPlotter: Generates charts using Matplotlib.
+"""
+
+from .mapper import OSINTMapper
+from .plotter import OSINTPlotter
+
+__all__ = ["OSINTMapper", "OSINTPlotter"]
+EOF
+```
+
+**Validation**:
+- [ ] Visualization module is created.
+- [ ] `OSINTMapper` class is implemented with map generation functions.
+- [ ] `OSINTPlotter` class is implemented with chart generation functions.
+- [ ] Module imports are set up in `__init__.py`.
+
+---
+
+### Step 7: Implement Alert Generation System
+**Objective**: Build a notification system for critical findings (e.g., suspicious flights).
+
+**Actions**:
+1. Create a Python module for alert generation.
+2. Implement functions to generate and deliver alerts.
+3. Integrate with Agent Zero's `notify_user` tool.
+
+**Commands**:
+```bash
+# Create alert module
+mkdir -p /a0/usr/projects/knowledge_base/scripts/alerts
+cat > /a0/usr/projects/knowledge_base/scripts/alerts/__init__.py << 'EOF'
+"""
+Alert generation system for OSINT.
+"""
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/alerts/alert_manager.py << 'EOF'
+"""
+Generates and manages alerts for critical OSINT findings.
+"""
+
+import sqlite3
+import logging
+from datetime import datetime, timedelta
+import json
+import os
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class AlertManager:
+    """Generates and manages alerts for critical findings."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the alert manager with database path."""
+        self.db_path = db_path
+
+    def check_suspicious_flights(self, time_window_minutes=30, speed_threshold=500, alt_threshold=5000):
+        """Check for suspicious flight activity."""
+        alerts = []
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Query for flights that are too fast or too low
+            cursor.execute("""
+                SELECT id, hex, flight, lat, lon, alt, speed, track, timestamp
+                FROM processed_aircraft
+                WHERE timestamp >= datetime('now', '-{0} minutes')
+                AND (speed > {1} OR alt < {2})
+                AND lat BETWEEN 47.0 AND 48.0
+                AND lon BETWEEN -123.0 AND -122.0
+            """.format(time_window_minutes, speed_threshold, alt_threshold))
+            
+            suspicious_flights = cursor.fetchall()
+            
+            for flight in suspicious_flights:
+                alert = {
+                    "type": "flight",
+                    "severity": "high" if flight[5] < 1000 else "medium",
+                    "message": (
+                        f"Suspicious flight detected: {flight[2]} (Hex: {flight[1]}) "
+                        f"at {flight[3]:.4f}°N, {flight[4]:.4f}°W. "
+                        f"Altitude: {flight[5]} ft, Speed: {flight[6]} knots."
+                    ),
+                    "data": {
+                        "id": flight[0],
+                        "hex": flight[1],
+                        "flight": flight[2],
+                        "lat": flight[3],
+                        "lon": flight[4],
+                        "alt": flight[5],
+                        "speed": flight[6],
+                        "track": flight[7],
+                        "timestamp": flight[8]
+                    },
+                    "timestamp": datetime.now().isoformat()
+                }
+                alerts.append(alert)
+            
+            logger.info(f"Found {len(alerts)} suspicious flights.")
+            return alerts
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def check_suspicious_vessels(self, time_window_minutes=30, speed_threshold=30):
+        """Check for suspicious vessel activity."""
+        alerts = []
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Query for vessels that are too fast
+            cursor.execute("""
+                SELECT id, mmsi, name, lat, lon, speed, course, timestamp
+                FROM processed_vessels
+                WHERE timestamp >= datetime('now', '-{0} minutes')
+                AND speed > {1}
+                AND lat BETWEEN 47.0 AND 48.5
+                AND lon BETWEEN -123.0 AND -122.0
+            """.format(time_window_minutes, speed_threshold))
+            
+            suspicious_vessels = cursor.fetchall()
+            
+            for vessel in suspicious_vessels:
+                alert = {
+                    "type": "vessel",
+                    "severity": "high",
+                    "message": (
+                        f"Suspicious vessel detected: {vessel[2]} (MMSI: {vessel[1]}) "
+                        f"at {vessel[3]:.4f}°N, {vessel[4]:.4f}°W. "
+                        f"Speed: {vessel[5]} knots."
+                    ),
+                    "data": {
+                        "id": vessel[0],
+                        "mmsi": vessel[1],
+                        "name": vessel[2],
+                        "lat": vessel[3],
+                        "lon": vessel[4],
+                        "speed": vessel[5],
+                        "course": vessel[6],
+                        "timestamp": vessel[7]
+                    },
+                    "timestamp": datetime.now().isoformat()
+                }
+                alerts.append(alert)
+            
+            logger.info(f"Found {len(alerts)} suspicious vessels.")
+            return alerts
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def check_weather_alerts(self, time_window_hours=1):
+        """Check for active weather alerts (placeholder for NOAA integration)."""
+        # Placeholder: In a real implementation, this would query the NOAA API
+        # or a local weather alert database
+        alerts = [
+            {
+                "type": "weather",
+                "severity": "medium",
+                "message": "Weather alert: Heavy rain expected in Seattle area.",
+                "data": {
+                    "source": "NOAA",
+                    "type": "Flood Watch",
+                    "effective": datetime.now().isoformat(),
+                    "expires": (datetime.now() + timedelta(hours=24)).isoformat()
+                },
+                "timestamp": datetime.now().isoformat()
+            }
+        ]
+        logger.info(f"Found {len(alerts)} weather alerts.")
+        return alerts
+
+    def generate_alerts(self):
+        """Generate all types of alerts."""
+        alerts = (
+            self.check_suspicious_flights() +
+            self.check_suspicious_vessels() +
+            self.check_weather_alerts()
+        )
+        
+        # Store alerts in database
+        self._store_alerts(alerts)
+        
+        return alerts
+
+    def _store_alerts(self, alerts):
+        """Store alerts in the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Create alerts table if it doesn't exist
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS alerts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
+                    severity TEXT NOT NULL,
+                    message TEXT NOT NULL,
+                    data JSON,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    resolved BOOLEAN DEFAULT FALSE
+                )
+            """)
+            
+            # Insert alerts
+            for alert in alerts:
+                cursor.execute(
+                    """
+                    INSERT INTO alerts (
+                        type, severity, message, data, timestamp
+                    ) VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        alert["type"],
+                        alert["severity"],
+                        alert["message"],
+                        json.dumps(alert["data"]),
+                        alert["timestamp"]
+                    )
+                )
+            
+            conn.commit()
+            logger.info(f"Stored {len(alerts)} alerts in database.")
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+        finally:
+            if conn:
+                conn.close()
+
+    def send_alerts_to_agent_zero(self, alerts):
+        """Send alerts to Agent Zero for further processing."""
+        # Placeholder: In a real implementation, this would use the Agent Zero API
+        # For now, we'll just log the alerts that would be sent
+        for alert in alerts:
+            logger.info(f"Would send alert to Agent Zero: {alert['message']}")
+        
+        # Example of how this might work with the actual API:
+        # for alert in alerts:
+        #     response = requests.post(
+        #         "http://localhost:8000/a2a",
+        #         json={
+        #             "tool_name": "notify_user",
+        #             "tool_args": {
+        #                 "message": alert["message"],
+        #                 "title": f"OSINT Alert: {alert['type'].upper()}",
+        #                 "detail": json.dumps(alert["data"], indent=2),
+        #                 "type": "warning" if alert["severity"] == "high" else "info"
+        #             }
+        #         }
+        #     )
+        #     logger.info(f"Sent alert to Agent Zero: {response.status_code}")
+
+    def get_unresolved_alerts(self):
+        """Get all unresolved alerts from the database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                SELECT id, type, severity, message, data, timestamp
+                FROM alerts
+                WHERE resolved = FALSE
+                ORDER BY timestamp DESC
+            """)
+            
+            rows = cursor.fetchall()
+            alerts = []
+            for row in rows:
+                alerts.append({
+                    "id": row[0],
+                    "type": row[1],
+                    "severity": row[2],
+                    "message": row[3],
+                    "data": json.loads(row[4]),
+                    "timestamp": row[5]
+                })
+            
+            logger.info(f"Found {len(alerts)} unresolved alerts.")
+            return alerts
+        except (sqlite3.Error, json.JSONDecodeError) as e:
+            logger.error(f"Error fetching alerts: {e}")
+            return []
+        finally:
+            if conn:
+                conn.close()
+
+    def resolve_alert(self, alert_id):
+        """Mark an alert as resolved."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE alerts
+                SET resolved = TRUE
+                WHERE id = ?
+            """, (alert_id,))
+            
+            conn.commit()
+            logger.info(f"Resolved alert {alert_id}.")
+            return True
+        except sqlite3.Error as e:
+            logger.error(f"Error resolving alert: {e}")
+            return False
+        finally:
+            if conn:
+                conn.close()
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/alerts/__init__.py << 'EOF'
+"""
+Alert generation system for OSINT.
+
+Classes:
+- AlertManager: Generates and manages alerts for critical findings.
+"""
+
+from .alert_manager import AlertManager
+
+__all__ = ["AlertManager"]
+EOF
+```
+
+**Validation**:
+- [ ] Alert module is created.
+- [ ] `AlertManager` class is implemented with alert generation and management functions.
+- [ ] Alert storage and resolution functions are implemented.
+- [ ] Module imports are set up in `__init__.py`.
+
+---
+
+### Step 8: Test Core Components
+**Objective**: Validate data collection, processing, and storage workflows.
+
+**Actions**:
+1. Run the ADS-B, AIS, and P25 capture scripts manually.
+2. Test the API handlers with sample data.
+3. Test the web scrapers with target websites.
+4. Test the data processing pipeline.
+5. Test the visualization and alert generation systems.
+
+**Commands**:
+```bash
+# Test ADS-B capture (run for 1 minute)
+timeout 60 /a0/usr/projects/knowledge_base/scripts/capture_adsb.sh
+
+# Check ADS-B data in database
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT COUNT(*) FROM aircraft;"
+
+# Test AIS capture (run for 1 minute)
+timeout 60 /a0/usr/projects/knowledge_base/scripts/capture_ais.sh
+
+# Check AIS data in database
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT COUNT(*) FROM vessels;"
+
+# Test OpenSky API handler
+python3 -c "
+from api_handlers.opensky_handler import OpenSkyHandler
+handler = OpenSkyHandler()
+flights = handler.get_flights(47.0, 48.0, -123.0, -122.0)
+print(f'Fetched {len(flights.get(\"states\", []))} flights')
+"
+
+# Check processed aircraft data in database
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT COUNT(*) FROM processed_aircraft;"
+
+# Test Seattle Times scraper
+python3 -c "
+from web_scrapers.seattle_times_scraper import SeattleTimesScraper
+scraper = SeattleTimesScraper()
+articles = scraper.scrape_latest_news(keywords=['protest'], max_articles=3)
+print(f'Scraped {len(articles)} articles')
+"
+
+# Check web data in database
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT COUNT(*) FROM web_data;"
+
+# Test data processing
+python3 -c "
+from data_processing.processor import DataProcessor
+processor = DataProcessor()
+
+# Process sample flight data
+sample_flights = [
+    {'hex': 'A1B2C3', 'flight': 'DL123', 'lat': 47.449, 'lon': -122.309, 'alt': 30000, 'speed': 450, 'track': 120, 'timestamp': '2023-10-01T12:00:00'},
+    {'hex': 'D4E5F6', 'flight': 'AS789', 'lat': 47.606, 'lon': -122.332, 'alt': 5000, 'speed': 200, 'track': 300, 'timestamp': '2023-10-01T12:05:00'}
+]
+processed = processor.process_aircraft_data(sample_flights)
+print(f'Processed {len(processed)} flights')
+"
+
+# Test visualization
+python3 -c "
+from visualization.mapper import OSINTMapper
+mapper = OSINTMapper()
+map_file = mapper.create_aircraft_map(time_window_hours=24)
+print(f'Created aircraft map: {map_file}')
+"
+
+# Test alert generation
+python3 -c "
+from alerts.alert_manager import AlertManager
+manager = AlertManager()
+alerts = manager.generate_alerts()
+print(f'Generated {len(alerts)} alerts')
+"
+```
+
+**Validation**:
+- [ ] ADS-B capture script runs without errors and populates the database.
+- [ ] AIS capture script runs without errors and populates the database.
+- [ ] OpenSky API handler fetches and stores flight data.
+- [ ] Seattle Times scraper extracts and stores articles.
+- [ ] Data processing pipeline normalizes and enriches sample data.
+- [ ] Visualization scripts generate maps and charts.
+- [ ] Alert generation system identifies and stores alerts.
+
+---
+
+## 3. Phase 3: OSINT Agent Development
+
+### Step 1: Design Agent Architecture
+**Objective**: Finalize the modular design for the OSINT Agent.
+
+**Actions**:
+1. Review the agent design document.
+2. Confirm the modular components and their interactions.
+3. Document the final architecture.
+
+**Commands**:
+```bash
+# Review agent design
+cat /a0/usr/projects/knowledge_base/osint_agent_design.md | grep -A 30 "## 3. Agent Architecture"
+
+# Document final architecture
+cat > /a0/usr/projects/knowledge_base/docs/agent_architecture.md << 'EOF'
+# OSINT Agent Architecture
+
+## Overview
+The OSINT Agent is designed as a **modular pipeline** with the following components:
+
+1. **Input Handler**: Receives tasks from users or scheduled events.
+2. **Data Collector**: Gathers data from radio signals, APIs, and web scraping.
+3. **Data Processor**: Normalizes, filters, and enriches collected data.
+4. **Analyst**: Performs local analysis and delegates tasks to Agent Zero.
+5. **Alert Generator**: Identifies critical findings and generates alerts.
+6. **Visualization Engine**: Creates maps, charts, and reports.
+7. **Database Manager**: Stores and retrieves data efficiently.
+8. **Task Scheduler**: Manages scheduled and event-driven workflows.
+
+## Component Interactions
+```
+┌───────────────────────────────────────────────────────────────┐
+│                        OSINT Agent                              │
+├─────────────────┬─────────────────┬─────────────────┬───────────────┤
+│ Input Handler    │ Data Collector   │ Data Processor   │ Analyst         │
+│ - User Tasks     │ - Radio Signals  │ - Normalization   │ - Local Analysis │
+│ - Scheduled Tasks│ - APIs           │ - Filtering      │ - Agent Zero     │
+│                  │ - Web Scraping   │ - Enrichment     │   Delegation     │
+│                  │                  │                  │                 │
+├─────────────────┴─────────────────┴─────────────────┴───────────────┤
+│ Alert Generator                                                      │
+│ - Critical Findings                                                 │
+├───────────────────────────────────────────────────────────────┤
+│ Visualization Engine                                                 │
+│ - Maps, Charts, Reports                                              │
+├───────────────────────────────────────────────────────────────┤
+│ Database Manager                                                     │
+│ - SQLite, InfluxDB, Elasticsearch                                    │
+└───────────────────────────────────────────────────────────────┘
+                                      │
+                              ┌───────┴───────┐
+                              │ Task Scheduler │
+                              └───────────────┘
+```
+
+## Component Details
+
+### Input Handler
+- **Purpose**: Receives tasks from users or scheduled events.
+- **Implementation**: Flask API or direct function calls.
+- **Inputs**:
+  - User requests (e.g., "Monitor KSEA traffic").
+  - Scheduled tasks (e.g., hourly ADS-B scans).
+  - Event triggers (e.g., weather alert detected).
+
+### Data Collector
+- **Purpose**: Gathers data from various sources.
+- **Implementation**: Uses existing scripts from Phase 2.
+- **Sources**:
+  - Radio signals (ADS-B, AIS, P25).
+  - APIs (OpenSky, MarineTraffic, NOAA).
+  - Web scraping (Seattle Times, Reddit).
+
+### Data Processor
+- **Purpose**: Normalizes, filters, and enriches data.
+- **Implementation**: Uses `DataProcessor` class from Phase 2.
+- **Tasks**:
+  - Convert data to standard formats.
+  - Filter by geographic area (e.g., Seattle).
+  - Enrich with context (e.g., weather, airport info).
+
+### Analyst
+- **Purpose**: Performs analysis and delegates complex tasks.
+- **Implementation**:
+  - Local analysis with Python scripts.
+  - Agent Zero delegation for advanced reasoning.
+- **Tasks**:
+  - Identify patterns (e.g., unusual flight paths).
+  - Classify findings (e.g., suspicious vs. normal).
+  - Generate insights (e.g., "3 helicopters circling downtown").
+
+### Alert Generator
+- **Purpose**: Generates alerts for critical findings.
+- **Implementation**: Uses `AlertManager` class from Phase 2.
+- **Criteria**:
+  - Speed/altitude anomalies (aircraft).
+  - High-speed vessels (maritime).
+  - Weather alerts (NOAA).
+
+### Visualization Engine
+- **Purpose**: Creates visual representations of data.
+- **Implementation**: Uses `OSINTMapper` and `OSINTPlotter` classes.
+- **Outputs**:
+  - Folium maps (aircraft/vessel tracks).
+  - Matplotlib charts (altitude/speed distributions).
+  - Heatmaps (activity hotspots).
+
+### Database Manager
+- **Purpose**: Stores and retrieves data efficiently.
+- **Implementation**: SQLite for structured data, InfluxDB for time-series.
+- **Tables**:
+  - `aircraft`, `vessels`, `web_data` (raw).
+  - `processed_aircraft`, `processed_vessels` (processed).
+  - `alerts` (critical findings).
+
+### Task Scheduler
+- **Purpose**: Manages automated workflows.
+- **Implementation**:
+  - `cron` for time-based tasks.
+  - Agent Zero scheduler for event-driven tasks.
+- **Examples**:
+  - Hourly ADS-B scans.
+  - Daily news scraping.
+  - Real-time P25 monitoring.
+EOF
+```
+
+**Validation**:
+- [ ] Agent architecture is documented and reviewed.
+- [ ] Component interactions are clearly defined.
+- [ ] All components align with Phase 2 implementations.
+
+---
+
+### Step 2: Develop Input Handler
+**Objective**: Create a module to receive tasks from users or scheduled events.
+
+**Actions**:
+1. Implement a simple Flask API for user tasks.
+2. Create functions to handle scheduled and event-driven tasks.
+3. Test the input handler with sample tasks.
+
+**Commands**:
+```bash
+# Create input handler module
+mkdir -p /a0/usr/projects/knowledge_base/scripts/agent
+cat > /a0/usr/projects/knowledge_base/scripts/agent/input_handler.py << 'EOF'
+"""
+Input handler for OSINT Agent: receives tasks from users or schedules.
+"""
+
+import logging
+from flask import Flask, request, jsonify
+import threading
+import time
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class InputHandler:
+    """Handles input tasks for the OSINT Agent."""
+
+    def __init__(self):
+        """Initialize the input handler."""
+        self.app = Flask(__name__)
+        self.tasks = []
+        self._setup_routes()
+
+    def _setup_routes(self):
+        """Set up Flask routes for task submission."""
+        @self.app.route('/task', methods=['POST'])
+        def submit_task():
+            """Endpoint for submitting tasks."""
+            data = request.json
+            if not data or 'task' not in data:
+                return jsonify({"error": "Invalid task format"}), 400
+            
+            task_id = len(self.tasks) + 1
+            task = {
+                "id": task_id,
+                "task": data['task'],
+                "params": data.get('params', {}),
+                "status": "queued",
+                "timestamp": datetime.now().isoformat()
+            }
+            self.tasks.append(task)
+            logger.info(f"Received task {task_id}: {data['task']}")
+            return jsonify({"task_id": task_id, "status": "queued"}), 201
+
+        @self.app.route('/task/<int:task_id>', methods=['GET'])
+        def get_task_status(task_id):
+            """Endpoint for checking task status."""
+            if task_id < 1 or task_id > len(self.tasks):
+                return jsonify({"error": "Task not found"}), 404
+            
+            task = self.tasks[task_id - 1]
+            return jsonify(task), 200
+
+    def start_api(self, port=5000):
+        """Start the Flask API in a separate thread."""
+        def run_app():
+            self.app.run(host='0.0.0.0', port=port, debug=False)
+        
+        api_thread = threading.Thread(target=run_app, daemon=True)
+        api_thread.start()
+        logger.info(f"Input handler API started on port {port}")
+        return api_thread
+
+    def submit_scheduled_task(self, task, params=None, delay_minutes=0):
+        """Submit a task to be executed after a delay."""
+        if params is None:
+            params = {}
+        
+        def execute_task():
+            time.sleep(delay_minutes * 60)
+            task_id = len(self.tasks) + 1
+            task_entry = {
+                "id": task_id,
+                "task": task,
+                "params": params,
+                "status": "queued",
+                "timestamp": datetime.now().isoformat()
+            }
+            self.tasks.append(task_entry)
+            logger.info(f"Scheduled task {task_id}: {task} (delay: {delay_minutes} minutes)")
+            
+            # Here you would typically execute the task
+            # For now, we'll just mark it as completed after the delay
+            time.sleep(1)  # Simulate task execution
+            task_entry["status"] = "completed"
+            task_entry["completed_at"] = datetime.now().isoformat()
+            logger.info(f"Completed scheduled task {task_id}")
+        
+        task_thread = threading.Thread(target=execute_task, daemon=True)
+        task_thread.start()
+        return len(self.tasks)  # Return the task ID
+
+    def get_next_task(self):
+        """Get the next task from the queue."""
+        for task in self.tasks:
+            if task["status"] == "queued":
+                task["status"] = "in_progress"
+                task["started_at"] = datetime.now().isoformat()
+                logger.info(f"Started task {task['id']}: {task['task']}")
+                return task
+        return None
+
+    def complete_task(self, task_id, result=None, error=None):
+        """Mark a task as completed."""
+        for task in self.tasks:
+            if task["id"] == task_id:
+                task["status"] = "completed" if not error else "failed"
+                task["completed_at"] = datetime.now().isoformat()
+                if result:
+                    task["result"] = result
+                if error:
+                    task["error"] = error
+                logger.info(f"Task {task_id} marked as {'completed' if not error else 'failed'}")
+                return True
+        return False
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/agent/__init__.py << 'EOF'
+"""
+OSINT Agent modules.
+"""
+EOF
+```
+
+**Validation**:
+- [ ] Input handler module is created.
+- [ ] Flask API is implemented for task submission and status checking.
+- [ ] Scheduled task functionality is implemented.
+- [ ] Task queue management functions are implemented.
+
+---
+
+### Step 3: Integrate with OSINT System
+**Objective**: Connect the agent to the data collection, processing, and storage layers.
+
+**Actions**:
+1. Create a main agent class that orchestrates the components.
+2. Integrate the input handler, data collector, processor, and other components.
+3. Test the integration with sample tasks.
+
+**Commands**:
+```bash
+# Create main agent class
+cat > /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py << 'EOF'
+"""
+Main OSINT Agent class: orchestrates data collection, processing, and analysis.
+"""
+
+import logging
+import sqlite3
+import json
+from datetime import datetime
+from .input_handler import InputHandler
+from data_processing.processor import DataProcessor
+from visualization.mapper import OSINTMapper
+from visualization.plotter import OSINTPlotter
+from alerts.alert_manager import AlertManager
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class OSINTAgent:
+    """Main OSINT Agent class."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the OSINT Agent."""
+        self.db_path = db_path
+        self.input_handler = InputHandler()
+        self.data_processor = DataProcessor(db_path)
+        self.mapper = OSINTMapper(db_path)
+        self.plotter = OSINTPlotter(db_path)
+        self.alert_manager = AlertManager(db_path)
+        
+        # Start the input handler API
+        self.input_handler.start_api()
+        
+        logger.info("OSINT Agent initialized")
+
+    def execute_task(self, task):
+        """Execute a task based on its type."""
+        task_id = task["id"]
+        task_type = task["task"]
+        params = task["params"]
+        
+        try:
+            if task_type == "capture_adsb":
+                result = self._capture_adsb(**params)
+            elif task_type == "capture_ais":
+                result = self._capture_ais(**params)
+            elif task_type == "capture_p25":
+                result = self._capture_p25(**params)
+            elif task_type == "fetch_opensky":
+                result = self._fetch_opensky(**params)
+            elif task_type == "scrape_seattle_times":
+                result = self._scrape_seattle_times(**params)
+            elif task_type == "process_aircraft":
+                result = self._process_aircraft(**params)
+            elif task_type == "process_vessels":
+                result = self._process_vessels(**params)
+            elif task_type == "generate_alerts":
+                result = self._generate_alerts(**params)
+            elif task_type == "create_aircraft_map":
+                result = self._create_aircraft_map(**params)
+            elif task_type == "create_vessel_map":
+                result = self._create_vessel_map(**params)
+            elif task_type == "plot_aircraft_altitude":
+                result = self._plot_aircraft_altitude(**params)
+            else:
+                raise ValueError(f"Unknown task type: {task_type}")
+            
+            self.input_handler.complete_task(task_id, result=result)
+            return result
+        except Exception as e:
+            logger.error(f"Error executing task {task_id}: {e}")
+            self.input_handler.complete_task(task_id, error=str(e))
+            return None
+
+    def _capture_adsb(self, duration=300):
+        """Capture ADS-B data."""
+        # Placeholder: In a real implementation, this would call the capture_adsb.sh script
+        logger.info(f"Capturing ADS-B data for {duration} seconds...")
+        
+        # Simulate data capture by inserting sample data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Insert sample flight data
+            sample_flights = [
+                ('A1B2C3', 'DL123', 47.449, -122.309, 30000, 450, 120, datetime.now().isoformat()),
+                ('D4E5F6', 'AS789', 47.606, -122.332, 5000, 200, 300, datetime.now().isoformat())
+            ]
+            
+            cursor.executemany(
+                """
+                INSERT INTO aircraft (
+                    hex, flight, lat, lon, alt, speed, track, timestamp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                sample_flights
+            )
+            
+            conn.commit()
+            logger.info("Inserted sample ADS-B data")
+            return {"status": "success", "flights_inserted": len(sample_flights)}
+        except sqlite3.Error as e:
+            logger.error(f"Error inserting ADS-B data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _capture_ais(self, duration=300):
+        """Capture AIS data."""
+        # Placeholder: Simulate AIS data capture
+        logger.info(f"Capturing AIS data for {duration} seconds...")
+        
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Insert sample vessel data
+            sample_vessels = [
+                (367000000, 'Evergreen State', 47.606, -122.332, 10.5, 180, datetime.now().isoformat()),
+                (367000001, 'Washington Ferry', 47.5, -122.4, 15.2, 200, datetime.now().isoformat())
+            ]
+            
+            cursor.executemany(
+                """
+                INSERT INTO vessels (
+                    mmsi, name, lat, lon, speed, course, timestamp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                sample_vessels
+            )
+            
+            conn.commit()
+            logger.info("Inserted sample AIS data")
+            return {"status": "success", "vessels_inserted": len(sample_vessels)}
+        except sqlite3.Error as e:
+            logger.error(f"Error inserting AIS data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _capture_p25(self, duration=300):
+        """Capture P25 data."""
+        # Placeholder: Simulate P25 data capture
+        logger.info(f"Capturing P25 data for {duration} seconds...")
+        return {"status": "success", "message": "P25 capture simulated"}
+
+    def _fetch_opensky(self, lat_min=47.0, lat_max=48.0, lon_min=-123.0, lon_max=-122.0):
+        """Fetch flight data from OpenSky API."""
+        from api_handlers.opensky_handler import OpenSkyHandler
+        handler = OpenSkyHandler(self.db_path)
+        flights = handler.get_flights(lat_min, lat_max, lon_min, lon_max)
+        return {
+            "status": "success",
+            "flights_fetched": len(flights.get("states", []))
+        }
+
+    def _scrape_seattle_times(self, keywords=None, max_articles=5):
+        """Scrape latest news from Seattle Times."""
+        from web_scrapers.seattle_times_scraper import SeattleTimesScraper
+        scraper = SeattleTimesScraper(self.db_path)
+        articles = scraper.scrape_latest_news(keywords=keywords, max_articles=max_articles)
+        return {
+            "status": "success",
+            "articles_scraped": len(articles)
+        }
+
+    def _process_aircraft(self):
+        """Process aircraft data."""
+        # Get recent raw aircraft data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT hex, flight, lat, lon, alt, speed, track, timestamp
+                FROM aircraft
+                WHERE timestamp >= datetime('now', '-1 hour')
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """)
+            raw_flights = cursor.fetchall()
+            
+            if not raw_flights:
+                return {"status": "warning", "message": "No recent aircraft data found"}
+            
+            # Convert to list of dicts
+            flights = [
+                {
+                    "hex": row[0],
+                    "flight": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "alt": row[4],
+                    "speed": row[5],
+                    "track": row[6],
+                    "timestamp": row[7]
+                }
+                for row in raw_flights
+            ]
+            
+            # Process the data
+            processed = self.data_processor.process_aircraft_data(flights)
+            return {
+                "status": "success",
+                "flights_processed": len(processed)
+            }
+        except sqlite3.Error as e:
+            logger.error(f"Error processing aircraft data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _process_vessels(self):
+        """Process vessel data."""
+        # Get recent raw vessel data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT mmsi, name, lat, lon, speed, course, timestamp
+                FROM vessels
+                WHERE timestamp >= datetime('now', '-1 hour')
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """)
+            raw_vessels = cursor.fetchall()
+            
+            if not raw_vessels:
+                return {"status": "warning", "message": "No recent vessel data found"}
+            
+            # Convert to list of dicts
+            vessels = [
+                {
+                    "mmsi": row[0],
+                    "name": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "speed": row[4],
+                    "course": row[5],
+                    "timestamp": row[6]
+                }
+                for row in raw_vessels
+            ]
+            
+            # Process the data
+            processed = self.data_processor.process_vessel_data(vessels)
+            return {
+                "status": "success",
+                "vessels_processed": len(processed)
+            }
+        except sqlite3.Error as e:
+            logger.error(f"Error processing vessel data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _generate_alerts(self):
+        """Generate alerts for critical findings."""
+        alerts = self.alert_manager.generate_alerts()
+        return {
+            "status": "success",
+            "alerts_generated": len(alerts)
+        }
+
+    def _create_aircraft_map(self, time_window_hours=1):
+        """Create a map of aircraft activity."""
+        map_file = self.mapper.create_aircraft_map(time_window_hours=time_window_hours)
+        return {
+            "status": "success" if map_file else "error",
+            "map_file": map_file
+        }
+
+    def _create_vessel_map(self, time_window_hours=1):
+        """Create a map of vessel activity."""
+        map_file = self.mapper.create_vessel_map(time_window_hours=time_window_hours)
+        return {
+            "status": "success" if map_file else "error",
+            "map_file": map_file
+        }
+
+    def _plot_aircraft_altitude(self):
+        """Plot aircraft altitude distribution."""
+        plot_file = self.plotter.plot_aircraft_altitude()
+        return {
+            "status": "success" if plot_file else "error",
+            "plot_file": plot_file
+        }
+
+    def run(self):
+        """Main agent loop: process tasks from the input handler."""
+        logger.info("OSINT Agent started. Waiting for tasks...")
+        
+        while True:
+            # Get the next task
+            task = self.input_handler.get_next_task()
+            if task:
+                logger.info(f"Executing task {task['id']}: {task['task']}")
+                self.execute_task(task)
+            
+            # Check for alerts periodically
+            if datetime.now().minute % 5 == 0:  # Every 5 minutes
+                self._generate_alerts()
+            
+            # Sleep briefly to avoid busy-waiting
+            time.sleep(1)
+
+if __name__ == "__main__":
+    agent = OSINTAgent()
+    agent.run()
+EOF
+```
+
+**Validation**:
+- [ ] Main agent class is created.
+- [ ] Agent integrates with input handler, data processor, mapper, plotter, and alert manager.
+- [ ] Task execution methods are implemented for all core workflows.
+- [ ] Main agent loop is implemented to process tasks and generate alerts.
+
+---
+
+### Step 4: Implement Agent Zero Integration
+**Objective**: Register custom tools and develop task delegation workflows for Agent Zero.
+
+**Actions**:
+1. Create custom tools for Agent Zero to interact with the OSINT system.
+2. Implement task delegation functions in the agent.
+3. Test the integration with sample tasks.
+
+**Commands**:
+```bash
+# Create custom tools for Agent Zero
+mkdir -p /a0/usr/projects/knowledge_base/scripts/agent/tools
+cat > /a0/usr/projects/knowledge_base/scripts/agent/tools/__init__.py << 'EOF'
+"""
+Custom tools for Agent Zero integration.
+"""
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/agent/tools/sdr_aircraft_tool.py << 'EOF'
+"""
+Custom tool for Agent Zero: Analyze ADS-B flight data with Claude LLM.
+"""
+
+from a0_tools import register_tool
+import sqlite3
+import json
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@register_tool("sdr_aircraft_tool")
+def analyze_flights(data_path: str = None, query: str = None, time_window_hours: int = 1) -> dict:
+    """
+    Analyze flight data with Claude LLM.
+    
+    Args:
+        data_path: Path to JSON file with flight data (optional).
+        query: Analysis query for Claude.
+        time_window_hours: Time window for querying recent flights.
+    """
+    # Placeholder: In a real implementation, this would call the Claude API
+    # For now, we'll simulate the analysis
+
+    try:
+        # If no data_path provided, query the database
+        if not data_path:
+            conn = sqlite3.connect("/a0/usr/projects/knowledge_base/osint.db")
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                SELECT hex, flight, lat, lon, alt, speed, track, timestamp
+                FROM processed_aircraft
+                WHERE timestamp >= datetime('now', '-{0} hours')
+                AND lat BETWEEN 47.0 AND 48.0
+                AND lon BETWEEN -123.0 AND -122.0
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """.format(time_window_hours))
+            
+            flights = cursor.fetchall()
+            
+            if not flights:
+                return {
+                    "status": "warning",
+                    "message": "No recent flight data found in the database",
+                    "flights": []
+                }
+            
+            # Convert to list of dicts
+            flight_list = [
+                {
+                    "hex": row[0],
+                    "flight": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "alt": row[4],
+                    "speed": row[5],
+                    "track": row[6],
+                    "timestamp": row[7]
+                }
+                for row in flights
+            ]
+        else:
+            # Load from file
+            with open(data_path, 'r') as f:
+                flight_list = json.load(f)
+        
+        # Simulate Claude analysis
+        analysis = {
+            "summary": "Analysis of recent aircraft activity in the Seattle area",
+            "findings": [],
+            "flights": flight_list
+        }
+        
+        # Example findings based on the query
+        if query and "unusual" in query.lower():
+            # Look for unusual patterns (simplified)
+            for flight in flight_list:
+                if flight["speed"] > 500:  # Unusually fast
+                    analysis["findings"].append({
+                        "flight": flight["flight"],
+                        "hex": flight["hex"],
+                        "issue": "high speed",
+                        "speed": flight["speed"],
+                        "location": f"{flight['lat']:.4f}°N, {flight['lon']:.4f}°W"
+                    })
+                elif flight["alt"] < 1000:  # Unusually low
+                    analysis["findings"].append({
+                        "flight": flight["flight"],
+                        "hex": flight["hex"],
+                        "issue": "low altitude",
+                        "altitude": flight["alt"],
+                        "location": f"{flight['lat']:.4f}°N, {flight['lon']:.4f}°W"
+                    })
+        
+        if not analysis["findings"]:
+            analysis["findings"] = ["No unusual activity detected in the analyzed flights."]
+        
+        return {
+            "status": "success",
+            "analysis": analysis
+        }
+    except Exception as e:
+        logger.error(f"Error analyzing flights: {e}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/agent/tools/sdr_vessel_tool.py << 'EOF'
+"""
+Custom tool for Agent Zero: Analyze AIS vessel data with Claude LLM.
+"""
+
+from a0_tools import register_tool
+import sqlite3
+import json
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@register_tool("sdr_vessel_tool")
+def analyze_vessels(data_path: str = None, query: str = None, time_window_hours: int = 1) -> dict:
+    """
+    Analyze vessel data with Claude LLM.
+    
+    Args:
+        data_path: Path to JSON file with vessel data (optional).
+        query: Analysis query for Claude.
+        time_window_hours: Time window for querying recent vessels.
+    """
+    # Placeholder: Simulate analysis
+
+    try:
+        # If no data_path provided, query the database
+        if not data_path:
+            conn = sqlite3.connect("/a0/usr/projects/knowledge_base/osint.db")
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                SELECT mmsi, name, lat, lon, speed, course, timestamp
+                FROM processed_vessels
+                WHERE timestamp >= datetime('now', '-{0} hours')
+                AND lat BETWEEN 47.0 AND 48.5
+                AND lon BETWEEN -123.0 AND -122.0
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """.format(time_window_hours))
+            
+            vessels = cursor.fetchall()
+            
+            if not vessels:
+                return {
+                    "status": "warning",
+                    "message": "No recent vessel data found in the database",
+                    "vessels": []
+                }
+            
+            # Convert to list of dicts
+            vessel_list = [
+                {
+                    "mmsi": row[0],
+                    "name": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "speed": row[4],
+                    "course": row[5],
+                    "timestamp": row[6]
+                }
+                for row in vessels
+            ]
+        else:
+            # Load from file
+            with open(data_path, 'r') as f:
+                vessel_list = json.load(f)
+        
+        # Simulate Claude analysis
+        analysis = {
+            "summary": "Analysis of recent vessel activity in Puget Sound",
+            "findings": [],
+            "vessels": vessel_list
+        }
+        
+        # Example findings based on the query
+        if query and "unusual" in query.lower():
+            # Look for unusual patterns (simplified)
+            for vessel in vessel_list:
+                if vessel["speed"] > 30:  # Unusually fast for a vessel
+                    analysis["findings"].append({
+                        "vessel": vessel["name"],
+                        "mmsi": vessel["mmsi"],
+                        "issue": "high speed",
+                        "speed": vessel["speed"],
+                        "location": f"{vessel['lat']:.4f}°N, {vessel['lon']:.4f}°W"
+                    })
+        
+        if not analysis["findings"]:
+            analysis["findings"] = ["No unusual activity detected in the analyzed vessels."]
+        
+        return {
+            "status": "success",
+            "analysis": analysis
+        }
+    except Exception as e:
+        logger.error(f"Error analyzing vessels: {e}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/agent/tools/osint_web_tool.py << 'EOF'
+"""
+Custom tool for Agent Zero: Analyze web/scraped data with Claude LLM.
+"""
+
+from a0_tools import register_tool
+import sqlite3
+import json
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@register_tool("osint_web_tool")
+def analyze_web_data(query: str, time_window_hours: int = 24, source: str = "all") -> dict:
+    """
+    Analyze web/scraped data with Claude LLM.
+    
+    Args:
+        query: Analysis query for Claude.
+        time_window_hours: Time window for querying recent data.
+        source: Data source to analyze (e.g., "seattle_times", "reddit", or "all").
+    """
+    # Placeholder: Simulate analysis
+
+    try:
+        conn = sqlite3.connect("/a0/usr/projects/knowledge_base/osint.db")
+        cursor = conn.cursor()
+        
+        # Query recent web data
+        if source.lower() == "all":
+            source_clause = """
+        elif source.lower() == "seattle_times":
+            source_clause = "AND url LIKE '%seattletimes.com%'"
+        elif source.lower() == "reddit":
+            source_clause = "AND url LIKE '%reddit.com%'"
+        else:
+            source_clause = "AND url LIKE '%{0}%'".format(source)
+        
+        cursor.execute(f"""
+            SELECT url, title, content, timestamp
+            FROM web_data
+            WHERE timestamp >= datetime('now', '-{time_window_hours} hours')
+            {source_clause}
+            ORDER BY timestamp DESC
+            LIMIT 50
+        """)
+        
+        web_data = cursor.fetchall()
+        
+        if not web_data:
+            return {
+                "status": "warning",
+                "message": f"No recent web data found for source: {source}",
+                "articles": []
+            }
+        
+        # Convert to list of dicts
+        article_list = [
+            {
+                "url": row[0],
+                "title": row[1],
+                "content": row[2],
+                "timestamp": row[3]
+            }
+            for row in web_data
+        ]
+        
+        # Simulate Claude analysis
+        analysis = {
+            "summary": f"Analysis of recent {source} data",
+            "findings": [],
+            "articles": article_list
+        }
+        
+        # Example findings based on the query
+        if query and "protest" in query.lower():
+            # Look for protest-related content (simplified)
+            for article in article_list:
+                if "protest" in article["content"].lower():
+                    analysis["findings"].append({
+                        "title": article["title"],
+                        "url": article["url"],
+                        "excerpt": article["content"][:200] + "..."
+                    })
+        
+        if not analysis["findings"]:
+            analysis["findings"] = [f"No relevant content found in the analyzed {source} data."]
+        
+        return {
+            "status": "success",
+            "analysis": analysis
+        }
+    except Exception as e:
+        logger.error(f"Error analyzing web data: {e}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+EOF
+
+cat > /a0/usr/projects/knowledge_base/scripts/agent/tools/__init__.py << 'EOF'
+"""
+Custom tools for Agent Zero integration.
+
+Available tools:
+- sdr_aircraft_tool: Analyze ADS-B flight data with Claude LLM.
+- sdr_vessel_tool: Analyze AIS vessel data with Claude LLM.
+- osint_web_tool: Analyze web/scraped data with Claude LLM.
+"""
+
+from .sdr_aircraft_tool import analyze_flights
+from .sdr_vessel_tool import analyze_vessels
+from .osint_web_tool import analyze_web_data
+
+__all__ = ["analyze_flights", "analyze_vessels", "analyze_web_data"]
+EOF
+
+# Update the main agent to include Agent Zero delegation
+cat > /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py.new << 'EOF'
+"""
+Main OSINT Agent class: orchestrates data collection, processing, and analysis.
+"""
+
+import logging
+import sqlite3
+import json
+from datetime import datetime
+from .input_handler import InputHandler
+from data_processing.processor import DataProcessor
+from visualization.mapper import OSINTMapper
+from visualization.plotter import OSINTPlotter
+from alerts.alert_manager import AlertManager
+from a0_tools import call_subordinate
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class OSINTAgent:
+    """Main OSINT Agent class."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the OSINT Agent."""
+        self.db_path = db_path
+        self.input_handler = InputHandler()
+        self.data_processor = DataProcessor(db_path)
+        self.mapper = OSINTMapper(db_path)
+        self.plotter = OSINTPlotter(db_path)
+        self.alert_manager = AlertManager(db_path)
+        
+        # Start the input handler API
+        self.input_handler.start_api()
+        
+        logger.info("OSINT Agent initialized")
+
+    def execute_task(self, task):
+        """Execute a task based on its type."""
+        task_id = task["id"]
+        task_type = task["task"]
+        params = task["params"]
+        
+        try:
+            if task_type == "capture_adsb":
+                result = self._capture_adsb(**params)
+            elif task_type == "capture_ais":
+                result = self._capture_ais(**params)
+            elif task_type == "capture_p25":
+                result = self._capture_p25(**params)
+            elif task_type == "fetch_opensky":
+                result = self._fetch_opensky(**params)
+            elif task_type == "scrape_seattle_times":
+                result = self._scrape_seattle_times(**params)
+            elif task_type == "process_aircraft":
+                result = self._process_aircraft(**params)
+            elif task_type == "process_vessels":
+                result = self._process_vessels(**params)
+            elif task_type == "generate_alerts":
+                result = self._generate_alerts(**params)
+            elif task_type == "create_aircraft_map":
+                result = self._create_aircraft_map(**params)
+            elif task_type == "create_vessel_map":
+                result = self._create_vessel_map(**params)
+            elif task_type == "plot_aircraft_altitude":
+                result = self._plot_aircraft_altitude(**params)
+            elif task_type == "delegate_to_agent_zero":
+                result = self._delegate_to_agent_zero(**params)
+            else:
+                raise ValueError(f"Unknown task type: {task_type}")
+            
+            self.input_handler.complete_task(task_id, result=result)
+            return result
+        except Exception as e:
+            logger.error(f"Error executing task {task_id}: {e}")
+            self.input_handler.complete_task(task_id, error=str(e))
+            return None
+
+    def _delegate_to_agent_zero(self, tool_name, tool_args, profile="researcher"):
+        """Delegate a task to Agent Zero for advanced analysis."""
+        logger.info(f"Delegating task to Agent Zero: {tool_name} with args {tool_args}")
+        
+        try:
+            # Use the call_subordinate tool to delegate to Agent Zero
+            response = call_subordinate(
+                profile=profile,
+                message=f"Please analyze the following data using the {tool_name} tool: {json.dumps(tool_args)}",
+                reset=True
+            )
+            
+            logger.info(f"Agent Zero response: {response}")
+            return {
+                "status": "success",
+                "agent_zero_response": response
+            }
+        except Exception as e:
+            logger.error(f"Error delegating to Agent Zero: {e}")
+            return {
+                "status": "error",
+                "message": str(e)
+            }
+
+    def _capture_adsb(self, duration=300):
+        """Capture ADS-B data."""
+        # Placeholder: In a real implementation, this would call the capture_adsb.sh script
+        logger.info(f"Capturing ADS-B data for {duration} seconds...")
+        
+        # Simulate data capture by inserting sample data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Insert sample flight data
+            sample_flights = [
+                ('A1B2C3', 'DL123', 47.449, -122.309, 30000, 450, 120, datetime.now().isoformat()),
+                ('D4E5F6', 'AS789', 47.606, -122.332, 5000, 200, 300, datetime.now().isoformat())
+            ]
+            
+            cursor.executemany(
+                """
+                INSERT INTO aircraft (
+                    hex, flight, lat, lon, alt, speed, track, timestamp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                sample_flights
+            )
+            
+            conn.commit()
+            logger.info("Inserted sample ADS-B data")
+            return {"status": "success", "flights_inserted": len(sample_flights)}
+        except sqlite3.Error as e:
+            logger.error(f"Error inserting ADS-B data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _capture_ais(self, duration=300):
+        """Capture AIS data."""
+        # Placeholder: Simulate AIS data capture
+        logger.info(f"Capturing AIS data for {duration} seconds...")
+        
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Insert sample vessel data
+            sample_vessels = [
+                (367000000, 'Evergreen State', 47.606, -122.332, 10.5, 180, datetime.now().isoformat()),
+                (367000001, 'Washington Ferry', 47.5, -122.4, 15.2, 200, datetime.now().isoformat())
+            ]
+            
+            cursor.executemany(
+                """
+                INSERT INTO vessels (
+                    mmsi, name, lat, lon, speed, course, timestamp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                sample_vessels
+            )
+            
+            conn.commit()
+            logger.info("Inserted sample AIS data")
+            return {"status": "success", "vessels_inserted": len(sample_vessels)}
+        except sqlite3.Error as e:
+            logger.error(f"Error inserting AIS data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _capture_p25(self, duration=300):
+        """Capture P25 data."""
+        # Placeholder: Simulate P25 data capture
+        logger.info(f"Capturing P25 data for {duration} seconds...")
+        return {"status": "success", "message": "P25 capture simulated"}
+
+    def _fetch_opensky(self, lat_min=47.0, lat_max=48.0, lon_min=-123.0, lon_max=-122.0):
+        """Fetch flight data from OpenSky API."""
+        from api_handlers.opensky_handler import OpenSkyHandler
+        handler = OpenSkyHandler(self.db_path)
+        flights = handler.get_flights(lat_min, lat_max, lon_min, lon_max)
+        return {
+            "status": "success",
+            "flights_fetched": len(flights.get("states", []))
+        }
+
+    def _scrape_seattle_times(self, keywords=None, max_articles=5):
+        """Scrape latest news from Seattle Times."""
+        from web_scrapers.seattle_times_scraper import SeattleTimesScraper
+        scraper = SeattleTimesScraper(self.db_path)
+        articles = scraper.scrape_latest_news(keywords=keywords, max_articles=max_articles)
+        return {
+            "status": "success",
+            "articles_scraped": len(articles)
+        }
+
+    def _process_aircraft(self):
+        """Process aircraft data."""
+        # Get recent raw aircraft data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT hex, flight, lat, lon, alt, speed, track, timestamp
+                FROM aircraft
+                WHERE timestamp >= datetime('now', '-1 hour')
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """)
+            raw_flights = cursor.fetchall()
+            
+            if not raw_flights:
+                return {"status": "warning", "message": "No recent aircraft data found"}
+            
+            # Convert to list of dicts
+            flights = [
+                {
+                    "hex": row[0],
+                    "flight": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "alt": row[4],
+                    "speed": row[5],
+                    "track": row[6],
+                    "timestamp": row[7]
+                }
+                for row in raw_flights
+            ]
+            
+            # Process the data
+            processed = self.data_processor.process_aircraft_data(flights)
+            return {
+                "status": "success",
+                "flights_processed": len(processed)
+            }
+        except sqlite3.Error as e:
+            logger.error(f"Error processing aircraft data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _process_vessels(self):
+        """Process vessel data."""
+        # Get recent raw vessel data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT mmsi, name, lat, lon, speed, course, timestamp
+                FROM vessels
+                WHERE timestamp >= datetime('now', '-1 hour')
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """)
+            raw_vessels = cursor.fetchall()
+            
+            if not raw_vessels:
+                return {"status": "warning", "message": "No recent vessel data found"}
+            
+            # Convert to list of dicts
+            vessels = [
+                {
+                    "mmsi": row[0],
+                    "name": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "speed": row[4],
+                    "course": row[5],
+                    "timestamp": row[6]
+                }
+                for row in raw_vessels
+            ]
+            
+            # Process the data
+            processed = self.data_processor.process_vessel_data(vessels)
+            return {
+                "status": "success",
+                "vessels_processed": len(processed)
+            }
+        except sqlite3.Error as e:
+            logger.error(f"Error processing vessel data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _generate_alerts(self):
+        """Generate alerts for critical findings."""
+        alerts = self.alert_manager.generate_alerts()
+        
+        # Delegate suspicious flights to Agent Zero for advanced analysis
+        for alert in alerts:
+            if alert["type"] == "flight" and alert["severity"] == "high":
+                self._delegate_to_agent_zero(
+                    tool_name="sdr_aircraft_tool",
+                    tool_args={
+                        "data_path": None,  # Use database
+                        "query": f"Analyze this suspicious flight: {alert['message']}",
+                        "time_window_hours": 1
+                    }
+                )
+        
+        return {
+            "status": "success",
+            "alerts_generated": len(alerts)
+        }
+
+    def _create_aircraft_map(self, time_window_hours=1):
+        """Create a map of aircraft activity."""
+        map_file = self.mapper.create_aircraft_map(time_window_hours=time_window_hours)
+        return {
+            "status": "success" if map_file else "error",
+            "map_file": map_file
+        }
+
+    def _create_vessel_map(self, time_window_hours=1):
+        """Create a map of vessel activity."""
+        map_file = self.mapper.create_vessel_map(time_window_hours=time_window_hours)
+        return {
+            "status": "success" if map_file else "error",
+            "map_file": map_file
+        }
+
+    def _plot_aircraft_altitude(self):
+        """Plot aircraft altitude distribution."""
+        plot_file = self.plotter.plot_aircraft_altitude()
+        return {
+            "status": "success" if plot_file else "error",
+            "plot_file": plot_file
+        }
+
+    def run(self):
+        """Main agent loop: process tasks from the input handler."""
+        logger.info("OSINT Agent started. Waiting for tasks...")
+        
+        while True:
+            # Get the next task
+            task = self.input_handler.get_next_task()
+            if task:
+                logger.info(f"Executing task {task['id']}: {task['task']}")
+                self.execute_task(task)
+            
+            # Check for alerts periodically
+            if datetime.now().minute % 5 == 0:  # Every 5 minutes
+                self._generate_alerts()
+            
+            # Sleep briefly to avoid busy-waiting
+            time.sleep(1)
+
+if __name__ == "__main__":
+    agent = OSINTAgent()
+    agent.run()
+EOF
+
+# Replace the old agent file with the updated version
+mv /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py.new /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py
+```
+
+**Validation**:
+- [ ] Custom tools for Agent Zero are created and registered.
+- [ ] `sdr_aircraft_tool` is implemented for flight data analysis.
+- [ ] `sdr_vessel_tool` is implemented for vessel data analysis.
+- [ ] `osint_web_tool` is implemented for web data analysis.
+- [ ] Agent Zero delegation method is added to the main agent class.
+- [ ] Agent Zero integration is tested with sample tasks.
+
+---
+
+### Step 5: Develop Task Scheduler
+**Objective**: Build cron-based and event-driven scheduling for OSINT workflows.
+
+**Actions**:
+1. Implement a task scheduler using Python's `schedule` library.
+2. Integrate the scheduler with the main agent loop.
+3. Test scheduled tasks.
+
+**Commands**:
+```bash
+# Install schedule library
+pip3 install schedule
+
+# Update the main agent to include scheduling
+cat > /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py.new << 'EOF'
+"""
+Main OSINT Agent class: orchestrates data collection, processing, and analysis.
+"""
+
+import logging
+import sqlite3
+import json
+import time
+import schedule
+from datetime import datetime
+from threading import Thread
+from .input_handler import InputHandler
+from data_processing.processor import DataProcessor
+from visualization.mapper import OSINTMapper
+from visualization.plotter import OSINTPlotter
+from alerts.alert_manager import AlertManager
+from a0_tools import call_subordinate
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class OSINTAgent:
+    """Main OSINT Agent class."""
+
+    def __init__(self, db_path="/a0/usr/projects/knowledge_base/osint.db"):
+        """Initialize the OSINT Agent."""
+        self.db_path = db_path
+        self.input_handler = InputHandler()
+        self.data_processor = DataProcessor(db_path)
+        self.mapper = OSINTMapper(db_path)
+        self.plotter = OSINTPlotter(db_path)
+        self.alert_manager = AlertManager(db_path)
+        
+        # Start the input handler API
+        self.input_handler.start_api()
+        
+        # Set up task scheduler
+        self._setup_scheduler()
+        
+        logger.info("OSINT Agent initialized")
+
+    def _setup_scheduler(self):
+        """Set up scheduled tasks."""
+        # Schedule tasks
+        schedule.every(15).minutes.do(self._scheduled_capture_adsb)
+        schedule.every(30).minutes.do(self._scheduled_capture_ais)
+        schedule.every(60).minutes.do(self._scheduled_fetch_opensky)
+        schedule.every(120).minutes.do(self._scheduled_scrape_seattle_times)
+        schedule.every(5).minutes.do(self._scheduled_generate_alerts)
+        schedule.every().day.at("00:00").do(self._scheduled_create_maps)
+        
+        # Start scheduler in a separate thread
+        def run_scheduler():
+            while True:
+                schedule.run_pending()
+                time.sleep(1)
+        
+        scheduler_thread = Thread(target=run_scheduler, daemon=True)
+        scheduler_thread.start()
+        logger.info("Task scheduler started")
+
+    def _scheduled_capture_adsb(self):
+        """Scheduled task: Capture ADS-B data."""
+        task_id = self.input_handler.submit_scheduled_task(
+            task="capture_adsb",
+            params={"duration": 300},
+            delay_minutes=0
+        )
+        logger.info(f"Scheduled ADS-B capture (task {task_id})")
+
+    def _scheduled_capture_ais(self):
+        """Scheduled task: Capture AIS data."""
+        task_id = self.input_handler.submit_scheduled_task(
+            task="capture_ais",
+            params={"duration": 300},
+            delay_minutes=0
+        )
+        logger.info(f"Scheduled AIS capture (task {task_id})")
+
+    def _scheduled_fetch_opensky(self):
+        """Scheduled task: Fetch flight data from OpenSky."""
+        task_id = self.input_handler.submit_scheduled_task(
+            task="fetch_opensky",
+            params={"lat_min": 47.0, "lat_max": 48.0, "lon_min": -123.0, "lon_max": -122.0},
+            delay_minutes=0
+        )
+        logger.info(f"Scheduled OpenSky fetch (task {task_id})")
+
+    def _scheduled_scrape_seattle_times(self):
+        """Scheduled task: Scrape Seattle Times."""
+        task_id = self.input_handler.submit_scheduled_task(
+            task="scrape_seattle_times",
+            params={"keywords": ["protest", "emergency", "traffic"], "max_articles": 5},
+            delay_minutes=0
+        )
+        logger.info(f"Scheduled Seattle Times scrape (task {task_id})")
+
+    def _scheduled_generate_alerts(self):
+        """Scheduled task: Generate alerts."""
+        task_id = self.input_handler.submit_scheduled_task(
+            task="generate_alerts",
+            params={},
+            delay_minutes=0
+        )
+        logger.info(f"Scheduled alert generation (task {task_id})")
+
+    def _scheduled_create_maps(self):
+        """Scheduled task: Create maps and visualizations."""
+        # Aircraft map
+        task_id1 = self.input_handler.submit_scheduled_task(
+            task="create_aircraft_map",
+            params={"time_window_hours": 24},
+            delay_minutes=0
+        )
+        
+        # Vessel map
+        task_id2 = self.input_handler.submit_scheduled_task(
+            task="create_vessel_map",
+            params={"time_window_hours": 24},
+            delay_minutes=0
+        )
+        
+        # Aircraft altitude plot
+        task_id3 = self.input_handler.submit_scheduled_task(
+            task="plot_aircraft_altitude",
+            params={},
+            delay_minutes=0
+        )
+        
+        logger.info(f"Scheduled map/plot generation (tasks {task_id1}, {task_id2}, {task_id3})")
+
+    def execute_task(self, task):
+        """Execute a task based on its type."""
+        task_id = task["id"]
+        task_type = task["task"]
+        params = task["params"]
+        
+        try:
+            if task_type == "capture_adsb":
+                result = self._capture_adsb(**params)
+            elif task_type == "capture_ais":
+                result = self._capture_ais(**params)
+            elif task_type == "capture_p25":
+                result = self._capture_p25(**params)
+            elif task_type == "fetch_opensky":
+                result = self._fetch_opensky(**params)
+            elif task_type == "scrape_seattle_times":
+                result = self._scrape_seattle_times(**params)
+            elif task_type == "process_aircraft":
+                result = self._process_aircraft(**params)
+            elif task_type == "process_vessels":
+                result = self._process_vessels(**params)
+            elif task_type == "generate_alerts":
+                result = self._generate_alerts(**params)
+            elif task_type == "create_aircraft_map":
+                result = self._create_aircraft_map(**params)
+            elif task_type == "create_vessel_map":
+                result = self._create_vessel_map(**params)
+            elif task_type == "plot_aircraft_altitude":
+                result = self._plot_aircraft_altitude(**params)
+            elif task_type == "delegate_to_agent_zero":
+                result = self._delegate_to_agent_zero(**params)
+            else:
+                raise ValueError(f"Unknown task type: {task_type}")
+            
+            self.input_handler.complete_task(task_id, result=result)
+            return result
+        except Exception as e:
+            logger.error(f"Error executing task {task_id}: {e}")
+            self.input_handler.complete_task(task_id, error=str(e))
+            return None
+
+    def _delegate_to_agent_zero(self, tool_name, tool_args, profile="researcher"):
+        """Delegate a task to Agent Zero for advanced analysis."""
+        logger.info(f"Delegating task to Agent Zero: {tool_name} with args {tool_args}")
+        
+        try:
+            # Use the call_subordinate tool to delegate to Agent Zero
+            response = call_subordinate(
+                profile=profile,
+                message=f"Please analyze the following data using the {tool_name} tool: {json.dumps(tool_args)}",
+                reset=True
+            )
+            
+            logger.info(f"Agent Zero response: {response}")
+            return {
+                "status": "success",
+                "agent_zero_response": response
+            }
+        except Exception as e:
+            logger.error(f"Error delegating to Agent Zero: {e}")
+            return {
+                "status": "error",
+                "message": str(e)
+            }
+
+    def _capture_adsb(self, duration=300):
+        """Capture ADS-B data."""
+        # Placeholder: In a real implementation, this would call the capture_adsb.sh script
+        logger.info(f"Capturing ADS-B data for {duration} seconds...")
+        
+        # Simulate data capture by inserting sample data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Insert sample flight data
+            sample_flights = [
+                ('A1B2C3', 'DL123', 47.449, -122.309, 30000, 450, 120, datetime.now().isoformat()),
+                ('D4E5F6', 'AS789', 47.606, -122.332, 5000, 200, 300, datetime.now().isoformat())
+            ]
+            
+            cursor.executemany(
+                """
+                INSERT INTO aircraft (
+                    hex, flight, lat, lon, alt, speed, track, timestamp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                sample_flights
+            )
+            
+            conn.commit()
+            logger.info("Inserted sample ADS-B data")
+            return {"status": "success", "flights_inserted": len(sample_flights)}
+        except sqlite3.Error as e:
+            logger.error(f"Error inserting ADS-B data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _capture_ais(self, duration=300):
+        """Capture AIS data."""
+        # Placeholder: Simulate AIS data capture
+        logger.info(f"Capturing AIS data for {duration} seconds...")
+        
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            # Insert sample vessel data
+            sample_vessels = [
+                (367000000, 'Evergreen State', 47.606, -122.332, 10.5, 180, datetime.now().isoformat()),
+                (367000001, 'Washington Ferry', 47.5, -122.4, 15.2, 200, datetime.now().isoformat())
+            ]
+            
+            cursor.executemany(
+                """
+                INSERT INTO vessels (
+                    mmsi, name, lat, lon, speed, course, timestamp
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                sample_vessels
+            )
+            
+            conn.commit()
+            logger.info("Inserted sample AIS data")
+            return {"status": "success", "vessels_inserted": len(sample_vessels)}
+        except sqlite3.Error as e:
+            logger.error(f"Error inserting AIS data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _capture_p25(self, duration=300):
+        """Capture P25 data."""
+        # Placeholder: Simulate P25 data capture
+        logger.info(f"Capturing P25 data for {duration} seconds...")
+        return {"status": "success", "message": "P25 capture simulated"}
+
+    def _fetch_opensky(self, lat_min=47.0, lat_max=48.0, lon_min=-123.0, lon_max=-122.0):
+        """Fetch flight data from OpenSky API."""
+        from api_handlers.opensky_handler import OpenSkyHandler
+        handler = OpenSkyHandler(self.db_path)
+        flights = handler.get_flights(lat_min, lat_max, lon_min, lon_max)
+        return {
+            "status": "success",
+            "flights_fetched": len(flights.get("states", []))
+        }
+
+    def _scrape_seattle_times(self, keywords=None, max_articles=5):
+        """Scrape latest news from Seattle Times."""
+        from web_scrapers.seattle_times_scraper import SeattleTimesScraper
+        scraper = SeattleTimesScraper(self.db_path)
+        articles = scraper.scrape_latest_news(keywords=keywords, max_articles=max_articles)
+        return {
+            "status": "success",
+            "articles_scraped": len(articles)
+        }
+
+    def _process_aircraft(self):
+        """Process aircraft data."""
+        # Get recent raw aircraft data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT hex, flight, lat, lon, alt, speed, track, timestamp
+                FROM aircraft
+                WHERE timestamp >= datetime('now', '-1 hour')
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """)
+            raw_flights = cursor.fetchall()
+            
+            if not raw_flights:
+                return {"status": "warning", "message": "No recent aircraft data found"}
+            
+            # Convert to list of dicts
+            flights = [
+                {
+                    "hex": row[0],
+                    "flight": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "alt": row[4],
+                    "speed": row[5],
+                    "track": row[6],
+                    "timestamp": row[7]
+                }
+                for row in raw_flights
+            ]
+            
+            # Process the data
+            processed = self.data_processor.process_aircraft_data(flights)
+            return {
+                "status": "success",
+                "flights_processed": len(processed)
+            }
+        except sqlite3.Error as e:
+            logger.error(f"Error processing aircraft data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _process_vessels(self):
+        """Process vessel data."""
+        # Get recent raw vessel data
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT mmsi, name, lat, lon, speed, course, timestamp
+                FROM vessels
+                WHERE timestamp >= datetime('now', '-1 hour')
+                ORDER BY timestamp DESC
+                LIMIT 100
+            """)
+            raw_vessels = cursor.fetchall()
+            
+            if not raw_vessels:
+                return {"status": "warning", "message": "No recent vessel data found"}
+            
+            # Convert to list of dicts
+            vessels = [
+                {
+                    "mmsi": row[0],
+                    "name": row[1],
+                    "lat": row[2],
+                    "lon": row[3],
+                    "speed": row[4],
+                    "course": row[5],
+                    "timestamp": row[6]
+                }
+                for row in raw_vessels
+            ]
+            
+            # Process the data
+            processed = self.data_processor.process_vessel_data(vessels)
+            return {
+                "status": "success",
+                "vessels_processed": len(processed)
+            }
+        except sqlite3.Error as e:
+            logger.error(f"Error processing vessel data: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+
+    def _generate_alerts(self):
+        """Generate alerts for critical findings."""
+        alerts = self.alert_manager.generate_alerts()
+        
+        # Delegate suspicious flights to Agent Zero for advanced analysis
+        for alert in alerts:
+            if alert["type"] == "flight" and alert["severity"] == "high":
+                self._delegate_to_agent_zero(
+                    tool_name="sdr_aircraft_tool",
+                    tool_args={
+                        "data_path": None,  # Use database
+                        "query": f"Analyze this suspicious flight: {alert['message']}",
+                        "time_window_hours": 1
+                    }
+                )
+        
+        return {
+            "status": "success",
+            "alerts_generated": len(alerts)
+        }
+
+    def _create_aircraft_map(self, time_window_hours=1):
+        """Create a map of aircraft activity."""
+        map_file = self.mapper.create_aircraft_map(time_window_hours=time_window_hours)
+        return {
+            "status": "success" if map_file else "error",
+            "map_file": map_file
+        }
+
+    def _create_vessel_map(self, time_window_hours=1):
+        """Create a map of vessel activity."""
+        map_file = self.mapper.create_vessel_map(time_window_hours=time_window_hours)
+        return {
+            "status": "success" if map_file else "error",
+            "map_file": map_file
+        }
+
+    def _plot_aircraft_altitude(self):
+        """Plot aircraft altitude distribution."""
+        plot_file = self.plotter.plot_aircraft_altitude()
+        return {
+            "status": "success" if plot_file else "error",
+            "plot_file": plot_file
+        }
+
+    def run(self):
+        """Main agent loop: process tasks from the input handler."""
+        logger.info("OSINT Agent started. Waiting for tasks...")
+        
+        while True:
+            # Get the next task
+            task = self.input_handler.get_next_task()
+            if task:
+                logger.info(f"Executing task {task['id']}: {task['task']}")
+                self.execute_task(task)
+            
+            # Sleep briefly to avoid busy-waiting
+            time.sleep(1)
+
+if __name__ == "__main__":
+    agent = OSINTAgent()
+    agent.run()
+EOF
+
+# Replace the old agent file with the updated version
+mv /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py.new /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py
+```
+
+**Validation**:
+- [ ] Task scheduler is implemented using the `schedule` library.
+- [ ] Scheduled tasks are defined for ADS-B, AIS, OpenSky, Seattle Times, alerts, and maps.
+- [ ] Scheduler runs in a separate thread.
+- [ ] Main agent loop is updated to include the scheduler.
+
+---
+
+### Step 6: Test Agent Components
+**Objective**: Validate task delegation, analysis, and reporting workflows.
+
+**Actions**:
+1. Start the OSINT Agent.
+2. Submit test tasks via the input handler API.
+3. Verify task execution and results.
+4. Test Agent Zero delegation.
+
+**Commands**:
+```bash
+# Start the OSINT Agent in the background
+python3 /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py &
+AGENT_PID=$!
+
+# Wait for the agent to start
+sleep 5
+
+# Test submitting a task via the API
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "capture_adsb", "params": {"duration": 60}}'
+
+# Check the task status
+curl http://localhost:5000/task/1
+
+# Test submitting a processing task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "process_aircraft", "params": {}}'
+
+# Check the task status
+curl http://localhost:5000/task/2
+
+# Test submitting a visualization task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "create_aircraft_map", "params": {"time_window_hours": 1}}'
+
+# Check the task status
+curl http://localhost:5000/task/3
+
+# Test Agent Zero delegation (this would require Agent Zero to be running)
+# For now, we'll just verify the tool is registered
+python3 -c "
+from a0_tools import list_tools
+tools = list_tools()
+print('Registered tools:')
+for tool in tools:
+    if 'sdr' in tool or 'osint' in tool:
+        print(f' - {tool}')
+"
+
+# Stop the agent
+kill $AGENT_PID
+```
+
+**Validation**:
+- [ ] OSINT Agent starts without errors.
+- [ ] Tasks can be submitted via the API.
+- [ ] Task status can be checked via the API.
+- [ ] ADS-B capture task executes and populates the database.
+- [ ] Aircraft processing task executes and processes data.
+- [ ] Visualization task generates a map file.
+- [ ] Custom tools are registered with Agent Zero.
+
+---
+
+## 4. Phase 4: Integration and Testing
+
+### Step 1: Integrate All Components
+**Objective**: Connect the OSINT system, agent, and Agent Zero into a unified pipeline.
+
+**Actions**:
+1. Verify all components are properly connected.
+2. Test data flow from collection to analysis and reporting.
+3. Resolve any integration issues.
+
+**Commands**:
+```bash
+# Create a test script to verify integration
+cat > /a0/usr/projects/knowledge_base/tests/test_integration.py << 'EOF'
+"""
+Integration test for OSINT system and agent.
+"""
+
+import logging
+import sqlite3
+import time
+from scripts.agent.osint_agent import OSINTAgent
+from scripts.agent.input_handler import InputHandler
+from scripts.data_processing.processor import DataProcessor
+from scripts.visualization.mapper import OSINTMapper
+from scripts.alerts.alert_manager import AlertManager
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def test_integration():
+    """Test the integration of all components."""
+    logger.info("Starting integration test...")
+    
+    # Initialize components
+    db_path = "/a0/usr/projects/knowledge_base/osint.db"
+    
+    # Test database connectivity
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        logger.info(f"Database tables: {[t[0] for t in tables]}")
+        conn.close()
+    except sqlite3.Error as e:
+        logger.error(f"Database connection failed: {e}")
+        return False
+    
+    # Test data processor
+    try:
+        processor = DataProcessor(db_path)
+        logger.info("Data processor initialized successfully")
+    except Exception as e:
+        logger.error(f"Data processor initialization failed: {e}")
+        return False
+    
+    # Test mapper
+    try:
+        mapper = OSINTMapper(db_path)
+        logger.info("Mapper initialized successfully")
+    except Exception as e:
+        logger.error(f"Mapper initialization failed: {e}")
+        return False
+    
+    # Test alert manager
+    try:
+        alert_manager = AlertManager(db_path)
+        logger.info("Alert manager initialized successfully")
+    except Exception as e:
+        logger.error(f"Alert manager initialization failed: {e}")
+        return False
+    
+    # Test input handler
+    try:
+        input_handler = InputHandler()
+        logger.info("Input handler initialized successfully")
+    except Exception as e:
+        logger.error(f"Input handler initialization failed: {e}")
+        return False
+    
+    # Test agent initialization
+    try:
+        agent = OSINTAgent(db_path)
+        logger.info("OSINT Agent initialized successfully")
+        
+        # Stop the agent after initialization
+        # In a real test, we'd let it run and submit tasks
+        return True
+    except Exception as e:
+        logger.error(f"OSINT Agent initialization failed: {e}")
+        return False
+
+if __name__ == "__main__":
+    success = test_integration()
+    if success:
+        logger.info("Integration test passed!")
+    else:
+        logger.error("Integration test failed!")
+EOF
+
+# Run the integration test
+python3 /a0/usr/projects/knowledge_base/tests/test_integration.py
+```
+
+**Validation**:
+- [ ] All components initialize successfully.
+- [ ] Database connectivity is verified.
+- [ ] Data processor, mapper, alert manager, and input handler are functional.
+- [ ] OSINT Agent initializes without errors.
+
+---
+
+### Step 2: Conduct End-to-End Testing
+**Objective**: Test complete workflows (e.g., aircraft monitoring, maritime tracking).
+
+**Actions**:
+1. Run the OSINT Agent.
+2. Submit tasks for each major workflow.
+3. Verify data collection, processing, and visualization.
+4. Check alert generation.
+
+**Commands**:
+```bash
+# Start the OSINT Agent in the background
+python3 /a0/usr/projects/knowledge_base/scripts/agent/osint_agent.py &
+AGENT_PID=$!
+
+# Wait for the agent to start
+sleep 5
+
+# Test aircraft monitoring workflow
+echo "Testing aircraft monitoring workflow..."
+
+# Submit ADS-B capture task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "capture_adsb", "params": {"duration": 60}}'
+
+# Wait for capture to complete
+sleep 10
+
+# Submit aircraft processing task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "process_aircraft", "params": {}}'
+
+# Wait for processing to complete
+sleep 5
+
+# Submit aircraft map generation task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "create_aircraft_map", "params": {"time_window_hours": 1}}'
+
+# Wait for map generation to complete
+sleep 5
+
+# Check the generated map
+ls -la /a0/usr/projects/knowledge_base/aircraft_map.html
+
+# Test maritime tracking workflow
+echo "Testing maritime tracking workflow..."
+
+# Submit AIS capture task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "capture_ais", "params": {"duration": 60}}'
+
+# Wait for capture to complete
+sleep 10
+
+# Submit vessel processing task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "process_vessels", "params": {}}'
+
+# Wait for processing to complete
+sleep 5
+
+# Submit vessel map generation task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "create_vessel_map", "params": {"time_window_hours": 1}}'
+
+# Wait for map generation to complete
+sleep 5
+
+# Check the generated map
+ls -la /a0/usr/projects/knowledge_base/vessel_map.html
+
+# Test alert generation
+echo "Testing alert generation..."
+
+# Submit alert generation task
+curl -X POST http://localhost:5000/task \
+  -H "Content-Type: application/json" \
+  -d '{"task": "generate_alerts", "params": {}}'
+
+# Wait for alert generation to complete
+sleep 5
+
+# Check the alerts in the database
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT COUNT(*) FROM alerts;"
+sqlite3 /a0/usr/projects/knowledge_base/osint.db "SELECT * FROM alerts LIMIT 3;"
+
+# Stop the agent
+kill $AGENT_PID
+```
+
+**Validation**:
+- [ ] Aircraft monitoring workflow executes from capture to visualization.
+- [ ] ADS-B data is captured and stored in the database.
+- [ ] Aircraft data is processed and enriched.
+- [ ] Aircraft map is generated and saved.
+- [ ] Maritime tracking workflow executes from capture to visualization.
+- [ ] AIS data is captured and stored in the database.
+- [ ] Vessel data is processed and enriched.
+- [ ] Vessel map is generated and saved.
+- [ ] Alerts are generated and stored in the database.
+
+---
+
+### Step 3: Validate Data Flow
+**Objective**: Ensure data moves smoothly from collection to analysis and reporting.
+
+**Actions**:
+1. Trace data from initial capture through processing to final output.
+2. Verify database records at each stage.
+3. Check visualizations and alerts.
+
+**Commands**:
+```bash
+# Create a data flow validation script
+cat > /a0/usr/projects/knowledge_base/tests/validate_data_flow.py << 'EOF'
+"""
+Validate data flow through the OSINT system.
+"""
+
+import logging
+import sqlite3
+import json
+from datetime import datetime, timedelta
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def validate_data_flow():
+    """Validate the complete data flow from capture to output."""
+    db_path = "/a0/usr/projects/knowledge_base/osint.db"
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # 1. Check raw data tables
+        logger.info("Checking raw data tables...")
+        
+        cursor.execute("SELECT COUNT(*) FROM aircraft;")
+        aircraft_count = cursor.fetchone()[0]
+        logger.info(f"Found {aircraft_count} raw aircraft records")
+        
+        cursor.execute("SELECT COUNT(*) FROM vessels;")
+        vessel_count = cursor.fetchone()[0]
+        logger.info(f"Found {vessel_count} raw vessel records")
+        
+        cursor.execute("SELECT COUNT(*) FROM web_data;")
+        web_count = cursor.fetchone()[0]
+        logger.info(f"Found {web_count} raw web data records")
+        
+        # 2. Check processed data tables
+        logger.info("Checking processed data tables...")
+        
+        cursor.execute("SELECT COUNT(*) FROM processed_aircraft;")
+        processed_aircraft_count = cursor.fetchone()[0]
+        logger.info(f"Found {processed_aircraft_count} processed aircraft records")
+        
+        cursor.execute("SELECT COUNT(*) FROM processed_vessels;")
+        processed_vessel_count = cursor.fetchone()[0]
+        logger.info(f"Found {processed_vessel_count} processed vessel records")
+        
+        # 3. Check alerts
+        logger.info("Checking alerts...")
+        
+        cursor.execute("SELECT COUNT(*) FROM alerts;")
+        alert_count = cursor.fetchone()[0]
+        logger.info(f"Found {alert_count} alerts")
+        
+        if alert_count > 0:
+            cursor.execute("SELECT * FROM alerts ORDER BY timestamp DESC LIMIT 1;")
+            latest_alert = cursor.fetchone()
+            logger.info(f"Latest alert: {latest_alert[2]} (type: {latest_alert[1]}, severity: {latest_alert[3]})")
+        
+        # 4. Validate data flow by checking if processed data exists for raw data
+        if aircraft_count > 0:
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM processed_aircraft pa
+                JOIN aircraft a ON pa.hex = a.hex
+                WHERE a.timestamp >= datetime('now', '-1 hour')
+            """)
+            recent_processed = cursor.fetchone()[0]
+            logger.info(f"{recent_processed} of recent aircraft records have been processed")
+            
+            if recent_processed == 0:
+                logger.warning("No processed data found for recent raw aircraft data")
+        
+        if vessel_count > 0:
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM processed_vessels pv
+                JOIN vessels v ON pv.mmsi = v.mmsi
+                WHERE v.timestamp >= datetime('now', '-1 hour')
+            """)
+            recent_processed = cursor.fetchone()[0]
+            logger.info(f"{recent_processed} of recent vessel records have been processed")
+            
+            if recent_processed == 0:
+                logger.warning("No processed data found for recent raw vessel data")
+        
+        # 5. Check for visualization files
+        logger.info("Checking for visualization files...")
+        
+        import os
+        viz_files = []
+        for file in os.listdir('.'):
+            if file.endswith(('.html', '.png')) and ('map' in file or 'plot' in file):
+                viz_files.append(file)
+        
+        logger.info(f"Found visualization files: {viz_files}")
+        
+        # 6. Overall assessment
+        if (aircraft_count > 0 or vessel_count > 0 or web_count > 0) and \
+           (processed_aircraft_count > 0 or processed_vessel_count > 0) and \
+           len(viz_files) > 0:
+            logger.info("✅ Data flow validation PASSED: Data moves from capture to processing to visualization")
+            return True
+        else:
+            logger.error("❌ Data flow validation FAILED: Missing data at one or more stages")
+            return False
+            
+    except sqlite3.Error as e:
+        logger.error(f"Database error during validation: {e}")
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+if __name__ == "__main__":
+    success = validate_data_flow()
+    exit(0 if success else 1)
+EOF
+
+# Run the data flow validation
+python3 /a0/usr/projects/knowledge_base/tests/validate_data_flow.py
+```
+
+**Validation**:
+- [ ] Raw data is captured and stored in the database.
+- [ ] Raw data is processed and stored as processed data.
+- [ ] Processed data is used to generate visualizations.
+- [ ] Alerts are generated based on processed data.
+- [ ] Data flow is continuous from capture to output.
+
+---
+
+### Step 4: Optimize Performance
+**Objective**: Tune database queries, processing pipelines, and visualization generation.
+
+**Actions**:
+1. Analyze performance bottlenecks.
+2. Optimize SQLite queries with indexes.
+3. Improve processing pipeline efficiency.
+4. Test performance improvements.
+
+**Commands**:
+```bash
+# Create a performance optimization script
+cat > /a0/usr/projects/knowledge_base/tests/optimize_performance.py << 'EOF'
+"""
+Optimize performance of the OSINT system.
+"""
+
+import logging
+import sqlite3
+import time
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def optimize_database():
+    """Optimize the SQLite database with indexes and settings."""
+    db_path = "/a0/usr/projects/knowledge_base/osint.db"
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        logger.info("Optimizing database...")
+        
+        # 1. Create indexes for frequently queried columns
+        logger.info("Creating indexes...")
+        
+        # Aircraft table indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_aircraft_timestamp ON aircraft(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_aircraft_hex ON aircraft(hex);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_aircraft_lat_lon ON aircraft(lat, lon);")
+        
+        # Vessels table indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_vessels_timestamp ON vessels(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_vessels_mmsi ON vessels(mmsi);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_vessels_lat_lon ON vessels(lat, lon);")
+        
+        # Web data table indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_web_data_timestamp ON web_data(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_web_data_url ON web_data(url);")
+        
+        # Processed aircraft table indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_processed_aircraft_timestamp ON processed_aircraft(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_processed_aircraft_hex ON processed_aircraft(hex);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_processed_aircraft_lat_lon ON processed_aircraft(lat, lon);")
+        
+        # Processed vessels table indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_processed_vessels_timestamp ON processed_vessels(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_processed_vessels_mmsi ON processed_vessels(mmsi);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_processed_vessels_lat_lon ON processed_vessels(lat, lon);")
+        
+        # Alerts table indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_alerts_timestamp ON alerts(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_alerts_type ON alerts(type);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_alerts_resolved ON alerts(resolved);")
+        
+        # 2. Enable WAL mode for better concurrency
+        logger.info("Enabling WAL mode...")
+        cursor.execute("PRAGMA journal_mode=WAL;")
+        
+        # 3. Set synchronous to NORMAL for better performance
+        logger.info("Setting synchronous to NORMAL...")
+        cursor.execute("PRAGMA synchronous=NORMAL;")
+        
+        # 4. Increase cache size
+        logger.info("Increasing cache size...")
+        cursor.execute("PRAGMA cache_size=-20000;");  # 20MB cache
+        
+        # 5. Analyze the database
+        logger.info("Running ANALYZE...")
+        cursor.execute("ANALYZE;")
+        
+        conn.commit()
+        logger.info("Database optimization complete")
+        
+        return True
+    except sqlite3.Error as e:
+        logger.error(f"Error optimizing database: {e}")
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+def test_query_performance():
+    """Test the performance of common queries."""
+    db_path = "/a0/usr/projects/knowledge_base/osint.db"
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        logger.info("Testing query performance...")
+        
+        # Test 1: Recent aircraft query
+        start_time = time.time()
+        cursor.execute("""
+            SELECT hex, flight, lat, lon, alt, speed, track, timestamp
+            FROM aircraft
+            WHERE timestamp >= datetime('now', '-1 hour')
+            AND lat BETWEEN 47.0 AND 48.0
+            AND lon BETWEEN -123.0 AND -122.0
+            ORDER BY timestamp DESC
+            LIMIT 100
+        """)
+        aircraft = cursor.fetchall()
+        aircraft_time = time.time() - start_time
+        logger.info(f"Recent aircraft query: {aircraft_time:.4f}s for {len(aircraft)} records")
+        
+        # Test 2: Recent vessels query
+        start_time = time.time()
+        cursor.execute("""
+            SELECT mmsi, name, lat, lon, speed, course, timestamp
+            FROM vessels
+            WHERE timestamp >= datetime('now', '-1 hour')
+            AND lat BETWEEN 47.0 AND 48.5
+            AND lon BETWEEN -123.0 AND -122.0
+            ORDER BY timestamp DESC
+            LIMIT 100
+        """)
+        vessels = cursor.fetchall()
+        vessel_time = time.time() - start_time
+        logger.info(f"Recent vessels query: {vessel_time:.4f}s for {len(vessels)} records")
+        
+        # Test 3: Processed aircraft query
+        start_time = time.time()
+        cursor.execute("""
+            SELECT hex, flight, lat, lon, alt, speed, track, near_airport, timestamp
+            FROM processed_aircraft
+            WHERE timestamp >= datetime('now', '-1 hour')
+            AND lat BETWEEN 47.0 AND 48.0
+            AND lon BETWEEN -123.0 AND -122.0
+            ORDER BY timestamp DESC
+            LIMIT 100
+        """)
+        processed_aircraft = cursor.fetchall()
+        processed_aircraft_time = time.time() - start_time
+        logger.info(f"Processed aircraft query: {processed_aircraft_time:.4f}s for {len(processed_aircraft)} records")
+        
+        # Test 4: Alerts query
+        start_time = time.time()
+        cursor.execute("""
+            SELECT id, type, severity, message, timestamp
+            FROM alerts
+            WHERE resolved = FALSE
+            ORDER BY timestamp DESC
+            LIMIT 10
+        """)
+        alerts = cursor.fetchall()
+        alerts_time = time.time() - start_time
+        logger.info(f"Unresolved alerts query: {alerts_time:.4f}s for {len(alerts)} records")
+        
+        # Performance assessment
+        total_time = aircraft_time + vessel_time + processed_aircraft_time + alerts_time
+        logger.info(f"Total query time: {total_time:.4f}s")
+        
+        if total_time < 1.0:
+            logger.info("✅ Query performance is good")
+            return True
+        else:
+            logger.warning("⚠️  Query performance could be improved")
+            return False
+            
+    except sqlite3.Error as e:
+        logger.error(f"Error testing query performance: {e}
+
+## Related
+
+[[dragon-os-sdr-osint-expert]] [[osint_agent_design]] [[osint_system_design]] [[alpha_awus036acs]] [[wireless_chipsets]]

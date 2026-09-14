@@ -25,7 +25,7 @@ mcp_servers:
   home-assistant:
     url: "http://10.1.1.13:8123/api/mcp"
     headers:
-      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ZmEyODk2NjY5Y2Y0NWM0YTg2ZWUyYmFlYTg2ZDA4NiIsImlhdCI6MTc3NTI1NzU2MSwiZXhwIjoyMDkwNjE3NTYxfQ.xqkJssmUdaGkfh3PHIQw6ALxX-MI1DT9Uqouch1V_TM"
+      Authorization: "Bearer CHANGE_ME_JWT"
     timeout: 30
     connect_timeout: 10
 ```

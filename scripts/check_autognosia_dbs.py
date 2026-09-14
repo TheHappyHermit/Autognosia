@@ -56,7 +56,7 @@ def check_db(path, label):
     print()
 
 # Check all database locations
-check_db('/home/josh434/.autognosia/autognosia.db', 'autognosia.db (.autognosia)')
-check_db('/home/josh434/.hermes/autognosia.db', 'autognosia.db (.hermes)')
-check_db('/home/josh434/.autognosia/personal-organizer/data/organizer.db', 'organizer.db (personal-organizer)')
-check_db('/home/josh434/.autognosia/backups/organizer.db', 'organizer.db (backups)')
+check_db('/home/home_user/.autognosia/autognosia.db', 'autognosia.db (.autognosia)')
+check_db('/home/home_user/.hermes/autognosia.db', 'autognosia.db (.hermes)')
+check_db('/home/home_user/.autognosia/personal-organizer/data/organizer.db', 'organizer.db (personal-organizer)')
+check_db('/home/home_user/.autognosia/backups/organizer.db', 'organizer.db (backups)')

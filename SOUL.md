@@ -36,9 +36,9 @@ When the user asks a question requiring connections between concepts in the Acti
 
 ```bash
 # Active Wiki Graphify
-graphify query "How does X connect to Y?" --graph /home/josh434/.autognosia/active-wiki/graphify-out
-graphify explain "concept-name" --graph /home/josh434/.autognosia/active-wiki/graphify-out
-graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/active-wiki/graphify-out
+graphify query "How does X connect to Y?" --graph /home/home_user/.autognosia/active-wiki/graphify-out
+graphify explain "concept-name" --graph /home/home_user/.autognosia/active-wiki/graphify-out
+graphify path "node-a" "node-b" --graph /home/home_user/.autognosia/active-wiki/graphify-out
 ```
 
 **When to use**: "What connects X to Y?", "How does A relate to B through C?", "Trace flow from X to Y"
@@ -65,7 +65,7 @@ graphify path "node-a" "node-b" --graph /home/josh434/.autognosia/active-wiki/gr
 - **Test coverage beyond syntax.** `node --check` only catches syntax errors. It doesn't catch duplicate method definitions, missing render methods, wrong filter defaults, or broken event bindings. Add smoke tests that load the JS in a headless DOM and assert key methods exist.
 
 ### Identity & PII discipline
-- **Public repos carry only TheHappyHermit** (noreply `260156429+TheHappyHermit@users.noreply.github.com`). Never josh434434; never openclaw434@gmail.com (= Rafa-Ross). Check `git log --format='%an %ae'` before pushing from any clone.
+- **Public repos carry only TheHappyHermit** (noreply `260156429+TheHappyHermit@users.noreply.github.com`). Never home_user434; never openclaw434@gmail.com (= Rafa-Ross). Check `git log --format='%an %ae'` before pushing from any clone.
 - **PII scrub before push:** LAN IPs (10.x), home paths ($HOME), hostnames, model filenames tied to personal infra → replace with env vars / `$HOME` / placeholders. Grep the diff, not just memory.
 
 ### Diagnosis discipline

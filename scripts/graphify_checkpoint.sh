@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 25-minute checkpoint on the graphify re-run after the GRAPHIFY_MAX_OUTPUT_TOKENS fix.
-LOG=/home/josh434/.autognosia/logs/graphify-oracle-brain.log
-CACHE=/home/josh434/.autognosia/oracle/brain/graphify-out/cache/semantic
+LOG=/home/home_user/.autognosia/logs/graphify-oracle-brain.log
+CACHE=/home/home_user/.autognosia/oracle/brain/graphify-out/cache/semantic
 
 sleep 1500
 

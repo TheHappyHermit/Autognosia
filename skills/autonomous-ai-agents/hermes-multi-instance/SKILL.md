@@ -9,7 +9,7 @@ Audit and sync skills, cron jobs, and knowledge bases across Josh's Hermes insta
 
 Josh runs multiple Hermes instances that share a knowledge architecture but are NOT the same install:
 - **Windows desktop** (`C:\Users\josh4\AppData\Local\hermes`) — primary personal agent; Oracle Vault at `C:\Hermes\Oracle\Vault`, LLM wiki at `C:\Hermes\LLM_WIKI`.
-- **Agent VM 10.1.1.37** (user josh434) — runs Autognosia; its own Hermes instance operates autonomously 24/7.
+- **Agent VM 10.1.1.37** (user home_user) — runs Autognosia; its own Hermes instance operates autonomously 24/7.
 
 Connect per the `home-lab-ssh` skill (key: `~/.ssh/id_ed25519_agent_server`). Never touch the agent VM's running processes or config without explicit user go-ahead — file-level drops only by default.
 
@@ -34,7 +34,7 @@ Connect per the `home-lab-ssh` skill (key: `~/.ssh/id_ed25519_agent_server`). Ne
 
 - **tar-over-SSH pipe** — rsync is not installed on the agent VM; tar exists both sides:
   ```bash
-  tar -C /c/Hermes/Oracle/Vault --exclude='./~' -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server josh434@10.1.1.37 "mkdir -p <dest> && tar -xf - -C <dest>"
+  tar -C /c/Hermes/Oracle/Vault --exclude='./~' -cf - . | ssh -i ~/.ssh/id_ed25519_agent_server home_user@10.1.1.37 "mkdir -p <dest> && tar -xf - -C <dest>"
   ```
 - **Verify with counts, not exit codes:** `find <dest> -name '*.md' | wc -l` on both sides must match the source count (excluding intentional exclusions).
 - Exclude known artifacts deliberately (e.g. the stray literal `~` dir in the desktop Vault — an accidental unexpanded-tilde clone of a GitHub repo, 731 md files; designed home if ever preserved: `oracle/raw/`).
@@ -52,7 +52,7 @@ Desktop skills hardcode `C:\Hermes\...` / `/c/Hermes/...` paths — never copy t
 
 - **Quoting hell with nested SSH + python.** `ssh host "python3 -c \"...\""` mangles quotes through git-bash. Instead write the script locally and pipe via stdin:
   ```bash
-  cat /tmp/check.py | ssh -i ~/.ssh/id_ed25519_agent_server josh434@10.1.1.37 "python3 -"
+  cat /tmp/check.py | ssh -i ~/.ssh/id_ed25519_agent_server home_user@10.1.1.37 "python3 -"
   ```
 - **Config files lie about where data lives.** `paths.yaml` declared `oracle_path: ~/.autognosia/oracle`, but every operational script/skill read `oracle/brain/` (and GBrain + literal-search fallback hardcoded `~/personal-agent/oracle/brain`). Files dropped at the config-declared root were invisible to the entire pipeline. Always grep scripts for actual paths before choosing a destination.
 - **Terminal output truncation:** long SSH command outputs can come back as "1 lines output" in compacted context — re-run with narrower queries or write results to a file and read it.

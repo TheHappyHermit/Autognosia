@@ -1,0 +1,647 @@
+---
+created: 2026-08-05
+id: oracle/radio-rf/osint/osint_flipper_zero
+related: []
+source: Agent Zero server (10.1.1.18)
+status: installed
+tags:
+- osint
+- sdr
+- radio
+- rtl-sdr
+- rf-engineer
+- seattle
+- noaa
+- security
+- hardware
+- dragonos
+title: Flipper Zero for OSINT and Radio Applications
+type: reference
+updated: 2026-08-05
+---
+
+# Flipper Zero for OSINT and Radio Applications
+
+## Overview
+The **Flipper Zero** is a **portable multi-tool** for **wireless security testing**, **RF analysis**, and **OSINT**. This guide covers its use in:
+
+- **Sub-GHz OSINT**: Garage remotes, weather sensors, key fobs.
+- **RFID/NFC Analysis**: Cloning, emulation, and security auditing.
+- **Bluetooth/Wi-Fi Scanning**: Device fingerprinting and tracking.
+- **BadUSB Scripting**: Automated OSINT data collection.
+- **IR Analysis**: Remote control reverse engineering.
+- **Integration with SDR**: Complementary tool for **rtl_433**, **Universal Radio Hacker**.
+
+---
+
+## Table of Contents
+1. [Hardware Specifications](#1-hardware-specifications)
+2. [Setup and Configuration](#2-setup-and-configuration)
+3. [Sub-GHz OSINT](#3-sub-ghz-osint)
+4. [RFID/NFC Analysis](#4-rfidnfc-analysis)
+5. [Bluetooth and Wi-Fi](#5-bluetooth-and-wi-fi)
+6. [BadUSB for OSINT Automation](#6-badusb-for-osint-automation)
+7. [IR Analysis](#7-ir-analysis)
+8. [Integration with Dragon OS](#8-integration-with-dragon-os)
+9. [Seattle-Specific Workflows](#9-seattle-specific-workflows)
+10. [Legal and Ethical Considerations](#10-legal-and-ethical-considerations)
+11. [Troubleshooting](#11-troubleshooting)
+12. [Advanced Projects](#12-advanced-projects)
+13. [Community Resources](#13-community-resources)
+
+---
+
+## 1. Hardware Specifications
+
+| **Component**          | **Specs**                                  | **OSINT Applications**                          |
+|------------------------|--------------------------------------------|-----------------------------------------------|
+| **STM32WB55**         | ARM Cortex-M4 + Cortex-M0                  | Firmware reverse engineering, exploit dev.     |
+| **CC1101**            | Sub-GHz Transceiver (300–928 MHz)          | Garage remotes, weather sensors, key fobs.     |
+| **NRF24L01**          | 2.4 GHz Transceiver                        | Wi-Fi/Bluetooth LE analysis.                   |
+| **ESP32**             | Wi-Fi/BLE Co-Processor                     | Multi-protocol attacks.                        |
+| **IR Transceiver**     | 38 kHz                                    | IR remote analysis.                            |
+| **1-Wire**            | iButton Emulation                          | Access control auditing.                      |
+| **USB-C**             | Data/OTG                                  | BadUSB scripting.                              |
+| **MicroSD**           | Up to 64GB                                | Log storage, firmware backups.                 |
+| **Battery**           | 2000mAh LiPo                              | ~24 hours of active use.                      |
+
+---
+
+## 2. Setup and Configuration
+
+### 2.1 Initial Setup
+1. **Unboxing**:
+   - Flipper Zero device.
+   - USB-C cable (data + charging).
+   - MicroSD card (pre-installed firmware).
+
+2. **Firmware Update**:
+   ```bash
+   # Install qFlipper (GUI updater)
+   wget https://update.flipper.net/downloads/qflipper/latest/linux/qFlipper.x86_64.AppImage
+   chmod +x qFlipper.x86_64.AppImage
+   ./qFlipper.x86_64.AppImage
+   ```
+
+3. **CLI Tools**:
+   ```bash
+   # Install Flipper Zero CLI
+   pip3 install flipperzero
+   ```
+
+### 2.2 Seattle-Specific Configuration
+```yaml
+# /sd/config.txt (Seattle defaults)
+subghz:
+  region: US
+  frequency: 315000000  # Default to 315 MHz (garage remotes)
+  custom_frequencies: [315000000, 433920000, 868300000, 915000000]
+
+rfid:
+  default_protocol: EM4100  # Common in Seattle access cards
+
+badusb:
+  layout: us
+  delay: 50  # ms between keystrokes
+
+ir:
+  database: /sd/ir/seattle_remotes.db  # Custom Seattle IR codes
+```
+
+---
+
+## 3. Sub-GHz OSINT
+
+### 3.1 Common Sub-GHz Devices in Seattle
+| **Device Type**      | **Frequency (MHz)** | **Modulation**       | **Example Brands**               |
+|----------------------|----------------------|-----------------------|------------------------------------|
+| Garage Door Openers | 315, 390              | OOK/ASK               | Chamberlain, LiftMaster, Genie   |
+| Weather Sensors     | 433.92               | OOK                    | AcuRite, La Crosse, Oregon Scientific |
+| Key Fobs            | 315, 433.92          | OOK                    | Honda, Toyota, Ford                |
+| Alarm Systems       | 433.92               | OOK                    | ADT, SimpliSafe                     |
+| Smart Plugs         | 433.92, 915          | FSK                    | TP-Link Kasa, WeMo                 |
+| Door/Window Sensors | 433.92               | OOK                    | X10, GE                              |
+| Car Key Fobs        | 315, 433.92          | OOK/FSK               | Viper, Clifford, Avital             |
+
+### 3.2 Capture and Analyze Sub-GHz Signals
+
+#### Step 1: Scan for Active Devices
+```bash
+# Scan 300–928 MHz for 60 seconds
+flipperzero subghz scan --frequency 300000000-928000000 --timeout 60 --output seattle_subghz_scan.sub
+```
+
+#### Step 2: Decode Captured Signals
+```bash
+# Decode with Universal Radio Hacker
+urh_cli -i seattle_subghz_scan.sub -o decoded_signals.json
+```
+
+#### Step 3: Replay and Test
+```bash
+# Replay a captured garage remote
+flipperzero subghz replay --file garage_remote.sub
+```
+
+### 3.3 Seattle-Specific Sub-GHz Workflows
+
+#### Workflow 1: Audit Apartment Building Access
+```bash
+# 1. Scan for 433 MHz devices (common in Seattle apartments)
+flipperzero subghz scan --frequency 433000000-435000000 --timeout 300 --output apartment_scan.sub
+
+# 2. Analyze with URH
+urh_cli -i apartment_scan.sub -o apartment_analysis.json
+
+# 3. Generate report
+flipperzero subghz report --input apartment_scan.sub --output apartment_report.txt
+```
+
+#### Workflow 2: Clone a Garage Remote
+```bash
+# 1. Capture the remote signal
+flipperzero subghz capture --frequency 315000000 --output garage_remote.sub
+
+# 2. Test the capture
+flipperzero subghz replay --file garage_remote.sub
+
+# 3. Save to Flipper's memory
+flipperzero subghz save --file garage_remote.sub --name "Apartment Garage"
+```
+
+---
+
+## 4. RFID/NFC Analysis
+
+### 4.1 Common RFID/NFC Systems in Seattle
+| **System**           | **Frequency**       | **Protocol**          | **Example Use Cases**                     |
+|----------------------|----------------------|-----------------------|--------------------------------------------|
+| MIFARE Classic       | 13.56 MHz           | ISO14443A             | Apartment access, gym memberships         |
+| EM4100              | 125 kHz             | EM4100                | Older building access, pet chips          |
+| HID Prox            | 125 kHz             | HID                   | Corporate badges, parking garages         |
+| iClass              | 13.56 MHz           | iClass                | High-security buildings                   |
+| NFC Type 2          | 13.56 MHz           | ISO14443A             | Smartphones, contactless payments         |
+
+### 4.2 RFID/NFC Workflows
+
+#### Workflow 1: Clone an Apartment Access Card
+```bash
+# 1. Read the card
+flipperzero rfid read --type EM4100
+
+# 2. Save to Flipper's memory
+flipperzero rfid save --uid 12345678 --type EM4100 --name "Apartment Access"
+
+# 3. Emulate the card
+flipperzero rfid emulate --name "Apartment Access"
+```
+
+#### Workflow 2: Audit NFC Tags in Public Spaces
+```bash
+# 1. Scan for nearby NFC tags
+flipperzero nfc scan
+
+# 2. Dump tag data
+flipperzero nfc dump --uid AA:BB:CC:DD --output public_tag.dump
+
+# 3. Analyze with MFOC (for MIFARE Classic)
+mfoc -O cracked.mfd
+```
+
+---
+
+## 5. Bluetooth and Wi-Fi
+
+### 5.1 Bluetooth Scanning
+```bash
+# Scan for nearby Bluetooth devices
+flipperzero ble scan --timeout 60 --output seattle_ble_scan.json
+
+# Analyze with Python
+python3 -c "
+import json
+import pandas as pd
+
+with open('seattle_ble_scan.json') as f:
+    devices = json.load(f)
+
+df = pd.DataFrame(devices)
+print('Top 10 Bluetooth devices in Seattle:')
+print(df.head(10))
+"
+```
+
+### 5.2 Wi-Fi Deauth Detection
+```bash
+# Monitor for deauth attacks (requires Wi-Fi adapter)
+flipperzero wifi monitor --channel 6 --output deauth_capture.pcap
+
+# Analyze with Wireshark
+wireshark deauth_capture.pcap
+```
+
+---
+
+## 6. BadUSB for OSINT Automation
+
+### 6.1 Example: Automated OSINT Data Collection
+```bash
+# Create a BadUSB script to run OSINT commands
+flipperzero badusb script --name "osint_automation" --script "
+  GUI r
+  DELAY 500
+  STRING terminal
+  DELAY 500
+  ENTER
+  DELAY 1000
+  STRING curl ipinfo.io/$(curl ifconfig.me) | jq '.org, .city'
+  ENTER
+  DELAY 2000
+  STRING exit
+  ENTER
+"
+
+# Execute the script
+flipperzero badusb run --name "osint_automation"
+```
+
+### 6.2 Example: Wi-Fi Scanning Automation
+```bash
+flipperzero badusb script --name "wifi_scan" --script "
+  GUI r
+  DELAY 500
+  STRING terminal
+  DELAY 500
+  ENTER
+  DELAY 1000
+  STRING sudo iw dev wlan0 scan | jq -r '.[] | {ssid: .ssid, bssid: .bssid, signal: .signal}' > wifi_scan.json
+  ENTER
+  DELAY 5000
+  STRING exit
+  ENTER
+"
+```
+
+---
+
+## 7. IR Analysis
+
+### 7.1 Common Seattle IR Remotes
+| **Device Type**      | **Protocol**          | **Example Brands**               |
+|----------------------|-----------------------|------------------------------------|
+| TV Remotes          | NEC, RC5              | Samsung, LG, Sony                 |
+| Air Conditioners    | Coolix, Mitsubishi    | GE, Frigidaire                    |
+| Garage Door Openers | Custom               | Chamberlain, LiftMaster           |
+| Ceiling Fans        | Custom               | Hunter, Hampton Bay                |
+
+### 7.2 IR Capture and Replay
+```bash
+# Capture an IR signal
+flipperzero ir capture --output tv_remote.ir
+
+# Replay the signal
+flipperzero ir replay --file tv_remote.ir
+
+# Save to Flipper's memory
+flipperzero ir save --file tv_remote.ir --name "Living Room TV"
+```
+
+---
+
+## 8. Integration with Dragon OS
+
+### 8.1 Automated Sub-GHz Scanning
+```json
+{
+  "tool_name": "scheduler:create_scheduled_task",
+  "tool_args": {
+    "name": "Seattle Sub-GHz Monitor",
+    "prompt": "\n      1. Scan 300–928 MHz for 10 minutes using Flipper Zero.\n      2. Decode signals with Universal Radio Hacker.\n      3. Log results to PostgreSQL with geotags (47.6062, -122.3321).\n      4. Alert if new garage remotes or key fobs are detected.\n    ",
+    "schedule": {"hour": "*/6"}  # Every 6 hours
+  }
+}
+```
+
+### 8.2 RFID Audit Pipeline
+```json
+{
+  "tool_name": "call_subordinate",
+  "tool_args": {
+    "profile": "developer",
+    "message": "\n      Create a Python script to:
+      1. Use Flipper Zero to scan for RFID tags in range.
+      2. Attempt to clone MIFARE Classic and EM4100 tags.
+      3. Log results to SQLite with tag type, UID, and timestamp.
+      4. Generate a report of vulnerable tags (e.g., unencrypted MIFARE).
+    ",
+    "reset": "true"
+  }
+}
+```
+
+---
+
+## 9. Seattle-Specific Workflows
+
+### 9.1 Apartment Building OSINT
+**Goal**: Audit **wireless access systems** (Sub-GHz, RFID, Bluetooth) in a Seattle apartment building.
+
+**Workflow**:
+```bash
+# 1. Scan Sub-GHz (garage remotes, door sensors)
+flipperzero subghz scan --frequency 300000000-928000000 --timeout 300 --output apartment_subghz.sub
+
+# 2. Scan RFID (access cards)
+flipperzero rfid scan --output apartment_rfid.dump
+
+# 3. Scan Bluetooth (smart locks)
+flipperzero ble scan --timeout 60 --output apartment_ble.json
+
+# 4. Generate report
+python3 -c "
+import json
+import pandas as pd
+
+# Load data
+with open('apartment_ble.json') as f:
+    ble = json.load(f)
+
+# Analyze
+df = pd.DataFrame(ble)
+print('Bluetooth Devices:')
+print(df[['name', 'address', 'rssi']].sort_values('rssi', ascending=False).head(10))
+"
+```
+
+### 9.2 Parking Garage Access Audit
+**Goal**: Clone and test **parking garage remotes** (commonly 315 MHz in Seattle).
+
+**Workflow**:
+```bash
+# 1. Capture garage remote signals
+flipperzero subghz capture --frequency 315000000 --output garage_remote.sub
+
+# 2. Test the capture
+flipperzero subghz replay --file garage_remote.sub
+
+# 3. Save to Flipper
+flipperzero subghz save --file garage_remote.sub --name "Downtown Garage"
+```
+
+---
+
+## 10. Legal and Ethical Considerations
+
+### 10.1 Legal Status (USA/WA State)
+
+| **Activity**               | **Legal Status**                          | **Relevant Laws**                     |
+|---------------------------|------------------------------------------|--------------------------------------|
+| **Sub-GHz Scanning**      | Legal (FCC Part 15)                      | 47 CFR 15.5                          |
+| **RFID Cloning**          | Legal (owned cards)                      | RCW 9A.52.110                        |
+| **Bluetooth Scanning**    | Legal (public spaces)                     | RCW 9.35.230                         |
+| **IR Analysis**           | Legal (no transmission)                   | FCC Part 15                           |
+| **BadUSB Scripting**      | Legal (owned devices)                     | Computer Fraud and Abuse Act (CFAA)   |
+
+### 10.2 Ethical Guidelines
+1. **Consent**: Only clone **your own** RFID cards/remotes.
+2. **Privacy**: Avoid capturing **personal data** (e.g., names, addresses).
+3. **Transparency**: Disclose testing activities in **shared spaces** (e.g., apartment buildings).
+4. **Minimization**: Delete raw captures after analysis.
+
+---
+
+## 11. Troubleshooting
+
+| **Issue**                     | **Solution**                                  |
+|--------------------------------|-----------------------------------------------|
+| Flipper not detected          | Install `udev` rules: `sudo cp /a0/skills/flipper-zero/99-flipper.rules /etc/udev/rules.d/` |
+| Sub-GHz capture fails         | Check antenna connection; try `flipperzero subghz info`. |
+| RFID read errors              | Ensure tag is within 1 cm of Flipper.         |
+| BadUSB not working            | Test on a different USB port; check `dmesg`. |
+| IR capture fails              | Point remote directly at Flipper’s IR port.   |
+| Firmware update fails         | Use `qFlipper` GUI or `dfu-util`.             |
+
+---
+
+## 12. Advanced Projects
+
+### 12.1 Automated Garage Remote Cloner
+**Goal**: Clone **all garage remotes** in a Seattle apartment building.
+
+**Workflow**:
+```python
+# garage_cloner.py
+import subprocess
+import time
+
+# Frequencies for Seattle garage remotes
+FREQUENCIES = [315000000, 390000000, 433920000]
+
+for freq in FREQUENCIES:
+    print(f"Scanning {freq/1e6} MHz...")
+    subprocess.run([
+        "flipperzero", "subghz", "capture",
+        "--frequency", str(freq),
+        "--timeout", "30",
+        "--output", f"garage_{freq}.sub"
+    ])
+    time.sleep(5)  # Cooldown
+
+# Analyze captures
+subprocess.run(["urh_cli", "-i", "garage_*.sub", "-o", "garage_analysis.json"])
+```
+
+### 12.2 RFID Security Auditor
+**Goal**: Audit **RFID access cards** in a corporate building.
+
+**Workflow**:
+```bash
+# 1. Scan for nearby tags
+flipperzero rfid scan --output corporate_rfid.dump
+
+# 2. Analyze with MFOC (MIFARE Classic)
+mfoc -O cracked.mfd
+
+# 3. Generate report
+python3 -c "
+import json
+with open('corporate_rfid.dump') as f:
+    tags = json.load(f)
+
+vulnerable = [t for t in tags if t['type'] == 'MIFARE Classic']
+print(f'Found {len(vulnerable)} vulnerable MIFARE Classic tags.')
+"
+```
+
+---
+
+## 13. Community Resources
+
+### 13.1 Seattle-Specific
+- **Seattle Wireless**: [https://seattlewireless.net/](https://seattlewireless.net/) (Local RF community).
+- **Puget Sound RFID**: [https://www.meetup.com/Seattle-RFID/](https://www.meetup.com/Seattle-RFID/) (RFID/IO hacking).
+- **Seattle Privacy**: [https://seattleprivacy.org/](https://seattleprivacy.org/) (Ethical hacking).
+
+### 13.2 Flipper Zero
+- **Official Docs**: [https://docs.flipper.net/](https://docs.flipper.net/)
+- **GitHub**: [https://github.com/flipperdevices/flipperzero-firmware](https://github.com/flipperdevices/flipperzero-firmware)
+- **Sub-GHz DB**: [https://sigidwiki.com/](https://sigidwiki.com/) (Signal identification).
+- **IR DB**: [https://irdb.tk/](https://irdb.tk/) (Infrared codes).
+
+---
+
+## Example Use Cases
+
+### Use Case 1: Clone a Garage Remote
+**User Request**:
+```
+"I lost my garage remote. Can you clone it using the original?"
+```
+
+**Solution**:
+```bash
+# 1. Capture the original remote's signal
+flipperzero subghz capture --frequency 315000000 --output original_remote.sub
+
+# 2. Test the capture
+flipperzero subghz replay --file original_remote.sub
+
+# 3. Save to Flipper
+flipperzero subghz save --file original_remote.sub --name "Garage Remote"
+
+# 4. Verify
+flipperzero subghz emulate --name "Garage Remote"
+```
+
+### Use Case 2: Audit Apartment RFID Access
+**User Request**:
+```
+"Audit the RFID access cards in my apartment building for vulnerabilities."
+```
+
+**Solution**:
+```bash
+# 1. Scan for nearby tags
+flipperzero rfid scan --output apartment_rfid.dump
+
+# 2. Analyze with MFOC
+mfoc -O cracked.mfd
+
+# 3. Generate report
+python3 -c "
+with open('apartment_rfid.dump') as f:
+    tags = eval(f.read())
+
+vulnerable = [t for t in tags if t['type'] in ['MIFARE Classic', 'EM4100']]
+print(f'Found {len(vulnerable)} vulnerable tags:')
+for tag in vulnerable:
+    print(f'- {tag["type"]}: {tag["uid"]}')
+"
+```
+
+### Use Case 3: Automate Wi-Fi Scanning
+**User Request**:
+```
+"Automate Wi-Fi scanning in my neighborhood using Flipper Zero's BadUSB."
+```
+
+**Solution**:
+```bash
+# Create a BadUSB script
+flipperzero badusb script --name "wifi_scan" --script "
+  GUI r
+  DELAY 500
+  STRING terminal
+  DELAY 500
+  ENTER
+  DELAY 1000
+  STRING sudo iw dev wlan0 scan | jq -r '.[] | {ssid: .ssid, bssid: .bssid, signal: .signal}' > /tmp/wifi_scan.json
+  ENTER
+  DELAY 5000
+  STRING exit
+  ENTER
+"
+
+# Execute the script
+flipperzero badusb run --name "wifi_scan"
+
+# Analyze results
+python3 -c "
+import json
+import pandas as pd
+
+df = pd.read_json('/tmp/wifi_scan.json')
+print('Top 10 Wi-Fi Networks:')
+print(df.sort_values('signal', ascending=False).head(10))
+"
+```
+
+---
+
+## Summary
+The **Flipper Zero** is a **versatile tool** for **OSINT and radio applications**, enabling:
+
+- **Sub-GHz Analysis**: Garage remotes, weather sensors, key fobs.
+- **RFID/NFC Auditing**: Access card cloning, security testing.
+- **Bluetooth/Wi-Fi Scanning**: Device fingerprinting.
+- **BadUSB Automation**: OSINT data collection scripts.
+- **IR Analysis**: Remote control reverse engineering.
+
+### Next Steps
+
+1. **Deploy a Sub-GHz Monitor**:
+   ```json
+   {
+     "tool_name": "scheduler:create_scheduled_task",
+     "tool_args": {
+       "name": "Seattle Sub-GHz Monitor",
+       "prompt": "\n         1. Scan 300–928 MHz for 10 minutes using Flipper Zero.\n         2. Decode signals with Universal Radio Hacker.\n         3. Log results to PostgreSQL with geotags (47.6062, -122.3321).\n         4. Alert if new garage remotes or key fobs are detected.\n       ",
+       "schedule": {"hour": "*/6"}
+     }
+   }
+   ```
+
+2. **Create an RFID Auditor**:
+   ```json
+   {
+     "tool_name": "call_subordinate",
+     "tool_args": {
+       "profile": "developer",
+       "message": "\n         Write a Python script to:
+         1. Use Flipper Zero to scan for RFID tags in range.
+         2. Attempt to clone MIFARE Classic and EM4100 tags.
+         3. Log results to SQLite with tag type, UID, and timestamp.
+         4. Generate a report of vulnerable tags.\n       ",
+       "reset": "true"
+     }
+   }
+   ```
+
+3. **Automate Wi-Fi Scanning**:
+   ```bash
+   flipperzero badusb script --name "wifi_scan" --script "
+     GUI r
+     DELAY 500
+     STRING terminal
+     DELAY 500
+     ENTER
+     DELAY 1000
+     STRING sudo iw dev wlan0 scan | jq -r '.[] | {ssid: .ssid, bssid: .bssid, signal: .signal}' > /tmp/wifi_scan.json
+     ENTER
+     DELAY 5000
+     STRING exit
+     ENTER
+   "
+   ```
+
+**Which Flipper Zero project would you like to explore first?** 🚀
+- [ ] Sub-GHz OSINT (garage remotes, key fobs)
+- [ ] RFID/NFC Analysis (access cards, smart locks)
+- [ ] Bluetooth/Wi-Fi Scanning (device fingerprinting)
+- [ ] BadUSB Automation (OSINT data collection)
+- [ ] IR Analysis (remote control reverse engineering)
+- [ ] [Custom Request]
+
+## Related
+
+[[dragon-os-sdr-osint-expert]] [[osint_agent_design]] [[osint_dashboards]] [[osint_execution_plan]] [[osint_implementation_plan]]

@@ -32,7 +32,7 @@ The `Auth` token lasts ~2 hours. Cache it and reuse until expired.
 import requests
 
 FRESHRSS_URL = "https://freshrss.example.com"
-USERNAME = "josh434"
+USERNAME = "home_user"
 API_PASSWORD = "your-api-password"
 API = f"{FRESHRSS_URL}/api/greader.php"
 
@@ -123,7 +123,7 @@ resp = api_get(
 
 3. **Token expiry** — Auth tokens last ~2 hours. Implement re-authentication on 401/403 responses.
 
-4. **Username required** — Even if the app uses only an "API password", the ClientLogin endpoint requires `Email=<username>`. The username is the FreshRSS login username (e.g., `josh434`).
+4. **Username required** — Even if the app uses only an "API password", the ClientLogin endpoint requires `Email=<username>`. The username is the FreshRSS login username (e.g., `home_user`).
 
 5. **Published timestamps** — `item.get("published", 0)` may be a string or integer. Always handle both types.
 
@@ -422,7 +422,7 @@ See `references/reasoning-model-summarization.md` for the verified fix recipe wh
 8. **Hardcoded IPs in Client Scripts**: The newsletter builder script (`~/.hermes/scripts/newsletter_builder.py`) has a hardcoded `freshrss_ip` value. The correct local server IP is `10.1.1.10` (not `161.153.112.27`, which was the old Oracle server IP). See `references/server-locations.md` for a full map of internal service IPs.
 
 9. **Uninitialized FreshRSS Instance**: Newly deployed FreshRSS containers return "Not Found" on API endpoints until the initial web-based setup is completed. Access `http://freshrss.wineandgecko.com/install.php` to:
-   - Create the admin user (username: `josh434`, password from `FRESHRSS_API_PASSWORD` in `~/.hermes/.env`)
+   - Create the admin user (username: `home_user`, password from `FRESHRSS_API_PASSWORD` in `~/.hermes/.env`)
    - Enable the Google Reader API in FreshRSS settings (Settings → Reading → Enable Google Reader API)
    - Note: CLI initialization attempts (e.g., `docker exec freshrss php /var/www/FreshRSS/app/install.php`) return "Forbidden" — only browser-based setup works.
    - Note: CLI initialization attempts (e.g., `docker exec freshrss php /var/www/FreshRSS/app/install.php`) return "Forbidden" — only browser-based setup is supported.

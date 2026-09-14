@@ -65,11 +65,11 @@ All research deliverables go to the **HOT MEMORY WIKI**, NEVER the Oracle brain,
 **NEVER a raw/ staging folder**. Research writes directly into the wiki as a finished,
 schema-valid page.
 
-- Write research files to: `/home/josh434/.autognosia/active-wiki/dashboard-research/`
+- Write research files to: `/home/home_user/.autognosia/active-wiki/dashboard-research/`
 - For dashboard/homelab work, the file set is:
   `service-pages-*.md`, `agent-control-planes.md`, `novel-dashboard-ideas.md`,
   `design-spec.md`, `css-techniques.md`, etc.
-- **NEVER** write to `/home/josh434/.autognosia/oracle/brain/`, `oracle/raw/`,
+- **NEVER** write to `/home/home_user/.autognosia/oracle/brain/`, `oracle/raw/`,
   `active-wiki/raw/`, or `active-wiki/inbox/raw/`. The Oracle brain is fed by graphify
   ingestion; raw staging is for the `researcher` profile's own pipeline, NOT for this work.
 

@@ -7,7 +7,7 @@ description: SSH into Josh's home lab servers for management tasks.
 
 ### Main Server (10.1.1.10)
 
-- **Username:** josh434
+- **Username:** home_user
 - **OS:** Ubuntu 24.04
 - **Hostname:** Server
 - **SSH key:** `~/.ssh/id_ed25519_home_lab`
@@ -15,7 +15,7 @@ description: SSH into Josh's home lab servers for management tasks.
 ### Agent Server (10.1.1.37)
 
 - **Also called:** Agent server
-- **Username:** josh434
+- **Username:** home_user
 - **OS:** Ubuntu 24.04
 - **SSH key:** `~/.ssh/id_ed25519_agent_server`
 - **Role:** Runs Hermes agent, Paperclip, Honcho services, default-api, meilisearch, qdrant, redis, postgres
@@ -25,7 +25,7 @@ description: SSH into Josh's home lab servers for management tasks.
 ### Agent Zero / Radio Server (10.1.1.18)
 
 - **Also called:** Agent zero server, radio server
-- **Username:** josh434
+- **Username:** home_user
 - **OS:** Ubuntu 22.04 (DragonOS hostname)
 - **SSH key:** `~/.ssh/id_ed25519_agent_zero`
 - **Role:** Runs Agent Zero (Docker), ShadowBroker frontend/backend, MariaDB
@@ -37,13 +37,13 @@ description: SSH into Josh's home lab servers for management tasks.
 
 ```bash
 # Main server
-ssh -i ~/.ssh/id_ed25519_home_lab -o StrictHostKeyChecking=no josh434@10.1.1.10 "command here"
+ssh -i ~/.ssh/id_ed25519_home_lab -o StrictHostKeyChecking=no home_user@10.1.1.10 "command here"
 
 # Agent server
-ssh -i ~/.ssh/id_ed25519_agent_server -o StrictHostKeyChecking=no josh434@10.1.1.37 "command here"
+ssh -i ~/.ssh/id_ed25519_agent_server -o StrictHostKeyChecking=no home_user@10.1.1.37 "command here"
 
 # Agent Zero / Radio server
-ssh -i ~/.ssh/id_ed25519_agent_zero -o StrictHostKeyChecking=no josh434@10.1.1.18 "command here"
+ssh -i ~/.ssh/id_ed25519_agent_zero -o StrictHostKeyChecking=no home_user@10.1.1.18 "command here"
 ```
 
 ### Fallback: Paramiko (Python)
@@ -54,7 +54,7 @@ Only when programmatic access needed. Password sourced from `$SUDO_PASSWORD` env
 import os, paramiko
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-client.connect(hostname='10.1.1.37', username='josh434',
+client.connect(hostname='10.1.1.37', username='home_user',
                password=os.environ.get('SUDO_PASSWORD'), timeout=15)
 stdin, stdout, stderr = client.exec_command('command')
 print(stdout.read().decode('utf-8'))
@@ -76,14 +76,14 @@ client.close()
 - **NEVER change anything** without explicit user approval
 - Use this only when the user asks to interact with the home lab
 - Agent server runs Docker containers: Hermes, Paperclip, LiteLLM, Honcho, default-api, meilisearch, qdrant, redis, postgres
-- All docker-compose files in `/home/josh434/docker_files/`
+- All docker-compose files in `/home/home_user/docker_files/`
 - Media on Terramaster: `/mnt/music`, `/mnt/movies`, `/mnt/tv`
 - Internal SSD: `/mnt/nas`
 
 ## Disk Space (Agent Server 10.1.1.37)
 
 158GB disk. Major consumers:
-- `/home/josh434` — 55GB (projects, paperclip 1.9GB, hermesoriginalwebsite 1.3GB, cel-ast-research 1.3GB)
+- `/home/home_user` — 55GB (projects, paperclip 1.9GB, hermesoriginalwebsite 1.3GB, cel-ast-research 1.3GB)
 - `/snap` — 13GB (Firefox, GNOME, Chromium, Obsidian, Mesa)
 - `/var/lib/snapd` — 5.3GB (snap packages data)
 - `/tmp` — 4.9GB (build artifacts — leave alone)

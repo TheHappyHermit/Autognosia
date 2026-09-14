@@ -56,12 +56,12 @@ After=network.target
 
 [Service]
 Type=simple
-User=josh434
-WorkingDirectory=/home/josh434/.hermes/hermes-webui
+User=home_user
+WorkingDirectory=/home/home_user/.hermes/hermes-webui
 Environment=HERMES_WEBUI_HOST=0.0.0.0
 Environment=HERMES_WEBUI_PORT=8787
-Environment=HERMES_WEBUI_AGENT_DIR=/home/josh434/.hermes/hermes-agent
-ExecStart=/home/josh434/.hermes/hermes-agent/venv/bin/python server.py
+Environment=HERMES_WEBUI_AGENT_DIR=/home/home_user/.hermes/hermes-agent
+ExecStart=/home/home_user/.hermes/hermes-agent/venv/bin/python server.py
 Restart=on-failure
 
 [Install]

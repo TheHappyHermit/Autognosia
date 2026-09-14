@@ -1,0 +1,58 @@
+Cronjob Response: Evening Newsletter (9 PM)
+(job_id: 2fdcb131de85)
+-------------
+
+The newsletter ran successfully but the AI & Tech section had a bug — OpenRouter returned a 400 error during summarization, and the fallback dumped raw truncated content from the first (miscategorized) article. I'll clean that up and produce the actual newsletter from the good data (Science and World sections summarized properly). The AI section will be noted as having no qualifying articles this cycle since the LLM summarizer failed.
+
+Here's the cleaned newsletter:
+
+# News Brief
+*2026-06-29 21:01*
+
+---
+
+## 🔬 Science
+
+**Europe resists air conditioning despite rising heat deaths.** Over 1,300 heat-related excess deaths have occurred in Europe since June 21, yet only ~20% of European homes have AC (vs. 90% in the U.S.). European officials and experts are pushing for urban adaptation solutions rather than widespread AC adoption.
+
+**Chinachem Group launches a blueprint for Hong Kong's green and aging population challenges.** The plan addresses climate change and demographic aging, calling for coordinated action across industry and government.
+
+**Major royalty financing firm opens Hong Kong base amid Chinese biotech deal surge.** The world's largest biopharmaceutical royalty buyer established its first Asia-Pacific office in Hong Kong, as mainland Chinese biotech out-licensing deals hit record highs. Royalty financing offers drug developers an alternative funding route amid looming U.S. investment restrictions.
+
+**Study: Digital health startups need data access, institutional ties, and funding—not just good ideas.** Researchers at Kaunas University of Technology found these three factors are the key determinants of success for health startups.
+
+**Fire at Haldia refinery in West Bengal injures several workers.** A naphtha pipeline caught fire early Tuesday; cause under investigation, damage extent still unknown.
+
+**NASA plans urgent rescue mission to prevent aging telescope from falling to Earth.** The agency aims to execute the mission as soon as Tuesday morning.
+
+**Venezuela's emergency medical system exposed as fragile after back-to-back earthquakes.** Power was knocked out across affected regions, hampering rescue operations.
+
+---
+
+## 🤖 AI & Tech
+
+*No AI/Tech articles successfully summarized this cycle (summarizer API error).*
+
+---
+
+## 🌍 World
+
+**Australia treasurer flags alleged breach of PM's bank data as "incredibly concerning"** — signals potential cybersecurity or privacy incident involving the prime minister's personal financial information; investigation expected.
+
+**Trump administration links federal student loan access to graduate earnings** — colleges would face funding risk if graduates don't earn enough, pressuring programs to improve employment outcomes.
+
+**Warren Buffett reportedly skips Gates Foundation donation amid Epstein review** — Buffett's decision signals distancing from the foundation as scrutiny over Epstein ties intensifies.
+
+**Trump dismisses housing bill, pushes voting restrictions** — signals no bipartisan movement on housing legislation and continued focus on election policy changes.
+
+**US retailers rush to frontload China orders for holiday season** — companies are accelerating imports, likely hedging against tariff uncertainty or supply chain disruptions.
+
+**Japan to revise Arctic policy amid rising geopolitical stakes** — China and Russia's growing Arctic activities are prompting Japan to reassess its strategic posture in the region.
+
+**Hong Kong PLA ship visit tickets sell out in 4 minutes** — high public interest in naval port call marking 29th anniversary of Hong Kong's handover to China.
+
+**Newsom signs $352B California budget as term winds down** — spending plan locked in; Newsom reflecting on legacy policies ahead of leaving office.
+
+**Congress UP chief claims house arrest ahead of Ayodhya temple visit** — alleges BJP government is blocking opposition delegation amid donation scandal tensions
+
+To stop or manage this job, send me a new message (e.g. "stop reminder Evening Newsletter (9 PM)").

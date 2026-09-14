@@ -99,7 +99,7 @@
     {
       "id": "97842ab6d078",
       "name": "Personal Ops Intention Check",
-      "prompt": "Run personal state check: python3 /home/josh434/scripts/personal_state.py 2>&1 || echo 'Personal State check failed'",
+      "prompt": "Run personal state check: python3 /home/home_user/scripts/personal_state.py 2>&1 || echo 'Personal State check failed'",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -155,7 +155,7 @@
     {
       "id": "5070d3ef9331",
       "name": "Daily Backup",
-      "prompt": "Run: bash /home/josh434/.hermes/scripts/autognosia_backup.sh",
+      "prompt": "Run: bash /home/home_user/.hermes/scripts/autognosia_backup.sh",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -198,7 +198,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 0,
       "last_dispatch": {
@@ -211,7 +211,7 @@
     {
       "id": "2f8c625a2cc2",
       "name": "Daily Health Check",
-      "prompt": "Run: bash /home/josh434/.hermes/scripts/autognosia_health.sh 2>&1 || echo 'Verification failed'",
+      "prompt": "Run: bash /home/home_user/.hermes/scripts/autognosia_health.sh 2>&1 || echo 'Verification failed'",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -254,7 +254,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 1,
       "last_dispatch": {
@@ -267,7 +267,7 @@
     {
       "id": "4cf5692a359f",
       "name": "Config Backup",
-      "prompt": "Run config backup: rsync config.yaml, SOUL.md, profiles/, skills/, cron/ from /home/josh434/.autognosia/ to the autognosia git repo. Then git add -A, commit with timestamp, and push to origin.",
+      "prompt": "Run config backup: rsync config.yaml, SOUL.md, profiles/, skills/, cron/ from /home/home_user/.autognosia/ to the autognosia git repo. Then git add -A, commit with timestamp, and push to origin.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -550,7 +550,7 @@
     {
       "id": "1752062c0ea4",
       "name": "Wiki Lint Daily",
-      "prompt": "Run wiki maintenance: find orphans, broken links, and stale pages in the Active Wiki. Report findings. Use the wiki-maintenance skill.\n\nAlso run:\n- python3 /home/josh434/scripts/research_quality_check.py --source active-wiki --sample 10 --check-contradictions\n- python3 /home/josh434/scripts/wiki_hit_counter.py list --source active-wiki --limit 10\n\nReport summary:\n- Orphans, broken links, stale pages\n- Contradictions found\n- Top 10 files by backlinks count\n- Top 10 files by hit count",
+      "prompt": "Run wiki maintenance: find orphans, broken links, and stale pages in the Active Wiki. Report findings. Use the wiki-maintenance skill.\n\nAlso run:\n- python3 /home/home_user/scripts/research_quality_check.py --source active-wiki --sample 10 --check-contradictions\n- python3 /home/home_user/scripts/wiki_hit_counter.py list --source active-wiki --limit 10\n\nReport summary:\n- Orphans, broken links, stale pages\n- Contradictions found\n- Top 10 files by backlinks count\n- Top 10 files by hit count",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -606,7 +606,7 @@
     {
       "id": "ac55638e8cd9",
       "name": "Wiki Lint Weekly Deep",
-      "prompt": "Run full wiki maintenance audit: orphans, broken links, stale pages (>90 days), and contradictions. Use the wiki-maintenance skill.\n\nAlso run:\n- python3 /home/josh434/scripts/research_quality_check.py --source active-wiki --sample 20 --check-contradictions\n- python3 /home/josh434/scripts/research_quality_check.py --source oracle-brain --sample 15 --check-contradictions\n- python3 /home/josh434/scripts/wiki_hit_counter.py list --source active-wiki --limit 20\n- python3 /home/josh434/scripts/wiki_hit_counter.py list --source oracle-brain --limit 15\n\nReport summary:\n- Orphans, broken links, stale pages\n- Contradictions found in both wikis\n- Top 20 files by backlinks count\n- Top files by hit count\n- Discrepancies between wiki and reality",
+      "prompt": "Run full wiki maintenance audit: orphans, broken links, stale pages (>90 days), and contradictions. Use the wiki-maintenance skill.\n\nAlso run:\n- python3 /home/home_user/scripts/research_quality_check.py --source active-wiki --sample 20 --check-contradictions\n- python3 /home/home_user/scripts/research_quality_check.py --source oracle-brain --sample 15 --check-contradictions\n- python3 /home/home_user/scripts/wiki_hit_counter.py list --source active-wiki --limit 20\n- python3 /home/home_user/scripts/wiki_hit_counter.py list --source oracle-brain --limit 15\n\nReport summary:\n- Orphans, broken links, stale pages\n- Contradictions found in both wikis\n- Top 20 files by backlinks count\n- Top files by hit count\n- Discrepancies between wiki and reality",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -649,7 +649,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 0,
       "last_dispatch": {
@@ -873,7 +873,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 0,
       "last_dispatch": {
@@ -1197,7 +1197,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 0,
       "last_dispatch": {
@@ -1210,7 +1210,7 @@
     {
       "id": "703dd7f07c60",
       "name": "Graphify Active Wiki Ingestion",
-      "prompt": "Run graphify incremental ingestion on the Active Wiki, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/active-wiki/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/josh434/.hermes/scripts/graphify_active_wiki_py.py >> /home/josh434/.autognosia/logs/graphify-active-wiki.log 2>&1 &\n\nThis processes all .md and .json files in the active wiki and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. New files added since the last run will be ingested; files moved to the Oracle wiki will naturally drop out (graphify only scans what's on disk).\n\nThe wrapper runs for a long time (hours) — launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry — just report the error with the full output.\n",
+      "prompt": "Run graphify incremental ingestion on the Active Wiki, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/active-wiki/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/home_user/.hermes/scripts/graphify_active_wiki_py.py >> /home/home_user/.autognosia/logs/graphify-active-wiki.log 2>&1 &\n\nThis processes all .md and .json files in the active wiki and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. New files added since the last run will be ingested; files moved to the Oracle wiki will naturally drop out (graphify only scans what's on disk).\n\nThe wrapper runs for a long time (hours) — launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry — just report the error with the full output.\n",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1266,7 +1266,7 @@
     {
       "id": "b0c1d2e3f4a0",
       "name": "Graphify Oracle Brain Ingestion",
-      "prompt": "Run graphify incremental ingestion on the Oracle Brain, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/oracle/brain/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/josh434/.hermes/scripts/graphify_oracle_brain_py.py >> /home/josh434/.autognosia/logs/graphify-oracle-brain.log 2>&1 &\n\nThis processes all .md and .json files in the oracle brain and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. The Oracle Brain has ~1,558 tracked files and ~30K nodes — this will take many hours to complete.\n\nThe wrapper runs for a very long time (many hours) — launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry — just report the error with the full output.\n",
+      "prompt": "Run graphify incremental ingestion on the Oracle Brain, appending new and changed files to the existing graph.\n\nWorking directory: ~/.autognosia/oracle/brain/\n\nLaunch the Python wrapper script in the background so it runs to completion without blocking:\n  nohup python3 /home/home_user/.hermes/scripts/graphify_oracle_brain_py.py >> /home/home_user/.autognosia/logs/graphify-oracle-brain.log 2>&1 &\n\nThis processes all .md and .json files in the oracle brain and appends them to the existing graph.json plus manifest.json. The --force flag re-scans files already tracked in the manifest so content changes are picked up. The Oracle Brain has ~1,558 tracked files and ~30K nodes — this will take many hours to complete.\n\nThe wrapper runs for a very long time (many hours) — launch it in the background and report back immediately with:\n- The PID of the launched process\n- Confirmation that the wrapper was started\n- The current graph stats (nodes/edges/sources from graph.json)\n\nDo NOT wait for the wrapper to finish. Do NOT poll for completion. Just launch and report.\n\nIf the command fails to launch, diagnose and report. Do NOT retry — just report the error with the full output.\n",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1465,7 +1465,7 @@
     {
       "id": "bd9082814268",
       "name": "Autognosia Health Check",
-      "prompt": "Check system health: run python3 /home/josh434/.hermes/scripts/autognosia_health.py",
+      "prompt": "Check system health: run python3 /home/home_user/.hermes/scripts/autognosia_health.py",
       "skills": [],
       "skill": null,
       "model": "Qwen3.5-4B-UD-Q4_K_XL.gguf",
@@ -1508,7 +1508,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 39,
       "last_dispatch": {
@@ -1521,7 +1521,7 @@
     {
       "id": "7ccdde5bb159",
       "name": "Research Exchange Sync",
-      "prompt": "Check the research exchange directory at /home/josh434/.autognosia/exchange/research for completed research packages. For each package: evaluate quality, verify citations, route approved packages to wiki-ingestion for the oracle wiki, and archive rejected ones. Use the wiki-ingestion and research-request skills.",
+      "prompt": "Check the research exchange directory at /home/home_user/.autognosia/exchange/research for completed research packages. For each package: evaluate quality, verify citations, route approved packages to wiki-ingestion for the oracle wiki, and archive rejected ones. Use the wiki-ingestion and research-request skills.",
       "skills": [],
       "skill": null,
       "model": "Qwen3.6-35B-A3B-Q4_K_M.gguf",
@@ -1614,7 +1614,7 @@
         "user_id": "7791814261"
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "failure_streak": 0,
       "last_dispatch": {
@@ -1740,7 +1740,7 @@
     {
       "id": "50fd04244451",
       "name": "Brain-Sync Postgres",
-      "prompt": "Run brain_sync_cron.py to sync knowledge bases to brain-postgres:\n\nBRAIN_API_MODE=openai /home/josh434/.hermes/hermes-agent/venv/bin/python3 /home/josh434/scripts/brain_sync_cron.py\n\nAfter sync completes successfully, run verification:\n\npython3 /home/josh434/scripts/verify_brain_sync.py --source active-wiki\npython3 /home/josh434/scripts/verify_brain_sync.py --source oracle-brain\n\nIf verification passes, respond with [SILENT]. If verification fails, report the errors.",
+      "prompt": "Run brain_sync_cron.py to sync knowledge bases to brain-postgres:\n\nBRAIN_API_MODE=openai /home/home_user/.hermes/hermes-agent/venv/bin/python3 /home/home_user/scripts/brain_sync_cron.py\n\nAfter sync completes successfully, run verification:\n\npython3 /home/home_user/scripts/verify_brain_sync.py --source active-wiki\npython3 /home/home_user/scripts/verify_brain_sync.py --source oracle-brain\n\nIf verification passes, respond with [SILENT]. If verification fails, report the errors.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1785,7 +1785,7 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434/.hermes/scripts",
+      "workdir": "/home/home_user/.hermes/scripts",
       "fire_claim": null,
       "last_dispatch": {
         "scheduled_at": "2026-09-13T20:51:43.336768-07:00",
@@ -1916,7 +1916,7 @@
     {
       "id": "3139cb23f854",
       "name": "Brain-Sync Oracle (Sunday Night)",
-      "prompt": "Sync oracle-brain to brain-postgres. This is the large archive (1,455 files). Run:\n\n/home/josh434/.hermes/hermes-agent/venv/bin/python3 /home/josh434/scripts/brain_sync.py --source oracle-brain\n\nAfter sync completes successfully, run verification:\n\npython3 /home/josh434/scripts/verify_brain_sync.py --source oracle-brain\n\nIf verification passes, respond with [SILENT]. If verification fails, report the errors.",
+      "prompt": "Sync oracle-brain to brain-postgres. This is the large archive (1,455 files). Run:\n\n/home/home_user/.hermes/hermes-agent/venv/bin/python3 /home/home_user/scripts/brain_sync.py --source oracle-brain\n\nAfter sync completes successfully, run verification:\n\npython3 /home/home_user/scripts/verify_brain_sync.py --source oracle-brain\n\nIf verification passes, respond with [SILENT]. If verification fails, report the errors.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -1961,12 +1961,12 @@
         "scope_id": null
       },
       "enabled_toolsets": null,
-      "workdir": "/home/josh434"
+      "workdir": "/home/home_user"
     },
     {
       "id": "ac9b7ad6b62e",
       "name": "Wiki Ingestion Nightly",
-      "prompt": "Run wiki ingestion to extract knowledge from recent sessions. Steps:\n\n1. Search the last 7 days of sessions for:\n   - User decisions (record to decisions/)\n   - Preferences stated (update system/core-preferences.md or personal/preferences/)\n   - Key concepts discussed (create concepts/ pages)\n   - Entity mentions (create entities/ pages)\n   - Verified facts from troubleshooting\n\n2. For each found item, create or update the appropriate wiki page with:\n   - OKF v0.2 frontmatter (id, title, created, updated, type, tags, source)\n   - Source: session:YYYYMMDD_HHMMSS\n   - Retrieval cues (future_cues, future_scenarios)\n   - Cross-links to related pages\n\n3. Update index.md for affected categories\n\n4. Log all changes to .meta/ingestion-log.md\n\n5. Run brain_sync to ingest new pages:\n   BRAIN_API_MODE=openai /home/josh434/.hermes/hermes-agent/venv/bin/python3 /home/josh434/scripts/brain_sync.py --source active-wiki\n\nReport summary of what was ingested.",
+      "prompt": "Run wiki ingestion to extract knowledge from recent sessions. Steps:\n\n1. Search the last 7 days of sessions for:\n   - User decisions (record to decisions/)\n   - Preferences stated (update system/core-preferences.md or personal/preferences/)\n   - Key concepts discussed (create concepts/ pages)\n   - Entity mentions (create entities/ pages)\n   - Verified facts from troubleshooting\n\n2. For each found item, create or update the appropriate wiki page with:\n   - OKF v0.2 frontmatter (id, title, created, updated, type, tags, source)\n   - Source: session:YYYYMMDD_HHMMSS\n   - Retrieval cues (future_cues, future_scenarios)\n   - Cross-links to related pages\n\n3. Update index.md for affected categories\n\n4. Log all changes to .meta/ingestion-log.md\n\n5. Run brain_sync to ingest new pages:\n   BRAIN_API_MODE=openai /home/home_user/.hermes/hermes-agent/venv/bin/python3 /home/home_user/scripts/brain_sync.py --source active-wiki\n\nReport summary of what was ingested.",
       "skills": [
         "wiki-ingestion"
       ],
@@ -2028,7 +2028,7 @@
     {
       "id": "35de4f51bfeb",
       "name": "Research Quality Check",
-      "prompt": "Run research quality check on the Active Wiki research files and Oracle Brain. Execute:\n\npython3 /home/josh434/scripts/research_quality_check.py --source active-wiki --sample 15 --check-contradictions 2>&1 || true\npython3 /home/josh434/scripts/research_quality_check.py --source oracle-brain --sample 10 --check-contradictions 2>&1 || true\n\nThen summarize the results. Note: Front matter validation now expects OKF v0.2 fields (id, description, type, status, generated, tags, confidence) rather than old-style (title, created, updated).",
+      "prompt": "Run research quality check on the Active Wiki research files and Oracle Brain. Execute:\n\npython3 /home/home_user/scripts/research_quality_check.py --source active-wiki --sample 15 --check-contradictions 2>&1 || true\npython3 /home/home_user/scripts/research_quality_check.py --source oracle-brain --sample 10 --check-contradictions 2>&1 || true\n\nThen summarize the results. Note: Front matter validation now expects OKF v0.2 fields (id, description, type, status, generated, tags, confidence) rather than old-style (title, created, updated).",
       "skills": [],
       "skill": null,
       "model": null,
@@ -2085,7 +2085,7 @@
     {
       "id": "50bf431feaea",
       "name": "Oracle Night Research",
-      "prompt": "Night research job for Oracle Brain expansion. Steps:\n\n1. Check for pending exchange requests:\n   ```bash\n   ls /home/josh434/.autognosia/exchange/research/*.json 2>/dev/null | head -5\n   ```\n\n2. If pending requests exist:\n   - Read the oldest request file (by filename/timestamp)\n   - Extract the topic and expansion directions\n   - Research the topic using the local Docker research stack (Camofox → Firecrawl → SearXNG → Tavily)\n   - Write findings directly to Oracle Brain at the path specified in the request\n   - Use standardized front matter (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence)\n   - Archive the completed request: move from exchange/research/ to exchange/research/archive/\n\n3. If no pending requests:\n   - Run: python3 /home/josh434/scripts/pick_next_wiki_topic.py\n   - Research the returned topic\n   - Write to Oracle Brain at the returned target_path\n\n4. Output format:\n   ```\n   STATUS: COMPLETE | PARTIAL | FAILED\n   TOPIC: (what was researched)\n   FILE_CREATED: (path to new file)\n   REQUEST_CONSUMED: (request ID or \"frontier_catalog\")\n   ```\n\nIf no work was available (exhausted catalog), respond with [SILENT].",
+      "prompt": "Night research job for Oracle Brain expansion. Steps:\n\n1. Check for pending exchange requests:\n   ```bash\n   ls /home/home_user/.autognosia/exchange/research/*.json 2>/dev/null | head -5\n   ```\n\n2. If pending requests exist:\n   - Read the oldest request file (by filename/timestamp)\n   - Extract the topic and expansion directions\n   - Research the topic using the local Docker research stack (Camofox → Firecrawl → SearXNG → Tavily)\n   - Write findings directly to Oracle Brain at the path specified in the request\n   - Use standardized front matter (okf_version, id, description, type, status, generated, verified, stale_after, tags, sources, confidence)\n   - Archive the completed request: move from exchange/research/ to exchange/research/archive/\n\n3. If no pending requests:\n   - Run: python3 /home/home_user/scripts/pick_next_wiki_topic.py\n   - Research the returned topic\n   - Write to Oracle Brain at the returned target_path\n\n4. Output format:\n   ```\n   STATUS: COMPLETE | PARTIAL | FAILED\n   TOPIC: (what was researched)\n   FILE_CREATED: (path to new file)\n   REQUEST_CONSUMED: (request ID or \"frontier_catalog\")\n   ```\n\nIf no work was available (exhausted catalog), respond with [SILENT].",
       "skills": [
         "oracle-researcher"
       ],
@@ -2384,9 +2384,9 @@
     {
       "name": "Decision Synthesis Nightly",
       "description": "Run the decision_logger synthesis script nightly to scan the decisions table for contradictions, stance drift, and entity promotion patterns. Results saved to ~/.hermes/cron/output/decision_synthesis_<date>.json",
-      "prompt": "Run the decision synthesis job:\n\ncd /home/josh434 && /home/josh434/.hermes/hermes-agent/venv/bin/python3 decision_logger/synthesis.py --output ~/.hermes/cron/output/decision_synthesis_$(date +%Y%m%d).json\n\nThis scans the decisions table in brain-postgres (localhost:5433) and produces a synthesis report about contradictions, stance drift, and entity changes.\n\nRespond with [SILENT] on success. If there are errors, report them.\n",
+      "prompt": "Run the decision synthesis job:\n\ncd /home/home_user && /home/home_user/.hermes/hermes-agent/venv/bin/python3 decision_logger/synthesis.py --output ~/.hermes/cron/output/decision_synthesis_$(date +%Y%m%d).json\n\nThis scans the decisions table in brain-postgres (localhost:5433) and produces a synthesis report about contradictions, stance drift, and entity changes.\n\nRespond with [SILENT] on success. If there are errors, report them.\n",
       "script": "decision_logger/synthesis.py",
-      "workdir": "/home/josh434",
+      "workdir": "/home/home_user",
       "no_agent": true,
       "schedule": {
         "kind": "cron",
