@@ -48,13 +48,14 @@ ssh -i ~/.ssh/id_ed25519_agent_zero -o StrictHostKeyChecking=no josh434@10.1.1.1
 
 ### Fallback: Paramiko (Python)
 
-Only when programmatic access needed. Password: `<REDACTED>`
+Only when programmatic access needed. Password sourced from `$SUDO_PASSWORD` env var.
 
 ```python
-import paramiko
+import os, paramiko
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-client.connect(hostname='10.1.1.37', username='josh434', password='<REDACTED>', timeout=15)
+client.connect(hostname='10.1.1.37', username='josh434',
+               password=os.environ.get('SUDO_PASSWORD'), timeout=15)
 stdin, stdout, stderr = client.exec_command('command')
 print(stdout.read().decode('utf-8'))
 client.close()

@@ -49,7 +49,9 @@ FRESHRSS_IP = "10.1.1.10"
 FRESHRSS_HOST = "freshrss.wineandgecko.com"
 FRESHRSS_URL = f"https://{FRESHRSS_IP}/api/greader.php"
 USERNAME = "josh434"
-API_PASSWORD = "<REDACTED>"
+API_PASSWORD = os.environ.get("FRESHRSS_API_PASSWORD") or os.environ.get("FRESHRSS_PASSWORD")
+if not API_PASSWORD:
+    raise RuntimeError("Set FRESHRSS_API_PASSWORD or FRESHRSS_PASSWORD env var")
 
 def get_auth_token():
     resp = requests.post(
