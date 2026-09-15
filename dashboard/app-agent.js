@@ -159,11 +159,42 @@ CommandDeck.prototype.renderCronJobs = function() {
         <div class="cron-item__name">${escapeHtml(job.name || 'Untitled')}</div>
         <div class="cron-item__schedule">${escapeHtml(job.schedule || 'Unknown')}</div>
       </div>
-      <span class="badge ${job.enabled ? 'badge--ok' : 'badge--danger'}">
-        ${job.enabled ? 'Active' : 'Disabled'}
-      </span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="badge ${job.enabled ? 'badge--ok' : 'badge--danger'}">
+          ${job.enabled ? 'Active' : 'Disabled'}
+        </span>
+        <button class="btn btn--ghost btn--sm cron-run-btn" data-job="${escapeHtml(job.name)}" title="Run this job now" style="padding:2px 8px; font-size:0.75rem;">
+          ▶ Run
+        </button>
+      </div>
     </div>
   `).join('');
+
+  list.querySelectorAll('.cron-run-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const jobName = btn.dataset.job;
+      btn.disabled = true;
+      btn.textContent = '⏳ Running...';
+      try {
+        const res = await fetch(`${this.apiBase}/api/cron/${encodeURIComponent(jobName)}/run`, {
+          method: 'POST'
+        });
+        const result = await res.json();
+        if (res.ok && result.status === 'ok') {
+          this.showToast?.(`Job "${jobName}" triggered successfully`, 'ok');
+        } else {
+          this.showToast?.(result.detail || result.message || `Failed to run job "${jobName}"`, 'warn');
+        }
+      } catch (err) {
+        console.error('Failed to run cron job:', err);
+        this.showToast?.(`Error running job "${jobName}"`, 'warn');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '▶ Run';
+      }
+    });
+  });
 };
 
 // ── Phase 4: Collapsible Panels ──────────────────────────────────────────────
@@ -220,7 +251,7 @@ CommandDeck.prototype.renderWikiResults = function(results, query) {
   const countEl = `<div class="search-results-count">${results.length} result(s)</div>`;
   
   const items = results.map(r => `
-    <div class="wiki-result-card" data-wiki-path="${escapeHtml(r.path)}">
+    <div class="wiki-result-card" data-wiki-path="${escapeHtml(r.path)}" style="cursor:pointer;">
       <div class="wiki-result-header">
         <span class="wiki-result-title">${this.highlightSearchTerm(r.title, query)}</span>
         <span class="badge badge-cyan">${escapeHtml(r.tier)}</span>
@@ -230,6 +261,21 @@ CommandDeck.prototype.renderWikiResults = function(results, query) {
   `).join('');
 
   container.innerHTML = countEl + items;
+
+  container.querySelectorAll('.wiki-result-card').forEach((card, idx) => {
+    card.addEventListener('click', () => {
+      const r = results[idx];
+      if (r) {
+        this.openWikiDrawer({
+          id: r.path,
+          label: r.title,
+          path: r.path,
+          tier: r.tier || 'active-wiki',
+          epistemic: r.epistemic || 'heuristic'
+        });
+      }
+    });
+  });
 };
 
 // ── Phase 4: Toast Notifications ─────────────────────────────────────────────

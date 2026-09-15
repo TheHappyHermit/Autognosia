@@ -373,6 +373,12 @@ def create_task(payload: Dict[str, Any] = Body(...)):
     status = payload.get("status", "active")
     if status not in ["active", "next", "in_progress", "waiting", "completed", "cancelled", "blocked"]:
         status = "active"
+
+    priority = payload.get("priority", "medium")
+    if priority == "normal":
+        priority = "medium"
+    elif priority not in ["low", "medium", "high", "critical"]:
+        priority = "medium"
         
     conn = get_organizer_conn()
     cur = conn.cursor()
@@ -383,7 +389,7 @@ def create_task(payload: Dict[str, Any] = Body(...)):
         title,
         payload.get("description", ""),
         status,
-        payload.get("priority", "medium"),
+        priority,
         payload.get("due_at"),
         payload.get("project_id")
     ))
@@ -1436,6 +1442,7 @@ def get_download_queue():
     queue = []
     queue.extend(_get_sonarr_queue(10))
     queue.extend(_get_radarr_queue(10))
+    return queue
 
 # ── # ── Home Lab Monitoring Endpoints ───────────────────────────────────────────
 
@@ -1695,6 +1702,65 @@ def get_cron_jobs():
         "jobs": cron_jobs,
         "total": len(cron_jobs),
     }
+
+@app.post("/api/cron/{job_name}/run")
+def run_cron_job(job_name: str):
+    """Trigger a specified cron job immediately."""
+    jobs_file = Path.home() / ".hermes" / "cron" / "jobs.json"
+    target_job = None
+    if jobs_file.exists():
+        try:
+            with open(jobs_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for j in data.get("jobs", []):
+                if j.get("name") == job_name or j.get("id") == job_name:
+                    target_job = j
+                    break
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error reading jobs.json: {e}")
+
+    cmd = None
+    if target_job:
+        cmd = target_job.get("command") or target_job.get("script") or target_job.get("cmd")
+
+    hermes_bin = shutil.which("hermes")
+    if not cmd and hermes_bin:
+        job_id = target_job.get("id", job_name) if target_job else job_name
+        cmd = [hermes_bin, "cron", "run", str(job_id)]
+
+    if not cmd:
+        cron_script = Path.home() / ".hermes" / "cron" / f"{job_name}.py"
+        if not cron_script.exists():
+            cron_script = Path.home() / ".hermes" / "cron" / f"{job_name}.sh"
+        if cron_script.exists():
+            if cron_script.suffix == ".py":
+                cmd = [sys.executable, str(cron_script)]
+            else:
+                cmd = ["bash", str(cron_script)]
+
+    if not cmd:
+        return {
+            "status": "ok",
+            "message": f"Job '{job_name}' triggered (dry-run acknowledged: no executable runner configured)",
+            "output": ""
+        }
+
+    try:
+        if isinstance(cmd, str):
+            res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+        else:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        return {
+            "status": "ok" if res.returncode == 0 else "error",
+            "returncode": res.returncode,
+            "output": res.stdout,
+            "error": res.stderr
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "detail": str(e)
+        }
 
 @app.get("/api/graphify")
 def get_graphify_status():

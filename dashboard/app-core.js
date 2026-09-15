@@ -48,6 +48,7 @@ export class CommandDeck {
     if (typeof this.initBriefingTTS === 'function') this.initBriefingTTS();
     if (typeof this.initNotificationDrawer === 'function') this.initNotificationDrawer();
     if (typeof this.initMemoryControls === 'function') this.initMemoryControls();
+    if (typeof this.initCreateModal === 'function') this.initCreateModal();
     if (typeof this.refreshAllData === 'function') {
       try {
         await this.refreshAllData();
@@ -213,6 +214,29 @@ export class CommandDeck {
         this.renderCalendar();
       });
 
+      const calViewPrev = document.getElementById('cal-view-prev');
+      const calViewNext = document.getElementById('cal-view-next');
+      const calViewToday = document.getElementById('cal-view-today');
+      if (calViewPrev) calViewPrev.addEventListener('click', () => this.navigateCalendar(-1));
+      if (calViewNext) calViewNext.addEventListener('click', () => this.navigateCalendar(1));
+      if (calViewToday) calViewToday.addEventListener('click', () => {
+        this.currentDate = new Date();
+        this.renderCalendar();
+      });
+
+      document.querySelectorAll('.cal-view-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          document.querySelectorAll('.cal-view-tab').forEach(b => {
+            b.classList.remove('active');
+            b.style.background = 'transparent';
+          });
+          e.target.classList.add('active');
+          e.target.style.background = 'var(--bg-secondary)';
+          this.selectedCalendarView = e.target.dataset.calView;
+          this.renderCalendar();
+        });
+      });
+
       document.querySelectorAll('.filter-chip').forEach(chip => {
         chip.addEventListener('click', (e) => {
           document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -280,6 +304,13 @@ export class CommandDeck {
       if (modalCancel) modalCancel.addEventListener('click', () => this.closeTaskDetailModal());
       if (modalSave) modalSave.addEventListener('click', () => this.saveTaskDetail());
       if (modalBackdrop) modalBackdrop.addEventListener('click', () => this.closeTaskDetailModal());
+
+      document.getElementById('btn-open-create-task')?.addEventListener('click', () => {
+        this.openCreateModal('task');
+      });
+      document.getElementById('btn-open-create-event')?.addEventListener('click', () => {
+        this.openCreateModal('task');
+      });
     } catch (e) {
       console.warn('Event binding error:', e);
     }
@@ -612,6 +643,19 @@ export class CommandDeck {
     
     modal.classList.add('open');
     modal.dataset.taskId = task.id;
+
+    const deleteBtn = document.getElementById('task-detail-delete');
+    if (deleteBtn) {
+      deleteBtn.onclick = async () => {
+        if (confirm(`Are you sure you want to delete task "${task.title}"?`)) {
+          await this.deleteTask(task.id);
+          this.closeTaskDetailModal();
+          if (this.showToast) this.showToast('Task deleted', 'info');
+          await this.fetchTasks();
+          await this.fetchOverview();
+        }
+      };
+    }
   }
   
   closeTaskDetailModal() {

@@ -312,7 +312,8 @@
 }
 
 /* Task Detail Modal */
-.task-detail-modal {
+.task-detail-modal,
+.create-modal {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -320,20 +321,23 @@
   align-items: center;
   justify-content: center;
 }
-.task-detail-modal.open {
+.task-detail-modal.open,
+.create-modal.open {
   display: flex;
 }
-.task-detail-modal__backdrop {
+.task-detail-modal__backdrop,
+.create-modal__backdrop {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
 }
-.task-detail-modal__panel {
+.task-detail-modal__panel,
+.create-modal__panel {
   position: relative;
   width: 100%;
   max-width: 600px;
-  max-height: 80vh;
+  max-height: 85vh;
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -342,20 +346,25 @@
   flex-direction: column;
   overflow: hidden;
   margin: var(--space-4);
+  z-index: 1001;
 }
-.task-detail-modal__header {
+.task-detail-modal__header,
+.create-modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-5);
   border-bottom: 1px solid var(--border-subtle);
 }
-.task-detail-modal__header h3 {
+.task-detail-modal__header h3,
+.create-modal__header h3 {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-1);
+  margin: 0;
 }
-.task-detail-modal__close {
+.task-detail-modal__close,
+.create-modal__close {
   background: none;
   border: none;
   font-size: 24px;
@@ -364,10 +373,12 @@
   padding: 0;
   line-height: 1;
 }
-.task-detail-modal__close:hover {
+.task-detail-modal__close:hover,
+.create-modal__close:hover {
   color: var(--text-1);
 }
-.task-detail-modal__body {
+.task-detail-modal__body,
+.create-modal__body {
   flex: 1;
   overflow-y: auto;
   padding: var(--space-5);
@@ -375,9 +386,58 @@
   flex-direction: column;
   gap: var(--space-4);
 }
-.task-detail-modal__footer {
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.form-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.form-field input[type="text"],
+.form-field input[type="search"],
+.form-field input[type="datetime-local"],
+.form-field textarea,
+.form-field select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-1);
+  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+  outline: none;
+}
+.form-field textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.form-actions {
   display: flex;
   justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.task-detail-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-2);
   padding: var(--space-4) var(--space-5);
   border-top: 1px solid var(--border-subtle);

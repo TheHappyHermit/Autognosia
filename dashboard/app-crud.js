@@ -134,19 +134,126 @@ CommandDeck.prototype.sendChatMessage = async function(text) {
   }
 };
 
-// ── Modals ─────────────────────────────────────────────────────────────────
+CommandDeck.prototype.deleteTask = async function(id) {
+  await fetch(`${this.apiBase}/api/tasks/${id}`, {
+    method: 'DELETE'
+  });
+};
+
+// ── Universal Create Modal ──────────────────────────────────────────────────
 
 CommandDeck.prototype.openCreateModal = function(defaultType = 'task') {
+  const modal = document.getElementById('modal-create-item');
+  if (!modal) return;
+
   const select = document.getElementById('create-type');
   if (select) select.value = defaultType;
-  const taskFields = document.getElementById('fields-task');
-  const intentionFields = document.getElementById('fields-intention');
-  if (taskFields) taskFields.style.display = defaultType === 'task' ? 'block' : 'none';
-  if (intentionFields) intentionFields.style.display = defaultType === 'task' ? 'none' : 'block';
-  document.getElementById('modal-create-item')?.classList.add('open');
+
+  this.toggleCreateModalFields(defaultType);
+
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => modal.classList.add('open'));
+
+  // Auto-focus first field
+  setTimeout(() => {
+    if (defaultType === 'task') document.getElementById('task-title')?.focus();
+    else if (defaultType === 'intention') document.getElementById('intention-cue')?.focus();
+    else if (defaultType === 'reminder') document.getElementById('reminder-title')?.focus();
+  }, 50);
 };
 
 CommandDeck.prototype.closeCreateModal = function() {
-  document.getElementById('modal-create-item')?.classList.remove('open');
+  const modal = document.getElementById('modal-create-item');
+  if (!modal) return;
+  modal.classList.remove('open');
+  setTimeout(() => { modal.style.display = 'none'; }, 200);
   document.getElementById('form-create-item')?.reset();
+};
+
+CommandDeck.prototype.toggleCreateModalFields = function(type) {
+  const taskFields = document.getElementById('fields-task');
+  const intentionFields = document.getElementById('fields-intention');
+  const reminderFields = document.getElementById('fields-reminder');
+
+  if (taskFields) taskFields.style.display = type === 'task' ? 'block' : 'none';
+  if (intentionFields) intentionFields.style.display = type === 'intention' ? 'block' : 'none';
+  if (reminderFields) reminderFields.style.display = type === 'reminder' ? 'block' : 'none';
+
+  // Toggle required attributes so browser validation works properly
+  const taskTitle = document.getElementById('task-title');
+  if (taskTitle) taskTitle.required = (type === 'task');
+
+  const cue = document.getElementById('intention-cue');
+  const action = document.getElementById('intention-action');
+  if (cue) cue.required = (type === 'intention');
+  if (action) action.required = (type === 'intention');
+
+  const remTitle = document.getElementById('reminder-title');
+  const remTime = document.getElementById('reminder-time');
+  if (remTitle) remTitle.required = (type === 'reminder');
+  if (remTime) remTime.required = (type === 'reminder');
+};
+
+CommandDeck.prototype.initCreateModal = function() {
+  const select = document.getElementById('create-type');
+  if (select) {
+    select.addEventListener('change', (e) => {
+      this.toggleCreateModalFields(e.target.value);
+    });
+  }
+
+  const closeBtn = document.getElementById('create-close');
+  const cancelBtn = document.getElementById('create-cancel');
+  const backdrop = document.getElementById('create-backdrop');
+
+  if (closeBtn) closeBtn.onclick = () => this.closeCreateModal();
+  if (cancelBtn) cancelBtn.onclick = () => this.closeCreateModal();
+  if (backdrop) backdrop.onclick = () => this.closeCreateModal();
+
+  const form = document.getElementById('form-create-item');
+  if (form) {
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const type = document.getElementById('create-type')?.value || 'task';
+
+      try {
+        if (type === 'task') {
+          const title = document.getElementById('task-title')?.value.trim();
+          if (!title) return;
+          const desc = document.getElementById('task-desc')?.value.trim() || '';
+          const priority = document.getElementById('task-priority')?.value || 'medium';
+          const dueEl = document.getElementById('task-due');
+          const due_at = dueEl?.value ? new Date(dueEl.value).toISOString() : null;
+
+          await this.createTask({ title, description: desc, priority, due_at });
+          if (this.showToast) this.showToast(`Task created: "${title}"`, 'success');
+          await this.fetchTasks();
+        } else if (type === 'intention') {
+          const cue = document.getElementById('intention-cue')?.value.trim();
+          const action = document.getElementById('intention-action')?.value.trim();
+          if (!cue || !action) return;
+
+          await this.createIntention({ cue, action, status: 'active' });
+          if (this.showToast) this.showToast(`Intention registered`, 'success');
+          await this.fetchIntentions();
+        } else if (type === 'reminder') {
+          const title = document.getElementById('reminder-title')?.value.trim();
+          const timeEl = document.getElementById('reminder-time');
+          const channel = document.getElementById('reminder-channel')?.value || 'all';
+          if (!title) return;
+          const remind_at = timeEl?.value ? new Date(timeEl.value).toISOString() : null;
+
+          await this.createReminder({ title, remind_at, channel });
+          if (this.showToast) this.showToast(`Reminder created`, 'success');
+          await this.fetchReminders();
+        }
+
+        await this.fetchOverview();
+        this.closeCreateModal();
+      } catch (err) {
+        console.error('Error creating item:', err);
+        alert(`Failed to create ${type}: ${err.message}`);
+      }
+    };
+  }
 };

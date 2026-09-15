@@ -79,11 +79,11 @@
         </span>
         <span>Autognosia</span>
       </div>
-      <div class="header-search">
+      <div class="header-search" id="btn-palette-trigger" style="cursor:pointer;" title="Click or press ⌘K to open command palette">
         <span class="header-search-icon" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </span>
-        <input type="search" id="global-search" placeholder="Search..." aria-label="Search" />
+        <input type="search" id="global-search" placeholder="Search commands, navigate, create…" aria-label="Search" readonly style="cursor:pointer;" />
         <span class="header-search-hint">⌘K</span>
       </div>
       <div class="header-actions">
@@ -167,14 +167,17 @@
           <span class="hud-metric__label">Intentions</span>
           <span class="hud-metric__value text-tabular" id="stat-intentions"></span>
         </div>
-        <div class="hud-metric hud-metric--memory" id="hud-memory-metric" title="Hot memory limit: 2,200 chars">
+        <div class="hud-metric hud-metric--memory" id="hud-memory-metric" title="Hot memory limit: 2,200 chars. Click to consolidate.">
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
             <span class="hud-metric__label">Hot Memory</span>
             <span class="hud-metric__badge" id="stat-memory-badge" style="font-size:0.65rem; padding:1px 6px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-weight:600;">OK</span>
           </div>
-          <div style="display:flex; align-items:baseline; gap:4px; margin-top:2px;">
-            <span class="hud-metric__value text-tabular" id="stat-memory-chars">--</span>
-            <span style="font-size:0.75rem; color:var(--text-3);">/ 2,200</span>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:2px;">
+            <div style="display:flex; align-items:baseline; gap:4px;">
+              <span class="hud-metric__value text-tabular" id="stat-memory-chars">--</span>
+              <span style="font-size:0.75rem; color:var(--text-3);">/ 2,200</span>
+            </div>
+            <canvas id="stat-memory-sparkline" width="56" height="18" style="opacity:0.85;"></canvas>
           </div>
           <div class="memory-progress" style="width:100%; height:4px; background:var(--bg-tertiary); border-radius:2px; margin-top:4px; overflow:hidden;">
             <div id="stat-memory-bar" style="width:0%; height:100%; background:var(--accent); transition:width 0.3s ease;"></div>
@@ -539,10 +542,23 @@
       </div>
       <div class="calendar-view-container">
         <div class="panel">
-          <div class="panel-header">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div class="panel-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Schedule & Events
+              <span id="calendar-view-title-text">Schedule & Events</span>
+            </div>
+            <div class="panel-actions" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <div class="view-switcher" style="display:inline-flex; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); overflow:hidden;">
+                <button class="view-tab active cal-view-tab" data-cal-view="day" style="padding:4px 10px; font-size:0.8rem; cursor:pointer; background:var(--bg-secondary); border:none; border-right:1px solid var(--border-subtle);">Day</button>
+                <button class="view-tab cal-view-tab" data-cal-view="week" style="padding:4px 10px; font-size:0.8rem; cursor:pointer; background:transparent; border:none; border-right:1px solid var(--border-subtle);">Week</button>
+                <button class="view-tab cal-view-tab" data-cal-view="month" style="padding:4px 10px; font-size:0.8rem; cursor:pointer; background:transparent; border:none;">Month</button>
+              </div>
+              <div style="display:flex; gap:4px;">
+                <button id="cal-view-prev" class="btn btn--ghost btn--sm" style="padding:4px 8px;" title="Previous">◀</button>
+                <button id="cal-view-today" class="btn btn--ghost btn--sm" style="padding:4px 10px;">Today</button>
+                <button id="cal-view-next" class="btn btn--ghost btn--sm" style="padding:4px 8px;" title="Next">▶</button>
+              </div>
+              <button class="btn btn--primary btn--sm" id="btn-open-create-event" style="padding:4px 12px; font-size:0.8rem;">+ New Event</button>
             </div>
           </div>
           <div class="panel-body" id="calendar-view-stage">
@@ -606,12 +622,12 @@
     <div id="view-services" class="view-section" role="region" aria-label="Services">
       <div class="view-section-header">
         <h1 class="view-section-title">Services</h1>
-        <p class="view-section-subtitle">Service status and health monitoring</p>
+        <p class="view-section-subtitle">Service status, media streams, and download queues</p>
       </div>
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             Service Grid
             <div class="panel-status" id="services-view-status"></div>
           </div>
@@ -621,6 +637,39 @@
             <div class="agent-loading">Loading services...</div>
           </div>
         </div>
+      </div>
+
+      <!-- Active Media & Download Queue Row -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:var(--space-4); margin-top:var(--space-4);">
+        <section class="panel" aria-label="Active Media Streams">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Active Media Streams
+            </div>
+            <span class="badge badge-cyan" id="media-count">0 active</span>
+          </div>
+          <div class="panel-body">
+            <div class="media-grid" id="media-grid">
+              <div class="media-placeholder" style="color:var(--text-3); font-size:0.85rem; padding:12px;">No active streams</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Download Queue">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Queue
+            </div>
+            <span class="badge badge-medium" id="queue-count">0 pending</span>
+          </div>
+          <div class="panel-body">
+            <div class="queue-list" id="queue-list">
+              <div class="queue-placeholder" style="color:var(--text-3); font-size:0.85rem; padding:12px;">Queue is empty</div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -714,9 +763,12 @@
         <button class="task-detail-modal__close" id="task-detail-close">×</button>
       </div>
       <div class="task-detail-modal__body" id="task-detail-body"></div>
-      <div class="task-detail-modal__footer">
-        <button class="btn btn--ghost" id="task-detail-cancel">Cancel</button>
-        <button class="btn btn--primary" id="task-detail-save">Save Changes</button>
+      <div class="task-detail-modal__footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn btn--sm" id="task-detail-delete" style="background:rgba(239,68,68,0.15); color:var(--rose, #ef4444); border:1px solid rgba(239,68,68,0.3); padding:6px 12px; cursor:pointer;">🗑️ Delete</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn--ghost" id="task-detail-cancel">Cancel</button>
+          <button class="btn btn--primary" id="task-detail-save">Save Changes</button>
+        </div>
       </div>
     </div>
   </div>
@@ -739,7 +791,7 @@
   </dialog>
 
   <!-- Create Item Modal -->
-  <div class="create-modal" id="modal-create-item" style="display: none;">
+  <div class="create-modal" id="modal-create-item">
     <div class="create-modal__backdrop" id="create-backdrop"></div>
     <div class="create-modal__panel">
       <div class="create-modal__header">

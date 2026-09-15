@@ -1,12 +1,17 @@
-import { CommandDeck } from './app-core.js';
+import { CommandDeck, escapeHtml } from './app-core.js';
 
 // ── Emails & Communications ────────────────────────────────────────────────
 
 CommandDeck.prototype.renderEmails = function() {
   const container = document.getElementById('email-stream-container');
   const badge = document.getElementById('email-unread-badge');
-  const unreadCount = this.state.emails.filter(e => !e.read).length;
-  if (badge) badge.textContent = `${unreadCount} Pending Action`;
+  const updateBadge = () => {
+    const unreadCount = this.state.emails.filter(e => !e.read).length;
+    if (badge) badge.textContent = `${unreadCount} Pending Action`;
+  };
+  updateBadge();
+
+  if (!container) return;
 
   if (this.state.emails.length === 0) {
     container.innerHTML = '<div class="empty-hint">No triaged communications in inbox.</div>';
@@ -14,20 +19,83 @@ CommandDeck.prototype.renderEmails = function() {
   }
 
   container.innerHTML = this.state.emails.map(em => `
-    <div class="email-card ${em.read ? 'read' : ''}" data-email-id="${em.id}">
+    <div class="email-card ${em.read ? 'read' : ''}" data-email-id="${escapeHtml(String(em.id))}">
       <div class="email-head">
-        <span class="email-sender">${escapeHtml(em.sender.split('<')[0])}</span>
-        <span class="email-time">${escapeHtml(em.timestamp)}</span>
+        <span class="email-sender">${escapeHtml((em.sender || '').split('<')[0])}</span>
+        <span class="email-time">${escapeHtml(em.timestamp || '')}</span>
       </div>
-      <div class="email-subject">${escapeHtml(em.subject)}</div>
-      <div style="font-size:11px; color:var(--text-secondary);">${escapeHtml(em.summary)}</div>
+      <div class="email-subject">${escapeHtml(em.subject || '')}</div>
+      <div style="font-size:11px; color:var(--text-secondary);">${escapeHtml(em.summary || '')}</div>
       ${em.extracted_action_items && em.extracted_action_items.length > 0 ? `
         <div class="email-action-box">
-          ${em.extracted_action_items.map(a => `<div>▸ <strong>Action:</strong> ${escapeHtml(a.task)} (Due: ${escapeHtml(a.due)})</div>`).join('')}
+          ${em.extracted_action_items.map(a => `
+            <div class="email-action-row" style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; gap:8px;">
+              <span style="flex:1;">▸ <strong>Action:</strong> ${escapeHtml(a.task)} (Due: ${escapeHtml(a.due || 'Soon')})</span>
+              <button class="btn btn--ghost btn--sm btn-pipeline-action" data-task-title="${escapeHtml(a.task)}" data-task-due="${escapeHtml(a.due || '')}" style="padding:2px 8px; font-size:0.75rem; white-space:nowrap;">
+                + Add to Pipeline
+              </button>
+            </div>
+          `).join('')}
         </div>
       ` : ''}
     </div>
   `).join('');
+
+  // 1. Toggle Read on click of email card
+  container.querySelectorAll('.email-card').forEach(card => {
+    card.addEventListener('click', async (e) => {
+      if (e.target.closest('button') || e.target.closest('a')) return;
+
+      const emailId = card.dataset.emailId;
+      const email = this.state.emails.find(em => String(em.id) === String(emailId));
+      if (!email) return;
+
+      try {
+        const res = await fetch(`${this.apiBase}/api/emails/${encodeURIComponent(emailId)}/toggle-read`, {
+          method: 'PATCH'
+        });
+        if (res.ok) {
+          email.read = !email.read;
+          card.classList.toggle('read', email.read);
+          updateBadge();
+        }
+      } catch (err) {
+        console.warn('Failed to toggle email read status:', err);
+      }
+    });
+  });
+
+  // 2. Add to Pipeline on click of action button
+  container.querySelectorAll('.btn-pipeline-action').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const taskTitle = btn.dataset.taskTitle;
+      const taskDue = btn.dataset.taskDue;
+
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      try {
+        await this.createTask({
+          title: taskTitle,
+          due_at: taskDue || null,
+          priority: 'high',
+          status: 'pending'
+        });
+        btn.textContent = '✓ Added';
+        btn.style.color = 'var(--accent-emerald)';
+        if (this.showToast) {
+          this.showToast(`Action added to Pipeline: "${taskTitle}"`, 'ok');
+        }
+        await this.fetchTasks?.();
+        this.renderTasks?.();
+      } catch (err) {
+        console.error('Failed to create task from email action:', err);
+        btn.disabled = false;
+        btn.textContent = '+ Add to Pipeline';
+      }
+    });
+  });
 };
 
 // ── Prospective Intentions ─────────────────────────────────────────────────

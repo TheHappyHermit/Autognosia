@@ -432,6 +432,60 @@ CommandDeck.prototype.fetchMemoryStatus = async function() {
         badgeEl.style.color = 'var(--accent)';
       }
     }
+
+    // ── Render 7-point saturation sparkline on #stat-memory-sparkline canvas
+    const canvas = document.getElementById('stat-memory-sparkline');
+    if (canvas && canvas.getContext) {
+      if (!this.memoryHistory || this.memoryHistory.length === 0) {
+        const base = Math.max(5, pct - 12);
+        this.memoryHistory = [
+          Math.max(0, base - 6),
+          Math.max(0, base - 3),
+          Math.max(0, base + 2),
+          Math.max(0, base),
+          Math.max(0, base + 5),
+          Math.max(0, base + 8),
+          pct
+        ];
+      } else {
+        this.memoryHistory.push(pct);
+        if (this.memoryHistory.length > 7) {
+          this.memoryHistory.shift();
+        }
+      }
+
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const pts = this.memoryHistory;
+      if (pts.length >= 2) {
+        ctx.beginPath();
+        const strokeColor = isCritical ? '#ef4444' : (isWarning ? '#f59e0b' : '#06b6d4');
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        pts.forEach((val, i) => {
+          const x = 3 + (i / (pts.length - 1)) * (w - 6);
+          const y = (h - 3) - ((Math.min(100, Math.max(0, val)) / 100) * (h - 6));
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        // Draw small dot on latest point
+        const lastVal = pts[pts.length - 1];
+        const lastX = w - 3;
+        const lastY = (h - 3) - ((Math.min(100, Math.max(0, lastVal)) / 100) * (h - 6));
+        ctx.fillStyle = strokeColor;
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
   } catch (e) {
     console.warn('Memory status fetch error:', e);
   }

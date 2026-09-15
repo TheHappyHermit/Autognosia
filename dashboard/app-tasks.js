@@ -32,16 +32,27 @@ CommandDeck.prototype.renderTasks = function() {
     }
   }
 
-  // Bind checkboxes across containers
+  // Bind checkboxes and card click across containers
   [container, viewContainer].forEach(target => {
     if (!target) return;
     target.querySelectorAll('.task-checkbox').forEach(cb => {
       cb.addEventListener('change', async (e) => {
+        e.stopPropagation();
         const id = e.target.dataset.taskId;
         const newStatus = e.target.checked ? 'completed' : 'next';
         await this.updateTask(id, { status: newStatus });
         await this.fetchTasks();
         await this.fetchOverview();
+      });
+    });
+
+    target.querySelectorAll('.task-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.task-checkbox')) return;
+        const id = card.dataset.taskId;
+        if (id && typeof this.openTaskDetail === 'function') {
+          this.openTaskDetail(id);
+        }
       });
     });
   });
@@ -256,6 +267,13 @@ CommandDeck.prototype.bindKanbanDragDrop = function() {
       card.classList.remove('dragging');
       draggedId = null;
       container.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    });
+    card.addEventListener('click', () => {
+      if (card.classList.contains('dragging')) return;
+      const id = card.dataset.taskId;
+      if (id && typeof this.openTaskDetail === 'function') {
+        this.openTaskDetail(id);
+      }
     });
   });
 

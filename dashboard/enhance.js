@@ -48,43 +48,49 @@
   const paletteResults = $('palette-results');
 
   const commands = [
-    { id: 'new-task', label: 'New task', hint: 'create', group: 'Create', run: () => focusQuickAdd() },
-    { id: 'new-intention', label: 'New intention', hint: 'IF-THEN rule', group: 'Create', run: () => focusSection('intentions') },
-    { id: 'new-reminder', label: 'New reminder', hint: 'timed alert', group: 'Create', run: () => focusSection('comms') },
-    { id: 'view-all-tasks', label: 'View all tasks', hint: 'organizer', group: 'Navigate', run: () => focusSection('tasks') },
-    { id: 'goto-calendar', label: 'Go to calendar', hint: 'schedule', group: 'Navigate', run: () => focusSection('calendar') },
-    { id: 'goto-comms', label: 'Go to comms radar', hint: 'email', group: 'Navigate', run: () => focusSection('comms') },
-    { id: 'goto-intentions', label: 'Go to intentions', hint: 'prospective memory', group: 'Navigate', run: () => focusSection('intentions') },
-    { id: 'open-telemetry', label: 'Open telemetry', hint: 'system health', group: 'Navigate', run: () => { const b = $('btn-telemetry'); if (b) b.click(); } },
-    { id: 'open-chat', label: 'Open copilot chat', hint: 'talk to Hermes', group: 'Navigate', run: () => { const b = $('btn-toggle-chat') || $('btn-close-chat'); if (b) b.click(); } },
-    { id: 'search-wiki', label: 'Search the wiki', hint: 'second brain', group: 'Navigate', run: () => focusSection('wiki') },
-  ];
+    { id: 'goto-dashboard', label: 'Go to Dashboard Overview', hint: 'main overview', group: 'Navigate', run: () => window.commandDeck?.showView('dashboard') },
+    { id: 'goto-tasks', label: 'Go to Tasks & Pipeline', hint: 'kanban / list', group: 'Navigate', run: () => window.commandDeck?.showView('tasks') },
+    { id: 'goto-calendar', label: 'Go to Calendar', hint: 'schedule & events', group: 'Navigate', run: () => window.commandDeck?.showView('calendar') },
+    { id: 'goto-services', label: 'Go to Services', hint: 'media & queues', group: 'Navigate', run: () => window.commandDeck?.showView('services') },
+    { id: 'goto-homelab', label: 'Go to Home Lab', hint: 'servers & docker', group: 'Navigate', run: () => window.commandDeck?.showView('homelab') },
+    { id: 'goto-agents', label: 'Go to Agents & Chat', hint: 'Hermes bots', group: 'Navigate', run: () => window.commandDeck?.showView('agents') },
 
-  function focusQuickAdd() {
-    const el = $('quick-task-input') || $('briefing-prompt-text') || $('chat-input');
-    focusSection('tasks');
-    if (el) { el.focus(); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
-  }
-  function focusSection(name) {
-    const sec = document.querySelector(`.panel-${name}`) || document.querySelector(`[data-panel="${name}"]`);
-    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+    { id: 'new-task', label: 'New Task', hint: 'create task', group: 'Create', run: () => window.commandDeck?.openCreateModal('task') },
+    { id: 'new-intention', label: 'New Intention', hint: 'IF-THEN rule', group: 'Create', run: () => window.commandDeck?.openCreateModal('intention') },
+    { id: 'new-reminder', label: 'New Reminder', hint: 'timed alert', group: 'Create', run: () => window.commandDeck?.openCreateModal('reminder') },
+
+    { id: 'consolidate-memory', label: 'Consolidate Hot Memory', hint: 'trim MEMORY.md', group: 'Actions', run: () => window.commandDeck?.consolidateMemory() },
+    { id: 'open-notifications', label: 'Open Notification Center', hint: 'alerts & cron', group: 'Actions', run: () => document.getElementById('btn-notifications')?.click() },
+    { id: 'read-briefing', label: 'Read Daily Briefing Aloud', hint: 'speech synthesis', group: 'Actions', run: () => document.getElementById('btn-read-briefing')?.click() },
+    { id: 'reset-graph', label: 'Reset Knowledge Graph View', hint: 're-center canvas', group: 'Actions', run: () => document.getElementById('btn-graph-reset')?.click() },
+    { id: 'toggle-theme', label: 'Toggle Light / Dark Mode', hint: 'appearance', group: 'Actions', run: () => window.commandDeck?.toggleTheme() },
+    { id: 'refresh-data', label: 'Refresh All Deck Data', hint: 'poll now', group: 'Actions', run: () => window.commandDeck?.refreshAllData() },
+    { id: 'search-wiki', label: 'Search Knowledge Vault', hint: 'second brain', group: 'Actions', run: () => { window.commandDeck?.showView('dashboard'); document.getElementById('wiki-search-input')?.focus(); } },
+  ];
 
   let paletteIdx = 0;
   let visible = [];
 
   function openPalette() {
     if (!palette) return;
-    if (typeof palette.showModal === 'function') palette.showModal();
-    else palette.setAttribute('open', '');
-    paletteSearch.value = '';
-    renderPalette('');
-    paletteSearch.focus();
+    if (typeof palette.showModal === 'function') {
+      try { palette.showModal(); } catch (_) { palette.setAttribute('open', ''); }
+    } else {
+      palette.setAttribute('open', '');
+    }
+    if (paletteSearch) {
+      paletteSearch.value = '';
+      renderPalette('');
+      setTimeout(() => paletteSearch.focus(), 50);
+    }
   }
   function closePalette() {
     if (!palette) return;
-    if (typeof palette.close === 'function') palette.close();
-    else palette.removeAttribute('open');
+    if (typeof palette.close === 'function') {
+      try { palette.close(); } catch (_) { palette.removeAttribute('open'); }
+    } else {
+      palette.removeAttribute('open');
+    }
   }
   function renderPalette(q) {
     if (!paletteResults) return;
@@ -103,25 +109,33 @@
               <span class="palette-item__group">${c.group}</span>
             </div>`)
           .join('')
-      : '<div class="palette-empty">No matching commands — try "task", "calendar"…</div>';
+      : '<div class="palette-empty">No matching commands — try "task", "calendar", "memory"…</div>';
   }
   function runCommand(id) {
     const cmd = commands.find((c) => c.id === id);
     closePalette();
-    if (cmd) cmd.run();
+    if (cmd && typeof cmd.run === 'function') cmd.run();
   }
 
   if (palette) {
     $('btn-palette-trigger')?.addEventListener('click', openPalette);
+    $('global-search')?.addEventListener('click', openPalette);
+    $('global-search')?.addEventListener('focus', openPalette);
     paletteSearch?.addEventListener('input', () => { paletteIdx = 0; renderPalette(paletteSearch.value); });
     paletteSearch?.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') { e.preventDefault(); paletteIdx = Math.min(paletteIdx + 1, visible.length - 1); renderPalette(paletteSearch.value); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); paletteIdx = Math.max(paletteIdx - 1, 0); renderPalette(paletteSearch.value); }
       else if (e.key === 'Enter') { e.preventDefault(); const c = visible[paletteIdx]; if (c) runCommand(c.id); }
+      else if (e.key === 'Escape') { e.preventDefault(); closePalette(); }
     });
     paletteResults?.addEventListener('click', (e) => {
       const item = e.target.closest('[data-cmd]');
       if (item) runCommand(item.dataset.cmd);
+    });
+    palette.addEventListener('click', (e) => {
+      if (e.target === palette || e.target.classList.contains('command-palette__overlay')) {
+        closePalette();
+      }
     });
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); }
