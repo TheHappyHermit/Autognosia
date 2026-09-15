@@ -51,7 +51,7 @@ def _ensure_web_deps() -> None:
 
 _ensure_web_deps()
 
-from fastapi import FastAPI, HTTPException, Query, Body, Request
+from fastapi import FastAPI, HTTPException, Query, Body, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
@@ -70,10 +70,12 @@ CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "/config/services.yaml"))
 
 # Import local helper bridges
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
+sys.path.insert(0, str(DASHBOARD_DIR))
 import calendar_sync
 import email_sync
 import check_reminders
 from notify_dispatcher import dispatcher
+import hermes_interface
 
 import asyncio
 
@@ -863,19 +865,27 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
         else:
             response_text = f"No documents found matching '{query}' in Active Wiki or Oracle Vault."
 
-    # 6. General Assistant Chat
+    # 6. General Assistant Chat — Native Hermes Integration
     else:
-        # Provide helpful cognitive executive response
-        response_text = (
-            f"**Autognosia Executive Copilot:** I received your instruction:\n\n"
-            f"> *\"{message}\"*\n\n"
-            f"You can command me to:\n"
-            f"- **Add Tasks:** `Add task Review draft Friday high`\n"
-            f"- **Schedule:** `What is on my calendar today?`\n"
-            f"- **Search Vault:** `Search vector database architectures`\n"
-            f"- **Set Intentions:** `IF discussing GPUs THEN remind to check memory bandwidth`\n"
-            f"- **System Telemetry:** `Show system status`"
-        )
+        # Route through Hermes Agent default profile
+        try:
+            res = invoke_hermes_profile("default", message)
+            response_text = res.get("reply", "")
+        except Exception:
+            response_text = ""
+
+        if not response_text or response_text.startswith("⚠️"):
+            # Provide helpful cognitive executive response if Hermes is offline
+            response_text = (
+                f"**Autognosia Executive Copilot:** I received your instruction:\n\n"
+                f"> *\"{message}\"*\n\n"
+                f"You can command me to:\n"
+                f"- **Add Tasks:** `Add task Review draft Friday high`\n"
+                f"- **Schedule:** `What is on my calendar today?`\n"
+                f"- **Search Vault:** `Search vector database architectures`\n"
+                f"- **Set Intentions:** `IF discussing GPUs THEN remind to check memory bandwidth`\n"
+                f"- **System Telemetry:** `Show system status`"
+            )
 
     return {
         "reply": response_text,
@@ -888,20 +898,21 @@ def chat_with_hermes(payload: Dict[str, Any] = Body(...)):
 
 # ── Bot Management Endpoints ───────────────────────────────────────────────────
 
-def invoke_hermes_profile(bot_id: str, message: str) -> dict:
-    """Send a message to a specific Hermes profile via the CLI.
-
-    Invokes `hermes --oneshot` with the specified profile and session continuity
-    so the agent retains conversation context across dashboard messages.
-    Returns a dict with 'reply', 'actions_taken', 'refresh_needed', 'timestamp'.
-    """
+def invoke_hermes_profile(bot_id: str, message: str, session_id: Optional[str] = None) -> dict:
+    """Send a message to a specific Hermes profile via the CLI or Gateway."""
     import subprocess as sp
 
-    session_name = f"dash-bot-{bot_id}"
-    hermes_bin = shutil.which("hermes") or str(Path.home() / ".local" / "bin" / "hermes")
+    session_name = session_id or f"dash-bot-{bot_id}"
+    hermes_bin = hermes_interface.get_hermes_binary()
 
-    # Use chat -q for session continuity (see research notes below).
-    # --oneshot + -c enters interactive mode (bug), chat -q + -c works correctly.
+    if not hermes_bin:
+        return {
+            "reply": "⚠️ Hermes Agent CLI binary not found. Please install Hermes or start the Gateway API on port 8642.",
+            "actions_taken": [],
+            "refresh_needed": False,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
     cmd = [
         hermes_bin, "chat", "-q", message,
         "--profile", bot_id,
@@ -909,44 +920,29 @@ def invoke_hermes_profile(bot_id: str, message: str) -> dict:
         "--create-if-missing",
     ]
 
-    try:
-        result = sp.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=180,
-            env={**os.environ, "PATH": f"{Path.home() / '.local' / 'bin'}:{os.environ.get('PATH', '')}"},
-        )
+    env = {**os.environ}
+    hermes_home = hermes_interface.get_hermes_home()
+    if (hermes_home / "bin").exists():
+        env["PATH"] = f"{hermes_home / 'bin'}:{env.get('PATH', '')}"
 
+    try:
+        result = sp.run(cmd, capture_output=True, text=True, timeout=180, env=env)
         reply = result.stdout.strip()
 
         if result.returncode != 0:
             error_msg = result.stderr.strip() or "Unknown error"
             reply = f"⚠️ Agent error (profile: {bot_id}): {error_msg[:300]}"
         else:
-            # Extract just the reply text from chat -q output
-            # Format:
-            #   Query: ...
-            #   Initializing agent...
-            #   Session ...
-            #   ────────────────────────── (top separator)
-            #    ─  ⚕ Hermes  ────────── (header)
-            #   <reply>
-            #   ────────────────────────── (bottom separator)
-            #   Resume this session...
             lines = reply.split('\n')
             reply_lines = []
             past_header = False
             for line in lines:
-                # Skip until we pass the Hermes header line
                 if not past_header:
-                    if 'Hermes' in line and '─' in line:
+                    if 'Hermes' in line and ('─' in line or '-' in line):
                         past_header = True
                     continue
-                # Stop at the bottom separator
-                if '─' * 10 in line:
+                if '─' * 8 in line or ('=' * 8 in line and past_header):
                     break
-                # Skip empty lines and tool output
                 if line.strip() and not line.strip().startswith('┊'):
                     reply_lines.append(line)
             if reply_lines:
@@ -976,11 +972,12 @@ def invoke_hermes_profile(bot_id: str, message: str) -> dict:
 
 @app.get("/api/bots")
 def get_bots():
-    """List all configured bots/agents from Hermes profiles."""
+    """List all configured bots/agents from Hermes profiles with model chains and gateway info."""
     import psutil
-    hermes_home = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
+    hermes_home = hermes_interface.get_hermes_home()
     profiles_dir = hermes_home / "profiles"
     bots = []
+    gateway_online = hermes_interface.is_gateway_active()
 
     if profiles_dir.exists():
         for profile_dir in sorted(profiles_dir.iterdir()):
@@ -991,14 +988,16 @@ def get_bots():
             agent_name = profile_name.replace("-", " ").title()
             model = "unknown"
             provider = "unknown"
+            fallback_chain = []
             if config_file.exists():
                 try:
                     import yaml
-                    with open(config_file) as f:
+                    with open(config_file, "r", encoding="utf-8") as f:
                         cfg = yaml.safe_load(f) or {}
                     model_cfg = cfg.get("model", {})
                     if isinstance(model_cfg, dict):
                         model = model_cfg.get("default", model_cfg.get("provider", "unknown"))
+                        fallback_chain = model_cfg.get("fallbacks", [])
                     else:
                         model = str(model_cfg)
                     provider_cfg = cfg.get("providers", {})
@@ -1007,7 +1006,7 @@ def get_bots():
                 except Exception:
                     pass
 
-            status = "idle"
+            status = "online" if gateway_online else "idle"
             for proc in psutil.process_iter(['pid', 'cmdline']):
                 try:
                     cmdline = ' '.join(proc.info['cmdline'] or [])
@@ -1035,27 +1034,48 @@ def get_bots():
                 "role": f"{profile_name.replace('-', ' ')} agent",
                 "model": model,
                 "provider": provider.capitalize(),
+                "fallback_chain": fallback_chain,
                 "status": status,
                 "current_task": None,
                 "last_activity": datetime.now(timezone.utc).isoformat(),
                 "avatar": avatar_map.get(profile_name, "🤖"),
             })
 
-    return {"bots": bots}
+    # Default fallback bot if no profiles exist
+    if not bots:
+        bots.append({
+            "id": "default",
+            "name": "Hermes",
+            "role": "Executive Assistant & AI Copilot",
+            "model": "Hermes 3 / Qwen 2.5",
+            "provider": "Nous Research",
+            "fallback_chain": ["openrouter/auto", "deepseek-v3.2:free"],
+            "status": "online" if gateway_online else "idle",
+            "current_task": None,
+            "last_activity": datetime.now(timezone.utc).isoformat(),
+            "avatar": "🤖",
+        })
+
+    return {
+        "bots": bots,
+        "gateway_active": gateway_online,
+        "mode": "gateway" if gateway_online else "cli_fallback"
+    }
 
 
 @app.get("/api/bots/{bot_id}/history")
-def get_bot_history(bot_id: str):
-    """Get conversation history for a bot from SQLite."""
+def get_bot_history(bot_id: str, session_id: Optional[str] = Query(None)):
+    """Get conversation history for a bot from SQLite, supporting multi-session threads."""
+    target_session = session_id or f"dash-bot-{bot_id}"
     conn = get_organizer_conn()
     cur = conn.cursor()
     cur.execute("""
-        SELECT id, sender, message, metadata, created_at 
+        SELECT id, session_id, sender, message, metadata, created_at 
         FROM chat_messages 
-        WHERE bot_id = ? 
+        WHERE bot_id = ? AND (session_id = ? OR session_id LIKE ?)
         ORDER BY id ASC 
-        LIMIT 100
-    """, (bot_id,))
+        LIMIT 150
+    """, (bot_id, target_session, f"{target_session}%"))
     rows = cur.fetchall()
     conn.close()
     
@@ -1069,57 +1089,57 @@ def get_bot_history(bot_id: str):
                 pass
         messages.append({
             "id": r["id"],
+            "session_id": r["session_id"],
             "sender": r["sender"],
             "message": r["message"],
             "metadata": meta,
             "timestamp": r["created_at"]
         })
-    return {"bot_id": bot_id, "messages": messages}
+    return {"bot_id": bot_id, "session_id": target_session, "messages": messages}
 
 
 @app.delete("/api/bots/{bot_id}/history")
-def clear_bot_history(bot_id: str):
-    """Clear conversation history for a bot."""
+def clear_bot_history(bot_id: str, session_id: Optional[str] = Query(None)):
+    """Clear conversation history for a bot or specific session thread."""
     conn = get_organizer_conn()
     cur = conn.cursor()
-    cur.execute("DELETE FROM chat_messages WHERE bot_id = ?", (bot_id,))
+    if session_id:
+        cur.execute("DELETE FROM chat_messages WHERE bot_id = ? AND session_id = ?", (bot_id, session_id))
+    else:
+        cur.execute("DELETE FROM chat_messages WHERE bot_id = ?", (bot_id,))
     conn.commit()
     conn.close()
-    return {"status": "ok", "bot_id": bot_id, "cleared": True}
+    return {"status": "ok", "bot_id": bot_id, "session_id": session_id, "cleared": True}
 
 
 @app.post("/api/bots/{bot_id}/message")
 def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
-    """Send a message to a specific bot, invoking the corresponding Hermes profile and saving to DB."""
+    """Send a message to a specific bot, saving history and returning reply."""
     message = (payload.get("message") or "").strip()
+    session_id = payload.get("session_id") or f"dash-bot-{bot_id}"
     if not message:
         raise HTTPException(status_code=400, detail="Message required")
-    
-    session_name = f"dash-bot-{bot_id}"
     
     # Save user message to database
     conn = get_organizer_conn()
     cur = conn.cursor()
     cur.execute(
         "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'user', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
-        (session_name, bot_id, message)
+        (session_id, bot_id, message)
     )
     conn.commit()
     conn.close()
 
-    # Invoke the actual Hermes profile via CLI
-    res = invoke_hermes_profile(bot_id, message)
-    
+    res = invoke_hermes_profile(bot_id, message, session_id)
     agent_title = bot_id.replace("-", " ").title()
     reply = res.get("reply", "")
     
-    # Save bot reply to database
     if reply:
         conn = get_organizer_conn()
         cur = conn.cursor()
         cur.execute(
             "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'bot', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
-            (session_name, bot_id, reply)
+            (session_id, bot_id, reply)
         )
         conn.commit()
         conn.close()
@@ -1127,6 +1147,7 @@ def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
     return {
         "reply": reply,
         "bot_id": bot_id,
+        "session_id": session_id,
         "bot_name": agent_title,
         "actions_taken": res.get("actions_taken", []),
         "timestamp": datetime.now(timezone.utc).isoformat()
@@ -1135,105 +1156,115 @@ def send_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
 
 @app.post("/api/bots/{bot_id}/stream")
 async def stream_bot_message(bot_id: str, payload: Dict[str, Any] = Body(...)):
-    """Stream response from Hermes agent profile with live token and tool tracing."""
+    """Stream response from Hermes agent profile with live token and tool tracing via standard SSE."""
     message = (payload.get("message") or "").strip()
+    session_id = payload.get("session_id") or f"dash-bot-{bot_id}"
     if not message:
         raise HTTPException(status_code=400, detail="Message required")
         
-    session_name = f"dash-bot-{bot_id}"
-    
     # Save user message to database
     conn = get_organizer_conn()
     cur = conn.cursor()
     cur.execute(
         "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'user', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
-        (session_name, bot_id, message)
+        (session_id, bot_id, message)
     )
     conn.commit()
     conn.close()
 
-    hermes_bin = shutil.which("hermes") or str(Path.home() / ".local" / "bin" / "hermes")
-    
-    async def event_generator():
-        if not shutil.which("hermes") and not Path(hermes_bin).exists():
-            fallback_msg = "Hermes CLI binary not detected on system PATH. Please verify Hermes Agent installation to enable live agent generation."
-            yield f"data: {json.dumps({'type': 'token', 'content': fallback_msg})}\n\n"
-            yield f"data: {json.dumps({'type': 'done', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
-            return
+    return StreamingResponse(
+        hermes_interface.stream_agent_response(bot_id, message, session_id, ORGANIZER_DB),
+        media_type="text/event-stream"
+    )
 
-        cmd = [
-            hermes_bin, "chat", "-q", message,
-            "--profile", bot_id,
-            "-c", session_name,
-            "--create-if-missing",
-        ]
-        
-        env = {**os.environ, "PATH": f"{Path.home() / '.local' / 'bin'}:{os.environ.get('PATH', '')}"}
-        
-        try:
-            process = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.STDOUT,
-                env=env
+
+# ── Native WebSocket Bi-Directional Streaming & Telemetry ──────────────────────
+
+@app.websocket("/ws/bots/{bot_id}")
+async def websocket_bot_chat(websocket: WebSocket, bot_id: str):
+    """
+    Bi-directional WebSocket endpoint for live agent chat, typing indicators,
+    and streaming token and tool-call events.
+    """
+    await websocket.accept()
+    session_id = f"dash-bot-{bot_id}"
+    try:
+        while True:
+            data = await websocket.receive_json()
+            message = (data.get("message") or "").strip()
+            if not message:
+                continue
+            sess = data.get("session_id") or session_id
+
+            # Save user message
+            conn = get_organizer_conn()
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'user', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
+                (sess, bot_id, message)
             )
-            
-            full_reply = []
-            past_header = False
-            
-            while True:
-                line_bytes = await process.stdout.readline()
-                if not line_bytes:
-                    break
-                line = line_bytes.decode('utf-8', errors='replace').rstrip('\r\n')
-                
-                # Check for Hermes header separation
-                if not past_header:
-                    if 'Hermes' in line and '─' in line:
-                        past_header = True
-                    elif line.strip().startswith(('Query:', 'Initializing agent', 'Session', '─')):
-                        continue
-                    else:
-                        if not any(k in line for k in ['Initializing', 'Session']):
-                            past_header = True
-                    if not past_header:
-                        continue
-                        
-                # End separator
-                if '─' * 10 in line:
-                    break
-                    
-                # Distinguish tool execution traces from assistant output
-                if line.strip().startswith('┊') or 'Tool' in line or 'tool_call' in line or 'Calling' in line:
-                    clean_tool = line.strip().lstrip('┊').strip()
-                    if clean_tool:
-                        yield f"data: {json.dumps({'type': 'tool', 'content': clean_tool})}\n\n"
-                elif line.strip():
-                    full_reply.append(line)
-                    chunk_text = line + "\n"
-                    yield f"data: {json.dumps({'type': 'token', 'content': chunk_text})}\n\n"
-                    
-            await process.wait()
-            
-            reply_text = "\n".join(full_reply).strip()
-            if reply_text:
-                c = get_organizer_conn()
-                cr = c.cursor()
-                cr.execute(
-                    "INSERT INTO chat_messages (session_id, bot_id, sender, message, created_at) VALUES (?, ?, 'bot', ?, strftime('%Y-%m-%dT%H:%M:%SZ','now'))",
-                    (session_name, bot_id, reply_text)
-                )
-                c.commit()
-                c.close()
-                
-            yield f"data: {json.dumps({'type': 'done', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
-            
-        except Exception as err:
-            err_msg = f"Agent streaming error: {str(err)}"
-            yield f"data: {json.dumps({'type': 'token', 'content': err_msg})}\n\n"
-            yield f"data: {json.dumps({'type': 'done', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
+            conn.commit()
+            conn.close()
 
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+            # Emit typing indicator
+            await websocket.send_json({"type": "typing", "bot_id": bot_id, "status": "thinking"})
+
+            # Stream chunks from hermes_interface
+            full_reply = []
+            async for sse_chunk in hermes_interface.stream_agent_response(bot_id, message, sess, ORGANIZER_DB):
+                for line in sse_chunk.split("\n"):
+                    line = line.strip()
+                    if line.startswith("data: "):
+                        try:
+                            payload = json.loads(line[6:])
+                            if payload.get("type") == "token":
+                                full_reply.append(payload.get("content", ""))
+                            await websocket.send_json(payload)
+                        except Exception:
+                            pass
+
+            await websocket.send_json({
+                "type": "done",
+                "bot_id": bot_id,
+                "reply": "".join(full_reply),
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
+
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        try:
+            await websocket.send_json({"type": "error", "error": str(e)})
+        except Exception:
+            pass
+
+
+@app.websocket("/ws/system")
+async def websocket_system_telemetry(websocket: WebSocket):
+    """Periodic push stream for system telemetry, memory budget, and agent status."""
+    await websocket.accept()
+    try:
+        while True:
+            system_stats = get_system_stats()
+            memory_status = hermes_interface.get_hot_memory_details()
+            gateway_info = hermes_interface.get_gateway_info()
+            await websocket.send_json({
+                "type": "telemetry",
+                "system": system_stats,
+                "memory": {
+                    "chars_used": memory_status["chars_used"],
+                    "threshold": memory_status["threshold"],
+                    "percent": memory_status["percent_used"],
+                    "needs_consolidation": memory_status["needs_consolidation"]
+                },
+                "gateway": gateway_info,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
+            await asyncio.sleep(10)
+    except WebSocketDisconnect:
+        pass
+    except Exception:
+        pass
 
 # ── Phase 2: Service Integration Endpoints ──────────────────────────────────────
 
@@ -1623,12 +1654,12 @@ def get_homelab_status():
 
 @app.get("/api/agent")
 def get_agent_status():
-    """Hermes agent status, active sessions, cron jobs, memory state."""
+    """Hermes agent status, active sessions, cron jobs, memory state, and gateway telemetry."""
     import psutil
     import time
     
     # Check Hermes gateway process
-    gateway_running = False
+    gateway_running = hermes_interface.is_gateway_active()
     gateway_pid = None
     agent_running = False
     agent_pid = None
@@ -1640,23 +1671,19 @@ def get_agent_status():
                 if 'gateway' in cmdline.lower():
                     gateway_running = True
                     gateway_pid = proc.info['pid']
-                if 'agent' in cmdline.lower():
+                if 'agent' in cmdline.lower() or 'chat' in cmdline.lower():
                     agent_running = True
                     agent_pid = proc.info['pid']
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
     
-    # Count cron jobs
-    cron_dir = Path.home() / ".hermes" / "cron"
-    cron_count = 0
-    if cron_dir.exists():
-        cron_count = len([f for f in cron_dir.iterdir() if f.suffix in ['.yaml', '.yml']])
+    # Accurate cron jobs count from jobs.json
+    cron_data = hermes_interface.get_cron_jobs_rich()
+    cron_count = cron_data.get("total", 0)
     
     # Memory stats
-    memory_dir = Path.home() / ".hermes" / "memory"
-    memory_files = 0
-    if memory_dir.exists():
-        memory_files = len([f for f in memory_dir.iterdir() if f.suffix == '.md'])
+    memory_info = hermes_interface.get_hot_memory_details()
+    gateway_info = hermes_interface.get_gateway_info()
     
     return {
         "gateway_running": gateway_running,
@@ -1664,44 +1691,25 @@ def get_agent_status():
         "agent_running": agent_running,
         "agent_pid": agent_pid,
         "cron_jobs": cron_count,
-        "memory_files": memory_files,
+        "memory_files": len(memory_info.get("facts", [])),
+        "memory_chars": memory_info.get("chars_used", 0),
+        "memory_threshold": memory_info.get("threshold", 1760),
+        "memory_percent": memory_info.get("percent_used", 0),
+        "gateway_info": gateway_info,
         "python_version": sys.version.split()[0],
         "uptime_days": int((time.time() - psutil.boot_time()) // 86400),
     }
 
 @app.get("/api/cron")
 def get_cron_jobs():
-    """List all configured cron jobs from jobs.json."""
-    jobs_file = Path.home() / ".hermes" / "cron" / "jobs.json"
-    cron_jobs = []
-    
-    if jobs_file.exists():
-        try:
-            with open(jobs_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            for job in data.get("jobs", []):
-                schedule = job.get("schedule", {})
-                if isinstance(schedule, dict):
-                    schedule_str = schedule.get("display", schedule.get("expr", "Unknown"))
-                else:
-                    schedule_str = str(schedule)
-                cron_jobs.append({
-                    "name": job.get("name", "Untitled"),
-                    "schedule": schedule_str,
-                    "enabled": job.get("enabled", True),
-                    "file": job.get("id", ""),
-                })
-        except Exception as e:
-            cron_jobs.append({
-                "name": "Error loading jobs",
-                "schedule": str(e),
-                "enabled": False,
-            })
-    
-    return {
-        "jobs": cron_jobs,
-        "total": len(cron_jobs),
-    }
+    """List all configured cron jobs from ~/.hermes/cron/jobs.json with rich schedule metadata."""
+    return hermes_interface.get_cron_jobs_rich()
+
+@app.post("/api/cron/{job_name}/toggle")
+def toggle_cron_job(job_name: str, payload: Dict[str, Any] = Body(default={})):
+    """Enable or disable a specified cron job in jobs.json."""
+    enable = payload.get("enable")
+    return hermes_interface.toggle_cron_job_state(job_name, enable)
 
 @app.post("/api/cron/{job_name}/run")
 def run_cron_job(job_name: str):
@@ -1843,6 +1851,71 @@ def get_hermes_status():
         "plugins_count": plugins_count,
         "python_version": sys.version.split()[0],
     }
+
+@app.get("/api/skills")
+def get_skills():
+    """Retrieve full catalog of installed agentskills.io skills and tools."""
+    return hermes_interface.get_skills_catalog()
+
+@app.get("/api/memory/facts")
+def get_memory_facts():
+    """Retrieve parsed facts and character budget from MEMORY.md."""
+    return hermes_interface.get_hot_memory_details()
+
+@app.post("/api/memory/facts")
+def add_memory_fact(payload: Dict[str, Any] = Body(...)):
+    """Append a new fact to MEMORY.md."""
+    text = (payload.get("text") or "").strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="Text required")
+    return hermes_interface.add_or_update_memory_fact(text)
+
+@app.get("/api/gateway/status")
+def get_gateway_status():
+    """Check connectivity of messaging platforms (Telegram, Discord, Slack) and API gateway."""
+    return hermes_interface.get_platform_channels_status()
+
+@app.get("/api/hermes/sessions")
+def get_hermes_sessions():
+    """List distinct chat sessions with message counts and last activity."""
+    conn = get_organizer_conn()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT session_id, bot_id, COUNT(*) as message_count, MAX(created_at) as last_activity
+        FROM chat_messages
+        GROUP BY session_id, bot_id
+        ORDER BY last_activity DESC
+        LIMIT 50
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    sessions = []
+    for r in rows:
+        sessions.append({
+            "session_id": r["session_id"],
+            "bot_id": r["bot_id"],
+            "message_count": r["message_count"],
+            "last_activity": r["last_activity"]
+        })
+    return {"sessions": sessions, "total": len(sessions)}
+
+@app.get("/api/cron/{job_name}/logs")
+def get_cron_job_logs(job_name: str):
+    """Retrieve logs/history for a specific cron job."""
+    hermes_home = hermes_interface.get_hermes_home()
+    log_file = hermes_home / "cron" / "output" / f"{job_name}.log"
+    alt_log = hermes_home / "logs" / f"{job_name}.log"
+    content = ""
+    for path in [log_file, alt_log]:
+        if path.exists():
+            try:
+                content = path.read_text(encoding="utf-8", errors="ignore")[-4000:]
+                break
+            except Exception:
+                pass
+    if not content:
+        content = f"No output logged yet for job '{job_name}'. Click 'Run' to execute."
+    return {"job_name": job_name, "logs": content, "timestamp": datetime.now(timezone.utc).isoformat()}
 
 
 # ── Phase 3: Memory, Knowledge Graph, Docker & Notifications ───────────────────
@@ -2233,6 +2306,10 @@ def serve_ws_client():
 @app.get("/enhance.js")
 def serve_enhance():
     return FileResponse(str(DASHBOARD_DIR / "enhance.js"), media_type="application/javascript")
+
+@app.get("/graph-visualizer.js")
+def serve_graph_visualizer():
+    return FileResponse(str(DASHBOARD_DIR / "graph-visualizer.js"), media_type="application/javascript")
 
 
 def run(host: str = "0.0.0.0", port: int = 8088):

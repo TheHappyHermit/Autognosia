@@ -62,7 +62,11 @@ CommandDeck.prototype.refreshAllData = async function() {
     safe(() => this.renderDashboardServers && this.renderDashboardServers()),
     safe(() => this.fetchMemoryStatus && this.fetchMemoryStatus()),
     safe(() => this.fetchNotifications && this.fetchNotifications()),
-    safe(() => this.fetchKnowledgeGraph && this.fetchKnowledgeGraph())
+    safe(() => this.fetchKnowledgeGraph && this.fetchKnowledgeGraph()),
+    safe(() => this.fetchAgentStatus && this.fetchAgentStatus()),
+    safe(() => this.fetchCronJobs && this.fetchCronJobs()),
+    safe(() => this.fetchSkillsCatalog && this.fetchSkillsCatalog()),
+    safe(() => this.fetchGatewayStatus && this.fetchGatewayStatus())
   ]);
 };
 

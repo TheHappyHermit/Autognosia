@@ -399,8 +399,19 @@
             </div>
             <div class="panel-status" id="agent-status"></div>
           </div>
-          <div class="panel-body" id="agent-grid">
-            <div class="agent-loading">Loading agent status...</div>
+          <div class="panel-body">
+            <div id="agent-grid">
+              <div class="agent-loading">Loading agent status...</div>
+            </div>
+            <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border-subtle);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:0.75rem; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px;">Gateway Platforms</span>
+                <button id="btn-open-memory-console" class="btn btn--ghost btn--sm" style="font-size:0.75rem; padding:2px 8px;" title="Open Hot Memory Console">🧠 Hot Memory</button>
+              </div>
+              <div id="gateway-platforms-container" style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span style="font-size:0.75rem; color:var(--text-3);">Checking platform status...</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -532,6 +543,23 @@
 
       </div>
       <div class="agents-grid" id="agents-grid" style="display: none;"></div>
+
+      <!-- Hermes Skills Catalog & Tools -->
+      <div class="skills-catalog-section" style="margin-top: var(--space-6); padding: var(--space-4); background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-4);">
+          <div>
+            <h2 style="font-size:1.1rem; font-weight:600; margin:0; display:flex; align-items:center; gap:8px;">
+              <span>🧩 Hermes Agent Skills & Tools</span>
+              <span class="badge badge-info" id="skills-catalog-count">0 Skills</span>
+            </h2>
+            <p style="font-size:0.8rem; color:var(--text-3); margin:4px 0 0 0;">Installed skills compliant with the agentskills.io standard (loaded from ~/.hermes/skills/)</p>
+          </div>
+          <button id="btn-refresh-skills" class="btn btn--ghost btn--sm" style="font-size:0.75rem;">↻ Refresh Skills</button>
+        </div>
+        <div class="skills-catalog-grid" id="skills-catalog-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
+          <div class="agent-loading">Loading skills catalog...</div>
+        </div>
+      </div>
     </div>
 
     <!-- Calendar View -->

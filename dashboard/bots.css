@@ -489,4 +489,94 @@
   margin: 0 1px;
 }
 .bot-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-.bot-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+.bot-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+/* Markdown & Code Blocks */
+.code-block-wrapper {
+  margin: 8px 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-tertiary);
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  border: 1px solid var(--border-subtle);
+  border-bottom: none;
+}
+
+.code-copy-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: all var(--motion-fast);
+}
+
+.code-copy-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-subtle);
+  color: var(--text-1);
+}
+
+/* Action Approval Gate */
+.action-approval-gate {
+  border: 1px solid var(--warning, #f59e0b);
+  border-left: 4px solid var(--warning, #f59e0b);
+  background: rgba(245, 158, 11, 0.07);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin: 8px 0;
+}
+
+/* Prompt Suggestions Chips */
+.bot-prompt-chip:hover {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+
+/* Message Footer & Audio Button */
+.bot-message-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+}
+
+.btn-msg-audio {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+  padding: 0 4px;
+}
+
+.btn-msg-audio:hover {
+  opacity: 1;
+}
+
+/* Skill Cards */
+.skill-card {
+  transition: transform var(--motion-fast), border-color var(--motion-fast);
+}
+
+.skill-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
