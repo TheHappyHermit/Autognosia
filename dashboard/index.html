@@ -541,6 +541,23 @@
           </div>
         </div>
 
+        <!-- Live Agent Canvas Panel (Artifacts, Visualizations, Scratchpad) -->
+        <div class="bots-canvas-panel" id="bots-canvas-panel" style="display: none;">
+          <div class="canvas-header">
+            <div class="canvas-title">
+              <span>📊 Agent Canvas Workspace</span>
+              <span class="badge badge-cyan" id="canvas-type-badge">Artifact</span>
+            </div>
+            <div class="canvas-actions">
+              <button class="btn btn--ghost btn--sm" id="btn-canvas-copy" title="Copy Content">📋 Copy</button>
+              <button class="btn btn--ghost btn--sm" id="btn-canvas-close" title="Close Canvas">✕</button>
+            </div>
+          </div>
+          <div class="canvas-body" id="canvas-body">
+            <div class="canvas-empty">Select or open an artifact, code block, or visual diagram to inspect here.</div>
+          </div>
+        </div>
+
       </div>
       <div class="agents-grid" id="agents-grid" style="display: none;"></div>
 
@@ -558,6 +575,43 @@
         </div>
         <div class="skills-catalog-grid" id="skills-catalog-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px;">
           <div class="agent-loading">Loading skills catalog...</div>
+        </div>
+      </div>
+
+      <!-- Local Inference Models & Safeguards Grid -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap: var(--space-4); margin-top: var(--space-4);">
+        <!-- Local Models Discovery -->
+        <div class="panel" style="padding: var(--space-4); background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-3);">
+            <div>
+              <h3 style="font-size:0.95rem; font-weight:600; margin:0; display:flex; align-items:center; gap:8px;">
+                <span>🔌 Local Inference Discovery</span>
+                <span class="badge badge-secondary" id="local-models-count">Probing...</span>
+              </h3>
+              <p style="font-size:0.75rem; color:var(--text-3); margin:2px 0 0 0;">Ollama (:11434), LM Studio (:1234), vLLM (:8000)</p>
+            </div>
+            <button id="btn-refresh-local-models" class="btn btn--ghost btn--sm" style="font-size:0.75rem;">↻ Scan</button>
+          </div>
+          <div id="local-models-container" style="display:flex; flex-direction:column; gap:6px;">
+            <div class="agent-loading" style="font-size:0.8rem;">Checking local endpoints...</div>
+          </div>
+        </div>
+
+        <!-- Tool Permissions & Safeguards -->
+        <div class="panel" style="padding: var(--space-4); background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-3);">
+            <div>
+              <h3 style="font-size:0.95rem; font-weight:600; margin:0; display:flex; align-items:center; gap:8px;">
+                <span>🛡️ Tool Permissions & Safeguards</span>
+                <span class="badge badge-ok" id="tool-perms-status">Autonomous</span>
+              </h3>
+              <p style="font-size:0.75rem; color:var(--text-3); margin:2px 0 0 0;">Control runtime action execution gates</p>
+            </div>
+            <button id="btn-save-tool-perms" class="btn btn--primary btn--sm" style="font-size:0.75rem;">Save Rules</button>
+          </div>
+          <div id="tool-perms-container" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.8rem;">
+            <!-- Rendered by app-agent.js -->
+          </div>
         </div>
       </div>
     </div>

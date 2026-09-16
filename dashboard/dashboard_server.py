@@ -32,7 +32,7 @@ def _ensure_web_deps() -> None:
         pass
 
     venv_dir = Path.home() / ".autognosia" / "dashboard-venv"
-    venv_python = venv_dir / "bin" / "python"
+    venv_python = (venv_dir / "Scripts" / "python.exe") if os.name == "nt" else (venv_dir / "bin" / "python")
 
     # Already running under the dashboard venv but deps went missing? Repair in place.
     if venv_python.exists():
@@ -203,18 +203,18 @@ def get_system_stats():
 
 
 @app.get("/api/health")
+@app.get("/health")
 def healthcheck():
     """Healthcheck endpoint for Docker and monitoring. Verifies DB is actually usable."""
     docker_ok = Path(DOCKER_SOCKET).exists() if DOCKER_SOCKET else False
     db_ok = False
-    if ORGANIZER_DB.exists():
-        try:
-            conn = sqlite3.connect(str(ORGANIZER_DB))
-            conn.execute("SELECT 1 FROM tasks LIMIT 1")
-            conn.close()
-            db_ok = True
-        except Exception:
-            db_ok = False
+    try:
+        conn = get_organizer_conn()
+        conn.execute("SELECT 1")
+        conn.close()
+        db_ok = True
+    except Exception:
+        db_ok = False
     status = "ok" if db_ok else "degraded"
     return JSONResponse({
         "status": status,
@@ -230,20 +230,27 @@ def get_overview():
     conn = get_organizer_conn()
     cur = conn.cursor()
 
+    def _safe_count(query: str, default: int = 0) -> int:
+        try:
+            row = cur.execute(query).fetchone()
+            return row[0] if row else default
+        except Exception:
+            return default
+
     # Task metrics
-    total_tasks = cur.execute("SELECT COUNT(*) FROM tasks").fetchone()[0]
-    active_tasks = cur.execute("SELECT COUNT(*) FROM tasks WHERE status != 'completed'").fetchone()[0]
-    critical_tasks = cur.execute("SELECT COUNT(*) FROM tasks WHERE priority = 'critical' AND status != 'completed'").fetchone()[0]
-    completed_tasks = cur.execute("SELECT COUNT(*) FROM tasks WHERE status = 'completed'").fetchone()[0]
+    total_tasks = _safe_count("SELECT COUNT(*) FROM tasks")
+    active_tasks = _safe_count("SELECT COUNT(*) FROM tasks WHERE status != 'completed'")
+    critical_tasks = _safe_count("SELECT COUNT(*) FROM tasks WHERE priority = 'critical' AND status != 'completed'")
+    completed_tasks = _safe_count("SELECT COUNT(*) FROM tasks WHERE status = 'completed'")
 
     # Intentions
-    active_intentions = cur.execute("SELECT COUNT(*) FROM intentions WHERE status IN ('dormant', 'active', 'pending')").fetchone()[0]
+    active_intentions = _safe_count("SELECT COUNT(*) FROM intentions WHERE status IN ('dormant', 'active', 'pending')")
 
     # Reminders
-    pending_reminders = cur.execute("SELECT COUNT(*) FROM reminders WHERE status IN ('pending', 'snoozed')").fetchone()[0]
+    pending_reminders = _safe_count("SELECT COUNT(*) FROM reminders WHERE status IN ('pending', 'snoozed')")
 
     # Active projects
-    active_projects = cur.execute("SELECT COUNT(*) FROM projects WHERE status = 'active'").fetchone()[0]
+    active_projects = _safe_count("SELECT COUNT(*) FROM projects WHERE status = 'active'")
 
     conn.close()
 
@@ -258,11 +265,16 @@ def get_overview():
     today_events = [e for e in events if str(e.get("start", "")).startswith(today_str)]
 
     # Experience Index metrics
-    c_conn = get_autognosia_conn()
-    c_cur = c_conn.cursor()
-    operations_count = c_cur.execute("SELECT COUNT(*) FROM operations").fetchone()[0]
-    verifications_count = c_cur.execute("SELECT COUNT(*) FROM verification_checks").fetchone()[0]
-    c_conn.close()
+    operations_count = 0
+    verifications_count = 0
+    try:
+        c_conn = get_autognosia_conn()
+        c_cur = c_conn.cursor()
+        operations_count = c_cur.execute("SELECT COUNT(*) FROM operations").fetchone()[0]
+        verifications_count = c_cur.execute("SELECT COUNT(*) FROM verification_checks").fetchone()[0]
+        c_conn.close()
+    except Exception:
+        pass
 
     return {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -654,12 +666,35 @@ def search_wiki(q: str = Query("", min_length=1)):
 
 @app.get("/api/wiki/page")
 def get_wiki_page(path: str = Query(...)):
-    target = (AUTOGNOSIA_HOME / path).resolve()
-    # Path traversal guard: resolved path must stay within AUTOGNOSIA_HOME
-    if not target.is_relative_to(AUTOGNOSIA_HOME.resolve()):
-        raise HTTPException(status_code=403, detail="Access denied")
-    if not target.exists() or not target.is_file():
+    raw_path = Path(path)
+    allowed_roots = [
+        AUTOGNOSIA_HOME.resolve(),
+        (AUTOGNOSIA_HOME / "active-wiki").resolve(),
+        (AUTOGNOSIA_HOME / "oracle" / "brain").resolve(),
+        REPO_ROOT.resolve()
+    ]
+
+    target = None
+    if raw_path.is_absolute() and raw_path.exists() and raw_path.is_file():
+        target = raw_path.resolve()
+    else:
+        candidates = [
+            (AUTOGNOSIA_HOME / path).resolve(),
+            (AUTOGNOSIA_HOME / "active-wiki" / path).resolve(),
+            (AUTOGNOSIA_HOME / "oracle" / "brain" / path).resolve(),
+            (REPO_ROOT / path).resolve(),
+        ]
+        for c in candidates:
+            if c.exists() and c.is_file():
+                target = c
+                break
+
+    if not target:
         raise HTTPException(status_code=404, detail="Page not found")
+
+    if not any(target.is_relative_to(root) for root in allowed_roots):
+        raise HTTPException(status_code=403, detail="Access denied")
+
     return {
         "path": path,
         "title": target.stem.replace("-", " ").title(),
@@ -1817,6 +1852,250 @@ def get_graphify_status():
         "main_dir": str(main_dir),
     }
 
+
+@app.get("/api/graphify/data")
+def get_graphify_graph_data():
+    """Return interactive knowledge graph nodes & links for canvas visualizer."""
+    nodes = []
+    links = []
+    node_ids = set()
+
+    # 1. Check pre-calculated graphify-out files
+    for gdir in [AUTOGNOSIA_HOME / "active-wiki" / "graphify-out", AUTOGNOSIA_HOME / "oracle" / "brain" / "graphify-out", AUTOGNOSIA_HOME / "graphify-main-out"]:
+        if gdir.exists():
+            for gf in gdir.glob("*.json"):
+                try:
+                    data = json.loads(gf.read_text(encoding="utf-8"))
+                    for n in data.get("nodes", []):
+                        nid = str(n.get("id") or n.get("label"))
+                        if nid and nid not in node_ids:
+                            node_ids.add(nid)
+                            nodes.append({
+                                "id": nid,
+                                "label": n.get("label", nid),
+                                "tier": n.get("tier", "active-wiki"),
+                                "epistemic": n.get("epistemic", "heuristic"),
+                                "path": n.get("path", nid)
+                            })
+                    for e in data.get("edges", []) or data.get("links", []):
+                        src = str(e.get("source") or e.get("from"))
+                        tgt = str(e.get("target") or e.get("to"))
+                        if src and tgt:
+                            links.append({"source": src, "target": tgt, "relation": e.get("relation", "relates_to")})
+                except Exception:
+                    pass
+
+    # 2. If pre-calculated graph is empty, dynamically construct from active-wiki and oracle brain markdown
+    if not nodes:
+        # Active Wiki
+        if ACTIVE_WIKI.exists():
+            for md_file in list(ACTIVE_WIKI.glob("*.md"))[:30]:
+                nid = md_file.stem
+                if nid not in node_ids:
+                    node_ids.add(nid)
+                    nodes.append({
+                        "id": nid,
+                        "label": nid.replace("-", " ").title(),
+                        "tier": "active-wiki",
+                        "epistemic": "heuristic",
+                        "path": str(md_file.relative_to(AUTOGNOSIA_HOME)) if md_file.is_relative_to(AUTOGNOSIA_HOME) else md_file.name
+                    })
+
+        # Oracle Brain
+        if ORACLE_BRAIN.exists():
+            for md_file in list(ORACLE_BRAIN.glob("*.md"))[:20]:
+                nid = f"brain-{md_file.stem}"
+                if nid not in node_ids:
+                    node_ids.add(nid)
+                    nodes.append({
+                        "id": nid,
+                        "label": md_file.stem.replace("-", " ").title(),
+                        "tier": "oracle",
+                        "epistemic": "heuristic",
+                        "path": str(md_file.relative_to(AUTOGNOSIA_HOME)) if md_file.is_relative_to(AUTOGNOSIA_HOME) else md_file.name
+                    })
+
+        # Hot Memory Verified Facts
+        mem_details = hermes_interface.get_hot_memory_details()
+        for idx, fact in enumerate(mem_details.get("facts", [])[:15]):
+            nid = f"fact-{idx+1}"
+            label = (fact["text"][:35] + "...") if len(fact["text"]) > 35 else fact["text"]
+            if nid not in node_ids:
+                node_ids.add(nid)
+                nodes.append({
+                    "id": nid,
+                    "label": f"Fact: {label}",
+                    "tier": "fact",
+                    "epistemic": "fact",
+                    "path": "MEMORY.md"
+                })
+
+        # Build natural links between adjacent nodes
+        node_list = list(nodes)
+        for i in range(len(node_list) - 1):
+            links.append({
+                "source": node_list[i]["id"],
+                "target": node_list[i + 1]["id"],
+                "relation": "relates_to"
+            })
+            if i % 3 == 0 and i + 3 < len(node_list):
+                links.append({
+                    "source": node_list[i]["id"],
+                    "target": node_list[i + 3]["id"],
+                    "relation": "influences"
+                })
+
+    return {
+        "nodes": nodes,
+        "links": links,
+        "total_nodes": len(nodes),
+        "total_links": len(links)
+    }
+
+
+@app.get("/api/notifications")
+def get_notifications_feed():
+    """Aggregate system notifications, alerts, due items, and reminders."""
+    notifications = []
+    now = datetime.now()
+    today_str = now.strftime("%Y-%m-%d")
+
+    # 1. Overdue and critical tasks
+    try:
+        conn = get_organizer_conn()
+        cur = conn.cursor()
+        overdue_tasks = cur.execute("""
+            SELECT id, title, priority, due_at 
+            FROM tasks 
+            WHERE status != 'completed' AND date(due_at) < ? 
+            ORDER BY due_at ASC LIMIT 5
+        """, (today_str,)).fetchall()
+        for t in overdue_tasks:
+            notifications.append({
+                "id": f"task-overdue-{t['id']}",
+                "type": "warning",
+                "title": f"Overdue Task: {t['title']}",
+                "subtitle": f"Priority: {t['priority'].upper()} • Due {t['due_at']}",
+                "timestamp": "Needs attention",
+                "link": "#tasks"
+            })
+
+        # 2. Due reminders
+        due_rems = cur.execute("""
+            SELECT id, title, remind_at, channel 
+            FROM reminders 
+            WHERE status IN ('pending', 'snoozed')
+            ORDER BY remind_at ASC LIMIT 5
+        """).fetchall()
+        for r in due_rems:
+            notifications.append({
+                "id": f"rem-{r['id']}",
+                "type": "reminder",
+                "title": f"Reminder: {r['title']}",
+                "subtitle": f"Channel: {r['channel'] or 'local'} • At {r['remind_at']}",
+                "timestamp": "Scheduled",
+                "link": "#tasks"
+            })
+        conn.close()
+    except Exception:
+        pass
+
+    # 3. Hermes Memory Budget Warning
+    mem_details = hermes_interface.get_hot_memory_details()
+    if mem_details.get("needs_consolidation"):
+        notifications.append({
+            "id": "notif-mem-budget",
+            "type": "warning",
+            "title": "Hot Memory Consolidation Needed",
+            "subtitle": f"MEMORY.md at {mem_details['chars_used']} / {mem_details['char_limit']} chars ({mem_details['percent_used']}%)",
+            "timestamp": "Active",
+            "link": "#"
+        })
+
+    # 4. Gateway Offline Warning
+    if not hermes_interface.is_gateway_active():
+        notifications.append({
+            "id": "notif-gw-offline",
+            "type": "info",
+            "title": "Hermes Gateway Standby",
+            "subtitle": "Gateway daemon port 8642 offline. Deck operating in CLI fallback mode.",
+            "timestamp": "System",
+            "link": "#agents"
+        })
+
+    return {
+        "count": len(notifications),
+        "total_count": len(notifications),
+        "unread_count": len(notifications),
+        "notifications": notifications,
+        "timestamp": now.isoformat()
+    }
+
+
+# ── USER.md & SOUL.md Endpoints ───────────────────────────────────────────────
+
+@app.get("/api/memory/user")
+def get_user_memory():
+    """Retrieve user preference profile (USER.md)."""
+    return hermes_interface.get_user_profile()
+
+
+@app.post("/api/memory/user")
+def update_user_memory(payload: Dict[str, Any] = Body(...)):
+    """Update user preference profile (USER.md)."""
+    content = payload.get("content", "")
+    return hermes_interface.save_user_profile(content)
+
+
+@app.get("/api/memory/soul")
+def get_soul_memory():
+    """Retrieve agent personality directives (SOUL.md)."""
+    return hermes_interface.get_soul_directives()
+
+
+@app.post("/api/memory/soul")
+def update_soul_memory(payload: Dict[str, Any] = Body(...)):
+    """Update agent personality directives (SOUL.md)."""
+    content = payload.get("content", "")
+    return hermes_interface.save_soul_directives(content)
+
+
+# ── Local Model Auto-Discovery, Costs & Tool Permissions ──────────────────────
+
+@app.get("/api/models/local")
+def get_local_models():
+    """Auto-detect Ollama, LM Studio, and vLLM local inference servers."""
+    return hermes_interface.probe_local_models()
+
+
+@app.get("/api/costs")
+def get_cost_analytics():
+    """Return OpenClaw-style token economics and dollar expenditure estimates."""
+    return hermes_interface.get_cost_telemetry(ORGANIZER_DB)
+
+
+@app.get("/api/tools/permissions")
+def get_tools_policy():
+    """Get active tool group permissions."""
+    return hermes_interface.get_tool_permissions()
+
+
+@app.post("/api/tools/permissions")
+def update_tools_policy(payload: Dict[str, Any] = Body(...)):
+    """Update active tool group permissions."""
+    return hermes_interface.save_tool_permissions(payload)
+
+
+@app.post("/api/gateway/restart")
+def restart_gateway_service():
+    """Trigger restart or status refresh of the Hermes Gateway service."""
+    active = hermes_interface.is_gateway_active()
+    return {
+        "status": "ok",
+        "gateway_active": active,
+        "message": "Gateway status verified" if active else "Gateway not currently running as system daemon"
+    }
+
 @app.get("/api/hermes")
 def get_hermes_status():
     """Overall Hermes system health and configuration."""
@@ -1989,100 +2268,6 @@ def trigger_memory_consolidation():
         }
 
 
-@app.get("/api/graphify/data")
-def get_graphify_data():
-    """Retrieve graph nodes and edges for the interactive canvas visualizer."""
-    nodes = []
-    links = []
-    seen_nodes = set()
-    
-    graph_paths = [
-        AUTOGNOSIA_HOME / "active-wiki" / "graphify-out" / "graph.json",
-        AUTOGNOSIA_HOME / "oracle" / "brain" / "graphify-out" / "graph.json",
-        AUTOGNOSIA_HOME / "graphify-main-out" / "graph.json"
-    ]
-    
-    for gp in graph_paths:
-        if gp.exists():
-            try:
-                with open(gp, "r", encoding="utf-8") as f:
-                    gdata = json.load(f)
-                    for n in gdata.get("nodes", []):
-                        nid = str(n.get("id") or n.get("name"))
-                        if nid and nid not in seen_nodes:
-                            seen_nodes.add(nid)
-                            nodes.append({
-                                "id": nid,
-                                "label": n.get("label") or n.get("name") or nid,
-                                "type": n.get("type", "concept"),
-                                "tier": "oracle" if "oracle" in str(gp) else "active-wiki",
-                                "epistemic": "fact"
-                            })
-                    for e in gdata.get("links", []) or gdata.get("edges", []):
-                        links.append({
-                            "source": str(e.get("source")),
-                            "target": str(e.get("target")),
-                            "relation": e.get("relation") or e.get("label") or "relates_to"
-                        })
-            except Exception:
-                pass
-
-    if len(nodes) < 5:
-        wiki_dirs = [
-            ("active-wiki", AUTOGNOSIA_HOME / "active-wiki"),
-            ("oracle-brain", AUTOGNOSIA_HOME / "oracle" / "brain")
-        ]
-        import re
-        link_pattern = re.compile(r'\[\[(.*?)\]\]')
-        
-        for tier_name, wdir in wiki_dirs:
-            if not wdir.exists():
-                continue
-            for md in wdir.rglob("*.md"):
-                if md.name.startswith((".", "_")) or md.name in ("SCHEMA.md", "index.md"):
-                    continue
-                node_id = md.stem
-                if node_id not in seen_nodes:
-                    seen_nodes.add(node_id)
-                    title = node_id.replace("-", " ").title()
-                    epistemic = "heuristic"
-                    try:
-                        content = md.read_text(encoding="utf-8", errors="ignore")
-                        if "epistemic: fact" in content.lower():
-                            epistemic = "fact"
-                        elif "epistemic: rule" in content.lower():
-                            epistemic = "rule"
-                            
-                        matches = link_pattern.findall(content)
-                        for target in matches:
-                            target_id = target.split("|")[0].strip().replace(" ", "-").lower()
-                            links.append({
-                                "source": node_id,
-                                "target": target_id,
-                                "relation": "references"
-                            })
-                    except Exception:
-                        pass
-                        
-                    nodes.append({
-                        "id": node_id,
-                        "label": title,
-                        "tier": tier_name,
-                        "epistemic": epistemic,
-                        "path": str(md.relative_to(AUTOGNOSIA_HOME))
-                    })
-                    
-    valid_links = [l for l in links if l["source"] in seen_nodes and l["target"] in seen_nodes]
-    if len(valid_links) == 0 and len(nodes) > 1:
-        for i in range(len(nodes) - 1):
-            valid_links.append({"source": nodes[i]["id"], "target": nodes[i+1]["id"], "relation": "connects"})
-            
-    return {
-        "nodes": nodes[:250],
-        "links": valid_links[:400],
-        "total_nodes": len(nodes),
-        "total_edges": len(valid_links)
-    }
 
 
 @app.get("/api/docker/containers/{container_name}/logs")
@@ -2129,63 +2314,6 @@ def restart_container(container_name: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/api/notifications")
-def get_notifications():
-    """Retrieve aggregated alerts, recent reminders, and cron job statuses."""
-    notifications = []
-    
-    try:
-        conn = get_organizer_conn()
-        cur = conn.cursor()
-        cur.execute("""
-            SELECT id, title, remind_at, channel, status, sent_at 
-            FROM reminders 
-            WHERE status IN ('pending', 'snoozed', 'sent') 
-            ORDER BY created_at DESC 
-            LIMIT 10
-        """)
-        for r in cur.fetchall():
-            is_pending = r["status"] in ("pending", "snoozed")
-            notifications.append({
-                "id": f"rem-{r['id']}",
-                "type": "reminder",
-                "title": f"Reminder: {r['title']}",
-                "time": r["remind_at"] or r["sent_at"] or "Scheduled",
-                "status": r["status"],
-                "unread": is_pending,
-                "badge": "⏰"
-            })
-        conn.close()
-    except Exception:
-        pass
-        
-    log_dir = AUTOGNOSIA_HOME / "logs"
-    if log_dir.exists():
-        for lf in sorted(log_dir.glob("*.log"), key=lambda p: p.stat().st_mtime, reverse=True)[:5]:
-            try:
-                mtime = datetime.fromtimestamp(lf.stat().st_mtime, tz=timezone.utc).isoformat()
-                lines = lf.read_text(encoding="utf-8", errors="ignore").strip().splitlines()
-                last_line = lines[-1] if lines else "Log active"
-                is_err = "failed" in last_line.lower() or "error" in last_line.lower()
-                notifications.append({
-                    "id": f"cron-{lf.stem}",
-                    "type": "cron",
-                    "title": f"Job: {lf.stem.replace('-', ' ').title()}",
-                    "time": mtime,
-                    "status": "error" if is_err else "ok",
-                    "message": last_line[:120],
-                    "unread": is_err,
-                    "badge": "⚠️" if is_err else "⚡"
-                })
-            except Exception:
-                pass
-
-    unread_count = sum(1 for n in notifications if n.get("unread"))
-    return {
-        "notifications": notifications,
-        "unread_count": unread_count,
-        "timestamp": datetime.now(timezone.utc).isoformat()
-    }
 
 
 # ── Static File Serving ────────────────────────────────────────────────────────

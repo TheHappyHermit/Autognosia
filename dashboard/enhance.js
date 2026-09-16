@@ -59,7 +59,8 @@
     { id: 'new-intention', label: 'New Intention', hint: 'IF-THEN rule', group: 'Create', run: () => window.commandDeck?.openCreateModal('intention') },
     { id: 'new-reminder', label: 'New Reminder', hint: 'timed alert', group: 'Create', run: () => window.commandDeck?.openCreateModal('reminder') },
 
-    { id: 'consolidate-memory', label: 'Consolidate Hot Memory', hint: 'trim MEMORY.md', group: 'Actions', run: () => window.commandDeck?.consolidateMemory() },
+    { id: 'consolidate-memory', label: 'Open Hot Memory Console', hint: 'MEMORY.md, USER.md, SOUL.md', group: 'Actions', run: () => window.commandDeck?.openMemoryEditorModal() },
+    { id: 'toggle-agent-canvas', label: 'Toggle Agent Execution Canvas', hint: 'live preview & artifacts', group: 'Actions', run: () => window.botsPage?.toggleCanvas() },
     { id: 'open-notifications', label: 'Open Notification Center', hint: 'alerts & cron', group: 'Actions', run: () => document.getElementById('btn-notifications')?.click() },
     { id: 'read-briefing', label: 'Read Daily Briefing Aloud', hint: 'speech synthesis', group: 'Actions', run: () => document.getElementById('btn-read-briefing')?.click() },
     { id: 'reset-graph', label: 'Reset Knowledge Graph View', hint: 're-center canvas', group: 'Actions', run: () => document.getElementById('btn-graph-reset')?.click() },

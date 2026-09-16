@@ -69,8 +69,9 @@ CommandDeck.prototype.renderServiceGrid = function(services) {
       ? `<div class="service-card__metric"><span class="metric-label">Sessions</span><span class="metric-val">${svc.details.sessions}</span></div>`
       : '';
     const icon = this.getServiceSvg(svc.name);
+    const host = window.location.hostname || 'localhost';
     return `
-      <a href="http://localhost:${svc.port}" target="_blank" rel="noopener"
+      <a href="http://${host}:${svc.port}" target="_blank" rel="noopener"
          class="service-card" data-service="${svc.name.toLowerCase()}"
          data-status="${svc.health}" tabindex="0" role="listitem"
          aria-label="${svc.name}: ${svc.health}">

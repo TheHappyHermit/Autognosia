@@ -33,67 +33,76 @@ def get_db_events(start_date: Optional[date] = None, end_date: Optional[date] = 
         return events
 
     try:
-        # 1. Important Dates / Events
         cur = conn.cursor()
-        cur.execute("SELECT id, title, date, description FROM important_dates")
-        for row in cur.fetchall():
-            events.append({
-                "id": f"date-{row['id']}",
-                "title": row["title"],
-                "start": row["date"],
-                "all_day": True,
-                "category": "event",
-                "type": "important_date",
-                "notes": row["description"] or "",
-                "color": "#38bdf8" # cyan/azure
-            })
+
+        # 1. Important Dates / Events
+        try:
+            cur.execute("SELECT id, title, date, description FROM important_dates")
+            for row in cur.fetchall():
+                events.append({
+                    "id": f"date-{row['id']}",
+                    "title": row["title"],
+                    "start": row["date"],
+                    "all_day": True,
+                    "category": "event",
+                    "type": "important_date",
+                    "notes": row["description"] or "",
+                    "color": "#38bdf8" # cyan/azure
+                })
+        except Exception as e:
+            pass
 
         # 2. Task Deadlines
-        cur.execute("""
-            SELECT id, title, priority, due_at, status 
-            FROM tasks 
-            WHERE due_at IS NOT NULL AND status != 'completed'
-        """)
-        for row in cur.fetchall():
-            priority_color = {
-                "critical": "#ef4444",
-                "high": "#f59e0b",
-                "medium": "#38bdf8",
-                "low": "#64748b"
-            }.get(row["priority"], "#38bdf8")
+        try:
+            cur.execute("""
+                SELECT id, title, priority, due_at, status 
+                FROM tasks 
+                WHERE due_at IS NOT NULL AND status != 'completed'
+            """)
+            for row in cur.fetchall():
+                priority_color = {
+                    "critical": "#ef4444",
+                    "high": "#f59e0b",
+                    "medium": "#38bdf8",
+                    "low": "#64748b"
+                }.get(row["priority"], "#38bdf8")
 
-            events.append({
-                "id": f"task-{row['id']}",
-                "title": f"Deadline: {row['title']}",
-                "start": row["due_at"],
-                "all_day": len(str(row["due_at"])) <= 10,
-                "category": "task_deadline",
-                "type": "task",
-                "priority": row["priority"],
-                "status": row["status"],
-                "color": priority_color
-            })
+                events.append({
+                    "id": f"task-{row['id']}",
+                    "title": f"Deadline: {row['title']}",
+                    "start": row["due_at"],
+                    "all_day": len(str(row["due_at"])) <= 10,
+                    "category": "task_deadline",
+                    "type": "task",
+                    "priority": row["priority"],
+                    "status": row["status"],
+                    "color": priority_color
+                })
+        except Exception as e:
+            pass
 
         # 3. Subscriptions (next_billing_date)
-        cur.execute("""
-            SELECT id, name, amount, currency, next_billing_date, billing_cycle 
-            FROM subscriptions 
-            WHERE status = 'active' AND next_billing_date IS NOT NULL
-        """)
-        for row in cur.fetchall():
-            events.append({
-                "id": f"sub-{row['id']}",
-                "title": f"Renewal: {row['name']} (${row['amount']:.2f} {row['currency'] or 'USD'})",
-                "start": row["next_billing_date"],
-                "all_day": True,
-                "category": "subscription",
-                "type": "renewal",
-                "billing_cycle": row["billing_cycle"],
-                "color": "#a855f7" # purple accent
-            })
-
+        try:
+            cur.execute("""
+                SELECT id, name, amount, currency, next_billing_date, billing_cycle 
+                FROM subscriptions 
+                WHERE status = 'active' AND next_billing_date IS NOT NULL
+            """)
+            for row in cur.fetchall():
+                events.append({
+                    "id": f"sub-{row['id']}",
+                    "title": f"Renewal: {row['name']} (${row['amount']:.2f} {row['currency'] or 'USD'})",
+                    "start": row["next_billing_date"],
+                    "all_day": True,
+                    "category": "subscription",
+                    "type": "renewal",
+                    "billing_cycle": row["billing_cycle"],
+                    "color": "#a855f7" # purple accent
+                })
+        except Exception as e:
+            pass
     except Exception as e:
-        print(f"[ERROR] calendar_sync DB error: {e}")
+        print(f"[ERROR] calendar_sync general error: {e}")
     finally:
         conn.close()
 

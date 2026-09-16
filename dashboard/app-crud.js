@@ -1,4 +1,4 @@
-import { CommandDeck } from './app-core.js';
+import { CommandDeck, escapeHtml } from './app-core.js';
 
 // ── Task, Reminder & Intention CRUD Operations ────────────────────────────
 

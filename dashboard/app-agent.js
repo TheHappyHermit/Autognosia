@@ -347,22 +347,57 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
     modal.style.zIndex = '999';
 
     modal.innerHTML = `
-      <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); width:580px; max-width:92vw; max-height:85vh; display:flex; flex-direction:column; overflow:hidden;">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border-subtle);">
-          <h3 style="margin:0; font-size:1.1rem;">🧠 Hot Memory Console (MEMORY.md)</h3>
+      <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); width:640px; max-width:94vw; max-height:88vh; display:flex; flex-direction:column; overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(--border-subtle);">
+          <h3 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+            <span>🧠 Hermes Cognitive Memory Console</span>
+          </h3>
           <button id="memory-modal-close" style="background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-2);">&times;</button>
         </div>
-        <div style="padding:16px; overflow-y:auto; flex:1;">
-          <div style="margin-bottom:12px; font-size:0.85rem; color:var(--text-2);">
-            Hot memory retains active operational facts across Hermes sessions. Limit: <strong>2,200 characters</strong> (Consolidation triggered at 80%).
+        
+        <!-- Memory Tabs -->
+        <div class="memory-console-tabs">
+          <button class="memory-tab-btn active" data-mem-tab="memory">🧠 MEMORY.md (Hot Facts)</button>
+          <button class="memory-tab-btn" data-mem-tab="user">👤 USER.md (Profile)</button>
+          <button class="memory-tab-btn" data-mem-tab="soul">✨ SOUL.md (Directives)</button>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column;">
+          <!-- Tab 1: MEMORY.md -->
+          <div id="mem-tab-memory" class="memory-tab-content active">
+            <div style="margin-bottom:12px; font-size:0.85rem; color:var(--text-2);">
+              Hot memory retains active operational facts across Hermes sessions. Limit: <strong>2,200 characters</strong> (Consolidation triggered at 80%).
+            </div>
+            <div id="memory-modal-facts-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;"></div>
+            <div style="border-top:1px solid var(--border-subtle); padding-top:12px; margin-top:auto;">
+              <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:6px;">Add New Fact:</label>
+              <input type="text" id="new-memory-fact-input" placeholder="e.g. Preferred model fallback chain: openrouter/auto -> deepseek-v3.2" style="width:100%; padding:8px 12px; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.875rem;" />
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                <button id="btn-trigger-consolidation" class="btn btn--ghost btn--sm">Trim / Consolidate</button>
+                <button id="btn-save-new-fact" class="btn btn--primary btn--sm">Add Fact</button>
+              </div>
+            </div>
           </div>
-          <div id="memory-modal-facts-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;"></div>
-          <div style="border-top:1px solid var(--border-subtle); padding-top:12px;">
-            <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:6px;">Add New Fact:</label>
-            <input type="text" id="new-memory-fact-input" placeholder="e.g. Preferred model fallback chain: openrouter/auto -> deepseek-v3.2" style="width:100%; padding:8px 12px; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.875rem;" />
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-              <button id="btn-trigger-consolidation" class="btn btn--ghost btn--sm">Trim / Consolidate</button>
-              <button id="btn-save-new-fact" class="btn btn--primary btn--sm">Add Fact</button>
+
+          <!-- Tab 2: USER.md -->
+          <div id="mem-tab-user" class="memory-tab-content">
+            <div style="margin-bottom:10px; font-size:0.85rem; color:var(--text-2);">
+              User profile, habits, working style, and goals shared across Hermes sessions.
+            </div>
+            <textarea id="user-profile-textarea" style="width:100%; flex:1; min-height:240px; padding:10px; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-family:var(--font-mono, monospace); font-size:0.85rem; resize:vertical;" placeholder="# User Profile..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+              <button id="btn-save-user-profile" class="btn btn--primary btn--sm">Save USER.md</button>
+            </div>
+          </div>
+
+          <!-- Tab 3: SOUL.md -->
+          <div id="mem-tab-soul" class="memory-tab-content">
+            <div style="margin-bottom:10px; font-size:0.85rem; color:var(--text-2);">
+              Hermes agent core identity, operational demeanor, boundary instructions, and voice guidelines.
+            </div>
+            <textarea id="soul-directives-textarea" style="width:100%; flex:1; min-height:240px; padding:10px; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-family:var(--font-mono, monospace); font-size:0.85rem; resize:vertical;" placeholder="# Soul Directives..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+              <button id="btn-save-soul-directives" class="btn btn--primary btn--sm">Save SOUL.md</button>
             </div>
           </div>
         </div>
@@ -372,6 +407,22 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
 
     document.getElementById('memory-modal-close').onclick = () => { modal.style.display = 'none'; };
     modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+    // Tab switching handlers
+    modal.querySelectorAll('.memory-tab-btn').forEach(tabBtn => {
+      tabBtn.onclick = () => {
+        modal.querySelectorAll('.memory-tab-btn').forEach(b => b.classList.remove('active'));
+        modal.querySelectorAll('.memory-tab-content').forEach(c => c.classList.remove('active'));
+        tabBtn.classList.add('active');
+        const tabKey = tabBtn.dataset.memTab;
+        const targetPanel = document.getElementById(`mem-tab-${tabKey}`);
+        if (targetPanel) targetPanel.classList.add('active');
+
+        if (tabKey === 'user') this.loadUserProfile();
+        if (tabKey === 'soul') this.loadSoulDirectives();
+        if (tabKey === 'memory') this.loadMemoryModalFacts();
+      };
+    });
 
     document.getElementById('btn-save-new-fact').onclick = async () => {
       const input = document.getElementById('new-memory-fact-input');
@@ -387,7 +438,7 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
           input.value = '';
           this.showToast?.('Fact added to MEMORY.md', 'ok');
           this.loadMemoryModalFacts();
-          this.fetchAgentStatus();
+          this.fetchAgentStatus?.();
         }
       } catch (e) {
         this.showToast?.('Error saving fact', 'warn');
@@ -401,9 +452,47 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
         const data = await res.json();
         this.showToast?.(data.status === 'success' ? 'Memory consolidated successfully' : 'Consolidation complete', 'ok');
         this.loadMemoryModalFacts();
-        this.fetchAgentStatus();
+        this.fetchAgentStatus?.();
       } catch (e) {
         this.showToast?.('Consolidation failed', 'warn');
+      }
+    };
+
+    document.getElementById('btn-save-user-profile').onclick = async () => {
+      const textarea = document.getElementById('user-profile-textarea');
+      const content = textarea.value;
+      try {
+        const res = await fetch(`${this.apiBase}/api/memory/user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content })
+        });
+        if (res.ok) {
+          this.showToast?.('USER.md saved successfully', 'ok');
+        } else {
+          this.showToast?.('Failed to save USER.md', 'warn');
+        }
+      } catch (e) {
+        this.showToast?.('Error saving USER.md: ' + e.message, 'warn');
+      }
+    };
+
+    document.getElementById('btn-save-soul-directives').onclick = async () => {
+      const textarea = document.getElementById('soul-directives-textarea');
+      const content = textarea.value;
+      try {
+        const res = await fetch(`${this.apiBase}/api/memory/soul`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content })
+        });
+        if (res.ok) {
+          this.showToast?.('SOUL.md saved successfully', 'ok');
+        } else {
+          this.showToast?.('Failed to save SOUL.md', 'warn');
+        }
+      } catch (e) {
+        this.showToast?.('Error saving SOUL.md: ' + e.message, 'warn');
       }
     };
   }
@@ -438,7 +527,169 @@ CommandDeck.prototype.loadMemoryModalFacts = async function() {
   }
 };
 
-// Wire Hot Memory HUD click and memory buttons to open Memory Editor Console
+CommandDeck.prototype.loadUserProfile = async function() {
+  const textarea = document.getElementById('user-profile-textarea');
+  if (!textarea) return;
+  textarea.placeholder = 'Loading USER.md...';
+  try {
+    const res = await fetch(`${this.apiBase}/api/memory/user`);
+    if (res.ok) {
+      const data = await res.json();
+      textarea.value = data.content || '';
+    }
+  } catch (e) {
+    console.warn('Error loading user profile:', e);
+  }
+};
+
+CommandDeck.prototype.loadSoulDirectives = async function() {
+  const textarea = document.getElementById('soul-directives-textarea');
+  if (!textarea) return;
+  textarea.placeholder = 'Loading SOUL.md...';
+  try {
+    const res = await fetch(`${this.apiBase}/api/memory/soul`);
+    if (res.ok) {
+      const data = await res.json();
+      textarea.value = data.content || '';
+    }
+  } catch (e) {
+    console.warn('Error loading soul directives:', e);
+  }
+};
+
+// ── Local Model Inference Scanner ──────────────────────────────────────────────
+
+CommandDeck.prototype.fetchLocalModels = async function() {
+  const badge = document.getElementById('local-models-count');
+  if (badge) badge.textContent = 'Scanning...';
+  try {
+    const res = await fetch(`${this.apiBase}/api/models/local`);
+    if (res.ok) {
+      const data = await res.json();
+      this.state.localModels = data;
+      this.renderLocalModels(data);
+    }
+  } catch (e) {
+    console.warn('Local models fetch error:', e);
+    if (badge) badge.textContent = 'Offline';
+  }
+};
+
+CommandDeck.prototype.renderLocalModels = function(data) {
+  const container = document.getElementById('local-models-container');
+  const badge = document.getElementById('local-models-count');
+  if (!container) return;
+
+  const models = data?.models || [];
+  if (badge) {
+    badge.textContent = `${models.length} Online`;
+    badge.className = models.length > 0 ? 'badge badge-ok' : 'badge badge-secondary';
+  }
+
+  if (models.length === 0) {
+    container.innerHTML = `
+      <div style="padding:12px; background:var(--bg-secondary); border-radius:var(--radius-sm); font-size:0.8rem; color:var(--text-3); text-align:center;">
+        No local inference endpoints responding on :11434 (Ollama), :1234 (LM Studio), or :8000 (vLLM).
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="display:flex; flex-wrap:wrap; gap:6px; padding:4px 0;">
+      ${models.map(m => `
+        <div class="model-chip" title="${escapeHtml(m.provider)} endpoint: ${escapeHtml(m.url)}">
+          <span class="dot"></span>
+          <span>${escapeHtml(m.name)}</span>
+          <span style="font-size:0.65rem; color:var(--text-3);">(${escapeHtml(m.provider)})</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+};
+
+// ── Tool Execution Permissions & Safeguards ──────────────────────────────────
+
+CommandDeck.prototype.fetchToolPermissions = async function() {
+  try {
+    const res = await fetch(`${this.apiBase}/api/tools/permissions`);
+    if (res.ok) {
+      const data = await res.json();
+      this.state.toolPermissions = data;
+      this.renderToolPermissions(data);
+    }
+  } catch (e) {
+    console.warn('Tool permissions fetch error:', e);
+  }
+};
+
+CommandDeck.prototype.renderToolPermissions = function(perms = {}) {
+  const container = document.getElementById('tool-perms-container');
+  if (!container) return;
+
+  const defaultKeys = [
+    { key: 'read_files', label: 'File Reading', desc: 'Allow agent to inspect project files' },
+    { key: 'write_files', label: 'File Writing', desc: 'Allow agent to create & modify files' },
+    { key: 'bash', label: 'Shell Commands', desc: 'Allow terminal & script execution' },
+    { key: 'python', label: 'Python Interpreter', desc: 'Allow running Python scripts' },
+    { key: 'web_search', label: 'Web Search', desc: 'Allow online search & browsing' },
+    { key: 'cron_management', label: 'Scheduled Jobs', desc: 'Allow creating cron triggers' }
+  ];
+
+  container.innerHTML = defaultKeys.map(item => {
+    const isChecked = perms[item.key] !== false;
+    return `
+      <div class="perm-toggle-card">
+        <label for="perm-chk-${item.key}">
+          <input type="checkbox" id="perm-chk-${item.key}" data-perm-key="${item.key}" ${isChecked ? 'checked' : ''} />
+          <span>${escapeHtml(item.label)}</span>
+        </label>
+      </div>
+    `;
+  }).join('');
+};
+
+CommandDeck.prototype.saveToolPermissions = async function() {
+  const container = document.getElementById('tool-perms-container');
+  if (!container) return;
+
+  const permissions = {};
+  container.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+    permissions[chk.dataset.permKey] = chk.checked;
+  });
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/tools/permissions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ permissions })
+    });
+    if (res.ok) {
+      this.showToast?.('Tool permissions updated', 'ok');
+    } else {
+      this.showToast?.('Failed to update tool permissions', 'warn');
+    }
+  } catch (e) {
+    this.showToast?.('Error saving permissions: ' + e.message, 'warn');
+  }
+};
+
+// ── Gateway Process Management ────────────────────────────────────────────────
+
+CommandDeck.prototype.restartGateway = async function() {
+  if (!confirm('Send restart signal to Hermes Gateway process?')) return;
+  try {
+    const res = await fetch(`${this.apiBase}/api/gateway/restart`, { method: 'POST' });
+    if (res.ok) {
+      this.showToast?.('Restart signal dispatched to Hermes Gateway', 'ok');
+      setTimeout(() => this.fetchAgentStatus?.(), 2000);
+    }
+  } catch (e) {
+    this.showToast?.('Gateway restart request failed', 'warn');
+  }
+};
+
+// Wire Hot Memory HUD click, scan buttons, and memory buttons
 document.addEventListener('DOMContentLoaded', () => {
   const memHud = document.getElementById('hud-memory-metric');
   if (memHud) {
@@ -461,6 +712,23 @@ document.addEventListener('DOMContentLoaded', () => {
         refreshSkillsBtn.textContent = '↻ Refresh Skills';
       }
     };
+  }
+  const scanModelsBtn = document.getElementById('btn-refresh-local-models');
+  if (scanModelsBtn) {
+    scanModelsBtn.onclick = async () => {
+      scanModelsBtn.disabled = true;
+      scanModelsBtn.textContent = '⏳ Scanning...';
+      try {
+        await window.commandDeck?.fetchLocalModels?.();
+      } finally {
+        scanModelsBtn.disabled = false;
+        scanModelsBtn.textContent = '↻ Scan';
+      }
+    };
+  }
+  const savePermsBtn = document.getElementById('btn-save-tool-perms');
+  if (savePermsBtn) {
+    savePermsBtn.onclick = () => window.commandDeck?.saveToolPermissions?.();
   }
 });
 

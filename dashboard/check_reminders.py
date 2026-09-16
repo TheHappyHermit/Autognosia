@@ -53,38 +53,29 @@ def check_timed_reminders():
     try:
         cur.execute("""
             UPDATE reminders 
-            SET status = 'claiming', sent_at = strftime('%Y-%m-%dT%H:%M:%S+00:00','now')
+            SET status = 'sent', sent_at = strftime('%Y-%m-%dT%H:%M:%S+00:00','now')
             WHERE id IN (
                 SELECT id FROM reminders 
-                WHERE status = 'pending' AND (remind_at <= ? OR remind_at <= ?)
+                WHERE status IN ('pending', 'snoozed') AND (remind_at <= ? OR remind_at <= ?)
             )
             RETURNING id, title, remind_at, channel, notes
         """, (now_iso, now_local))
         due_reminders = cur.fetchall()
         conn.commit()
     except sqlite3.OperationalError:
-        # Fallback for SQLite < 3.35: SELECT then UPDATE (non-atomic but best effort)
+        # Fallback for SQLite < 3.35: SELECT then UPDATE
         cur.execute("""
             SELECT id, title, remind_at, channel, notes 
             FROM reminders 
-            WHERE status = 'pending' AND (remind_at <= ? OR remind_at <= ?)
+            WHERE status IN ('pending', 'snoozed') AND (remind_at <= ? OR remind_at <= ?)
         """, (now_iso, now_local))
         due_reminders = cur.fetchall()
-        # Mark as claiming to reduce (not eliminate) race window
         for r in due_reminders:
             cur.execute("""
-                UPDATE reminders SET status = 'claiming' WHERE id = ? AND status = 'pending'
+                UPDATE reminders SET status = 'sent', sent_at = strftime('%Y-%m-%dT%H:%M:%S+00:00','now')
+                WHERE id = ? AND status IN ('pending', 'snoozed')
             """, (r["id"],))
         conn.commit()
-        # Re-fetch only those we successfully claimed
-        if due_reminders:
-            ids = [r["id"] for r in due_reminders]
-            placeholders = ",".join("?" * len(ids))
-            cur.execute(f"""
-                SELECT id, title, remind_at, channel, notes FROM reminders
-                WHERE id IN ({placeholders}) AND status = 'claiming'
-            """, ids)
-            due_reminders = cur.fetchall()
 
     dispatched = []
     for r in due_reminders:

@@ -171,6 +171,9 @@ class BotsPage {
     // Bind voice input
     this.initVoiceInput();
 
+    // Update token economics badge
+    this.updateCostBadge();
+
     // Focus input
     setTimeout(() => document.getElementById('bot-chat-input')?.focus(), 50);
   }
@@ -197,7 +200,18 @@ class BotsPage {
         <option value="dash-bot-${botId}-ops">Thread: Operations</option>
       </select>
       <button id="btn-new-thread" class="btn btn--ghost btn--sm" title="Start new conversation thread" style="padding:2px 6px; font-size:0.75rem;">+ New</button>
+      <button id="btn-toggle-canvas" class="btn btn--ghost btn--sm" title="Toggle Live Agent Canvas Workspace" style="padding:2px 8px; font-size:0.75rem;">📊 Canvas</button>
+      <span id="bot-cost-pill" class="badge badge-cyan" style="font-size:0.7rem; cursor:pointer;" title="Click to refresh Token Economics">$0.00 • 0 tok</span>
     `;
+
+    const canvasToggleBtn = document.getElementById('btn-toggle-canvas');
+    if (canvasToggleBtn) {
+      canvasToggleBtn.onclick = () => this.toggleCanvas();
+    }
+    const costPill = document.getElementById('bot-cost-pill');
+    if (costPill) {
+      costPill.onclick = () => this.updateCostBadge();
+    }
 
     const select = document.getElementById('bot-session-select');
     if (select) {
@@ -631,14 +645,17 @@ class BotsPage {
     if (!raw) return '';
     let text = escapeHtml(raw);
 
-    // Code blocks with syntax copy button
+    // Code blocks with syntax copy and canvas buttons
     text = text.replace(/```([a-zA-Z0-9_\-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
       const language = lang || 'text';
       return `
         <div class="code-block-wrapper" style="position:relative; margin:8px 0;">
           <div class="code-block-header" style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-tertiary); padding:4px 10px; border-radius:6px 6px 0 0; font-size:0.7rem; color:var(--text-3); border:1px solid var(--border-subtle); border-bottom:none;">
             <span>${escapeHtml(language)}</span>
-            <button class="code-copy-btn" data-code="${code}" style="background:none; border:none; color:var(--text-2); cursor:pointer; font-size:0.7rem;">📋 Copy</button>
+            <div style="display:flex; gap:6px;">
+              <button class="code-canvas-btn" data-lang="${escapeHtml(language)}" style="background:none; border:none; color:var(--text-2); cursor:pointer; font-size:0.7rem;" title="Open in Agent Canvas">📊 Canvas</button>
+              <button class="code-copy-btn" data-code="${code}" style="background:none; border:none; color:var(--text-2); cursor:pointer; font-size:0.7rem;">📋 Copy</button>
+            </div>
           </div>
           <pre class="code-block" style="margin:0; padding:10px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:0 0 6px 6px; overflow-x:auto; font-family:var(--font-mono, monospace); font-size:0.8rem;"><code>${code}</code></pre>
         </div>
@@ -673,6 +690,87 @@ class BotsPage {
         }
       };
     });
+
+    container.querySelectorAll('.code-canvas-btn').forEach(btn => {
+      btn.onclick = () => {
+        const code = btn.closest('.code-block-wrapper')?.querySelector('code')?.textContent;
+        const lang = btn.dataset.lang || 'text';
+        if (code) {
+          this.renderCanvasArtifact(lang, code);
+        }
+      };
+    });
+  }
+
+  toggleCanvas(forceOpen) {
+    const panel = document.getElementById('bots-canvas-panel');
+    if (!panel) return;
+    const isCurrentlyOpen = panel.style.display !== 'none';
+    const nextState = forceOpen !== undefined ? forceOpen : !isCurrentlyOpen;
+    panel.style.display = nextState ? 'flex' : 'none';
+
+    // Wire close and copy buttons if not already wired
+    const closeBtn = document.getElementById('btn-canvas-close');
+    if (closeBtn && !closeBtn._wired) {
+      closeBtn._wired = true;
+      closeBtn.onclick = () => this.toggleCanvas(false);
+    }
+    const copyBtn = document.getElementById('btn-canvas-copy');
+    if (copyBtn && !copyBtn._wired) {
+      copyBtn._wired = true;
+      copyBtn.onclick = () => {
+        const body = document.getElementById('canvas-body');
+        const code = body?.querySelector('pre code')?.textContent || body?.innerText || '';
+        if (code) {
+          navigator.clipboard.writeText(code).then(() => {
+            copyBtn.textContent = '✓ Copied';
+            setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+          });
+        }
+      };
+    }
+  }
+
+  renderCanvasArtifact(lang, content) {
+    this.toggleCanvas(true);
+    const badge = document.getElementById('canvas-type-badge');
+    const body = document.getElementById('canvas-body');
+    if (badge) badge.textContent = (lang || 'Artifact').toUpperCase();
+    if (!body) return;
+
+    const lowerLang = (lang || '').toLowerCase();
+    if (lowerLang === 'html' || lowerLang === 'svg') {
+      body.innerHTML = `
+        <div class="canvas-preview-container" style="padding:12px; height:100%; overflow:auto;">
+          ${content}
+        </div>
+      `;
+    } else {
+      body.innerHTML = `
+        <div style="padding:12px; height:100%; display:flex; flex-direction:column;">
+          <pre class="code-block" style="margin:0; padding:12px; flex:1; overflow:auto; background:var(--bg-primary); border-radius:var(--radius-md); font-family:var(--font-mono, monospace); font-size:0.85rem; color:var(--text-1);"><code>${escapeHtml(content)}</code></pre>
+        </div>
+      `;
+    }
+  }
+
+  async updateCostBadge() {
+    const pill = document.getElementById('bot-cost-pill');
+    if (!pill) return;
+    try {
+      const res = await fetch('/api/costs');
+      if (res.ok) {
+        const data = await res.json();
+        const costStr = `$${Number(data.estimated_cost_usd || 0).toFixed(4)}`;
+        const tokCount = Number(data.total_tokens || 0);
+        const tokStr = tokCount > 1000 ? `${(tokCount / 1000).toFixed(1)}k tok` : `${tokCount} tok`;
+        const cacheSaved = Number(data.prompt_cache_saved_tokens || 0);
+        pill.textContent = `${costStr} • ${tokStr}`;
+        pill.title = `Total Tokens: ${tokCount.toLocaleString()} | Cache Saved: ${cacheSaved.toLocaleString()} tok | Est Cost: ${costStr}`;
+      }
+    } catch (e) {
+      console.warn('Cost telemetry fetch error:', e);
+    }
   }
 
   speakText(text) {

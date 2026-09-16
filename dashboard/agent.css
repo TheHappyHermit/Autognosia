@@ -299,3 +299,67 @@ html {
 .toast--error { border-left: 3px solid var(--rose); }
 .toast--info { border-left: 3px solid var(--cyan); }
 
+/* Memory Console Tabs & Editor */
+.memory-console-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 16px;
+  background: var(--bg-tertiary);
+}
+
+.memory-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all var(--motion-fast);
+}
+
+.memory-tab-btn:hover {
+  color: var(--text-1);
+}
+
+.memory-tab-btn.active {
+  color: var(--accent, #3b82f6);
+  border-bottom-color: var(--accent, #3b82f6);
+  font-weight: 600;
+}
+
+.memory-tab-content {
+  display: none;
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.memory-tab-content.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text-1);
+}
+
+.model-chip .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald, #10b981);
+}
+
+

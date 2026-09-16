@@ -166,6 +166,8 @@ export class CommandDeck {
       if (window.botsPage && typeof window.botsPage.init === 'function') {
         window.botsPage.init();
       }
+      if (typeof this.fetchSkillsCatalog === 'function') this.fetchSkillsCatalog();
+      if (typeof this.fetchLocalModels === 'function') this.fetchLocalModels();
     } else if (viewName === 'dashboard') {
       if (typeof this.refreshAllData === 'function') this.refreshAllData();
     }

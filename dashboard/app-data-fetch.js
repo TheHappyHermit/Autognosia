@@ -554,7 +554,7 @@ CommandDeck.prototype.fetchNotifications = async function() {
         `;
       } else {
         bodyEl.innerHTML = data.notifications.map(n => `
-          <div class="notification-card notification-card--${n.type}">
+          <div class="notification-card notification-card--${n.type}" style="cursor:pointer;" data-link="${escapeHtml(n.link || '')}">
             <div class="notification-header">
               <span class="badge ${n.type === 'warning' ? 'badge-critical' : n.type === 'reminder' ? 'badge-cyan' : 'badge-medium'}">${escapeHtml(n.type.toUpperCase())}</span>
               <span class="notification-time">${escapeHtml(n.timestamp || '')}</span>
@@ -563,6 +563,19 @@ CommandDeck.prototype.fetchNotifications = async function() {
             ${n.subtitle ? `<div class="notification-subtitle">${escapeHtml(n.subtitle)}</div>` : ''}
           </div>
         `).join('');
+
+        bodyEl.querySelectorAll('.notification-card').forEach(card => {
+          card.onclick = () => {
+            const link = card.dataset.link;
+            if (link === '#tasks') window.commandDeck?.showView('tasks');
+            else if (link === '#agents') window.commandDeck?.showView('agents');
+            const drawer = document.getElementById('notification-drawer');
+            if (drawer) {
+              drawer.classList.remove('open');
+              setTimeout(() => { drawer.style.display = 'none'; }, 200);
+            }
+          };
+        });
       }
     }
   } catch (e) {
