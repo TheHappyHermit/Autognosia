@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="agent.css" />
   <link rel="stylesheet" href="bots.css" />
   <link rel="stylesheet" href="home-lab.css" />
+  <link rel="stylesheet" href="integrations.css" />
 </head>
 <body>
   <div class="app-layout">
@@ -61,6 +62,22 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           <span class="sidebar-label">Home Lab</span>
         </a>
+        <a href="#" class="sidebar-link" data-view="homeassistant" aria-label="Smart Home" title="Smart Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.25L12 3l9 7.25V20a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-5H9v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.75z"/></svg>
+          <span class="sidebar-label">Smart Home</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="n8n" aria-label="Automations" title="Automations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          <span class="sidebar-label">Automations</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="vault" aria-label="Vault & Graph" title="Vault & Graph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span class="sidebar-label">Vault & Graph</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="markets" aria-label="Markets" title="Markets">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="sidebar-label">Markets</span>
+        </a>
       </div>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
@@ -95,6 +112,16 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="badge-dot" id="notification-badge-dot" aria-hidden="true"></span>
         </button>
+        <div id="tts-player-hud" class="tts-player-hud" title="ElevenLabs Voice Engine" style="display:none;">
+          <span class="tts-hud-label">🎙️ ElevenLabs</span>
+          <div class="tts-waveform-bars" id="tts-waveform-bars">
+            <span class="tts-bar"></span>
+            <span class="tts-bar"></span>
+            <span class="tts-bar"></span>
+            <span class="tts-bar"></span>
+            <span class="tts-bar"></span>
+          </div>
+        </div>
         <div class="hud-clock" id="hud-clock" aria-label="Local time">
           <span class="clock-time">00:00:00</span>
         </div>
@@ -765,6 +792,150 @@
         <div class="agent-loading">Loading home lab data...</div>
       </div>
     </div>
+
+    <!-- Home Assistant View -->
+    <div id="view-homeassistant" class="view-section" role="region" aria-label="Home Assistant">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1 class="view-section-title">Home Assistant</h1>
+          <p class="view-section-subtitle">Smart home IoT entity orchestrator & MCP service runner</p>
+        </div>
+        <span id="ha-connection-badge" class="badge badge-secondary">Connecting...</span>
+      </div>
+      <div class="panel">
+        <div class="panel-body" id="ha-stage" style="padding:var(--space-4);">
+          <div class="agent-loading">Connecting to Home Assistant...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- n8n Automation Pipelines View -->
+    <div id="view-n8n" class="view-section" role="region" aria-label="n8n Automations">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1 class="view-section-title">n8n Automation Pipelines</h1>
+          <p class="view-section-subtitle">Visual workflow orchestrator, webhooks & external MCP bridge</p>
+        </div>
+        <span id="n8n-connection-badge" class="badge badge-secondary">Connecting...</span>
+      </div>
+      <div class="panel">
+        <div class="panel-body" id="n8n-stage" style="padding:var(--space-4);">
+          <div class="agent-loading">Loading n8n automation pipelines...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Obsidian Vault & pgvector Semantic Visualizer View -->
+    <div id="view-vault" class="view-section" role="region" aria-label="Obsidian Vault & Memory">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1 class="view-section-title">Obsidian Vault & Semantic Memory</h1>
+          <p class="view-section-subtitle">OKF v2 Markdown Knowledge Vault, Wikilinks & pgvector (2000d) Clusters</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <span id="vault-notes-count" class="badge badge-cyan">0 Notes</span>
+          <span id="vector-count-badge" class="badge badge-secondary">pgvector 2000d</span>
+        </div>
+      </div>
+      <div class="vault-workspace-grid">
+        <!-- Notes Browser & Editor Panel -->
+        <div class="panel" style="display:flex; flex-direction:column; min-height:480px;">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" id="vault-current-title">Select a Note</div>
+            <button class="btn btn--primary btn--sm" id="btn-vault-save" style="font-size:0.75rem;">Save Note</button>
+          </div>
+          <div style="display:grid; grid-template-columns: 240px 1fr; flex:1; overflow:hidden;">
+            <div id="vault-notes-list" class="vault-notes-list" style="border-right:1px solid var(--border-subtle); overflow-y:auto;"></div>
+            <div style="display:flex; flex-direction:column; padding:12px; gap:8px;">
+              <textarea id="vault-note-editor" class="vault-editor" placeholder="Markdown note content..."></textarea>
+              <div>
+                <div style="font-size:0.75rem; font-weight:600; color:var(--text-2); margin-bottom:4px;">Backlinks & Outgoing Wikilinks:</div>
+                <div id="vault-backlinks-list" class="vault-backlinks-panel"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2D Vector PCA Semantic Cluster Map -->
+        <div class="panel" style="display:flex; flex-direction:column;">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              Semantic Vector Map (PCA 2D Projection)
+            </div>
+          </div>
+          <div class="panel-body" style="padding:12px; display:flex; flex-direction:column; align-items:center;">
+            <div class="vector-scatter-wrapper">
+              <canvas id="vector-scatter-canvas"></canvas>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; font-size:0.75rem; color:var(--text-3);">
+              <span><span style="color:#3b82f6;">●</span> Architecture</span>
+              <span><span style="color:#8b5cf6;">●</span> Persona</span>
+              <span><span style="color:#10b981;">●</span> Tasks</span>
+              <span><span style="color:#06b6d4;">●</span> Vault</span>
+              <span><span style="color:#f59e0b;">●</span> Smart Home</span>
+              <span><span style="color:#ec4899;">●</span> Finance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial Markets View -->
+    <div id="view-markets" class="view-section" role="region" aria-label="Financial Markets">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h1 class="view-section-title">Financial Markets</h1>
+          <p class="view-section-subtitle">Real-time quotes, technical candlesticks & asset sparklines via yfinance</p>
+        </div>
+        <div class="market-timeframe-bar">
+          <button class="market-tf-btn" data-tf="1d">1D</button>
+          <button class="market-tf-btn" data-tf="5d">5D</button>
+          <button class="market-tf-btn active" data-tf="1mo">1M</button>
+          <button class="market-tf-btn" data-tf="ytd">YTD</button>
+          <button class="market-tf-btn" data-tf="1y">1Y</button>
+        </div>
+      </div>
+      <div class="market-dashboard-grid">
+        <!-- Watchlist Table -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Asset Watchlist</div>
+          </div>
+          <div class="panel-body" style="padding:0; overflow-x:auto;">
+            <table class="market-watchlist-table">
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th>Price</th>
+                  <th>Change</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="market-watchlist-tbody">
+                <tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Candlestick Chart Panel -->
+        <div class="panel">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" id="market-chart-ticker">^GSPC Market Overview</div>
+            <div style="display:flex; gap:12px; align-items:baseline;">
+              <span id="market-chart-price" style="font-family:var(--font-mono); font-weight:700; font-size:1.1rem; color:var(--text-1);">---</span>
+              <span id="market-chart-change" class="market-gain">---</span>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:16px;">
+            <div class="market-chart-container">
+              <canvas id="market-candlestick-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Toast Container -->
@@ -782,6 +953,7 @@
   <script type="module" src="app-bots.js"></script>
   <script type="module" src="graph-visualizer.js"></script>
   <script type="module" src="enhance.js"></script>
+  <script type="module" src="app-integrations.js"></script>
 
   <!-- Notification Center Drawer -->
   <div class="drawer" id="notification-drawer" aria-hidden="true" style="display:none;">

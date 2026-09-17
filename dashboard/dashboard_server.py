@@ -76,6 +76,7 @@ import email_sync
 import check_reminders
 from notify_dispatcher import dispatcher
 import hermes_interface
+import integrations_backend
 
 import asyncio
 
@@ -2315,6 +2316,119 @@ def restart_container(container_name: str):
 
 
 
+# ── Integrations: Home Assistant, n8n, pgvector, Obsidian, SearXNG, Markets & TTS ─
+
+# 1. Home Assistant
+@app.get("/api/ha/overview")
+def ha_overview():
+    return integrations_backend.get_ha_overview()
+
+@app.post("/api/ha/service")
+def ha_call_service(payload: Dict[str, Any] = Body(...)):
+    domain = payload.get("domain", "")
+    service = payload.get("service", "")
+    entity_id = payload.get("entity_id", "")
+    data = payload.get("data")
+    return integrations_backend.call_ha_service(domain, service, entity_id, data)
+
+@app.get("/api/ha/config")
+def ha_get_config():
+    return integrations_backend.get_ha_config()
+
+@app.post("/api/ha/config")
+def ha_save_config(payload: Dict[str, Any] = Body(...)):
+    url = payload.get("url", "")
+    token = payload.get("token", "")
+    return integrations_backend.save_ha_config(url, token)
+
+# 2. n8n Automation Engine
+@app.get("/api/n8n/workflows")
+def n8n_workflows():
+    return integrations_backend.get_n8n_workflows()
+
+@app.get("/api/n8n/executions")
+def n8n_executions():
+    return integrations_backend.get_n8n_executions()
+
+@app.post("/api/n8n/trigger")
+def n8n_trigger(payload: Dict[str, Any] = Body(...)):
+    slug = payload.get("slug", "autognosia-action")
+    data = payload.get("data")
+    return integrations_backend.trigger_n8n_webhook(slug, data)
+
+@app.get("/api/n8n/config")
+def n8n_get_config():
+    return integrations_backend.get_n8n_config()
+
+@app.post("/api/n8n/config")
+def n8n_save_config(payload: Dict[str, Any] = Body(...)):
+    url = payload.get("url", "")
+    api_key = payload.get("api_key", "")
+    return integrations_backend.save_n8n_config(url, api_key)
+
+# 3. Postgres + pgvector Semantic Memory
+@app.get("/api/brain/vectors")
+def brain_vectors(limit: int = Query(250)):
+    return integrations_backend.get_brain_vectors(limit)
+
+@app.get("/api/brain/search")
+def brain_hybrid_search(q: str = Query(...)):
+    return integrations_backend.search_brain_hybrid(q)
+
+# 4. Obsidian Vault & Knowledge Graph
+@app.get("/api/vault/notes")
+def vault_notes():
+    return integrations_backend.get_vault_notes()
+
+@app.get("/api/vault/note")
+def vault_note_detail(path: str = Query(...)):
+    res = integrations_backend.get_vault_note_detail(path)
+    if "error" in res:
+        raise HTTPException(status_code=404, detail=res["error"])
+    return res
+
+@app.post("/api/vault/note")
+def vault_save_note(payload: Dict[str, Any] = Body(...)):
+    path = payload.get("path", "")
+    content = payload.get("content", "")
+    res = integrations_backend.save_vault_note(path, content)
+    if "error" in res:
+        raise HTTPException(status_code=400, detail=res["error"])
+    return res
+
+# 5. SearXNG Private Metasearch & Research Ingestion
+@app.get("/api/search/searxng")
+def search_searxng_api(q: str = Query(...), category: str = Query("general")):
+    return integrations_backend.search_searxng(q, category)
+
+@app.post("/api/search/clip")
+def search_clip_api(payload: Dict[str, Any] = Body(...)):
+    title = payload.get("title", "Untitled Clip")
+    url = payload.get("url", "")
+    snippet = payload.get("snippet", "")
+    tags = payload.get("tags")
+    return integrations_backend.clip_search_to_vault(title, url, snippet, tags)
+
+# 6. Financial Markets & yfinance
+@app.get("/api/markets/quotes")
+def markets_quotes():
+    return integrations_backend.get_market_quotes()
+
+@app.get("/api/markets/chart")
+def markets_chart(ticker: str = Query("^GSPC"), period: str = Query("1mo")):
+    return integrations_backend.get_market_chart(ticker, period)
+
+# 7. ElevenLabs Voice Synthesis
+@app.get("/api/tts/voices")
+def tts_voices():
+    return integrations_backend.get_tts_voices()
+
+@app.post("/api/tts/generate")
+def tts_generate(payload: Dict[str, Any] = Body(...)):
+    text = payload.get("text", "")
+    voice_id = payload.get("voice_id", "21m00Tcm4TlvDq8ikWAM")
+    return integrations_backend.generate_tts_speech(text, voice_id)
+
 
 # ── Static File Serving ────────────────────────────────────────────────────────
 
@@ -2434,6 +2548,14 @@ def serve_ws_client():
 @app.get("/enhance.js")
 def serve_enhance():
     return FileResponse(str(DASHBOARD_DIR / "enhance.js"), media_type="application/javascript")
+
+@app.get("/integrations.css")
+def serve_integrations_css():
+    return FileResponse(str(DASHBOARD_DIR / "integrations.css"), media_type="text/css")
+
+@app.get("/app-integrations.js")
+def serve_app_integrations():
+    return FileResponse(str(DASHBOARD_DIR / "app-integrations.js"), media_type="application/javascript")
 
 @app.get("/graph-visualizer.js")
 def serve_graph_visualizer():

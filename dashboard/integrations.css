@@ -1,0 +1,444 @@
+/* ==========================================================================
+   Autognosia Command Deck — Integrations & Advanced Pages Stylesheet
+   Covers: Home Assistant, n8n, pgvector, Obsidian Vault, SearXNG, Markets & TTS
+   ========================================================================== */
+
+/* ── Smart Home (Home Assistant) ─────────────────────────────────────────── */
+.ha-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.ha-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.ha-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.ha-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ha-card-title {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ha-card-state {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.ha-card-state.on {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald, #10b981);
+}
+
+.ha-card-state.off {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--text-3);
+}
+
+.ha-toggle-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--motion-fast);
+}
+
+.ha-toggle-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ha-climate-dial {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.ha-climate-temp {
+  font-size: var(--fs-xl);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+/* ── n8n Automation Engine ───────────────────────────────────────────────── */
+.n8n-pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+
+.n8n-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.n8n-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  color: var(--text-2);
+}
+
+.n8n-exec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: var(--space-3);
+}
+
+.n8n-exec-table th,
+.n8n-exec-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.n8n-exec-table th {
+  color: var(--text-3);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── Financial Markets (yfinance & Lightweight Charts) ───────────────────── */
+.market-dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 960px) {
+  .market-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.market-chart-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.market-timeframe-switcher {
+  display: inline-flex;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+
+.market-tf-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all var(--motion-fast);
+}
+
+.market-tf-btn:hover {
+  color: var(--text-1);
+}
+
+.market-tf-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.market-watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.market-watchlist-table tr {
+  cursor: pointer;
+  transition: background var(--motion-fast);
+}
+
+.market-watchlist-table tr:hover {
+  background: var(--bg-tertiary);
+}
+
+.market-watchlist-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.market-gain {
+  color: var(--emerald, #10b981);
+  font-weight: 600;
+}
+
+.market-loss {
+  color: var(--rose, #ef4444);
+  font-weight: 600;
+}
+
+/* ── Obsidian Vault & pgvector Visualizer ────────────────────────────────── */
+.vault-workspace-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  gap: var(--space-3);
+  height: calc(100vh - 160px);
+  min-height: 580px;
+}
+
+@media (max-width: 1024px) {
+  .vault-workspace-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+.vault-tree-pane {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vault-editor-pane {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vault-backlinks-pane {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vault-note-item {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background var(--motion-fast);
+}
+
+.vault-note-item:hover,
+.vault-note-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.vector-scatter-canvas {
+  width: 100%;
+  height: 380px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  cursor: crosshair;
+}
+
+/* ── SearXNG Metasearch Omnibar ──────────────────────────────────────────── */
+.searxng-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+  z-index: 1100;
+}
+
+.searxng-modal-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  width: 720px;
+  max-width: 92vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.searxng-search-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-primary);
+}
+
+.searxng-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-1);
+  outline: none;
+}
+
+.searxng-categories {
+  display: flex;
+  gap: 6px;
+  padding: 8px 18px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.searxng-cat-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.searxng-cat-btn.active {
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
+  color: var(--text-1);
+  font-weight: 600;
+}
+
+.searxng-results-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.searxng-result-card {
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.searxng-result-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent, #3b82f6);
+  text-decoration: none;
+}
+
+.searxng-result-url {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.searxng-result-snippet {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* ── ElevenLabs Voice HUD ─────────────────────────────────────────────────── */
+.tts-player-hud {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+}
+
+.tts-waveform-bars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+}
+
+.tts-wave-bar {
+  width: 2px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+.tts-waveform-bars.active .tts-wave-bar {
+  animation: wavePulse 0.5s ease-in-out infinite alternate;
+}
+
+.tts-waveform-bars.active .tts-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.tts-waveform-bars.active .tts-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.tts-waveform-bars.active .tts-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+
+@keyframes wavePulse {
+  from { height: 4px; }
+  to { height: 14px; }
+}

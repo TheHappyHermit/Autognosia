@@ -168,6 +168,14 @@ export class CommandDeck {
       }
       if (typeof this.fetchSkillsCatalog === 'function') this.fetchSkillsCatalog();
       if (typeof this.fetchLocalModels === 'function') this.fetchLocalModels();
+    } else if (viewName === 'homeassistant') {
+      if (typeof this.fetchHomeAssistant === 'function') this.fetchHomeAssistant();
+    } else if (viewName === 'n8n') {
+      if (typeof this.fetchN8n === 'function') this.fetchN8n();
+    } else if (viewName === 'vault') {
+      if (typeof this.fetchVault === 'function') this.fetchVault();
+    } else if (viewName === 'markets') {
+      if (typeof this.fetchMarkets === 'function') this.fetchMarkets();
     } else if (viewName === 'dashboard') {
       if (typeof this.refreshAllData === 'function') this.refreshAllData();
     }
