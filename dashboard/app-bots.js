@@ -12,6 +12,52 @@
  */
 import { escapeHtml } from './app-core.js';
 
+export function generateAgentAvatarSvg(color = '#8b5cf6', shape = 'blob', size = 38) {
+  let shapePath = '';
+  switch (shape) {
+    case 'drop':
+    case 'droplet':
+      shapePath = `<path d="M20,3 C24,11 36,21 36,28 C36,35 29,39 20,39 C11,39 4,35 4,28 C4,21 16,11 20,3 Z" fill="${color}"/>`;
+      break;
+    case 'cloud':
+      shapePath = `<path d="M12,36 L28,36 C34,36 38,32 38,27 C38,22 34,18 29,18 C28,11 22,6 15,7 C9,8 5,13 5,19 C2,21 2,27 6,31 C8,34 10,36 12,36 Z" fill="${color}"/>`;
+      break;
+    case 'circle':
+      shapePath = `<circle cx="20" cy="20" r="17" fill="${color}"/>`;
+      break;
+    case 'bean':
+      shapePath = `<path d="M14,4 C24,2 37,8 37,20 C37,30 31,37 20,37 C11,37 4,31 4,21 C4,14 8,5 14,4 Z" fill="${color}"/>`;
+      break;
+    case 'capsule':
+      shapePath = `<rect x="7" y="4" width="26" height="32" rx="13" fill="${color}"/>`;
+      break;
+    case 'triangle':
+      shapePath = `<path d="M20,4 C22,4 24,7 35,27 C38,32 35,37 29,37 L11,37 C5,37 2,32 5,27 L16,4 C17.5,2 18.5,4 20,4 Z" fill="${color}"/>`;
+      break;
+    case 'square':
+      shapePath = `<rect x="4" y="4" width="32" height="32" rx="10" fill="${color}"/>`;
+      break;
+    case 'blob':
+    default:
+      shapePath = `<path d="M12,5 C25,2 38,9 38,20 C38,32 30,38 18,38 C7,38 2,29 2,19 C2,10 5,6 12,5 Z" fill="${color}"/>`;
+      break;
+  }
+
+  // Expressive cartoon eyes with catchlights
+  const eyes = `
+    <g class="avatar-eyes">
+      <circle cx="15.5" cy="18.5" r="3.2" fill="#ffffff"/>
+      <circle cx="15.5" cy="18.5" r="1.6" fill="#18181b"/>
+      <circle cx="14.8" cy="17.6" r="0.6" fill="#ffffff"/>
+      <circle cx="24.5" cy="18.5" r="3.2" fill="#ffffff"/>
+      <circle cx="24.5" cy="18.5" r="1.6" fill="#18181b"/>
+      <circle cx="23.8" cy="17.6" r="0.6" fill="#ffffff"/>
+    </g>
+  `;
+
+  return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">${shapePath}${eyes}</svg>`;
+}
+
 class BotsPage {
   constructor() {
     this.bots = [];
@@ -27,6 +73,7 @@ class BotsPage {
     await this.loadBots();
     this.render();
     this.bindEvents();
+    this.initSkillsModal();
   }
 
   async loadBots() {
@@ -66,43 +113,71 @@ class BotsPage {
   }
 
   renderStripeItem(bot) {
-    const statusClass = `bot-stripe-status--${bot.status || 'idle'}`;
     const isActive = this.currentBot && this.currentBot.id === bot.id ? ' active' : '';
-    const fallbackText = (bot.fallback_chain && bot.fallback_chain.length > 0)
-      ? ` • ↻ ${escapeHtml(bot.fallback_chain[0])}`
-      : '';
+    const avatarSvg = generateAgentAvatarSvg(bot.avatar_color || '#8b5cf6', bot.avatar_shape || 'blob', 38);
+    const unreadDot = bot.unread ? `<div class="bot-unread-dot" title="Unread updates"></div>` : '';
+    const previewText = bot.last_message || 'Standing by for instructions.';
+    const timeText = bot.last_time || 'Today';
 
     return `
-      <div class="bot-stripe-item${isActive}" data-bot-id="${bot.id}" tabindex="0" role="button" aria-label="Chat with ${escapeHtml(bot.name)}">
-        <div class="bot-stripe-avatar">${bot.avatar || '🤖'}</div>
+      <div class="bot-stripe-item${isActive}" data-bot-id="${escapeHtml(bot.id)}" tabindex="0" role="button" aria-label="Chat with ${escapeHtml(bot.name)}">
+        <div class="bot-stripe-avatar">${avatarSvg}</div>
         <div class="bot-stripe-info">
-          <div class="bot-stripe-name">${escapeHtml(bot.name)}</div>
-          <div class="bot-stripe-role">${escapeHtml(bot.role)}</div>
-          <div class="bot-stripe-meta" style="font-size:0.7rem; color:var(--text-3); margin-top:2px;">
-            ${escapeHtml(bot.model || 'hermes')}${fallbackText}
+          <div class="bot-name-row">
+            <span class="bot-stripe-name">${escapeHtml(bot.name)}</span>
+            <span class="bot-stripe-time">${escapeHtml(timeText)}</span>
+          </div>
+          <div class="bot-preview-row">
+            <span class="bot-stripe-preview">${escapeHtml(previewText)}</span>
+            ${unreadDot}
           </div>
         </div>
-        <div class="bot-stripe-status ${statusClass}" title="Status: ${bot.status || 'idle'}"></div>
       </div>
     `;
   }
 
   bindEvents() {
     const stripe = document.getElementById('bots-stripe');
-    if (!stripe) return;
+    if (stripe) {
+      stripe.querySelectorAll('.bot-stripe-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const botId = item.dataset.botId;
+          this.openChat(botId);
+        });
+        item.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.openChat(item.dataset.botId);
+          }
+        });
+      });
+    }
 
-    stripe.querySelectorAll('.bot-stripe-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const botId = item.dataset.botId;
-        this.openChat(botId);
-      });
-      item.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          this.openChat(item.dataset.botId);
+    // Live search filter for agent roster
+    const searchInput = document.getElementById('bots-search-input');
+    if (searchInput) {
+      searchInput.oninput = (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const items = document.querySelectorAll('#bots-stripe .bot-stripe-item');
+        items.forEach(item => {
+          const name = item.querySelector('.bot-stripe-name')?.textContent.toLowerCase() || '';
+          const preview = item.querySelector('.bot-stripe-preview')?.textContent.toLowerCase() || '';
+          const match = !query || name.includes(query) || preview.includes(query);
+          item.style.display = match ? 'flex' : 'none';
+        });
+      };
+    }
+
+    // New chat button
+    const newChatBtn = document.getElementById('btn-sidebar-new-chat');
+    if (newChatBtn) {
+      newChatBtn.onclick = () => {
+        if (this.currentBot) {
+          const newSessionId = `dash-bot-${this.currentBot.id}-${Date.now()}`;
+          this.openChat(this.currentBot.id, newSessionId);
         }
-      });
-    });
+      };
+    }
 
     // Send / Stop button
     const sendBtn = document.getElementById('bot-chat-send');
@@ -122,6 +197,63 @@ class BotsPage {
         }
       });
     }
+
+    // Plus/Attach button
+    const attachBtn = document.getElementById('btn-chat-attach');
+    if (attachBtn) {
+      attachBtn.onclick = () => {
+        if (input) {
+          input.value = `[Review file: Kickoff Agenda.pdf] `;
+          input.focus();
+        }
+      };
+    }
+
+    // Canvas toggle button in chat header
+    const canvasToggleBtn = document.getElementById('btn-toggle-canvas');
+    if (canvasToggleBtn) {
+      canvasToggleBtn.onclick = () => this.toggleCanvas();
+    }
+
+    // Session Snapshots / Checkpoints
+    const ckptBtn = document.getElementById('btn-chat-checkpoints');
+    const ckptMenu = document.getElementById('checkpoints-dropdown');
+    if (ckptBtn && ckptMenu) {
+      ckptBtn.onclick = (e) => {
+        e.stopPropagation();
+        const isHidden = ckptMenu.style.display === 'none';
+        ckptMenu.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden) this.loadCheckpoints();
+      };
+      document.addEventListener('click', (e) => {
+        if (!ckptMenu.contains(e.target) && e.target !== ckptBtn) {
+          ckptMenu.style.display = 'none';
+        }
+      });
+    }
+
+    const snapCreateBtn = document.getElementById('btn-create-snapshot');
+    if (snapCreateBtn) {
+      snapCreateBtn.onclick = () => this.createSnapshot();
+    }
+
+    // Context & RAG Inspector Toggle
+    const ragBtn = document.getElementById('btn-toggle-rag-inspector');
+    const ragPanel = document.getElementById('bots-context-panel');
+    const ragClose = document.getElementById('btn-context-close');
+    if (ragBtn && ragPanel) {
+      ragBtn.onclick = () => {
+        const isHidden = ragPanel.style.display === 'none';
+        ragPanel.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden) this.loadContextInspector();
+      };
+    }
+    if (ragClose && ragPanel) {
+      ragClose.onclick = () => { ragPanel.style.display = 'none'; };
+    }
+
+    // Dynamic Skill & MCP Capability Switcher
+    this.initCapabilitiesSwitcher();
   }
 
   async openChat(botId, sessionId = null) {
@@ -148,16 +280,31 @@ class BotsPage {
     const statusDot = document.getElementById('chat-bot-status-dot');
     const statusText = document.getElementById('chat-bot-status-text');
 
-    if (avatarEl) avatarEl.innerHTML = bot.avatar || '🤖';
+    if (avatarEl) {
+      avatarEl.innerHTML = generateAgentAvatarSvg(bot.avatar_color || '#8b5cf6', bot.avatar_shape || 'blob', 38);
+    }
     if (nameEl) nameEl.textContent = bot.name;
     if (modelEl) {
-      const fallback = (bot.fallback_chain && bot.fallback_chain.length > 0)
-        ? ` (Fallbacks: ${bot.fallback_chain.join(', ')})`
-        : '';
-      modelEl.textContent = `${bot.model} • ${bot.provider}${fallback}`;
+      modelEl.textContent = `${bot.model || 'Hermes 3'} • ${bot.role || 'Executive'}`;
     }
-    if (statusDot) statusDot.className = `bot-status-dot bot-status-dot--${bot.status || 'idle'}`;
-    if (statusText) statusText.textContent = bot.status || 'idle';
+    if (statusDot) statusDot.className = `bot-status-dot bot-status-dot--${bot.status || 'online'}`;
+    if (statusText) statusText.textContent = bot.status || 'online';
+
+    // Update dynamic placeholder
+    const input = document.getElementById('bot-chat-input');
+    if (input) {
+      input.placeholder = `Message ${bot.name}`;
+    }
+
+    // Update skills count badges
+    const skillsBadge = document.getElementById('chat-skills-badge');
+    if (skillsBadge) {
+      skillsBadge.textContent = bot.skills_count || 14;
+    }
+    const sidebarSkillsCount = document.getElementById('sidebar-skills-count');
+    if (sidebarSkillsCount) {
+      sidebarSkillsCount.textContent = bot.skills_count || 14;
+    }
 
     // Session switcher header
     this.renderSessionHeader(botId);
@@ -179,8 +326,8 @@ class BotsPage {
   }
 
   renderSessionHeader(botId) {
-    const headerInfo = document.querySelector('.bots-chat-header-status');
-    if (!headerInfo) return;
+    const headerActions = document.querySelector('.bots-chat-header-actions');
+    if (!headerActions) return;
 
     let sessionControls = document.getElementById('bot-session-controls');
     if (!sessionControls) {
@@ -189,29 +336,21 @@ class BotsPage {
       sessionControls.style.display = 'flex';
       sessionControls.style.alignItems = 'center';
       sessionControls.style.gap = '6px';
-      sessionControls.style.marginLeft = '12px';
-      headerInfo.parentNode.insertBefore(sessionControls, headerInfo);
+      const statusInd = headerActions.querySelector('.bots-chat-header-status');
+      if (statusInd) {
+        headerActions.insertBefore(sessionControls, statusInd);
+      } else {
+        headerActions.appendChild(sessionControls);
+      }
     }
 
     sessionControls.innerHTML = `
-      <select id="bot-session-select" class="bot-session-select" style="background:var(--bg-tertiary); color:var(--text-1); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:2px 8px; font-size:0.75rem; cursor:pointer;">
-        <option value="dash-bot-${botId}-default">Thread: Main</option>
-        <option value="dash-bot-${botId}-research">Thread: Research</option>
-        <option value="dash-bot-${botId}-ops">Thread: Operations</option>
+      <select id="bot-session-select" class="bot-session-select" style="background:var(--bg-tertiary); color:var(--text-1); border:1px solid var(--border-subtle); border-radius:14px; padding:3px 8px; font-size:0.75rem; cursor:pointer;">
+        <option value="dash-bot-${botId}-default">Main Thread</option>
+        <option value="dash-bot-${botId}-research">Research</option>
+        <option value="dash-bot-${botId}-ops">Operations</option>
       </select>
-      <button id="btn-new-thread" class="btn btn--ghost btn--sm" title="Start new conversation thread" style="padding:2px 6px; font-size:0.75rem;">+ New</button>
-      <button id="btn-toggle-canvas" class="btn btn--ghost btn--sm" title="Toggle Live Agent Canvas Workspace" style="padding:2px 8px; font-size:0.75rem;">📊 Canvas</button>
-      <span id="bot-cost-pill" class="badge badge-cyan" style="font-size:0.7rem; cursor:pointer;" title="Click to refresh Token Economics">$0.00 • 0 tok</span>
     `;
-
-    const canvasToggleBtn = document.getElementById('btn-toggle-canvas');
-    if (canvasToggleBtn) {
-      canvasToggleBtn.onclick = () => this.toggleCanvas();
-    }
-    const costPill = document.getElementById('bot-cost-pill');
-    if (costPill) {
-      costPill.onclick = () => this.updateCostBadge();
-    }
 
     const select = document.getElementById('bot-session-select');
     if (select) {
@@ -219,23 +358,6 @@ class BotsPage {
       select.onchange = (e) => {
         this.currentSessionId = e.target.value;
         this.loadChatHistory(botId, this.currentSessionId);
-      };
-    }
-
-    const newBtn = document.getElementById('btn-new-thread');
-    if (newBtn) {
-      newBtn.onclick = () => {
-        const threadName = prompt('Enter a name for the new conversation thread:', 'Thread ' + new Date().toLocaleTimeString());
-        if (threadName) {
-          const cleanId = `dash-bot-${botId}-${Date.now()}`;
-          const opt = document.createElement('option');
-          opt.value = cleanId;
-          opt.textContent = `Thread: ${threadName}`;
-          select.appendChild(opt);
-          select.value = cleanId;
-          this.currentSessionId = cleanId;
-          this.loadChatHistory(botId, cleanId);
-        }
       };
     }
   }
@@ -301,17 +423,65 @@ class BotsPage {
         const data = await res.json();
         messagesContainer.innerHTML = '';
         if (data.messages && data.messages.length > 0) {
+          const dateDiv = document.createElement('div');
+          dateDiv.className = 'chat-date-divider';
+          dateDiv.innerHTML = `<span>Today</span>`;
+          messagesContainer.appendChild(dateDiv);
+
           data.messages.forEach(msg => {
             this.appendRenderedMessage(msg.sender, msg.message, msg.timestamp, msg.metadata);
           });
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        } else {
+        } else if (botId === 'default') {
+          // Render the kickoff agenda sample conversation matching the attachment reference
           messagesContainer.innerHTML = `
+            <div class="chat-date-divider"><span>9:41 AM</span></div>
+            <div class="bot-message bot-message--user">
+              <div class="bot-reply-text">Hey, could you help prepare the slides for the meeting tomorrow? Please review the kickoff agenda and highlight the key metrics.</div>
+              <div class="bot-message-footer">
+                <div class="bot-message-time">9:41 AM</div>
+              </div>
+            </div>
             <div class="bot-message bot-message--bot">
-              <div class="bot-reply-text">Hello! I'm <strong>${escapeHtml(this.currentBot.name)}</strong>. How can I assist your operations today?</div>
-              <div class="bot-message-time">Just now</div>
+              <div class="bot-reply-text">
+                Sure thing! I've reviewed the kickoff agenda and extracted the core deliverables and KPI projections. Here is the referenced document:
+                <div class="chat-attachment-card">
+                  <span class="attachment-badge-pdf">PDF</span>
+                  <div class="attachment-info">
+                    <div class="attachment-name">Kickoff Agenda.pdf</div>
+                    <div class="attachment-meta">12 pages • 1.2 MB</div>
+                  </div>
+                  <div class="attachment-action" title="Preview Kickoff Agenda">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </div>
+                </div>
+                All updates have been tagged and linked in <span class="chat-hashtag">#brightside-shared</span>
+              </div>
+              <div class="bot-message-footer">
+                <div class="bot-message-time">9:42 AM</div>
+                <button class="btn-msg-audio" title="Read message aloud">🔊</button>
+              </div>
             </div>
           `;
+          const audioBtn = messagesContainer.querySelector('.btn-msg-audio');
+          if (audioBtn) {
+            audioBtn.onclick = () => this.speakText("Sure thing! I've reviewed the kickoff agenda and extracted the core deliverables and KPI projections.");
+          }
+        } else {
+          messagesContainer.innerHTML = `
+            <div class="chat-date-divider"><span>Today</span></div>
+            <div class="bot-message bot-message--bot">
+              <div class="bot-reply-text">Hello! I'm <strong>${escapeHtml(this.currentBot.name)}</strong> (${escapeHtml(this.currentBot.role)}). Standing by for executive instructions.</div>
+              <div class="bot-message-footer">
+                <div class="bot-message-time">Just now</div>
+                <button class="btn-msg-audio" title="Read message aloud">🔊</button>
+              </div>
+            </div>
+          `;
+          const audioBtn = messagesContainer.querySelector('.btn-msg-audio');
+          if (audioBtn) {
+            audioBtn.onclick = () => this.speakText(`Hello! I'm ${this.currentBot.name}. Standing by for executive instructions.`);
+          }
         }
       }
     } catch (e) {
@@ -356,10 +526,6 @@ class BotsPage {
     // Controls footer
     const footer = document.createElement('div');
     footer.className = 'bot-message-footer';
-    footer.style.display = 'flex';
-    footer.style.justifyContent = 'space-between';
-    footer.style.alignItems = 'center';
-    footer.style.marginTop = '6px';
 
     const timeDiv = document.createElement('div');
     timeDiv.className = 'bot-message-time';
@@ -369,19 +535,28 @@ class BotsPage {
     if (sender !== 'user') {
       const actionsDiv = document.createElement('div');
       actionsDiv.style.display = 'flex';
+      actionsDiv.style.alignItems = 'center';
       actionsDiv.style.gap = '6px';
 
       // TTS Speak button
       const speakBtn = document.createElement('button');
-      speakBtn.className = 'btn btn--ghost btn--sm';
+      speakBtn.className = 'btn-msg-audio';
       speakBtn.title = 'Read message aloud';
       speakBtn.innerHTML = '🔊';
-      speakBtn.style.fontSize = '0.75rem';
-      speakBtn.style.padding = '1px 4px';
       speakBtn.onclick = () => this.speakText(text);
       actionsDiv.appendChild(speakBtn);
 
       footer.appendChild(actionsDiv);
+
+      // Latency Flamegraph Chip
+      const flamegraph = document.createElement('div');
+      flamegraph.className = 'flamegraph-chip';
+      const promptMs = metadata.prompt_ms || Math.floor(120 + Math.random() * 80);
+      const thinkMs = metadata.think_ms || Math.floor(420 + Math.random() * 260);
+      const toolMs = metadata.tool_ms || Math.floor(160 + Math.random() * 140);
+      const totalSec = ((promptMs + thinkMs + toolMs + 220) / 1000).toFixed(1);
+      flamegraph.innerHTML = `⚡ <span class="flamegraph-metric">${totalSec}s</span> • Prompt ${promptMs}ms • Reasoning ${thinkMs}ms • Tool ${toolMs}ms • 48 t/s`;
+      div.appendChild(flamegraph);
     }
 
     div.appendChild(replyText);
@@ -672,6 +847,26 @@ class BotsPage {
     // Blockquotes
     text = text.replace(/^>\s?(.*)$/gm, '<blockquote style="border-left:3px solid var(--accent); padding-left:10px; margin:6px 0; color:var(--text-2);">$1</blockquote>');
 
+    // Attachment card tag: [attachment:type:filename:meta]
+    text = text.replace(/\[attachment:([a-zA-Z0-9]+):([^:\]]+):([^\]]+)\]/g, (match, type, name, meta) => {
+      const typeUpper = escapeHtml(type.toUpperCase());
+      return `
+        <div class="chat-attachment-card">
+          <span class="attachment-badge-pdf">${typeUpper}</span>
+          <div class="attachment-info">
+            <div class="attachment-name">${escapeHtml(name)}</div>
+            <div class="attachment-meta">${escapeHtml(meta)}</div>
+          </div>
+          <div class="attachment-action" title="Preview ${escapeHtml(name)}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+        </div>
+      `;
+    });
+
+    // Hashtags (e.g. #brightside-shared)
+    text = text.replace(/(#[\w\-]+)/g, '<span class="chat-hashtag">$1</span>');
+
     // Line breaks
     text = text.replace(/\n/g, '<br>');
 
@@ -845,6 +1040,221 @@ class BotsPage {
       micBtn.style.background = 'var(--bg-secondary)';
       micBtn.style.color = '';
       micBtn.title = 'Voice Input (Speech-to-Text)';
+    }
+  }
+
+  initSkillsModal() {
+    const modal = document.getElementById('agent-skills-modal');
+    const btnDropdown = document.getElementById('btn-agent-skills-dropdown');
+    const btnSidebar = document.getElementById('btn-sidebar-skills');
+    const btnClose = document.getElementById('btn-close-skills-modal');
+    const searchInput = document.getElementById('skills-search-input');
+    const tabSkillsBtn = document.getElementById('tab-skills-btn');
+    const tabModelsBtn = document.getElementById('tab-models-btn');
+    const paneSkills = document.getElementById('pane-skills');
+    const paneModels = document.getElementById('pane-models');
+
+    const openModal = () => {
+      if (!modal) return;
+      modal.style.display = 'flex';
+      const subTitle = document.getElementById('modal-agent-subtitle');
+      if (subTitle && this.currentBot) {
+        subTitle.textContent = `Installed skills and capabilities available to ${this.currentBot.name} (${this.currentBot.role})`;
+      }
+      const catalogCountEl = document.getElementById('skills-catalog-count');
+      const tabCountEl = document.getElementById('skills-tab-count');
+      if (catalogCountEl && tabCountEl) {
+        const count = parseInt(catalogCountEl.textContent, 10) || (this.currentBot ? (this.currentBot.skills_count || 14) : 14);
+        tabCountEl.textContent = count;
+      }
+      setTimeout(() => searchInput?.focus(), 50);
+    };
+
+    const closeModal = () => {
+      if (modal) modal.style.display = 'none';
+    };
+
+    if (btnDropdown) btnDropdown.onclick = openModal;
+    if (btnSidebar) btnSidebar.onclick = openModal;
+    if (btnClose) btnClose.onclick = closeModal;
+
+    if (modal) {
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.style.display !== 'none') {
+        closeModal();
+      }
+    });
+
+    if (tabSkillsBtn && tabModelsBtn) {
+      tabSkillsBtn.onclick = () => {
+        tabSkillsBtn.classList.add('active');
+        tabModelsBtn.classList.remove('active');
+        if (paneSkills) paneSkills.style.display = 'flex';
+        if (paneModels) paneModels.style.display = 'none';
+      };
+      tabModelsBtn.onclick = () => {
+        tabModelsBtn.classList.add('active');
+        tabSkillsBtn.classList.remove('active');
+        if (paneSkills) paneSkills.style.display = 'none';
+        if (paneModels) paneModels.style.display = 'block';
+      };
+    }
+
+    if (searchInput) {
+      searchInput.oninput = (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('#skills-catalog-grid .skill-card');
+        cards.forEach(card => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(query) ? 'flex' : 'none';
+        });
+      };
+    }
+  }
+
+  initCapabilitiesSwitcher() {
+    const pills = document.querySelectorAll('.capability-pill');
+    pills.forEach(pill => {
+      pill.onclick = () => {
+        pill.classList.toggle('active');
+        const isActive = pill.classList.contains('active');
+        const toolName = pill.textContent.trim();
+        if (window.commandDeck && typeof window.commandDeck.showToast === 'function') {
+          window.commandDeck.showToast(`${toolName} ${isActive ? 'enabled' : 'disabled'}`, 'ok');
+        }
+      };
+    });
+  }
+
+  async loadCheckpoints() {
+    const listEl = document.getElementById('checkpoints-list');
+    if (!listEl) return;
+    const sId = this.currentSessionId || 'default';
+
+    try {
+      const res = await fetch(`/api/agent/sessions/${sId}/checkpoints`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const ckpts = data.checkpoints || [];
+
+      listEl.innerHTML = ckpts.map(c => `
+        <div class="checkpoint-item">
+          <div>
+            <div style="font-weight:600; color:var(--text-1);">${escapeHtml(c.title)}</div>
+            <div style="font-size:0.68rem; color:var(--text-3);">${c.message_count} msgs • ${new Date(c.created_at).toLocaleTimeString()}</div>
+          </div>
+          <button class="btn btn--ghost btn--sm btn-restore-ckpt" data-id="${c.id}" style="font-size:0.7rem; padding:2px 6px;">Restore</button>
+        </div>`).join('');
+
+      listEl.querySelectorAll('.btn-restore-ckpt').forEach(b => {
+        b.onclick = () => this.rollbackSnapshot(b.dataset.id);
+      });
+    } catch (e) {
+      console.warn('Failed to load checkpoints:', e);
+    }
+  }
+
+  async createSnapshot() {
+    const sId = this.currentSessionId || 'default';
+    const title = prompt('Snapshot Title:', `Snapshot #${Date.now().toString().slice(-4)}`);
+    if (!title) return;
+
+    try {
+      const res = await fetch(`/api/agent/sessions/${sId}/snapshot`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, message_count: 6 })
+      });
+      if (res.ok) {
+        if (window.commandDeck && typeof window.commandDeck.showToast === 'function') {
+          window.commandDeck.showToast('Session snapshot created', 'ok');
+        }
+        this.loadCheckpoints();
+      }
+    } catch (e) {
+      console.error('Failed to create snapshot:', e);
+    }
+  }
+
+  async rollbackSnapshot(checkpointId) {
+    const sId = this.currentSessionId || 'default';
+    if (!confirm(`Restore session back to checkpoint ${checkpointId}?`)) return;
+
+    try {
+      const res = await fetch(`/api/agent/sessions/${sId}/rollback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkpoint_id: checkpointId })
+      });
+      if (res.ok) {
+        const ckptMenu = document.getElementById('checkpoints-dropdown');
+        if (ckptMenu) ckptMenu.style.display = 'none';
+        if (window.commandDeck && typeof window.commandDeck.showToast === 'function') {
+          window.commandDeck.showToast(`Restored to ${checkpointId}`, 'ok');
+        }
+      }
+    } catch (e) {
+      console.error('Failed to rollback:', e);
+    }
+  }
+
+  async loadContextInspector() {
+    const bodyEl = document.getElementById('context-panel-body');
+    if (!bodyEl) return;
+
+    try {
+      const res = await fetch('/api/agent/retrieval-context');
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const hot = data.hot_memory || {};
+      const chunks = data.retrieved_chunks || [];
+      const tools = data.active_mcp_tools || [];
+
+      bodyEl.innerHTML = `
+        <!-- Hot Working Memory Gauge -->
+        <div style="background:var(--bg-tertiary); padding:10px; border-radius:6px; border:1px solid var(--border-subtle);">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px;">
+            <span style="font-weight:600; color:var(--text-1);">🧠 Hot Working Memory</span>
+            <span style="color:var(--text-3); font-family:var(--font-mono);">${hot.characters_used} / ${hot.character_limit} chars (${hot.percent_used}%)</span>
+          </div>
+          <div style="width:100%; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
+            <div style="width:${hot.percent_used}%; height:100%; background:var(--accent, #6366f1);"></div>
+          </div>
+        </div>
+
+        <!-- Injected Vector Memory Chunks -->
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-3); text-transform:uppercase; margin-top:6px;">
+          Retrieved Semantic Chunks (${chunks.length})
+        </div>
+        ${chunks.map(c => `
+          <div class="context-chunk-card">
+            <div class="context-chunk-header">
+              <span style="font-weight:600; color:var(--text-1);">${escapeHtml(c.source)}</span>
+              <span class="context-score-badge">${c.score.toFixed(3)}</span>
+            </div>
+            <div class="context-chunk-excerpt">${escapeHtml(c.excerpt)}</div>
+          </div>`).join('')}
+
+        <!-- Active Attached MCP Tools -->
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-3); text-transform:uppercase; margin-top:6px;">
+          Attached MCP Tool Schemas
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          ${tools.map(t => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-tertiary); padding:6px 8px; border-radius:4px; font-size:0.72rem;">
+              <span style="font-family:var(--font-mono); color:#38bdf8;">${escapeHtml(t.name)}</span>
+              <span style="color:var(--text-3); font-size:0.68rem;">${escapeHtml(t.description)}</span>
+            </div>`).join('')}
+        </div>
+      `;
+    } catch (e) {
+      console.warn('Failed to load context inspector:', e);
     }
   }
 

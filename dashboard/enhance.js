@@ -53,7 +53,12 @@
     { id: 'goto-calendar', label: 'Go to Calendar', hint: 'schedule & events', group: 'Navigate', run: () => window.commandDeck?.showView('calendar') },
     { id: 'goto-services', label: 'Go to Services', hint: 'media & queues', group: 'Navigate', run: () => window.commandDeck?.showView('services') },
     { id: 'goto-homelab', label: 'Go to Home Lab', hint: 'servers & docker', group: 'Navigate', run: () => window.commandDeck?.showView('homelab') },
+    { id: 'goto-system', label: 'Go to System', hint: 'cpu, telemetry & cron', group: 'Navigate', run: () => window.commandDeck?.showView('system') },
+    { id: 'goto-homeassistant', label: 'Go to Smart Home', hint: 'home assistant entities', group: 'Navigate', run: () => window.commandDeck?.showView('homeassistant') },
+    { id: 'goto-n8n', label: 'Go to Automations', hint: 'n8n workflow orchestrator', group: 'Navigate', run: () => window.commandDeck?.showView('n8n') },
     { id: 'goto-agents', label: 'Go to Agents & Chat', hint: 'Hermes bots', group: 'Navigate', run: () => window.commandDeck?.showView('agents') },
+    { id: 'goto-vault', label: 'Go to Knowledge Vault', hint: 'wiki & graph', group: 'Navigate', run: () => window.commandDeck?.showView('vault') },
+    { id: 'goto-markets', label: 'Go to Financial Markets', hint: 'yfinance candlestick charts', group: 'Navigate', run: () => window.commandDeck?.showView('markets') },
 
     { id: 'new-task', label: 'New Task', hint: 'create task', group: 'Create', run: () => window.commandDeck?.openCreateModal('task') },
     { id: 'new-intention', label: 'New Intention', hint: 'IF-THEN rule', group: 'Create', run: () => window.commandDeck?.openCreateModal('intention') },
@@ -66,7 +71,7 @@
     { id: 'reset-graph', label: 'Reset Knowledge Graph View', hint: 're-center canvas', group: 'Actions', run: () => document.getElementById('btn-graph-reset')?.click() },
     { id: 'toggle-theme', label: 'Toggle Light / Dark Mode', hint: 'appearance', group: 'Actions', run: () => window.commandDeck?.toggleTheme() },
     { id: 'refresh-data', label: 'Refresh All Deck Data', hint: 'poll now', group: 'Actions', run: () => window.commandDeck?.refreshAllData() },
-    { id: 'search-wiki', label: 'Search Knowledge Vault', hint: 'second brain', group: 'Actions', run: () => { window.commandDeck?.showView('dashboard'); document.getElementById('wiki-search-input')?.focus(); } },
+    { id: 'search-wiki', label: 'Search Knowledge Vault', hint: 'second brain', group: 'Actions', run: () => { window.commandDeck?.showView('vault'); setTimeout(() => document.getElementById('wiki-search-input')?.focus(), 80); } },
   ];
 
   let paletteIdx = 0;

@@ -668,6 +668,9 @@ CommandDeck.prototype.fetchKnowledgeGraph = async function() {
     if (resetBtn) {
       resetBtn.onclick = () => this.graphVisualizer.resetZoom();
     }
+  } else {
+    this.graphVisualizer.initCanvasSize();
+    this.graphVisualizer.render();
   }
   
   try {

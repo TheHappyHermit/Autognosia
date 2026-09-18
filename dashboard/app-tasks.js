@@ -33,7 +33,7 @@ CommandDeck.prototype.renderTasks = function() {
   }
 
   // Bind checkboxes and card click across containers
-  [container, viewContainer].forEach(target => {
+  [container, viewContainer, waitingContainer].forEach(target => {
     if (!target) return;
     target.querySelectorAll('.task-checkbox').forEach(cb => {
       cb.addEventListener('change', async (e) => {
@@ -43,6 +43,7 @@ CommandDeck.prototype.renderTasks = function() {
         await this.updateTask(id, { status: newStatus });
         await this.fetchTasks();
         await this.fetchOverview();
+        if (this.fetchCalendar) await this.fetchCalendar();
       });
     });
 
@@ -52,6 +53,16 @@ CommandDeck.prototype.renderTasks = function() {
         const id = card.dataset.taskId;
         if (id && typeof this.openTaskDetail === 'function') {
           this.openTaskDetail(id);
+        }
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.target.closest('.task-checkbox')) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const id = card.dataset.taskId;
+          if (id && typeof this.openTaskDetail === 'function') {
+            this.openTaskDetail(id);
+          }
         }
       });
     });
@@ -65,17 +76,17 @@ CommandDeck.prototype.renderTasks = function() {
 CommandDeck.prototype.renderTaskCard = function(t) {
   const isDone = t.status === 'completed';
   return `
-    <div class="task-card ${isDone ? 'completed' : ''}" data-task-id="${t.id}">
-      <input type="checkbox" class="task-checkbox" data-task-id="${t.id}" ${isDone ? 'checked' : ''} />
+    <div class="task-card ${isDone ? 'completed' : ''}" data-task-id="${t.id}" title="Click to view and edit task details" tabindex="0" role="button">
+      <input type="checkbox" class="task-checkbox" data-task-id="${t.id}" ${isDone ? 'checked' : ''} title="Mark task complete / incomplete" />
       <div class="task-details">
         <div class="task-title-line">
           <span class="task-title">${escapeHtml(t.title)}</span>
-          <span class="badge badge-${t.priority || 'medium'}">${t.priority}</span>
+          <span class="badge badge-${t.priority || 'medium'}">${escapeHtml(t.priority || 'medium')}</span>
         </div>
         <div class="task-meta-row">
           ${t.project_name ? `<span class="task-project"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>${escapeHtml(t.project_name)}</span><span>•</span>` : ''}
           ${t.due_at ? `<span class="task-due"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Due ${escapeHtml(t.due_at)}</span><span>•</span>` : ''}
-          <span>Status: ${t.status}</span>
+          <span>Status: ${escapeHtml(t.status)}</span>
         </div>
       </div>
     </div>

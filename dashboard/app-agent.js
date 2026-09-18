@@ -819,6 +819,17 @@ CommandDeck.prototype.renderWikiResults = function(results, query) {
   `).join('');
 
   container.innerHTML = countEl + items;
+
+  container.querySelectorAll('.wiki-result-card').forEach(card => {
+    card.onclick = () => {
+      const p = card.dataset.wikiPath;
+      if (typeof this.loadVaultNote === 'function') {
+        this.loadVaultNote(p);
+      } else if (typeof this.openWikiDrawer === 'function') {
+        this.openWikiDrawer({ path: p, label: card.querySelector('.wiki-result-title')?.textContent });
+      }
+    };
+  });
 };
 
 CommandDeck.prototype.showToast = function(message, type = 'info') {

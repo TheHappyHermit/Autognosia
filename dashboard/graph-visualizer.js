@@ -328,4 +328,8 @@ export class GraphVisualizer {
     this.offsetY = this.height / 2;
     this.render();
   }
+
+  resetZoom() {
+    this.resetView();
+  }
 }
