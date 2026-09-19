@@ -81,8 +81,9 @@ export class CommandDeck {
 
     const profileBadge = document.getElementById('sidebar-profile-badge');
     if (profileBadge) {
-      profileBadge.addEventListener('click', () => {
-        this.showView('homelab');
+      profileBadge.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showView('system');
       });
     }
 
@@ -155,12 +156,13 @@ export class CommandDeck {
   }
 
   showView(viewName) {
+    const isSystem = (viewName === 'system');
     if (viewName === 'system') {
       viewName = 'homelab';
     }
 
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    const link = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
+    const link = document.querySelector(`.sidebar-link[data-view="${isSystem ? 'system' : viewName}"]`);
     if (link) link.classList.add('active');
 
     // Show the correct view section
@@ -168,6 +170,13 @@ export class CommandDeck {
     const target = document.getElementById(`view-${viewName}`);
     if (target) {
       target.classList.add('active');
+    }
+
+    if (isSystem) {
+      setTimeout(() => {
+        const targetSection = document.getElementById('homelab-telemetry-panel') || document.getElementById('system-settings-panel');
+        targetSection?.scrollIntoView({ behavior: 'smooth' });
+      }, 80);
     }
 
     // Initialize view-specific logic
