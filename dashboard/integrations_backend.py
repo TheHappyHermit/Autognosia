@@ -1213,8 +1213,11 @@ def get_system_settings_raw() -> Dict[str, str]:
         try:
             file_data = json.loads(SYSTEM_SETTINGS_FILE.read_text(encoding="utf-8"))
             for k, v in file_data.items():
-                if v:
-                    merged[k] = str(v).strip()
+                if v is not None:
+                    if isinstance(v, (list, dict)):
+                        merged[k] = v
+                    else:
+                        merged[k] = str(v).strip()
         except Exception:
             pass
 
@@ -1360,7 +1363,9 @@ def get_system_settings() -> Dict[str, Any]:
             "version": getattr(yf, "__version__", "1.7.0") if yf else None
         },
         # External Navbar Links
-        "navbar_links": get_navbar_links()
+        "navbar_links": get_navbar_links(),
+        # Custom Navbar Order (for cross-device & cross-session persistence)
+        "navbar_order": raw.get("navbar_order") if isinstance(raw.get("navbar_order"), list) else (json.loads(raw.get("navbar_order")) if isinstance(raw.get("navbar_order"), str) and raw.get("navbar_order").startswith("[") else [])
     }
 
 
@@ -1466,6 +1471,10 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
                         raw[setting_k] = url
 
         raw["custom_navbar_links"] = clean_links
+
+    # Process custom navbar order
+    if "navbar_order" in payload and isinstance(payload["navbar_order"], list):
+        raw["navbar_order"] = [str(x).strip() for x in payload["navbar_order"] if str(x).strip()]
 
     # Save to main system_settings.json
     SYSTEM_SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)

@@ -109,6 +109,31 @@
   position: relative;
 }
 
+/* Drag and Drop Navbar Reordering */
+.sidebar-link[draggable="true"] {
+  cursor: grab;
+  user-select: none;
+}
+
+.sidebar-link.dragging {
+  opacity: 0.4;
+  transform: scale(0.97);
+  cursor: grabbing !important;
+  background: var(--accent-soft, rgba(59, 130, 246, 0.1));
+}
+
+.sidebar-link.drag-over-top {
+  border-top: 2px solid var(--accent, #3b82f6) !important;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.sidebar-link.drag-over-bottom {
+  border-bottom: 2px solid var(--accent, #3b82f6) !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .sidebar-link svg {
   width: 17px;
   height: 17px;

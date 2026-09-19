@@ -432,7 +432,7 @@
               <div class="bots-chat-header-actions">
                 <!-- Session Checkpoints Dropdown Menu -->
                 <div class="chat-checkpoints-wrapper" style="position:relative;">
-                  <button id="btn-chat-checkpoints" class="header-action-icon-btn btn-checkpoints" title="Session Snapshots & Rollback">
+                  <button id="btn-chat-checkpoints" class="header-action-pill-btn btn-checkpoints" title="Session Snapshots & Rollback">
                     <span style="display:flex; align-items:center; gap:4px;">
                       <span>⏱️</span>
                       <span style="font-size:0.75rem; font-weight:600;">Snapshots</span>
@@ -451,7 +451,7 @@
                 </div>
 
                 <!-- Context & RAG Retrieval Inspector Button -->
-                <button id="btn-toggle-rag-inspector" class="header-action-icon-btn" title="Inspect Retrieved Context & RAG Memory">
+                <button id="btn-toggle-rag-inspector" class="header-action-pill-btn" title="Inspect Retrieved Context & RAG Memory">
                   <span style="display:flex; align-items:center; gap:4px;">
                     <span>🔍</span>
                     <span style="font-size:0.75rem; font-weight:600;">Context</span>
@@ -459,7 +459,7 @@
                 </button>
 
                 <!-- Experience Index & Metacognition Inspector Button -->
-                <button id="btn-toggle-experience" class="header-action-icon-btn" title="Agent Experience & Competence Inspector (autognosia.db)">
+                <button id="btn-toggle-experience" class="header-action-pill-btn" title="Agent Experience & Competence Inspector (autognosia.db)">
                   <span style="display:flex; align-items:center; gap:4px;">
                     <span>🧠</span>
                     <span style="font-size:0.75rem; font-weight:600;">Experience</span>
@@ -667,10 +667,6 @@
 
     <!-- Calendar View -->
     <div id="view-calendar" class="view-section" role="region" aria-label="Calendar">
-      <div class="view-section-header">
-        <h1 class="view-section-title">Calendar</h1>
-        <p class="view-section-subtitle">Your schedule and upcoming events</p>
-      </div>
       <div class="calendar-view-container">
         <div class="panel">
           <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -1326,7 +1322,10 @@
               </div>
               <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-3);">Manage external applications that open directly in a new browser tab from the sidebar. Add new links, edit names and URLs, toggle visibility, or remove entries.</p>
             </div>
-            <span style="font-size:0.75rem; color:var(--text-3);">Opens directly in new tab • Synced with .env</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button type="button" id="btn-reset-navbar-order" class="btn btn--ghost btn--sm" style="font-size:0.75rem; padding:3px 8px; border:1px solid var(--border-subtle);" title="Reset sidebar navbar items to default order">↺ Reset Order</button>
+              <span style="font-size:0.75rem; color:var(--text-3);">Drag &amp; drop to reorder • Synced with .env</span>
+            </div>
           </div>
 
           <!-- Add New Navbar Link Form -->

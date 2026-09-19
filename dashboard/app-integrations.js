@@ -1521,6 +1521,31 @@ CommandDeck.prototype.initSystemSettings = function() {
     };
   }
 
+  // Wire Reset Navbar Order Button
+  const resetNavbarBtn = document.getElementById('btn-reset-navbar-order');
+  if (resetNavbarBtn && !resetNavbarBtn.dataset.initDone) {
+    resetNavbarBtn.dataset.initDone = 'true';
+    resetNavbarBtn.onclick = async () => {
+      try {
+        localStorage.removeItem('autognosia_navbar_order');
+      } catch (e) {}
+      if (this.systemSettings) {
+        this.systemSettings.navbar_order = [];
+      }
+      try {
+        await fetch(`${this.apiBase}/api/system/settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ navbar_order: [] })
+        });
+      } catch (e) {}
+      if (typeof this.showToast === 'function') {
+        this.showToast('Navbar order reset to default! Reloading...', 'info');
+      }
+      setTimeout(() => window.location.reload(), 600);
+    };
+  }
+
   // Wire Auto-Discover Local Services & Sync .env button
   const autoDiscoverBtn = document.getElementById('btn-auto-discover-env');
   if (autoDiscoverBtn && !autoDiscoverBtn.dataset.initDone) {
@@ -1745,10 +1770,15 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     setField(document.getElementById('input-key-twelvedata'), settings.twelvedata?.masked_key);
     setField(document.getElementById('input-key-fred'), settings.fred?.masked_key);
 
-    // Dynamic External Navbar Links
+    // Dynamic External Navbar Links & Custom Order
     if (Array.isArray(settings.navbar_links)) {
       this.renderSidebarExternalLinks(settings.navbar_links);
       this.renderNavbarLinksSettings(settings.navbar_links);
+    }
+    if (Array.isArray(settings.navbar_order) && settings.navbar_order.length > 0) {
+      if (typeof this.applyNavbarOrder === 'function') {
+        this.applyNavbarOrder(settings.navbar_order);
+      }
     }
   } catch (err) {
     console.warn('Failed to load system settings:', err);
@@ -1784,7 +1814,7 @@ CommandDeck.prototype.renderSidebarExternalLinks = function(links) {
       const name = escapeHtml(link.name || link.id);
       const icon = link.icon || '🔗';
       return `
-        <a href="${url}" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-external-link" aria-label="${name}" title="${name} (Opens in new tab)" data-link-id="${escapeHtml(link.id)}">
+        <a href="${url}" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-external-link" aria-label="${name}" title="${name} (Opens in new tab)" data-link-id="${escapeHtml(link.id)}" data-nav-id="link:${escapeHtml(link.id)}">
           <span class="sidebar-icon" style="font-size:1rem; width:17px; height:17px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${icon}</span>
           <span class="sidebar-label" style="display:flex; align-items:center; justify-content:space-between; flex:1; min-width:0;">
             <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
@@ -1793,6 +1823,12 @@ CommandDeck.prototype.renderSidebarExternalLinks = function(links) {
         </a>
       `;
     }).join('');
+
+  if (typeof this.applyNavbarOrder === 'function') {
+    this.applyNavbarOrder();
+  } else if (typeof this.initSidebarDragAndDrop === 'function') {
+    this.initSidebarDragAndDrop();
+  }
 };
 
 CommandDeck.prototype.renderNavbarLinksSettings = function(links) {

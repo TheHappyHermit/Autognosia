@@ -72,14 +72,17 @@ export class CommandDeck {
   }
 
   initViewRouting() {
-    document.querySelectorAll('.sidebar-link').forEach(link => {
-      link.addEventListener('click', (e) => {
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (sidebarNav) {
+      sidebarNav.addEventListener('click', (e) => {
+        const link = e.target.closest('.sidebar-link');
+        if (!link) return;
         if (link.target === '_blank' || link.classList.contains('sidebar-external-link')) return;
         e.preventDefault();
         const view = link.dataset.view;
-        this.showView(view);
+        if (view) this.showView(view);
       });
-    });
+    }
 
     const profileBadge = document.getElementById('sidebar-profile-badge');
     if (profileBadge) {
@@ -88,6 +91,10 @@ export class CommandDeck {
         this.showView('system');
       });
     }
+
+    // Initialize sidebar drag-and-drop reordering & apply saved order
+    this.initSidebarDragAndDrop();
+    this.applyNavbarOrder();
 
     const hamburger = document.getElementById('hamburger-btn');
     if (hamburger) {
@@ -127,6 +134,146 @@ export class CommandDeck {
 
     // Apply saved theme
     this.applyTheme();
+  }
+
+  initSidebarDragAndDrop() {
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (!sidebarNav) return;
+
+    const links = sidebarNav.querySelectorAll('.sidebar-link');
+    let draggedItem = null;
+
+    links.forEach(link => {
+      if (link.closest('.sidebar-footer')) return;
+
+      const navId = link.dataset.navId || (link.dataset.view ? `view:${link.dataset.view}` : (link.dataset.linkId ? `link:${link.dataset.linkId}` : null));
+      if (!navId) return;
+      link.dataset.navId = navId;
+      link.setAttribute('draggable', 'true');
+
+      if (link.dataset.dragInitDone === 'true') return;
+      link.dataset.dragInitDone = 'true';
+
+      link.addEventListener('dragstart', (e) => {
+        draggedItem = link;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', navId);
+        setTimeout(() => link.classList.add('dragging'), 0);
+      });
+
+      link.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!draggedItem || draggedItem === link) return;
+        e.dataTransfer.dropEffect = 'move';
+
+        const rect = link.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        if (e.clientY < midY) {
+          link.classList.add('drag-over-top');
+          link.classList.remove('drag-over-bottom');
+        } else {
+          link.classList.add('drag-over-bottom');
+          link.classList.remove('drag-over-top');
+        }
+      });
+
+      link.addEventListener('dragleave', () => {
+        link.classList.remove('drag-over-top', 'drag-over-bottom');
+      });
+
+      link.addEventListener('drop', (e) => {
+        e.preventDefault();
+        link.classList.remove('drag-over-top', 'drag-over-bottom');
+        if (!draggedItem || draggedItem === link) return;
+
+        const rect = link.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        if (e.clientY < midY) {
+          link.before(draggedItem);
+        } else {
+          link.after(draggedItem);
+        }
+
+        this.saveNavbarOrder();
+      });
+
+      link.addEventListener('dragend', () => {
+        links.forEach(l => l.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom'));
+        draggedItem = null;
+      });
+    });
+  }
+
+  saveNavbarOrder() {
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (!sidebarNav) return;
+
+    const links = sidebarNav.querySelectorAll('.sidebar-link');
+    const order = [];
+    links.forEach(l => {
+      const navId = l.dataset.navId || (l.dataset.view ? `view:${l.dataset.view}` : (l.dataset.linkId ? `link:${l.dataset.linkId}` : null));
+      if (navId) order.push(navId);
+    });
+
+    try {
+      localStorage.setItem('autognosia_navbar_order', JSON.stringify(order));
+    } catch (e) {}
+
+    if (!this.systemSettings) this.systemSettings = {};
+    this.systemSettings.navbar_order = order;
+
+    fetch(`${this.apiBase}/api/system/settings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ navbar_order: order })
+    }).catch(err => console.warn('Could not sync navbar order to backend:', err));
+  }
+
+  applyNavbarOrder(order) {
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (!sidebarNav) return;
+
+    let orderList = order;
+    if (!Array.isArray(orderList) || orderList.length === 0) {
+      if (Array.isArray(this.systemSettings?.navbar_order) && this.systemSettings.navbar_order.length > 0) {
+        orderList = this.systemSettings.navbar_order;
+      } else {
+        try {
+          const saved = localStorage.getItem('autognosia_navbar_order');
+          if (saved) orderList = JSON.parse(saved);
+        } catch (e) {}
+      }
+    }
+
+    if (!Array.isArray(orderList) || orderList.length === 0) {
+      this.initSidebarDragAndDrop();
+      return;
+    }
+
+    const allLinks = Array.from(sidebarNav.querySelectorAll('.sidebar-link'));
+    const linkMap = new Map();
+    allLinks.forEach(l => {
+      const navId = l.dataset.navId || (l.dataset.view ? `view:${l.dataset.view}` : (l.dataset.linkId ? `link:${l.dataset.linkId}` : null));
+      if (navId) {
+        l.dataset.navId = navId;
+        linkMap.set(navId, l);
+      }
+    });
+
+    orderList.forEach(navId => {
+      const el = linkMap.get(navId);
+      if (el) {
+        sidebarNav.appendChild(el);
+        linkMap.delete(navId);
+      }
+    });
+
+    // Append any remaining elements
+    linkMap.forEach(el => {
+      sidebarNav.appendChild(el);
+    });
+
+    this.initSidebarDragAndDrop();
   }
 
   toggleTheme() {
