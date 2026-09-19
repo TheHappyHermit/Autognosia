@@ -1317,6 +1317,115 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
   }
 };
 
+// ── Uptime Kuma Live Fleet Monitoring ─────────────────────────────────────────
+
+CommandDeck.prototype.fetchUptimeKuma = async function() {
+  const badgeEl = document.getElementById('uptimekuma-status-badge');
+  const metaEl = document.getElementById('uptimekuma-meta');
+  const container = document.getElementById('uptimekuma-monitors-container');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/system/uptimekuma`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    this.renderUptimeKuma(data);
+  } catch (err) {
+    console.warn('Failed to fetch Uptime Kuma data:', err);
+    if (badgeEl) {
+      badgeEl.textContent = '● Offline';
+      badgeEl.className = 'badge badge-red';
+    }
+    if (metaEl) metaEl.textContent = 'Connection refused';
+    if (container) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 16px; background: rgba(239,68,68,0.08); border: 1px dashed rgba(239,68,68,0.3); border-radius: 8px; font-size: 0.85rem; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <strong>Uptime Kuma is not reachable at configured endpoint.</strong>
+            <div style="color:var(--text-3); font-size:0.75rem; margin-top:2px;">Make sure Uptime Kuma is running or configure URL &amp; status page slug in Settings.</div>
+          </div>
+          <button class="btn btn--secondary btn--sm btn-goto-system-settings">Configure in Settings</button>
+        </div>
+      `;
+    }
+  }
+};
+
+CommandDeck.prototype.renderUptimeKuma = function(data) {
+  const badgeEl = document.getElementById('uptimekuma-status-badge');
+  const metaEl = document.getElementById('uptimekuma-meta');
+  const container = document.getElementById('uptimekuma-monitors-container');
+  if (!container) return;
+
+  if (data.status !== 'ok') {
+    if (badgeEl) {
+      badgeEl.textContent = '● Not Configured / Offline';
+      badgeEl.className = 'badge badge-amber';
+    }
+    if (metaEl) metaEl.textContent = data.message || 'Offline';
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; padding: 16px; background: rgba(245,158,11,0.08); border: 1px dashed rgba(245,158,11,0.3); border-radius: 8px; font-size: 0.85rem; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <strong>${data.message || 'Uptime Kuma is offline or not found.'}</strong>
+          <div style="color:var(--text-3); font-size:0.75rem; margin-top:2px;">Set your Uptime Kuma URL and Status Page Slug (default: <code>default</code>) in Settings.</div>
+        </div>
+        <button class="btn btn--secondary btn--sm btn-goto-system-settings">Configure in Settings</button>
+      </div>
+    `;
+    return;
+  }
+
+  const isAllUp = (data.down_monitors || 0) === 0;
+  if (badgeEl) {
+    badgeEl.textContent = isAllUp ? '● All Systems Operational' : `⚠️ ${data.down_monitors} Degraded`;
+    badgeEl.className = isAllUp ? 'badge badge-green' : 'badge badge-red';
+  }
+
+  if (metaEl) {
+    const uptimeStr = data.uptime_24h != null ? `${data.uptime_24h}% 24h` : '';
+    const pingStr = data.avg_ping_ms ? `${data.avg_ping_ms}ms avg` : '';
+    const parts = [uptimeStr, pingStr, `${data.up_monitors || 0}/${data.total_monitors || 0} up`].filter(Boolean);
+    metaEl.textContent = parts.join(' • ');
+  }
+
+  const monitors = data.monitors || [];
+  if (monitors.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; padding: 16px; color: var(--text-3); font-size: 0.85rem;">
+        No monitors published on this Uptime Kuma status page.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = monitors.map(m => {
+    const isUp = m.status === 'up';
+    const isPending = m.status === 'pending';
+    const statusColor = isUp ? 'var(--green, #22c55e)' : (isPending ? 'var(--amber, #f59e0b)' : 'var(--red, #ef4444)');
+    const statusText = isUp ? 'UP' : (isPending ? 'PENDING' : 'DOWN');
+    const badgeClass = isUp ? 'badge-green' : (isPending ? 'badge-amber' : 'badge-red');
+    const ping = m.ping != null ? `${m.ping}ms` : '--';
+    const uptime24 = m.uptime_24h != null ? `${m.uptime_24h}%` : '--';
+
+    return `
+      <div class="service-card" style="padding: 12px 14px; background: var(--surface-2, rgba(255,255,255,0.03)); border: 1px solid var(--border-subtle, rgba(255,255,255,0.06)); border-radius: 8px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 6px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:${statusColor}; display:inline-block; box-shadow: 0 0 6px ${statusColor};"></span>
+            <span style="font-weight:600; font-size:0.88rem; color:var(--text-1);">${escapeHtml(m.name)}</span>
+          </div>
+          <span class="badge ${badgeClass}" style="font-size:0.7rem; padding: 2px 6px;">${statusText}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:var(--text-3); margin-top: 8px;">
+          <span>Latency: <strong style="color:var(--text-2);">${ping}</strong></span>
+          <span>24h: <strong style="color:var(--text-2);">${uptime24}</strong></span>
+          <span>Type: <span style="text-transform:uppercase; font-size:0.7rem;">${escapeHtml(m.type || 'HTTP')}</span></span>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
+
 CommandDeck.prototype.initSystemSettings = function() {
   const settingsPanel = document.getElementById('system-settings-panel');
   if (settingsPanel) {
@@ -1388,6 +1497,9 @@ CommandDeck.prototype.initSystemSettings = function() {
       checkField(document.getElementById('input-key-freshrss'), 'freshrss_api_key', true);
       checkField(document.getElementById('input-url-godseye'), 'godseye_url');
       checkField(document.getElementById('input-key-godseye'), 'godseye_api_key', true);
+      checkField(document.getElementById('input-url-uptimekuma'), 'uptimekuma_url');
+      checkField(document.getElementById('input-slug-uptimekuma'), 'uptimekuma_slug');
+      checkField(document.getElementById('input-token-uptimekuma'), 'uptimekuma_token', true);
 
       // Financial API inputs
       checkField(document.getElementById('input-key-alphavantage'), 'alphavantage_api_key', true);
@@ -1411,6 +1523,43 @@ CommandDeck.prototype.initSystemSettings = function() {
         }
       } catch (err) {
         console.warn('Error saving system settings:', err);
+      }
+    };
+  }
+
+  // Wire Auto-Discover Local Services & Sync .env button
+  const autoDiscoverBtn = document.getElementById('btn-auto-discover-env');
+  if (autoDiscoverBtn && !autoDiscoverBtn.dataset.initDone) {
+    autoDiscoverBtn.dataset.initDone = 'true';
+    autoDiscoverBtn.onclick = async () => {
+      autoDiscoverBtn.disabled = true;
+      const origText = autoDiscoverBtn.innerHTML;
+      autoDiscoverBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+        Scanning Services...
+      `;
+      try {
+        const res = await fetch(`${this.apiBase}/api/system/auto-discover`, { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          const count = Object.keys(data.updates_applied || {}).length;
+          const credCount = data.extracted_credentials_count || 0;
+          if (typeof this.showToast === 'function') {
+            this.showToast(`Auto-discovery complete! ${count} service endpoint(s) and ${credCount} credential(s) synced to .env.`, 'success');
+          }
+          await this.loadSystemSettings();
+        } else {
+          if (typeof this.showToast === 'function') {
+            this.showToast('Auto-discovery warning: ' + (data.message || 'No services found'), 'warning');
+          }
+        }
+      } catch (err) {
+        if (typeof this.showToast === 'function') {
+          this.showToast('Auto-discovery failed: ' + err.message, 'error');
+        }
+      } finally {
+        autoDiscoverBtn.disabled = false;
+        autoDiscoverBtn.innerHTML = origText;
       }
     };
   }
@@ -1564,7 +1713,7 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     }
 
     // Homelab Applications
-    const homelabServices = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'];
+    const homelabServices = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye', 'uptimekuma'];
     homelabServices.forEach(s => {
       const cfg = settings[s];
       if (!cfg) return;
@@ -1572,6 +1721,9 @@ CommandDeck.prototype.loadSystemSettings = async function() {
       setField(document.getElementById(`input-url-${s}`), cfg.url);
       setField(document.getElementById(`input-key-${s}`) || document.getElementById(`input-token-${s}`), cfg.masked_key || cfg.masked_token);
       setField(document.getElementById(`input-user-${s}`), cfg.user);
+      if (s === 'uptimekuma') {
+        setField(document.getElementById('input-slug-uptimekuma'), cfg.slug || 'default');
+      }
       const linkEl = document.getElementById(`link-setting-${s}`);
       const extLink = document.getElementById(`${s}-external-link`);
 

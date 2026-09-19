@@ -1038,6 +1038,9 @@ ENV_ALIAS_MAP: Dict[str, List[str]] = {
     "ELEVENLABS_API_KEY": ["ELEVEN_LABS_API_KEY"],
     "GODS_EYE_URL": ["GODSEYE_URL"],
     "GODS_EYE_API_KEY": ["GODSEYE_API_KEY"],
+    "UPTIME_KUMA_URL": ["UPTIMEKUMA_URL", "KUMA_URL"],
+    "UPTIME_KUMA_SLUG": ["UPTIMEKUMA_SLUG", "KUMA_SLUG"],
+    "UPTIME_KUMA_TOKEN": ["UPTIMEKUMA_TOKEN", "KUMA_TOKEN", "UPTIME_KUMA_API_KEY"],
 }
 
 
@@ -1063,6 +1066,8 @@ def get_system_settings_raw() -> Dict[str, str]:
     merged["seer_url"] = "http://localhost:5055"
     merged["freshrss_url"] = "http://localhost:8080"
     merged["godseye_url"] = "http://localhost:5173"
+    merged["uptimekuma_url"] = "http://localhost:3001"
+    merged["uptimekuma_slug"] = "default"
 
     # 1. Load from root .env and dashboard .env
     env_mappings = {
@@ -1100,6 +1105,9 @@ def get_system_settings_raw() -> Dict[str, str]:
         "freshrss_user": "FRESHRSS_USER",
         "godseye_url": "GODS_EYE_URL",
         "godseye_api_key": "GODS_EYE_API_KEY",
+        "uptimekuma_url": "UPTIME_KUMA_URL",
+        "uptimekuma_slug": "UPTIME_KUMA_SLUG",
+        "uptimekuma_token": "UPTIME_KUMA_TOKEN",
         "alphavantage_api_key": "ALPHAVANTAGE_API_KEY",
         "massive_api_key": "MASSIVE_API_KEY",
         "massive_api_url": "MASSIVE_API_URL",
@@ -1263,6 +1271,12 @@ def get_system_settings() -> Dict[str, Any]:
             "configured": bool(raw.get("godseye_url")),
             "masked_key": mask_key(raw.get("godseye_api_key", ""))
         },
+        "uptimekuma": {
+            "url": raw.get("uptimekuma_url", "http://localhost:3001"),
+            "slug": raw.get("uptimekuma_slug", "default"),
+            "configured": bool(raw.get("uptimekuma_url")),
+            "masked_key": mask_key(raw.get("uptimekuma_token", ""))
+        },
         # Financial APIs
         "alphavantage": {
             "url": "https://www.alphavantage.co/",
@@ -1344,6 +1358,9 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
         "freshrss_user": "FRESHRSS_USER",
         "godseye_url": "GODS_EYE_URL",
         "godseye_api_key": "GODS_EYE_API_KEY",
+        "uptimekuma_url": "UPTIME_KUMA_URL",
+        "uptimekuma_slug": "UPTIME_KUMA_SLUG",
+        "uptimekuma_token": "UPTIME_KUMA_TOKEN",
         # Financial APIs
         "alphavantage_api_key": "ALPHAVANTAGE_API_KEY",
         "massive_api_key": "MASSIVE_API_KEY",
@@ -1753,7 +1770,147 @@ def test_api_connection(provider: str, api_key: str = "", api_url: str = "") -> 
         except Exception as e:
             return {"status": "error", "message": f"Could not reach God's Eye View at {url}. Error: {str(e)}"}
 
+    elif p in ("uptimekuma", "uptime_kuma", "kuma"):
+        url = api_url or raw.get("uptimekuma_url", "http://localhost:3001").rstrip("/")
+        slug = raw.get("uptimekuma_slug", "default")
+        token = api_key or raw.get("uptimekuma_token", "")
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        try:
+            res = requests.get(f"{url}/api/status-page/{slug}", headers=headers, timeout=5)
+            if res.ok:
+                data = res.json()
+                title = data.get("title") or "Status Page"
+                return {"status": "ok", "message": f"Connected to Uptime Kuma at {url}! Status page '{slug}' ({title}) is active."}
+            res2 = requests.get(url, timeout=5)
+            if res2.ok:
+                return {"status": "ok", "message": f"Connected to Uptime Kuma at {url}! Web interface is reachable."}
+            return {"status": "ok", "message": f"Uptime Kuma reachable at {url} (HTTP {res.status_code})."}
+        except Exception as e:
+            return {"status": "error", "message": f"Could not reach Uptime Kuma at {url}. Error: {str(e)}"}
+
     return {"status": "error", "message": f"Unknown provider: {provider}"}
+
+
+_UPTIME_KUMA_CACHE: Dict[str, Any] = {"data": None, "timestamp": 0.0}
+
+def get_uptimekuma_status() -> Dict[str, Any]:
+    """Retrieve live monitors, heartbeats, and uptime statistics from Uptime Kuma."""
+    import time
+    now = time.time()
+    if _UPTIME_KUMA_CACHE["data"] and (now - _UPTIME_KUMA_CACHE["timestamp"]) < 15:
+        return _UPTIME_KUMA_CACHE["data"]
+
+    raw = get_system_settings_raw()
+    url = (raw.get("uptimekuma_url") or "http://localhost:3001").rstrip("/")
+    slug = raw.get("uptimekuma_slug") or "default"
+    token = raw.get("uptimekuma_token") or ""
+
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    monitors = []
+    summary = {"total": 0, "up": 0, "down": 0, "pending": 0, "avg_ping_ms": 0.0, "uptime_pct": 100.0}
+
+    # Strategy 1: Public Status Page Heartbeat & Config API
+    try:
+        page_res = requests.get(f"{url}/api/status-page/{slug}", headers=headers, timeout=3)
+        hb_res = requests.get(f"{url}/api/status-page/heartbeat/{slug}", headers=headers, timeout=3)
+
+        if page_res.ok and hb_res.ok:
+            page_data = page_res.json()
+            hb_data = hb_res.json()
+
+            heartbeats = hb_data.get("heartbeatList", {})
+            groups = page_data.get("publicGroupList", [])
+
+            all_monitors = []
+            for grp in groups:
+                for m in grp.get("monitorList", []):
+                    all_monitors.append(m)
+
+            total_ping = 0.0
+            ping_count = 0
+            total_up = 0
+
+            for m in all_monitors:
+                m_id = str(m.get("id"))
+                m_beats = heartbeats.get(m_id, [])
+                last_beat = m_beats[-1] if m_beats else {}
+
+                # status: 1 = UP, 0 = DOWN, 2 = PENDING, 3 = MAINTENANCE
+                st_code = last_beat.get("status", 1 if m.get("active") else 0)
+                status_str = "up" if st_code == 1 else ("down" if st_code == 0 else "pending")
+                ping = float(last_beat.get("ping", 0.0) or 0.0)
+                if ping > 0:
+                    total_ping += ping
+                    ping_count += 1
+
+                uptime_pct = 100.0
+                if m_beats:
+                    up_count = sum(1 for b in m_beats if b.get("status") == 1)
+                    uptime_pct = round((up_count / len(m_beats)) * 100, 2)
+
+                monitors.append({
+                    "id": m.get("id"),
+                    "name": m.get("name") or f"Monitor {m.get('id')}",
+                    "status": status_str,
+                    "ping": round(ping, 1),
+                    "uptime_pct": uptime_pct,
+                    "last_beat": last_beat.get("time"),
+                    "type": m.get("type", "http"),
+                    "url": m.get("url") or ""
+                })
+                summary["total"] += 1
+                if status_str == "up":
+                    summary["up"] += 1
+                    total_up += 1
+                elif status_str == "down":
+                    summary["down"] += 1
+                else:
+                    summary["pending"] += 1
+
+            if ping_count > 0:
+                summary["avg_ping_ms"] = round(total_ping / ping_count, 1)
+
+            if summary["total"] > 0:
+                summary["uptime_pct"] = round((total_up / summary["total"]) * 100, 2)
+
+            res_data = {
+                "status": "ok",
+                "connected": True,
+                "url": url,
+                "slug": slug,
+                "summary": summary,
+                "monitors": monitors,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+            _UPTIME_KUMA_CACHE["data"] = res_data
+            _UPTIME_KUMA_CACHE["timestamp"] = now
+            return res_data
+    except Exception:
+        pass
+
+    # Strategy 2: Fallback check on root web app
+    try:
+        r = requests.get(url, timeout=3)
+        connected = r.ok
+    except Exception:
+        connected = False
+
+    res_data = {
+        "status": "ok" if connected else "offline",
+        "connected": connected,
+        "url": url,
+        "slug": slug,
+        "summary": summary,
+        "monitors": monitors,
+        "message": "Uptime Kuma reachable" if connected else "Cannot reach Uptime Kuma",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    _UPTIME_KUMA_CACHE["data"] = res_data
+    _UPTIME_KUMA_CACHE["timestamp"] = now
+    return res_data
 
 
 def get_market_detail(ticker: str) -> Dict[str, Any]:

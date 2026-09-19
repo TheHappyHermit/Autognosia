@@ -173,6 +173,7 @@ export class CommandDeck {
       if (typeof this.loadSystemSettings === 'function') this.loadSystemSettings();
     } else if (viewName === 'services') {
       if (typeof this.fetchServices === 'function') this.fetchServices();
+      if (typeof this.fetchUptimeKuma === 'function') this.fetchUptimeKuma();
     } else if (viewName === 'calendar') {
       if (typeof this.fetchCalendar === 'function') this.fetchCalendar();
     } else if (viewName === 'tasks') {
@@ -423,7 +424,14 @@ export class CommandDeck {
         const gpuEl = document.getElementById('stat-gpu');
         if (gpuEl) gpuEl.textContent = 'N/A';
         const uptimeEl = document.getElementById('stat-uptime');
-        if (uptimeEl) uptimeEl.textContent = (data.uptime_days != null ? data.uptime_days + 'd' : 'N/A');
+        if (uptimeEl) {
+          if (data.uptimekuma && data.uptimekuma.connected && data.uptimekuma.uptime_24h != null) {
+            uptimeEl.textContent = `${data.uptime_days != null ? data.uptime_days + 'd' : ''} (${data.uptimekuma.uptime_24h}%)`.trim();
+            uptimeEl.title = `Host uptime: ${data.uptime_days}d | Uptime Kuma fleet: ${data.uptimekuma.uptime_24h}% (${data.uptimekuma.up_monitors}/${data.uptimekuma.total_monitors} up)`;
+          } else {
+            uptimeEl.textContent = (data.uptime_days != null ? data.uptime_days + 'd' : 'N/A');
+          }
+        }
       }
     } catch (e) {
       console.warn('System stats fetch error:', e);

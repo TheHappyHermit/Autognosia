@@ -195,6 +195,21 @@ def get_system_stats():
     # Active agents — check Hermes gateway
     active_agents = 1  # Hermes agent itself is always "active"
 
+    uptimekuma_summary = {}
+    try:
+        uk_data = integrations_backend.get_uptimekuma_status()
+        if uk_data.get("status") == "ok":
+            uptimekuma_summary = {
+                "connected": True,
+                "uptime_24h": uk_data.get("uptime_24h"),
+                "total_monitors": uk_data.get("total_monitors", 0),
+                "up_monitors": uk_data.get("up_monitors", 0),
+                "down_monitors": uk_data.get("down_monitors", 0),
+                "avg_ping_ms": uk_data.get("avg_ping_ms", 0)
+            }
+    except Exception:
+        pass
+
     return {
         "cpu_percent": psutil.cpu_percent(interval=0.1),
         "ram_percent": psutil.virtual_memory().percent,
@@ -202,6 +217,7 @@ def get_system_stats():
         "network_gb": network_gb,
         "active_agents": active_agents,
         "uptime_days": uptime_days,
+        "uptimekuma": uptimekuma_summary,
     }
 
 
@@ -1060,98 +1076,18 @@ def get_bots():
             "avatar_color": "#8b5cf6",
             "avatar_shape": "blob",
             "avatar": "🟣",
-            "default_preview": "Got it! Product updates shared and linked in #brightside-shared",
+            "default_preview": "Standing by for executive instructions.",
             "default_time": "7:34 PM",
             "unread": False
         },
-        "personal-organizer": {
-            "name": "EA",
-            "role": "Executive Assistant & Schedule",
+        "analyst": {
+            "name": "Analyst",
+            "role": "Analysis & Comparison Specialist",
             "avatar_color": "#3b82f6",
             "avatar_shape": "drop",
-            "avatar": "💧",
-            "default_preview": "Responded in 3 threads, with calendar invites attached.",
-            "default_time": "5:12 PM",
-            "unread": False
-        },
-        "inbox-manager": {
-            "name": "Inbox Manager",
-            "role": "Email Radar & Triage",
-            "avatar_color": "#10b981",
-            "avatar_shape": "cloud",
-            "avatar": "🟢",
-            "default_preview": "Inbox at zero. 2 replies ready for your review.",
-            "default_time": "7:34 PM",
-            "unread": False
-        },
-        "sales-outbound": {
-            "name": "Sales Outbound",
-            "role": "Pipeline & Lead Outreach",
-            "avatar_color": "#06b6d4",
-            "avatar_shape": "drop",
-            "avatar": "🔷",
-            "default_preview": "Outreach drafts queued for approval.",
-            "default_time": "11:18 AM",
-            "unread": False
-        },
-        "talent-scout": {
-            "name": "Talent Scout",
-            "role": "Technical Recruiting",
-            "avatar_color": "#92400e",
-            "avatar_shape": "circle",
-            "avatar": "🟤",
-            "default_preview": "Shortlist of 6 candidates reviewed.",
-            "default_time": "Yesterday",
-            "unread": True
-        },
-        "growth-marketer": {
-            "name": "Growth Marketer",
-            "role": "Campaigns & Content",
-            "avatar_color": "#f97316",
-            "avatar_shape": "bean",
-            "avatar": "🟠",
-            "default_preview": "A/B copy variants ready to review.",
-            "default_time": "9:04 AM",
-            "unread": False
-        },
-        "customer-support": {
-            "name": "Customer Support",
-            "role": "Helpdesk & Resolution",
-            "avatar_color": "#ef4444",
-            "avatar_shape": "capsule",
-            "avatar": "🔴",
-            "default_preview": "12 tickets resolved, 2 escalated.",
-            "default_time": "2:20 PM",
-            "unread": False
-        },
-        "expense-manager": {
-            "name": "Expense Manager",
-            "role": "Receipts & Budgets",
-            "avatar_color": "#ec4899",
-            "avatar_shape": "triangle",
-            "avatar": "🔺",
-            "default_preview": "Receipts coded — one needs your approval.",
-            "default_time": "Tuesday",
-            "unread": False
-        },
-        "invoice-collector": {
-            "name": "Invoice Collector",
-            "role": "Accounts Receivable",
-            "avatar_color": "#6366f1",
-            "avatar_shape": "square",
-            "avatar": "🟦",
-            "default_preview": "Pulled 9 invoices from vendor portal.",
-            "default_time": "Yesterday",
-            "unread": False
-        },
-        "coder": {
-            "name": "Software Engineer",
-            "role": "Full-Stack Code & Architecture",
-            "avatar_color": "#14b8a6",
-            "avatar_shape": "capsule",
-            "avatar": "💻",
-            "default_preview": "Repository tests passing cleanly, ready for review.",
-            "default_time": "4:15 PM",
+            "avatar": "📊",
+            "default_preview": "Comparative framework and decision matrix ready.",
+            "default_time": "11:30 AM",
             "unread": False
         },
         "researcher": {
@@ -1164,74 +1100,71 @@ def get_bots():
             "default_time": "3:00 PM",
             "unread": False
         },
-        "oracle": {
-            "name": "Oracle Brain",
-            "role": "Synthesizer & Long-Term Memory",
-            "avatar_color": "#a855f7",
-            "avatar_shape": "circle",
-            "avatar": "🧠",
-            "default_preview": "Semantic vector clusters updated.",
-            "default_time": "1:20 PM",
-            "unread": False
-        },
-        "auditor": {
-            "name": "Compliance Auditor",
-            "role": "Security & Quality Gate",
-            "avatar_color": "#64748b",
-            "avatar_shape": "circle",
-            "avatar": "🔍",
-            "default_preview": "Audit log clean. No security anomalies.",
-            "default_time": "10:30 AM",
-            "unread": False
-        },
-        "planner": {
-            "name": "Strategic Planner",
-            "role": "Milestones & Roadmaps",
-            "avatar_color": "#f59e0b",
-            "avatar_shape": "cloud",
-            "avatar": "📋",
-            "default_preview": "Quarterly roadmap milestones aligned.",
-            "default_time": "Monday",
-            "unread": False
-        },
-        "desktop-researcher": {
-            "name": "Desktop Researcher",
-            "role": "Web Scraping & Extraction",
-            "avatar_color": "#06b6d4",
-            "avatar_shape": "drop",
-            "avatar": "🖥️",
-            "default_preview": "Desktop browser sessions indexed.",
-            "default_time": "Yesterday",
-            "unread": False
-        },
-        "desktop-worker": {
-            "name": "Desktop Worker",
-            "role": "Automation Runner",
-            "avatar_color": "#84cc16",
-            "avatar_shape": "blob",
-            "avatar": "⚙️",
-            "default_preview": "Local pipeline completed successfully.",
-            "default_time": "Tuesday",
-            "unread": False
-        },
-        "oracle-researcher": {
-            "name": "Oracle Researcher",
-            "role": "Synthesized Insights",
-            "avatar_color": "#c084fc",
-            "avatar_shape": "circle",
-            "avatar": "🔮",
-            "default_preview": "Memory graph cross-references generated.",
-            "default_time": "Sunday",
+        "writer": {
+            "name": "Technical Writer",
+            "role": "Technical Writing & Reports",
+            "avatar_color": "#10b981",
+            "avatar_shape": "square",
+            "avatar": "✍️",
+            "default_preview": "Technical synthesis and report ready for review.",
+            "default_time": "10:15 AM",
             "unread": False
         }
     }
 
+    # 1. Root default profile from hermes_home / "config.yaml"
+    root_model = "unknown"
+    root_provider = "unknown"
+    root_fallbacks = []
+    root_cfg_file = hermes_home / "config.yaml"
+    if root_cfg_file.exists():
+        try:
+            import yaml
+            with open(root_cfg_file, "r", encoding="utf-8") as f:
+                root_cfg = yaml.safe_load(f) or {}
+            model_cfg = root_cfg.get("model", {})
+            if isinstance(model_cfg, dict):
+                root_model = model_cfg.get("default", model_cfg.get("provider", "unknown"))
+                root_provider = model_cfg.get("provider", "unknown")
+                root_fallbacks = root_cfg.get("fallback_providers", [])
+            else:
+                root_model = str(model_cfg)
+        except Exception:
+            pass
+
+    # Add default profile
+    def_spec = profile_specs.get("default")
+    def_last_msg, def_last_time = recent_messages.get("default", (def_spec["default_preview"], def_spec["default_time"]))
+    bots.append({
+        "id": "default",
+        "name": def_spec["name"],
+        "role": def_spec["role"],
+        "model": root_model if root_model != "unknown" else "Hermes 3 / OpenRouter",
+        "provider": root_provider.capitalize() if root_provider != "unknown" else "OpenRouter",
+        "fallback_chain": root_fallbacks,
+        "status": "online" if gateway_online else "idle",
+        "current_task": None,
+        "last_activity": datetime.now(timezone.utc).isoformat(),
+        "avatar": def_spec["avatar"],
+        "avatar_color": def_spec["avatar_color"],
+        "avatar_shape": def_spec["avatar_shape"],
+        "last_message": def_last_msg,
+        "last_time": def_last_time,
+        "unread": def_spec["unread"],
+        "skills_count": total_skills_count
+    })
+
+    # 2. Iterate profile directories in profiles_dir (only actual folders)
     if profiles_dir.exists():
         for profile_dir in sorted(profiles_dir.iterdir()):
             if not profile_dir.is_dir():
                 continue
             profile_name = profile_dir.name
+            if profile_name == "default":
+                continue  # already added
             config_file = profile_dir / "config.yaml"
+            profile_yaml = profile_dir / "profile.yaml"
+
             spec = profile_specs.get(profile_name, {
                 "name": profile_name.replace("-", " ").title(),
                 "role": f"{profile_name.replace('-', ' ')} agent",
@@ -1243,9 +1176,21 @@ def get_bots():
                 "unread": False
             })
 
-            model = "unknown"
-            provider = "unknown"
-            fallback_chain = []
+            # Check profile.yaml for description
+            role = spec["role"]
+            if profile_yaml.exists():
+                try:
+                    import yaml
+                    with open(profile_yaml, "r", encoding="utf-8") as f:
+                        p_yaml = yaml.safe_load(f) or {}
+                    if p_yaml.get("description"):
+                        role = p_yaml["description"]
+                except Exception:
+                    pass
+
+            model = root_model
+            provider = root_provider
+            fallback_chain = root_fallbacks
             if config_file.exists():
                 try:
                     import yaml
@@ -1253,9 +1198,14 @@ def get_bots():
                         cfg = yaml.safe_load(f) or {}
                     model_cfg = cfg.get("model", {})
                     if isinstance(model_cfg, dict):
-                        model = model_cfg.get("default", model_cfg.get("provider", "unknown"))
-                        fallback_chain = model_cfg.get("fallbacks", [])
-                    else:
+                        m_def = model_cfg.get("default", "")
+                        if m_def:
+                            model = m_def
+                        m_prov = model_cfg.get("provider", "")
+                        if m_prov and m_prov != "auto":
+                            provider = m_prov
+                        fallback_chain = model_cfg.get("fallbacks", cfg.get("fallback_providers", root_fallbacks))
+                    elif model_cfg:
                         model = str(model_cfg)
                     provider_cfg = cfg.get("providers", {})
                     if isinstance(provider_cfg, dict) and provider_cfg:
@@ -1279,41 +1229,11 @@ def get_bots():
             bots.append({
                 "id": profile_name,
                 "name": spec["name"],
-                "role": spec["role"],
-                "model": model,
+                "role": role,
+                "model": model if model != "unknown" else "Inherited (Root)",
                 "provider": provider.capitalize() if provider != "unknown" else "Local / Gateway",
                 "fallback_chain": fallback_chain,
                 "status": status,
-                "current_task": None,
-                "last_activity": datetime.now(timezone.utc).isoformat(),
-                "avatar": spec["avatar"],
-                "avatar_color": spec["avatar_color"],
-                "avatar_shape": spec["avatar_shape"],
-                "last_message": last_msg,
-                "last_time": last_time,
-                "unread": spec["unread"],
-                "skills_count": total_skills_count
-            })
-
-    # If any key profiles from the executive team are not on disk, add them so the full team is present
-    existing_ids = {b["id"] for b in bots}
-    default_team = [
-        "default", "personal-organizer", "inbox-manager", "sales-outbound", 
-        "talent-scout", "growth-marketer", "customer-support", "expense-manager", 
-        "invoice-collector", "coder", "researcher", "oracle"
-    ]
-    for p_id in default_team:
-        if p_id not in existing_ids and p_id in profile_specs:
-            spec = profile_specs[p_id]
-            last_msg, last_time = recent_messages.get(p_id, (spec["default_preview"], spec["default_time"]))
-            bots.append({
-                "id": p_id,
-                "name": spec["name"],
-                "role": spec["role"],
-                "model": "Hermes 3 / Qwen 2.5",
-                "provider": "Nous Research / Local",
-                "fallback_chain": ["openrouter/auto", "deepseek-v3.2:free"],
-                "status": "online" if gateway_online else "idle",
                 "current_task": None,
                 "last_activity": datetime.now(timezone.utc).isoformat(),
                 "avatar": spec["avatar"],
@@ -2701,6 +2621,25 @@ def system_test_api(payload: Dict[str, Any] = Body(...)):
     api_key = payload.get("api_key", "")
     api_url = payload.get("api_url", "")
     return integrations_backend.test_api_connection(provider, api_key, api_url)
+
+# 8. Uptime Kuma Fleet Monitoring
+@app.get("/api/system/uptimekuma")
+def system_uptimekuma():
+    return integrations_backend.get_uptimekuma_status()
+
+# 9. Auto-Discovery & Environment Sync
+@app.post("/api/system/auto-discover")
+def system_auto_discover(dry_run: bool = Query(False)):
+    try:
+        from scripts.auto_discover_env import discover_and_update_env
+    except ImportError:
+        try:
+            from dashboard.scripts.auto_discover_env import discover_and_update_env
+        except ImportError:
+            import sys
+            sys.path.insert(0, str(DASHBOARD_DIR / "scripts"))
+            from auto_discover_env import discover_and_update_env
+    return discover_and_update_env(dry_run=dry_run)
 
 # 7. ElevenLabs Voice Synthesis
 @app.get("/api/tts/voices")
