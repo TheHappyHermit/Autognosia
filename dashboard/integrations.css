@@ -197,6 +197,37 @@
   color: #ffffff;
 }
 
+.chart-style-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+
+.btn-chart-style {
+  background: transparent;
+  border: none;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all var(--motion-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-chart-style:hover {
+  color: var(--text-1);
+}
+
+.btn-chart-style.active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
 .market-watchlist-table {
   width: 100%;
   border-collapse: collapse;

@@ -521,15 +521,72 @@ CommandDeck.prototype.renderVectorScatterPlot = function(data) {
 const math_pi = Math.PI;
 
 
-// ── 4. Financial Markets (yfinance & Candlestick Engine) ───────────────────────
+// ── 4. Financial Markets (yfinance & Candlestick / Smooth Line Engine) ────────
+
+function formatHoldingDisplayName(name, ticker) {
+  const sym = (ticker || '^GSPC').toUpperCase();
+  if (name && name !== sym) {
+    return `${name} (${sym})`;
+  }
+  if (sym === '^GSPC') {
+    return 'S&P 500 (^GSPC)';
+  }
+  return sym;
+}
+
+CommandDeck.prototype.initMarketChartControls = function() {
+  if (this._marketChartControlsInit) return;
+  this._marketChartControlsInit = true;
+
+  this.marketChartStyle = localStorage.getItem('market_chart_style') || 'line';
+
+  const lineBtn = document.getElementById('btn-chart-style-line');
+  const candleBtn = document.getElementById('btn-chart-style-candle');
+
+  const updateButtons = (style) => {
+    if (lineBtn) lineBtn.classList.toggle('active', style === 'line');
+    if (candleBtn) candleBtn.classList.toggle('active', style === 'candle');
+  };
+
+  updateButtons(this.marketChartStyle);
+
+  if (lineBtn) {
+    lineBtn.onclick = () => {
+      this.marketChartStyle = 'line';
+      localStorage.setItem('market_chart_style', 'line');
+      updateButtons('line');
+      if (this.lastMarketChartData) {
+        this.renderMarketChart(this.lastMarketChartData);
+      }
+    };
+  }
+
+  if (candleBtn) {
+    candleBtn.onclick = () => {
+      this.marketChartStyle = 'candle';
+      localStorage.setItem('market_chart_style', 'candle');
+      updateButtons('candle');
+      if (this.lastMarketChartData) {
+        this.renderMarketChart(this.lastMarketChartData);
+      }
+    };
+  }
+
+  window.addEventListener('resize', () => {
+    if (this.lastMarketChartData && document.getElementById('view-markets')?.classList.contains('active')) {
+      this.renderMarketChart(this.lastMarketChartData);
+    }
+  });
+};
 
 CommandDeck.prototype.fetchMarkets = async function() {
   const quotesList = document.getElementById('market-watchlist-tbody');
   if (!quotesList) return;
   quotesList.innerHTML = '<tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>';
 
-  // Ensure persistent bottom ticker ribbon is loaded with live data
+  // Ensure persistent bottom ticker ribbon and chart style controls are initialized
   this.fetchMarketTickerRibbon();
+  this.initMarketChartControls();
 
   try {
     const [quotesRes, chartRes] = await Promise.all([
@@ -592,8 +649,12 @@ CommandDeck.prototype.renderWatchlist = function(data) {
       row.style.background = 'var(--bg-tertiary)';
       const ticker = row.dataset.ticker;
       this.activeMarketTicker = ticker;
+      const q = quotes.find(item => item.ticker === ticker);
+      const displayName = formatHoldingDisplayName(q?.name, ticker);
       const titleEl = document.getElementById('market-chart-ticker');
-      if (titleEl) titleEl.textContent = `${ticker} Market Overview`;
+      if (titleEl) titleEl.textContent = displayName;
+      const symEl = document.getElementById('breakdown-ticker-symbol');
+      if (symEl) symEl.textContent = displayName;
       await Promise.all([
         this.loadTickerChart(ticker, this.activeMarketPeriod || '1mo'),
         this.loadTickerBreakdown(ticker)
@@ -635,19 +696,36 @@ CommandDeck.prototype.loadTickerChart = async function(ticker, period = '1mo') {
 };
 
 CommandDeck.prototype.renderMarketChart = function(data) {
+  if (!data) return;
+  this.lastMarketChartData = data;
+  this.initMarketChartControls();
+
+  const chartStyle = this.marketChartStyle || localStorage.getItem('market_chart_style') || 'line';
+
   const titleEl = document.getElementById('market-chart-ticker');
   const priceEl = document.getElementById('market-chart-price');
   const changeEl = document.getElementById('market-chart-change');
   const canvas = document.getElementById('market-candlestick-canvas');
   if (!canvas) return;
 
-  if (titleEl) titleEl.textContent = `${data.ticker} Market Overview`;
-  if (priceEl) priceEl.textContent = `$${Number(data.current_price).toLocaleString()}`;
-  if (changeEl) {
+  const ticker = data.ticker || '^GSPC';
+  const displayName = formatHoldingDisplayName(data.name, ticker);
+  if (titleEl) titleEl.textContent = displayName;
+
+  if (priceEl && data.current_price != null) {
+    priceEl.textContent = `$${Number(data.current_price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+  }
+  if (changeEl && data.period_change_pct != null) {
     const isPos = data.period_change_pct >= 0;
-    changeEl.textContent = `${isPos ? '+' : ''}${data.period_change_pct}% (${data.period.toUpperCase()})`;
+    changeEl.textContent = `${isPos ? '+' : ''}${data.period_change_pct}% (${(data.period || '1mo').toUpperCase()})`;
     changeEl.className = isPos ? 'market-gain' : 'market-loss';
   }
+
+  // Synchronize style buttons active state
+  const lineBtn = document.getElementById('btn-chart-style-line');
+  const candleBtn = document.getElementById('btn-chart-style-candle');
+  if (lineBtn) lineBtn.classList.toggle('active', chartStyle === 'line');
+  if (candleBtn) candleBtn.classList.toggle('active', chartStyle === 'candle');
 
   const ctx = canvas.getContext('2d');
   const w = canvas.width = canvas.parentElement?.clientWidth || 640;
@@ -656,38 +734,142 @@ CommandDeck.prototype.renderMarketChart = function(data) {
   ctx.clearRect(0, 0, w, h);
 
   const candles = data.candles || [];
-  if (candles.length === 0) return;
+  if (candles.length === 0) {
+    ctx.fillStyle = 'rgba(156, 163, 175, 0.7)';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('No chart data available for selected period', w / 2, h / 2);
+    return;
+  }
 
-  const minPrice = Math.min(...candles.map(c => c.low));
-  const maxPrice = Math.max(...candles.map(c => c.high));
-  const range = maxPrice - minPrice || 1;
+  const minPrice = Math.min(...candles.map(c => c.low != null ? c.low : c.close));
+  const maxPrice = Math.max(...candles.map(c => c.high != null ? c.high : c.close));
+  const priceMargin = (maxPrice - minPrice) * 0.08 || 1;
+  const plotMin = minPrice - priceMargin;
+  const plotMax = maxPrice + priceMargin;
+  const range = plotMax - plotMin || 1;
 
-  const candleWidth = Math.max(3, Math.floor((w - 40) / candles.length) - 3);
+  // Draw subtle horizontal gridlines & price labels
+  const gridSteps = 4;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+  ctx.fillStyle = 'rgba(156, 163, 175, 0.65)';
+  ctx.font = '10px monospace';
+  ctx.lineWidth = 1;
+  ctx.textAlign = 'right';
 
-  candles.forEach((c, idx) => {
-    const x = 30 + idx * ((w - 50) / candles.length);
-    const isBull = c.close >= c.open;
-    const color = isBull ? '#10b981' : '#ef4444';
-
-    const yHigh = (h - 30) - ((c.high - minPrice) / range) * (h - 50);
-    const yLow = (h - 30) - ((c.low - minPrice) / range) * (h - 50);
-    const yOpen = (h - 30) - ((c.open - minPrice) / range) * (h - 50);
-    const yClose = (h - 30) - ((c.close - minPrice) / range) * (h - 50);
-
-    // Wick
+  for (let i = 0; i <= gridSteps; i++) {
+    const y = 20 + (i / gridSteps) * (h - 55);
+    const p = plotMax - (i / gridSteps) * range;
     ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
-    ctx.moveTo(x + candleWidth / 2, yHigh);
-    ctx.lineTo(x + candleWidth / 2, yLow);
+    ctx.moveTo(35, y);
+    ctx.lineTo(w - 20, y);
     ctx.stroke();
+    ctx.fillText(`$${p.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, w - 24, y - 4);
+  }
 
-    // Body
-    ctx.fillStyle = color;
-    const bodyTop = Math.min(yOpen, yClose);
-    const bodyHeight = Math.max(2, Math.abs(yClose - yOpen));
-    ctx.fillRect(x, bodyTop, candleWidth, bodyHeight);
-  });
+  if (chartStyle === 'candle') {
+    // ── Candlestick Chart ──
+    const candleWidth = Math.max(3, Math.floor((w - 90) / candles.length) - 3);
+
+    candles.forEach((c, idx) => {
+      const x = 35 + idx * ((w - 95) / (candles.length || 1));
+      const isBull = c.close >= c.open;
+      const color = isBull ? '#10b981' : '#ef4444';
+
+      const yHigh = (h - 35) - ((c.high - plotMin) / range) * (h - 55);
+      const yLow = (h - 35) - ((c.low - plotMin) / range) * (h - 55);
+      const yOpen = (h - 35) - ((c.open - plotMin) / range) * (h - 55);
+      const yClose = (h - 35) - ((c.close - plotMin) / range) * (h - 55);
+
+      // Wick
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.moveTo(x + candleWidth / 2, yHigh);
+      ctx.lineTo(x + candleWidth / 2, yLow);
+      ctx.stroke();
+
+      // Body
+      ctx.fillStyle = color;
+      const bodyTop = Math.min(yOpen, yClose);
+      const bodyHeight = Math.max(2, Math.abs(yClose - yOpen));
+      ctx.fillRect(x, bodyTop, candleWidth, bodyHeight);
+    });
+  } else {
+    // ── Regular Smooth Historical Line Chart ──
+    const isBull = (data.period_change_pct || 0) >= 0;
+    const strokeColor = isBull ? '#10b981' : '#ef4444';
+    const topGradient = isBull ? 'rgba(16, 185, 129, 0.28)' : 'rgba(239, 68, 68, 0.28)';
+
+    const points = candles.map((c, idx) => {
+      const x = 35 + idx * ((w - 100) / (candles.length - 1 || 1));
+      const y = (h - 35) - ((c.close - plotMin) / range) * (h - 55);
+      return { x, y, price: c.close, time: c.time };
+    });
+
+    if (points.length > 0) {
+      // Area gradient fill under smooth curve
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+      }
+      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+      ctx.lineTo(points[points.length - 1].x, h - 35);
+      ctx.lineTo(points[0].x, h - 35);
+      ctx.closePath();
+
+      const grad = ctx.createLinearGradient(0, 20, 0, h - 35);
+      grad.addColorStop(0, topGradient);
+      grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.02)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke smooth line
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+      }
+      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Draw pulse dot at final data point
+      const lastPt = points[points.length - 1];
+      ctx.beginPath();
+      ctx.arc(lastPt.x, lastPt.y, 6, 0, 2 * Math.PI);
+      ctx.fillStyle = isBull ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(lastPt.x, lastPt.y, 3.5, 0, 2 * Math.PI);
+      ctx.fillStyle = strokeColor;
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  // Draw time labels at bottom
+  ctx.fillStyle = 'rgba(156, 163, 175, 0.7)';
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'center';
+  const labelStep = Math.max(1, Math.floor(candles.length / 6));
+  for (let i = 0; i < candles.length; i += labelStep) {
+    const x = 35 + i * ((w - 100) / (candles.length - 1 || 1));
+    const timeText = candles[i].time || '';
+    ctx.fillText(timeText, x, h - 12);
+  }
 };
 
 CommandDeck.prototype.initMarketAssetSearch = function() {
@@ -744,11 +926,15 @@ CommandDeck.prototype.initMarketAssetSearch = function() {
           el.onclick = async (e) => {
             if (e.target.closest('.market-follow-btn')) return;
             const sym = el.dataset.symbol;
+            const name = el.dataset.name;
             closeDropdown();
             input.value = sym;
             this.activeMarketTicker = sym;
+            const displayName = formatHoldingDisplayName(name, sym);
             const titleEl = document.getElementById('market-chart-ticker');
-            if (titleEl) titleEl.textContent = `${sym} Market Overview`;
+            if (titleEl) titleEl.textContent = displayName;
+            const symEl = document.getElementById('breakdown-ticker-symbol');
+            if (symEl) symEl.textContent = displayName;
             await Promise.all([
               this.loadTickerChart(sym, this.activeMarketPeriod || '1mo'),
               this.loadTickerBreakdown(sym)
@@ -785,8 +971,11 @@ CommandDeck.prototype.initMarketAssetSearch = function() {
       if (!q) return;
       closeDropdown();
       this.activeMarketTicker = q;
+      const displayName = formatHoldingDisplayName(null, q);
       const titleEl = document.getElementById('market-chart-ticker');
-      if (titleEl) titleEl.textContent = `${q} Market Overview`;
+      if (titleEl) titleEl.textContent = displayName;
+      const symEl = document.getElementById('breakdown-ticker-symbol');
+      if (symEl) symEl.textContent = displayName;
       await Promise.all([
         this.loadTickerChart(q, this.activeMarketPeriod || '1mo'),
         this.loadTickerBreakdown(q)
@@ -860,7 +1049,8 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
   const typeEl = document.getElementById('breakdown-ticker-type');
   const recBadge = document.getElementById('breakdown-recommendation-badge');
 
-  if (symEl) symEl.textContent = ticker;
+  const initialDisplayName = formatHoldingDisplayName(null, ticker);
+  if (symEl) symEl.textContent = initialDisplayName;
   if (nameEl) nameEl.textContent = 'Loading detailed metrics...';
 
   try {
@@ -868,9 +1058,19 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
     if (!res.ok) return;
     const data = await res.json();
 
-    if (symEl) symEl.textContent = data.ticker || ticker;
-    if (nameEl) nameEl.textContent = data.name || ticker;
+    const t = data.ticker || ticker;
+    const n = data.name || (t === '^GSPC' ? 'S&P 500' : t);
+    const displayName = formatHoldingDisplayName(n, t);
+
+    if (symEl) symEl.textContent = displayName;
+    if (nameEl) nameEl.textContent = data.profile?.industry || data.profile?.sector || (data.profile?.long_name !== n ? data.profile?.long_name : '') || 'Asset Breakdown';
     if (typeEl) typeEl.textContent = data.profile?.sector || 'Asset';
+
+    // Synchronize chart title if currently showing this ticker
+    const chartTitleEl = document.getElementById('market-chart-ticker');
+    if (chartTitleEl && (this.activeMarketTicker === ticker || !this.activeMarketTicker && ticker === '^GSPC')) {
+      chartTitleEl.textContent = displayName;
+    }
 
     const rec = data.targets?.recommendation_key || 'HOLD';
     if (recBadge) {
@@ -2971,8 +3171,12 @@ CommandDeck.prototype.renderMarketTickerRibbon = function(tickers) {
       const sym = pill.dataset.ticker;
       if (sym) {
         this.activeMarketTicker = sym;
+        const symName = pill.querySelector('.ticker-sym')?.textContent || (sym === '^GSPC' ? 'S&P 500' : sym);
+        const displayName = formatHoldingDisplayName(symName, sym);
         const titleEl = document.getElementById('market-chart-ticker');
-        if (titleEl) titleEl.textContent = `${sym} Market Overview`;
+        if (titleEl) titleEl.textContent = displayName;
+        const symEl = document.getElementById('breakdown-ticker-symbol');
+        if (symEl) symEl.textContent = displayName;
         this.showView('markets');
         await Promise.all([
           this.loadTickerChart(sym, this.activeMarketPeriod || '1mo'),
@@ -3402,7 +3606,7 @@ const setupIntegrations = () => {
       document.querySelectorAll('.market-tf-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const tf = btn.dataset.tf;
-      const currentTicker = window.commandDeck?.activeMarketTicker || document.getElementById('market-chart-ticker')?.textContent?.split(' ')[0] || '^GSPC';
+      const currentTicker = window.commandDeck?.activeMarketTicker || '^GSPC';
       window.commandDeck?.loadTickerChart(currentTicker, tf);
     };
   });

@@ -898,12 +898,30 @@ def get_market_chart(ticker: str = "^GSPC", period: str = "1mo") -> Dict[str, An
             })
         current_price = candles[-1]["close"]
 
+    # Look up human-readable name
+    name = ticker
+    if ticker.upper() == "^GSPC":
+        name = "S&P 500"
+    else:
+        for dt in get_user_watchlist():
+            if dt["ticker"].upper() == ticker.upper():
+                name = dt.get("name", ticker)
+                break
+        if name == ticker and yf:
+            try:
+                t_obj = yf.Ticker(ticker)
+                info = getattr(t_obj, "info", {}) or {}
+                name = info.get("shortName") or info.get("longName") or ticker
+            except Exception:
+                pass
+
     first_open = candles[0]["open"] if candles else 1.0
     last_close = candles[-1]["close"] if candles else 1.0
     period_change = round(((last_close - first_open) / (first_open or 1.0)) * 100, 2)
 
     return {
         "ticker": ticker.upper(),
+        "name": name,
         "period": period,
         "candles": candles,
         "current_price": current_price or last_close,

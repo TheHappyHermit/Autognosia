@@ -2110,10 +2110,16 @@
       </div>
 
       <div class="market-dashboard-grid">
-        <!-- Candlestick Chart Panel (Left / Larger) -->
+        <!-- Candlestick / Historical Line Chart Panel (Left / Larger) -->
         <div class="panel">
-          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="panel-title" id="market-chart-ticker">^GSPC Market Overview</div>
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              <div class="panel-title" id="market-chart-ticker">S&P 500 (^GSPC)</div>
+              <div class="chart-style-toggle" id="market-chart-style-toggle" role="group" aria-label="Chart Style">
+                <button type="button" id="btn-chart-style-line" class="btn-chart-style active" data-style="line" title="Smooth Historical Line Chart">📈 Line</button>
+                <button type="button" id="btn-chart-style-candle" class="btn-chart-style" data-style="candle" title="Candlestick Chart">🕯️ Candle</button>
+              </div>
+            </div>
             <div style="display:flex; gap:12px; align-items:baseline;">
               <span id="market-chart-price" style="font-family:var(--font-mono); font-weight:700; font-size:1.1rem; color:var(--text-1);">---</span>
               <span id="market-chart-change" class="market-gain">---</span>
@@ -2160,7 +2166,7 @@
             <span style="font-size:1.4rem;">📊</span>
             <div>
               <div style="display:flex; align-items:center; gap:8px;">
-                <h3 id="breakdown-ticker-symbol" style="margin:0; font-size:1.2rem; font-weight:700;">^GSPC</h3>
+                <h3 id="breakdown-ticker-symbol" style="margin:0; font-size:1.2rem; font-weight:700;">S&P 500 (^GSPC)</h3>
                 <span class="badge badge-cyan" id="breakdown-ticker-type">Index</span>
                 <span class="badge badge-purple" id="breakdown-recommendation-badge">HOLD</span>
               </div>
