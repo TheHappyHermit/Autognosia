@@ -53,7 +53,7 @@
     { id: 'goto-calendar', label: 'Go to Calendar', hint: 'schedule & events', group: 'Navigate', run: () => window.commandDeck?.showView('calendar') },
     { id: 'goto-services', label: 'Go to Services', hint: 'media & queues', group: 'Navigate', run: () => window.commandDeck?.showView('services') },
     { id: 'goto-homelab', label: 'Go to Home Lab', hint: 'servers & docker', group: 'Navigate', run: () => window.commandDeck?.showView('homelab') },
-    { id: 'goto-system', label: 'Go to System', hint: 'cpu, telemetry & cron', group: 'Navigate', run: () => window.commandDeck?.showView('system') },
+    { id: 'goto-system', label: 'Go to System Settings', hint: 'settings, credentials & financial APIs', group: 'Navigate', run: () => window.commandDeck?.showView('system') },
     { id: 'goto-homeassistant', label: 'Go to Smart Home', hint: 'home assistant entities', group: 'Navigate', run: () => window.commandDeck?.showView('homeassistant') },
     { id: 'goto-n8n', label: 'Go to Automations', hint: 'n8n workflow orchestrator', group: 'Navigate', run: () => window.commandDeck?.showView('n8n') },
     { id: 'goto-agents', label: 'Go to Agents & Chat', hint: 'Hermes bots', group: 'Navigate', run: () => window.commandDeck?.showView('agents') },

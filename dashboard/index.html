@@ -203,18 +203,6 @@
       </div>
     </header>
 
-    <!-- Persistent Market Ticker-Tape Ribbon -->
-    <div class="market-ticker-ribbon" id="market-ticker-ribbon" title="Click any asset to load candlestick chart">
-      <div class="ticker-track" id="market-ticker-track">
-        <span class="ticker-pill" data-ticker="^GSPC"><span class="ticker-sym">S&P 500</span> <span class="ticker-price">5,648.40</span> <span class="ticker-pct">+0.42%</span></span>
-        <span class="ticker-pill" data-ticker="^IXIC"><span class="ticker-sym">NASDAQ</span> <span class="ticker-price">17,845.20</span> <span class="ticker-pct">+0.65%</span></span>
-        <span class="ticker-pill up" data-ticker="BTC-USD"><span class="ticker-sym">BTC-USD</span> <span class="ticker-price">$64,120.00</span> <span class="ticker-pct">+1.85%</span></span>
-        <span class="ticker-pill up" data-ticker="NVDA"><span class="ticker-sym">NVDA</span> <span class="ticker-price">$128.90</span> <span class="ticker-pct">+2.40%</span></span>
-        <span class="ticker-pill down" data-ticker="AAPL"><span class="ticker-sym">AAPL</span> <span class="ticker-price">$228.20</span> <span class="ticker-pct">-0.32%</span></span>
-        <span class="ticker-pill up" data-ticker="MSFT"><span class="ticker-sym">MSFT</span> <span class="ticker-price">$435.10</span> <span class="ticker-pct">+0.18%</span></span>
-      </div>
-    </div>
-
     <!-- Split-Screen Dual Workbench Mode Container -->
     <div id="workbench-split-stage" style="display:none; padding:12px; height:calc(100vh - 120px);">
       <div class="workbench-container">
@@ -863,11 +851,11 @@
       <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <div>
           <h1 class="view-section-title">Home Lab & Infrastructure</h1>
-          <p class="view-section-subtitle">System settings, API credentials, server monitoring, Hermes inference nodes, and hardware telemetry</p>
+          <p class="view-section-subtitle">Local server monitoring, Hermes inference nodes, service health mesh, and hardware telemetry</p>
         </div>
-        <button id="btn-save-system-settings" class="btn btn--primary btn--sm" style="display:flex; align-items:center; gap:6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save All Settings & Sync .env
+        <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system')" style="display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          System Settings & API Config
         </button>
       </div>
 
@@ -968,6 +956,166 @@
           </div>
         </div>
       </section>
+
+      <!-- Hero Stats Row -->
+      <section class="hero-stats" aria-label="System metrics" style="margin-bottom: var(--space-4);">
+        <div class="hero-stat">
+          <span class="hero-stat__label">CPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-cpu"></span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">RAM</span>
+          <span class="hero-stat__value text-tabular" id="stat-ram"></span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">DISK</span>
+          <span class="hero-stat__value text-tabular" id="stat-disk"></span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">NET</span>
+          <span class="hero-stat__value text-tabular" id="stat-network"></span>
+          <span class="hero-stat__unit">MB</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">GPU</span>
+          <span class="hero-stat__value text-tabular" id="stat-gpu"></span>
+          <span class="hero-stat__unit">%</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat__label">UPTIME</span>
+          <span class="hero-stat__value text-tabular" id="stat-uptime"></span>
+          <span class="hero-stat__unit">d</span>
+        </div>
+      </section>
+
+      <!-- Home Lab Infrastructure Server Cards -->
+      <section class="server-grid" aria-label="Home lab servers" id="homelab-server-grid" style="margin-bottom: var(--space-4);">
+        <div class="agent-loading">Loading home lab infrastructure data...</div>
+      </section>
+
+      <!-- Main Node Hardware & Docker Containers Card -->
+      <section class="server-grid" aria-label="Main system server" id="dashboard-server-grid" style="margin-bottom: var(--space-4);">
+        <div class="agent-loading">Loading server data...</div>
+      </section>
+
+      <!-- System Services & Agent Panels Grid -->
+      <div class="panels-grid">
+        <!-- Telemetry Panel -->
+        <section class="panel" aria-label="System Telemetry">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Telemetry
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="telemetry-grid" id="telemetry-grid">
+              <div class="telemetry-metric">
+                <div class="telemetry-metric__value">Loading...</div>
+                <div class="telemetry-metric__label">System Health</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Hermes Agent Panel -->
+        <section class="panel" aria-label="Hermes Agent">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+              Hermes Agent
+            </div>
+            <div class="panel-status" id="agent-status"></div>
+          </div>
+          <div class="panel-body">
+            <div id="agent-grid">
+              <div class="agent-loading">Loading agent status...</div>
+            </div>
+            <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border-subtle);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:0.75rem; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px;">Gateway Platforms</span>
+                <button id="btn-open-memory-console" class="btn btn--ghost btn--sm" style="font-size:0.75rem; padding:2px 8px;" title="Open Hot Memory Console">🧠 Hot Memory</button>
+              </div>
+              <div id="gateway-platforms-container" style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span style="font-size:0.75rem; color:var(--text-3);">Checking platform status...</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Scheduled Cron Jobs Panel -->
+        <section class="panel" aria-label="Cron Jobs">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Scheduled Jobs
+            </div>
+            <div class="panel-status" id="cron-status"></div>
+          </div>
+          <div class="panel-body" id="cron-list">
+            <div class="agent-loading">Loading cron jobs...</div>
+          </div>
+        </section>
+
+        <!-- Inference Cluster & VRAM Telemetry Panel -->
+        <section class="panel" aria-label="Inference Cluster & VRAM">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              Local Inference Cluster & VRAM Gauge
+            </div>
+            <div class="panel-status" id="inference-cluster-status"></div>
+          </div>
+          <div class="panel-body" id="inference-cluster-body">
+            <div class="agent-loading">Probing inference nodes (10.1.1.10 / 10.1.1.151)...</div>
+          </div>
+        </section>
+
+        <!-- Daily Token & Provider Cost Ledger Panel -->
+        <section class="panel" aria-label="Token Usage & Cost">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Daily LLM Token Ledger & Spending Meter
+            </div>
+            <div class="panel-status" id="token-budget-badge"></div>
+          </div>
+          <div class="panel-body" id="token-ledger-body">
+            <div class="agent-loading">Loading usage metrics from usage.json...</div>
+          </div>
+        </section>
+
+        <!-- Omnichannel Notification Dispatch Hub Panel -->
+        <section class="panel" aria-label="Notification Dispatch">
+          <div class="panel-header">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Omnichannel Notification Dispatch Hub
+            </div>
+            <div class="panel-status" id="notification-hub-status"></div>
+          </div>
+          <div class="panel-body" id="notification-hub-body">
+            <div class="agent-loading">Loading notification channels...</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- System Settings & Financial API Configuration View -->
+    <div id="view-system" class="view-section" role="region" aria-label="System Settings & Financial APIs">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">System Settings & Configuration</h1>
+          <p class="view-section-subtitle">Manage self-hosted homelab endpoints, authentication credentials, and financial market data APIs</p>
+        </div>
+        <button id="btn-save-system-settings" class="btn btn--primary btn--sm" style="display:flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save All Settings & Sync .env
+        </button>
+      </div>
 
       <!-- System Settings & Financial API Configuration Panel -->
       <section class="panel" id="system-settings-panel" aria-label="System Settings & Financial APIs" style="margin-bottom: var(--space-4);">
@@ -1615,156 +1763,7 @@
           </div>
         </div>
       </section>
-
-      <!-- Hero Stats Row -->
-      <section class="hero-stats" aria-label="System metrics" style="margin-bottom: var(--space-4);">
-        <div class="hero-stat">
-          <span class="hero-stat__label">CPU</span>
-          <span class="hero-stat__value text-tabular" id="stat-cpu"></span>
-          <span class="hero-stat__unit">%</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat__label">RAM</span>
-          <span class="hero-stat__value text-tabular" id="stat-ram"></span>
-          <span class="hero-stat__unit">%</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat__label">DISK</span>
-          <span class="hero-stat__value text-tabular" id="stat-disk"></span>
-          <span class="hero-stat__unit">%</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat__label">NET</span>
-          <span class="hero-stat__value text-tabular" id="stat-network"></span>
-          <span class="hero-stat__unit">MB</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat__label">GPU</span>
-          <span class="hero-stat__value text-tabular" id="stat-gpu"></span>
-          <span class="hero-stat__unit">%</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat__label">UPTIME</span>
-          <span class="hero-stat__value text-tabular" id="stat-uptime"></span>
-          <span class="hero-stat__unit">d</span>
-        </div>
-      </section>
-
-      <!-- Home Lab Infrastructure Server Cards -->
-      <section class="server-grid" aria-label="Home lab servers" id="homelab-server-grid" style="margin-bottom: var(--space-4);">
-        <div class="agent-loading">Loading home lab infrastructure data...</div>
-      </section>
-
-      <!-- Main Node Hardware & Docker Containers Card -->
-      <section class="server-grid" aria-label="Main system server" id="dashboard-server-grid" style="margin-bottom: var(--space-4);">
-        <div class="agent-loading">Loading server data...</div>
-      </section>
-
-      <!-- System Services & Agent Panels Grid -->
-      <div class="panels-grid">
-        <!-- Telemetry Panel -->
-        <section class="panel" aria-label="System Telemetry">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-              Telemetry
-            </div>
-          </div>
-          <div class="panel-body">
-            <div class="telemetry-grid" id="telemetry-grid">
-              <div class="telemetry-metric">
-                <div class="telemetry-metric__value">Loading...</div>
-                <div class="telemetry-metric__label">System Health</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Hermes Agent Panel -->
-        <section class="panel" aria-label="Hermes Agent">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
-              Hermes Agent
-            </div>
-            <div class="panel-status" id="agent-status"></div>
-          </div>
-          <div class="panel-body">
-            <div id="agent-grid">
-              <div class="agent-loading">Loading agent status...</div>
-            </div>
-            <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border-subtle);">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:0.75rem; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px;">Gateway Platforms</span>
-                <button id="btn-open-memory-console" class="btn btn--ghost btn--sm" style="font-size:0.75rem; padding:2px 8px;" title="Open Hot Memory Console">🧠 Hot Memory</button>
-              </div>
-              <div id="gateway-platforms-container" style="display:flex; flex-wrap:wrap; gap:6px;">
-                <span style="font-size:0.75rem; color:var(--text-3);">Checking platform status...</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Scheduled Cron Jobs Panel -->
-        <section class="panel" aria-label="Cron Jobs">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Scheduled Jobs
-            </div>
-            <div class="panel-status" id="cron-status"></div>
-          </div>
-          <div class="panel-body" id="cron-list">
-            <div class="agent-loading">Loading cron jobs...</div>
-          </div>
-        </section>
-
-        <!-- Inference Cluster & VRAM Telemetry Panel -->
-        <section class="panel" aria-label="Inference Cluster & VRAM">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-              Local Inference Cluster & VRAM Gauge
-            </div>
-            <div class="panel-status" id="inference-cluster-status"></div>
-          </div>
-          <div class="panel-body" id="inference-cluster-body">
-            <div class="agent-loading">Probing inference nodes (10.1.1.10 / 10.1.1.151)...</div>
-          </div>
-        </section>
-
-        <!-- Daily Token & Provider Cost Ledger Panel -->
-        <section class="panel" aria-label="Token Usage & Cost">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              Daily LLM Token Ledger & Spending Meter
-            </div>
-            <div class="panel-status" id="token-budget-badge"></div>
-          </div>
-          <div class="panel-body" id="token-ledger-body">
-            <div class="agent-loading">Loading usage metrics from usage.json...</div>
-          </div>
-        </section>
-
-        <!-- Omnichannel Notification Dispatch Hub Panel -->
-        <section class="panel" aria-label="Notification Dispatch">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Omnichannel Notification Dispatch Hub
-            </div>
-            <div class="panel-status" id="notification-hub-status"></div>
-          </div>
-          <div class="panel-body" id="notification-hub-body">
-            <div class="agent-loading">Loading notification channels...</div>
-          </div>
-        </section>
-      </div>
     </div>
-
-    <!-- Backward-compatibility alias for system view -->
-    <div id="view-system" class="view-section" style="display:none;" aria-hidden="true"></div>
 
     <!-- Home Assistant View -->
     <div id="view-homeassistant" class="view-section" role="region" aria-label="Home Assistant">
@@ -2673,6 +2672,18 @@
       <div class="terminal-body" id="container-logs-content">
         Loading container logs...
       </div>
+    </div>
+  </div>
+
+  <!-- Persistent Market Ticker-Tape Ribbon (Pinned across bottom of page) -->
+  <div class="market-ticker-ribbon" id="market-ticker-ribbon" title="Click any asset to load candlestick chart">
+    <div class="ticker-track" id="market-ticker-track">
+      <span class="ticker-pill" data-ticker="^GSPC"><span class="ticker-sym">S&P 500</span> <span class="ticker-price">5,648.40</span> <span class="ticker-pct">+0.42%</span></span>
+      <span class="ticker-pill" data-ticker="^IXIC"><span class="ticker-sym">NASDAQ</span> <span class="ticker-price">17,845.20</span> <span class="ticker-pct">+0.65%</span></span>
+      <span class="ticker-pill up" data-ticker="BTC-USD"><span class="ticker-sym">BTC-USD</span> <span class="ticker-price">$64,120.00</span> <span class="ticker-pct">+1.85%</span></span>
+      <span class="ticker-pill up" data-ticker="NVDA"><span class="ticker-sym">NVDA</span> <span class="ticker-price">$128.90</span> <span class="ticker-pct">+2.40%</span></span>
+      <span class="ticker-pill down" data-ticker="AAPL"><span class="ticker-sym">AAPL</span> <span class="ticker-price">$228.20</span> <span class="ticker-pct">-0.32%</span></span>
+      <span class="ticker-pill up" data-ticker="MSFT"><span class="ticker-sym">MSFT</span> <span class="ticker-price">$435.10</span> <span class="ticker-pct">+0.18%</span></span>
     </div>
   </div>
 

@@ -172,17 +172,13 @@ CommandDeck.prototype.renderHomeAssistant = function(data) {
     btn.onclick = (e) => {
       e.preventDefault();
       if (typeof this.switchView === 'function') {
-        this.switchView('homelab');
+        this.switchView('system');
       } else if (typeof this.showView === 'function') {
-        this.showView('homelab');
+        this.showView('system');
       } else {
-        const labLink = document.querySelector('.sidebar-link[data-view="homelab"]');
-        if (labLink) labLink.click();
+        const sysLink = document.querySelector('.sidebar-link[data-view="system"]');
+        if (sysLink) sysLink.click();
       }
-      setTimeout(() => {
-        const panel = document.getElementById('system-settings-panel');
-        if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
     };
   });
 };
@@ -317,17 +313,13 @@ CommandDeck.prototype.renderN8n = function(wfData, exData) {
     btn.onclick = (e) => {
       e.preventDefault();
       if (typeof this.switchView === 'function') {
-        this.switchView('homelab');
+        this.switchView('system');
       } else if (typeof this.showView === 'function') {
-        this.showView('homelab');
+        this.showView('system');
       } else {
-        const labLink = document.querySelector('.sidebar-link[data-view="homelab"]');
-        if (labLink) labLink.click();
+        const sysLink = document.querySelector('.sidebar-link[data-view="system"]');
+        if (sysLink) sysLink.click();
       }
-      setTimeout(() => {
-        const panel = document.getElementById('system-settings-panel');
-        if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
     };
   });
 };
@@ -397,11 +389,7 @@ CommandDeck.prototype.loadHomelabServiceView = async function(serviceName) {
     stage.querySelectorAll('.btn-goto-system-settings').forEach(btn => {
       btn.onclick = (e) => {
         e.preventDefault();
-        this.showView('homelab');
-        setTimeout(() => {
-          const panel = document.getElementById('system-settings-panel');
-          if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        this.showView('system');
       };
     });
   }
@@ -1052,7 +1040,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
             <p style="font-size:0.8rem; color:var(--text-3); max-width:500px; margin:0 auto 14px;">
               Connect your free API key from <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">https://www.alphavantage.co/</a> to activate live Global Quotes, currency cross-rates, and technical momentum indicators (RSI, MACD, SMA).
             </p>
-            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('system-settings-panel')?.scrollIntoView({behavior:'smooth'}), 100);">⚙️ Configure in Settings</button>
+            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system');">⚙️ Configure in Settings</button>
           </div>
         `;
       }
@@ -1096,7 +1084,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
             <p style="font-size:0.8rem; color:var(--text-3); max-width:500px; margin:0 auto 14px;">
               Connect your free API key from <a href="https://finnhub.io/register" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">https://finnhub.io/</a> to activate real-time institutional stock quotes, recommendation trends, and analyst price targets.
             </p>
-            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('system-settings-panel')?.scrollIntoView({behavior:'smooth'}), 100);">⚙️ Configure in Settings</button>
+            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system');">⚙️ Configure in Settings</button>
           </div>
         `;
       }
@@ -1131,7 +1119,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
             <p style="font-size:0.8rem; color:var(--text-3); max-width:500px; margin:0 auto 14px;">
               Connect your API token from <a href="https://massive.com/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">https://massive.com/</a> to activate high-throughput order book telemetry and aggregated trade streams.
             </p>
-            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('system-settings-panel')?.scrollIntoView({behavior:'smooth'}), 100);">⚙️ Configure in Settings</button>
+            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system');">⚙️ Configure in Settings</button>
           </div>
         `;
       }
@@ -1184,7 +1172,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
             <p style="font-size:0.8rem; color:var(--text-3); max-width:500px; margin:0 auto 14px;">
               Connect your API key from <a href="https://site.financialmodelingprep.com/developer/docs" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">https://site.financialmodelingprep.com/</a> to unlock automated DCF intrinsic valuation models, capital structure ratios, and enterprise value multiples.
             </p>
-            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('system-settings-panel')?.scrollIntoView({behavior:'smooth'}), 100);">⚙️ Configure in Settings</button>
+            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system');">⚙️ Configure in Settings</button>
           </div>
         `;
       }
@@ -1232,7 +1220,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
             <p style="font-size:0.8rem; color:var(--text-3); max-width:500px; margin:0 auto 14px;">
               Connect your free API key from <a href="https://twelvedata.com/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">https://twelvedata.com/</a> to activate real-time quotes, multi-exchange order data, and technical indicator streams (14-day RSI, MACD, Moving Averages).
             </p>
-            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('system-settings-panel')?.scrollIntoView({behavior:'smooth'}), 100);">⚙️ Configure in Settings</button>
+            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system');">⚙️ Configure in Settings</button>
           </div>
         `;
       }
@@ -1285,7 +1273,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
             <p style="font-size:0.8rem; color:var(--text-3); max-width:500px; margin:0 auto 14px;">
               Connect your free API key from <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">https://fred.stlouisfed.org/</a> to activate macroeconomic discount benchmarks, yield curve inversion tracking, and Federal Reserve policy indicators.
             </p>
-            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('system-settings-panel')?.scrollIntoView({behavior:'smooth'}), 100);">⚙️ Configure in Settings</button>
+            <button class="btn btn--secondary btn--sm" onclick="window.commandDeck?.showView('system');">⚙️ Configure in Settings</button>
           </div>
         `;
       }
@@ -1512,19 +1500,13 @@ CommandDeck.prototype.initSystemSettings = function() {
     btn.onclick = (e) => {
       e.preventDefault();
       if (typeof this.switchView === 'function') {
-        this.switchView('homelab');
+        this.switchView('system');
       } else if (typeof this.showView === 'function') {
-        this.showView('homelab');
+        this.showView('system');
       } else {
-        const labLink = document.querySelector('.sidebar-link[data-view="homelab"]');
-        if (labLink) labLink.click();
+        const sysLink = document.querySelector('.sidebar-link[data-view="system"]');
+        if (sysLink) sysLink.click();
       }
-      setTimeout(() => {
-        const panel = document.getElementById('system-settings-panel');
-        if (panel) {
-          panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
     };
   });
 

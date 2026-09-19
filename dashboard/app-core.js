@@ -156,13 +156,8 @@ export class CommandDeck {
   }
 
   showView(viewName) {
-    const isSystem = (viewName === 'system');
-    if (viewName === 'system') {
-      viewName = 'homelab';
-    }
-
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    const link = document.querySelector(`.sidebar-link[data-view="${isSystem ? 'system' : viewName}"]`);
+    const link = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
     if (link) link.classList.add('active');
 
     // Show the correct view section
@@ -172,15 +167,10 @@ export class CommandDeck {
       target.classList.add('active');
     }
 
-    if (isSystem) {
-      setTimeout(() => {
-        const targetSection = document.getElementById('homelab-telemetry-panel') || document.getElementById('system-settings-panel');
-        targetSection?.scrollIntoView({ behavior: 'smooth' });
-      }, 80);
-    }
-
     // Initialize view-specific logic
-    if (viewName === 'services') {
+    if (viewName === 'system') {
+      if (typeof this.loadSystemSettings === 'function') this.loadSystemSettings();
+    } else if (viewName === 'services') {
       if (typeof this.fetchServices === 'function') this.fetchServices();
     } else if (viewName === 'calendar') {
       if (typeof this.fetchCalendar === 'function') this.fetchCalendar();
@@ -203,7 +193,6 @@ export class CommandDeck {
       if (typeof this.fetchInferenceCluster === 'function') this.fetchInferenceCluster();
       if (typeof this.fetchTokenLedger === 'function') this.fetchTokenLedger();
       if (typeof this.fetchNotificationHub === 'function') this.fetchNotificationHub();
-      if (typeof this.loadSystemSettings === 'function') this.loadSystemSettings();
     } else if (viewName === 'agents') {
       if (window.botsPage && typeof window.botsPage.init === 'function') {
         window.botsPage.init();

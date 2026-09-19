@@ -1171,17 +1171,22 @@
    Persistent Financial Market Ticker Ribbon
    ========================================================================== */
 .market-ticker-ribbon {
-  width: 100%;
-  height: 32px;
-  background: rgba(13, 17, 23, 0.88);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border-subtle);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 28px;
+  background: rgba(13, 17, 23, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: none;
   overflow: hidden;
-  position: relative;
   display: flex;
   align-items: center;
   user-select: none;
-  z-index: 10;
+  z-index: 999;
 }
 
 .ticker-track {
