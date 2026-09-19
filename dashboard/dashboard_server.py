@@ -2640,14 +2640,54 @@ def search_clip_api(payload: Dict[str, Any] = Body(...)):
     tags = payload.get("tags")
     return integrations_backend.clip_search_to_vault(title, url, snippet, tags)
 
-# 6. Financial Markets & yfinance
+# 6. Financial Markets & Multi-API Intelligence (yfinance, Alpha Vantage, Finnhub, Massive)
 @app.get("/api/markets/quotes")
 def markets_quotes():
     return integrations_backend.get_market_quotes()
 
+@app.get("/api/markets/watchlist")
+def markets_watchlist():
+    return integrations_backend.get_user_watchlist()
+
+@app.post("/api/markets/watchlist/follow")
+def markets_follow(payload: Dict[str, Any] = Body(...)):
+    ticker = payload.get("ticker", "")
+    name = payload.get("name", "")
+    asset_type = payload.get("type", "equity")
+    return integrations_backend.follow_ticker(ticker, name, asset_type)
+
+@app.post("/api/markets/watchlist/unfollow")
+def markets_unfollow(payload: Dict[str, Any] = Body(...)):
+    ticker = payload.get("ticker", "")
+    return integrations_backend.unfollow_ticker(ticker)
+
+@app.get("/api/markets/search")
+def markets_search(q: str = Query("", min_length=1)):
+    return integrations_backend.search_market_assets(q)
+
+@app.get("/api/markets/detail")
+def markets_detail(ticker: str = Query("^GSPC")):
+    return integrations_backend.get_market_detail(ticker)
+
 @app.get("/api/markets/chart")
 def markets_chart(ticker: str = Query("^GSPC"), period: str = Query("1mo")):
     return integrations_backend.get_market_chart(ticker, period)
+
+# System Settings (Financial API Keys & Infrastructure Config)
+@app.get("/api/system/settings")
+def system_get_settings():
+    return integrations_backend.get_system_settings()
+
+@app.post("/api/system/settings")
+def system_save_settings(payload: Dict[str, Any] = Body(...)):
+    return integrations_backend.save_system_settings(payload)
+
+@app.post("/api/system/settings/test")
+def system_test_api(payload: Dict[str, Any] = Body(...)):
+    provider = payload.get("provider", "")
+    api_key = payload.get("api_key", "")
+    api_url = payload.get("api_url", "")
+    return integrations_backend.test_api_connection(provider, api_key, api_url)
 
 # 7. ElevenLabs Voice Synthesis
 @app.get("/api/tts/voices")

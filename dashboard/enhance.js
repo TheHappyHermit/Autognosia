@@ -125,8 +125,6 @@
 
   if (palette) {
     $('btn-palette-trigger')?.addEventListener('click', openPalette);
-    $('global-search')?.addEventListener('click', openPalette);
-    $('global-search')?.addEventListener('focus', openPalette);
     paletteSearch?.addEventListener('input', () => { paletteIdx = 0; renderPalette(paletteSearch.value); });
     paletteSearch?.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') { e.preventDefault(); paletteIdx = Math.min(paletteIdx + 1, visible.length - 1); renderPalette(paletteSearch.value); }

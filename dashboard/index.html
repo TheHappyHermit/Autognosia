@@ -31,11 +31,6 @@
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
-      <div class="sidebar-logo" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
-      </div>
       <div class="sidebar-section-label">Navigation</div>
       <div class="sidebar-nav">
         <a href="#" class="sidebar-link active" data-view="dashboard" aria-label="Dashboard" title="Dashboard">
@@ -62,10 +57,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           <span class="sidebar-label">Home Lab</span>
         </a>
-        <a href="#" class="sidebar-link" data-view="system" aria-label="System" title="System">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-          <span class="sidebar-label">System</span>
-        </a>
         <a href="#" class="sidebar-link" data-view="homeassistant" aria-label="Smart Home" title="Smart Home">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.25L12 3l9 7.25V20a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-5H9v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.75z"/></svg>
           <span class="sidebar-label">Smart Home</span>
@@ -82,9 +73,46 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
           <span class="sidebar-label">Markets</span>
         </a>
+        <div class="sidebar-section-label" style="margin-top:var(--space-2); padding-top:var(--space-2); border-top:1px solid rgba(255,255,255,0.06);">Homelab Apps</div>
+        <a href="#" class="sidebar-link" data-view="deerflow" aria-label="DeerFlow" title="DeerFlow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <span class="sidebar-label">DeerFlow</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="vane" aria-label="Vane (Perplexica)" title="Vane (Perplexica)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><circle cx="11" cy="11" r="3"/></svg>
+          <span class="sidebar-label">Vane</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="openwebui" aria-label="Open WebUI" title="Open WebUI">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="sidebar-label">Open WebUI</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="audiobookshelf" aria-label="Audiobookshelf" title="Audiobookshelf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+          <span class="sidebar-label">Audiobookshelf</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="booklore" aria-label="Booklore" title="Booklore">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span class="sidebar-label">Booklore</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="immich" aria-label="Immich Photos" title="Immich Photos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span class="sidebar-label">Immich</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="nextcloud" aria-label="Nextcloud" title="Nextcloud">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+          <span class="sidebar-label">Nextcloud</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="seer" aria-label="Seer Requests" title="Seer Requests">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+          <span class="sidebar-label">Seer</span>
+        </a>
+        <a href="#" class="sidebar-link" data-view="freshrss" aria-label="FreshRSS" title="FreshRSS">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          <span class="sidebar-label">FreshRSS</span>
+        </a>
       </div>
       <div class="sidebar-spacer"></div>
-      <div class="sidebar-profile" aria-label="User profile" title="Admin">A</div>
+      <div class="sidebar-profile" aria-label="User profile" title="Admin" id="sidebar-profile-badge">A</div>
     </nav>
 
     <!-- Header -->
@@ -100,12 +128,19 @@
         </span>
         <span>Autognosia</span>
       </div>
-      <div class="header-search" id="btn-palette-trigger" style="cursor:pointer;" title="Click or press ⌘K to open command palette">
+      <div class="header-search" id="header-search-container" style="position:relative;">
         <span class="header-search-icon" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </span>
-        <input type="search" id="global-search" placeholder="Search commands, navigate, create…" aria-label="Search" readonly style="cursor:pointer;" />
-        <span class="header-search-hint">⌘K</span>
+        <input type="search" id="global-search" placeholder="Search web via SearXNG, or type to search wiki notes…" aria-label="Search web with SearXNG or knowledge wiki" autocomplete="off" />
+        <span class="header-search-hint" id="header-search-hint" title="Press Enter to search SearXNG">↵ SearXNG</span>
+
+        <!-- Dropdown: Predictive Wiki Suggestions & SearXNG Web Search Action -->
+        <div class="header-search-dropdown" id="header-search-dropdown" style="display:none;">
+          <div class="search-dropdown-section" id="search-dropdown-web"></div>
+          <div class="search-dropdown-section-title" id="search-dropdown-wiki-title" style="display:none;">Knowledge Base Wiki Matches</div>
+          <div class="search-dropdown-section" id="search-dropdown-wiki"></div>
+        </div>
       </div>
       <div class="header-actions">
         <!-- Personal State Attention HUD Chip -->
@@ -151,50 +186,6 @@
 
     <!-- Dashboard View -->
     <div id="view-dashboard" class="view-section active">
-      <!-- HUD Metrics Row -->
-      <section class="hud-metrics" aria-label="Task and intention metrics">
-        <div class="hud-metric">
-          <span class="hud-metric__label">Active Tasks</span>
-          <span class="hud-metric__value text-tabular" id="stat-active-tasks"></span>
-        </div>
-        <div class="hud-metric">
-          <span class="hud-metric__label">Critical</span>
-          <span class="hud-metric__value text-tabular" id="stat-critical-tasks"></span>
-        </div>
-        <div class="hud-metric">
-          <span class="hud-metric__label">Reminders</span>
-          <span class="hud-metric__value text-tabular" id="stat-reminders"></span>
-        </div>
-        <div class="hud-metric">
-          <span class="hud-metric__label">Events</span>
-          <span class="hud-metric__value text-tabular" id="stat-today-events"></span>
-        </div>
-        <div class="hud-metric">
-          <span class="hud-metric__label">Unread</span>
-          <span class="hud-metric__value text-tabular" id="stat-unread-emails"></span>
-        </div>
-        <div class="hud-metric">
-          <span class="hud-metric__label">Intentions</span>
-          <span class="hud-metric__value text-tabular" id="stat-intentions"></span>
-        </div>
-        <div class="hud-metric hud-metric--memory" id="hud-memory-metric" title="Hot memory limit: 2,200 chars. Click to consolidate.">
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <span class="hud-metric__label">Hot Memory</span>
-            <span class="hud-metric__badge" id="stat-memory-badge" style="font-size:0.65rem; padding:1px 6px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-weight:600;">OK</span>
-          </div>
-          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:2px;">
-            <div style="display:flex; align-items:baseline; gap:4px;">
-              <span class="hud-metric__value text-tabular" id="stat-memory-chars">--</span>
-              <span style="font-size:0.75rem; color:var(--text-3);">/ 2,200</span>
-            </div>
-            <canvas id="stat-memory-sparkline" width="56" height="18" style="opacity:0.85;"></canvas>
-          </div>
-          <div class="memory-progress" style="width:100%; height:4px; background:var(--bg-tertiary); border-radius:2px; margin-top:4px; overflow:hidden;">
-            <div id="stat-memory-bar" style="width:0%; height:100%; background:var(--accent); transition:width 0.3s ease;"></div>
-          </div>
-        </div>
-      </section>
-
       <!-- Briefing Bar -->
       <section class="panel" aria-label="Daily briefing">
         <div class="panel-header">
@@ -776,23 +767,709 @@
       </div>
     </div>
 
-    <!-- Home Lab View -->
+    <!-- Home Lab View (Consolidated Homelab & Infrastructure) -->
     <div id="view-homelab" class="view-section" role="region" aria-label="Home Lab">
-      <div class="view-section-header">
-        <h1 class="view-section-title">Home Lab</h1>
-        <p class="view-section-subtitle">Server infrastructure and monitoring</p>
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Home Lab & Infrastructure</h1>
+          <p class="view-section-subtitle">System settings, API credentials, server monitoring, Hermes inference nodes, and hardware telemetry</p>
+        </div>
+        <button id="btn-save-system-settings" class="btn btn--primary btn--sm" style="display:flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save All Settings & Sync .env
+        </button>
       </div>
-      <div class="server-grid" id="homelab-server-grid">
-        <div class="agent-loading">Loading home lab data...</div>
-      </div>
-    </div>
 
-    <!-- System View -->
-    <div id="view-system" class="view-section" role="region" aria-label="System">
-      <div class="view-section-header">
-        <h1 class="view-section-title">System Infrastructure & Telemetry</h1>
-        <p class="view-section-subtitle">Real-time hardware monitors, Hermes server nodes, background cron jobs and diagnostic telemetry</p>
-      </div>
+      <!-- HUD Metrics Row (Operational Telemetry & Hot Memory) -->
+      <section class="hud-metrics" aria-label="Task and intention metrics" style="margin-bottom: var(--space-4);">
+        <div class="hud-metric">
+          <span class="hud-metric__label">Active Tasks</span>
+          <span class="hud-metric__value text-tabular" id="stat-active-tasks"></span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Critical</span>
+          <span class="hud-metric__value text-tabular" id="stat-critical-tasks"></span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Reminders</span>
+          <span class="hud-metric__value text-tabular" id="stat-reminders"></span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Events</span>
+          <span class="hud-metric__value text-tabular" id="stat-today-events"></span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Unread</span>
+          <span class="hud-metric__value text-tabular" id="stat-unread-emails"></span>
+        </div>
+        <div class="hud-metric">
+          <span class="hud-metric__label">Intentions</span>
+          <span class="hud-metric__value text-tabular" id="stat-intentions"></span>
+        </div>
+        <div class="hud-metric hud-metric--memory" id="hud-memory-metric" title="Hot memory limit: 2,200 chars. Click to consolidate.">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <span class="hud-metric__label">Hot Memory</span>
+            <span class="hud-metric__badge" id="stat-memory-badge" style="font-size:0.65rem; padding:1px 6px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-weight:600;">OK</span>
+          </div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-top:2px;">
+            <div style="display:flex; align-items:baseline; gap:4px;">
+              <span class="hud-metric__value text-tabular" id="stat-memory-chars">--</span>
+              <span style="font-size:0.75rem; color:var(--text-3);">/ 2,200</span>
+            </div>
+            <canvas id="stat-memory-sparkline" width="56" height="18" style="opacity:0.85;"></canvas>
+          </div>
+          <div class="memory-progress" style="width:100%; height:4px; background:var(--bg-tertiary); border-radius:2px; margin-top:4px; overflow:hidden;">
+            <div id="stat-memory-bar" style="width:0%; height:100%; background:var(--accent); transition:width 0.3s ease;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- System Settings & Financial API Configuration Panel -->
+      <section class="panel" id="system-settings-panel" aria-label="System Settings & Financial APIs" style="margin-bottom: var(--space-4);">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            System Settings & Financial API Configuration
+          </div>
+          <span style="font-size:0.75rem; color:var(--text-3);">Encrypted & saved to ~/.autognosia/system_settings.json</span>
+        </div>
+        <div class="panel-body" style="padding:16px;">
+          <!-- Section 1: Homelab & Automation Services -->
+          <div class="system-settings-section-header" style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px; border-bottom:1px solid var(--border-subtle); padding-bottom:8px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:1.1rem;">🏠</span>
+                <h3 style="margin:0; font-size:1.05rem; font-weight:700; color:var(--text-1);">Homelab & Automation Services</h3>
+              </div>
+              <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-3);">Configure endpoints, authentication tokens, and MCP credentials for local orchestration tools.</p>
+            </div>
+            <span style="font-size:0.75rem; color:var(--text-3);">Dynamic sync with .env</span>
+          </div>
+
+          <div class="system-settings-grid" style="margin-bottom: var(--space-6);">
+            <!-- n8n Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🔄</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">n8n Workflow Automation</h4>
+                    <a href="http://127.0.0.1:5678" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://127.0.0.1:5678</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-n8n">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Visual automation DAGs, event webhooks, and multi-agent MCP execution bridge.</p>
+              
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL</label>
+                <input type="text" id="input-url-n8n" class="setting-key-input" placeholder="http://127.0.0.1:5678" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">REST API Key (X-N8N-API-KEY)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-n8n" class="setting-key-input" placeholder="Enter X-N8N-API-KEY (Settings > n8n API)" autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-n8n">👁️</button>
+                </div>
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">MCP / Webhook Secret Token (Optional)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-mcp-n8n" class="setting-key-input" placeholder="Enter MCP Token / Webhook Secret" autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-mcp-n8n">👁️</button>
+                </div>
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="n8n" style="width:100%;">Test n8n Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-n8n"></div>
+            </div>
+
+            <!-- Home Assistant Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🏠</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Home Assistant IoT Engine</h4>
+                    <a href="http://10.1.1.13:8123" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://10.1.1.13:8123</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-homeassistant">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">IoT smart home entity orchestrator, Zigbee/Z-Wave bridges, and MCP service runner.</p>
+              
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Home Assistant URL</label>
+                <input type="text" id="input-url-hass" class="setting-key-input" placeholder="http://10.1.1.13:8123" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">Long-Lived Access Token / MCP</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-token-hass" class="setting-key-input" placeholder="Enter Token (HA Profile > Security)" autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-token-hass">👁️</button>
+                </div>
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="homeassistant" style="width:100%;">Test HA Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-homeassistant"></div>
+            </div>
+
+            <!-- SearXNG Metasearch Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🔍</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">SearXNG Metasearch Engine</h4>
+                    <a href="http://127.0.0.1:8080" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://127.0.0.1:8080</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-searxng">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Self-hosted metasearch aggregating Google, Bing, ArXiv, and GitHub into the top Omnibar.</p>
+              
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">SearXNG Endpoint URL</label>
+                <input type="text" id="input-url-searxng" class="setting-key-input" placeholder="http://127.0.0.1:8080" autocomplete="off" />
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="searxng" style="width:100%;">Test SearXNG Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-searxng"></div>
+            </div>
+
+            <!-- PostgreSQL + pgvector Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🐘</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">PostgreSQL + pgvector</h4>
+                    <span style="font-size:0.75rem; color:var(--text-3);">Port 5432</span>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-pgvector">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Relational persistence & 2000-dimension vector embedding store for Knowledge Vault RAG.</p>
+              
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">Database Connection URI</label>
+                <input type="text" id="input-url-pg" class="setting-key-input" placeholder="postgresql://postgres:postgres@localhost:5432/autognosia" autocomplete="off" />
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="pgvector" style="width:100%;">Verify pgvector URI</button>
+              </div>
+              <div class="setting-status-msg" id="msg-pgvector"></div>
+            </div>
+
+            <!-- Hermes Inference Cluster Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🧠</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Hermes Local Inference Cluster</h4>
+                    <span style="font-size:0.75rem; color:var(--text-3);">3 Distributed Nodes</span>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-inference">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Distributed local LLM inference across Hermes 3 Llama-70B, Qwen 2.5 Vision, and vLLM.</p>
+              
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">Main Reasoning Node (70B)</label>
+                <input type="text" id="input-url-inference-main" class="setting-key-input" placeholder="http://10.1.1.10:8080" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">Vision Node (Qwen 2.5 VL)</label>
+                <input type="text" id="input-url-inference-vision" class="setting-key-input" placeholder="http://10.1.1.151:1234" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">vLLM Engine Node</label>
+                <input type="text" id="input-url-inference-vllm" class="setting-key-input" placeholder="http://10.1.1.151:18020" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">Cluster API Bearer Key (Optional)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-inference" class="setting-key-input" placeholder="Enter Bearer Token (if enabled)" autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-inference">👁️</button>
+                </div>
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="inference" style="width:100%;">Test Main Node Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-inference"></div>
+            </div>
+
+            <!-- ElevenLabs Neural Voice Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🎙️</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">ElevenLabs Neural Voice</h4>
+                    <a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://elevenlabs.io/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-elevenlabs">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Low-latency neural text-to-speech synthesis powering conversational agent audio telemetry.</p>
+              
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">ElevenLabs API Key</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-elevenlabs" class="setting-key-input" placeholder="Enter ElevenLabs API Key..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-elevenlabs">👁️</button>
+                </div>
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="elevenlabs" style="width:100%;">Test ElevenLabs Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-elevenlabs"></div>
+            </div>
+          </div>
+
+          <!-- Section 2: Self-Hosted Homelab Applications -->
+          <div class="system-settings-section-header" style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px; border-bottom:1px solid var(--border-subtle); padding-bottom:8px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:1.1rem;">🖥️</span>
+                <h3 style="margin:0; font-size:1.05rem; font-weight:700; color:var(--text-1);">Self-Hosted Homelab Applications</h3>
+              </div>
+              <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-3);">Configure host IP/domain endpoints, API tokens, and credentials for dedicated homelab service views.</p>
+            </div>
+            <span style="font-size:0.75rem; color:var(--text-3);">Persisted to .env</span>
+          </div>
+
+          <div class="system-settings-grid" style="margin-bottom: var(--space-6);">
+            <!-- DeerFlow Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🦌</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">DeerFlow Research</h4>
+                    <a href="http://localhost:8000" id="link-setting-deerflow" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:8000</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-deerflow">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Deep multi-agent research workflow, automated literature synthesis & DAG flows.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-deerflow" class="setting-key-input" placeholder="http://localhost:8000" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key (Optional)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-deerflow" class="setting-key-input" placeholder="Enter API Key (if required)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-deerflow">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="deerflow" style="width:100%;">Test DeerFlow Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-deerflow"></div>
+            </div>
+
+            <!-- Vane (Perplexica) Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🧭</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Vane (Perplexica)</h4>
+                    <a href="http://localhost:3000" id="link-setting-vane" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:3000</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-vane">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">AI conversational search engine grounded by live web and local document sources.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-vane" class="setting-key-input" placeholder="http://localhost:3000" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key / Auth Token (Optional)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-vane" class="setting-key-input" placeholder="Enter API Token (if required)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-vane">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="vane" style="width:100%;">Test Vane Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-vane"></div>
+            </div>
+
+            <!-- Open WebUI Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">💬</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Open WebUI</h4>
+                    <a href="http://localhost:3000" id="link-setting-openwebui" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:3000</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-openwebui">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Self-hosted chat interface connecting Ollama, vLLM, and OpenAI API providers.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-openwebui" class="setting-key-input" placeholder="http://localhost:3000" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key / JWT Token</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-openwebui" class="setting-key-input" placeholder="Enter Bearer Token (Settings > Account > API Keys)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-openwebui">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="openwebui" style="width:100%;">Test Open WebUI Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-openwebui"></div>
+            </div>
+
+            <!-- Audiobookshelf Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🎧</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Audiobookshelf</h4>
+                    <a href="http://localhost:13378" id="link-setting-audiobookshelf" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:13378</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-audiobookshelf">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Self-hosted audiobook and podcast streaming server with progress tracking.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-audiobookshelf" class="setting-key-input" placeholder="http://localhost:13378" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Token</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-token-audiobookshelf" class="setting-key-input" placeholder="Enter Audiobookshelf API Token..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-token-audiobookshelf">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="audiobookshelf" style="width:100%;">Test Audiobookshelf Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-audiobookshelf"></div>
+            </div>
+
+            <!-- Booklore Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">📖</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Booklore Library</h4>
+                    <a href="http://localhost:8080" id="link-setting-booklore" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:8080</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-booklore">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Self-hosted digital book library, EPUB/PDF archive, and reader workstation.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-booklore" class="setting-key-input" placeholder="http://localhost:8080" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key / Token (Optional)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-booklore" class="setting-key-input" placeholder="Enter API Token (if configured)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-booklore">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="booklore" style="width:100%;">Test Booklore Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-booklore"></div>
+            </div>
+
+            <!-- Immich Photos Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">📷</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Immich Photos & Video</h4>
+                    <a href="http://localhost:2283" id="link-setting-immich" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:2283</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-immich">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">High-performance photo backup solution with automatic facial recognition and CLIP search.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-immich" class="setting-key-input" placeholder="http://localhost:2283" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key (x-api-key)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-immich" class="setting-key-input" placeholder="Enter Immich API Key (Account > API Keys)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-immich">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="immich" style="width:100%;">Test Immich Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-immich"></div>
+            </div>
+
+            <!-- Nextcloud Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">☁️</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Nextcloud Hub</h4>
+                    <a href="http://localhost:8080" id="link-setting-nextcloud" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:8080</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-nextcloud">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Self-hosted productivity suite, file synchronization, collaborative documents & calendars.</p>
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-nextcloud" class="setting-key-input" placeholder="http://localhost:8080" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">Nextcloud Username (Optional)</label>
+                <input type="text" id="input-user-nextcloud" class="setting-key-input" placeholder="admin" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">App Password / Security Token</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-token-nextcloud" class="setting-key-input" placeholder="Enter App Password (Security > Devices & passwords)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-token-nextcloud">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="nextcloud" style="width:100%;">Test Nextcloud Status</button>
+              </div>
+              <div class="setting-status-msg" id="msg-nextcloud"></div>
+            </div>
+
+            <!-- Seer (Overseerr / Jellyseerr) Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🎬</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Seer (Overseerr / Jellyseerr)</h4>
+                    <a href="http://localhost:5055" id="link-setting-seer" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:5055</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-seer">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Media discovery and automated request manager for Jellyfin, Emby, and Plex libraries.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-seer" class="setting-key-input" placeholder="http://localhost:5055" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key (X-Api-Key)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-seer" class="setting-key-input" placeholder="Enter API Key (Settings > General)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-seer">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="seer" style="width:100%;">Test Seer Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-seer"></div>
+            </div>
+
+            <!-- FreshRSS Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">📰</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">FreshRSS Feed Aggregator</h4>
+                    <a href="http://localhost:8080" id="link-setting-freshrss" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:8080</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-freshrss">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Self-hosted RSS/Atom feed aggregator with Google Reader API support for mobile readers.</p>
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-freshrss" class="setting-key-input" placeholder="http://localhost:8080" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:6px;">
+                <label class="setting-field-label">FreshRSS Username (Optional)</label>
+                <input type="text" id="input-user-freshrss" class="setting-key-input" placeholder="admin" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Password / Token</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-freshrss" class="setting-key-input" placeholder="Enter API Password (Profile > API management)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-freshrss">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="freshrss" style="width:100%;">Test FreshRSS Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-freshrss"></div>
+            </div>
+          </div>
+
+          <!-- Section 3: Financial Market Data APIs -->
+          <div class="system-settings-section-header" style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px; border-bottom:1px solid var(--border-subtle); padding-bottom:8px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:1.1rem;">📈</span>
+                <h3 style="margin:0; font-size:1.05rem; font-weight:700; color:var(--text-1);">Financial Market Data APIs</h3>
+              </div>
+              <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-3);">Connect institutional market feeds, valuation models, macroeconomic indicators, and technical analysts.</p>
+            </div>
+            <span style="font-size:0.75rem; color:var(--text-3);">yfinance active by default</span>
+          </div>
+
+          <div class="system-settings-grid">
+            <!-- Alpha Vantage Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">📈</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Alpha Vantage API</h4>
+                    <a href="https://www.alphavantage.co/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://www.alphavantage.co/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-alphavantage">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Global equity quotes, currency rates, and technical indicators (RSI, MACD, SMA).</p>
+              <div class="setting-input-row">
+                <input type="password" id="input-key-alphavantage" class="setting-key-input" placeholder="Enter Alpha Vantage API key..." autocomplete="off" />
+                <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-alphavantage">👁️</button>
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="alphavantage">Test Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-alphavantage"></div>
+            </div>
+
+            <!-- Massive Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">⚡</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Massive Market Data API</h4>
+                    <a href="https://massive.com/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://massive.com/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-massive">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Institutional high-frequency order book feeds, aggregated trades, and liquidity streams.</p>
+              <div class="setting-input-row">
+                <input type="password" id="input-key-massive" class="setting-key-input" placeholder="Enter Massive API Token / Key..." autocomplete="off" />
+                <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-massive">👁️</button>
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="massive">Test Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-massive"></div>
+            </div>
+
+            <!-- Finnhub Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🎯</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Finnhub Financial API</h4>
+                    <a href="https://finnhub.io/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://finnhub.io/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-finnhub">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Real-time stock prices, analyst recommendation trends (Buy/Hold/Sell), and price targets.</p>
+              <div class="setting-input-row">
+                <input type="password" id="input-key-finnhub" class="setting-key-input" placeholder="Enter Finnhub API Key..." autocomplete="off" />
+                <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-finnhub">👁️</button>
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="finnhub">Test Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-finnhub"></div>
+            </div>
+
+            <!-- Financial Modeling Prep (FMP) Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🏛️</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Financial Modeling Prep (FMP)</h4>
+                    <a href="https://site.financialmodelingprep.com/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://site.financialmodelingprep.com/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-fmp">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Discounted cash flow (DCF) intrinsic value, financial ratios (ROE, ROA), and enterprise multiples.</p>
+              <div class="setting-input-row">
+                <input type="password" id="input-key-fmp" class="setting-key-input" placeholder="Enter FMP API Key..." autocomplete="off" />
+                <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-fmp">👁️</button>
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="fmp">Test Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-fmp"></div>
+            </div>
+
+            <!-- Twelve Data Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">📊</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Twelve Data API</h4>
+                    <a href="https://twelvedata.com/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://twelvedata.com/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-twelvedata">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Real-time quotes, technical momentum indicators (14-day RSI, MACD), and global exchange status.</p>
+              <div class="setting-input-row">
+                <input type="password" id="input-key-twelvedata" class="setting-key-input" placeholder="Enter Twelve Data API Key..." autocomplete="off" />
+                <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-twelvedata">👁️</button>
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="twelvedata">Test Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-twelvedata"></div>
+            </div>
+
+            <!-- FRED (St. Louis Fed) Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🏦</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">FRED (Federal Reserve Economic Data)</h4>
+                    <a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">https://fred.stlouisfed.org/</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-fred">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Macroeconomic discount benchmarks: Fed Funds Rate, 10Y Yield, Yield Curve Inversion, and CPI.</p>
+              <div class="setting-input-row">
+                <input type="password" id="input-key-fred" class="setting-key-input" placeholder="Enter FRED API Key..." autocomplete="off" />
+                <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-fred">👁️</button>
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="fred">Test Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-fred"></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Hero Stats Row -->
       <section class="hero-stats" aria-label="System metrics" style="margin-bottom: var(--space-4);">
@@ -828,8 +1505,13 @@
         </div>
       </section>
 
-      <!-- Home Lab Server Cards (10.1.1.37 / Main Node) -->
-      <section class="server-grid" aria-label="Home lab servers" id="dashboard-server-grid" style="margin-bottom: var(--space-4);">
+      <!-- Home Lab Infrastructure Server Cards -->
+      <section class="server-grid" aria-label="Home lab servers" id="homelab-server-grid" style="margin-bottom: var(--space-4);">
+        <div class="agent-loading">Loading home lab infrastructure data...</div>
+      </section>
+
+      <!-- Main Node Hardware & Docker Containers Card -->
+      <section class="server-grid" aria-label="Main system server" id="dashboard-server-grid" style="margin-bottom: var(--space-4);">
         <div class="agent-loading">Loading server data...</div>
       </section>
 
@@ -936,14 +1618,26 @@
       </div>
     </div>
 
+    <!-- Backward-compatibility alias for system view -->
+    <div id="view-system" class="view-section" style="display:none;" aria-hidden="true"></div>
+
     <!-- Home Assistant View -->
     <div id="view-homeassistant" class="view-section" role="region" aria-label="Home Assistant">
-      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <div>
           <h1 class="view-section-title">Home Assistant</h1>
           <p class="view-section-subtitle">Smart home IoT entity orchestrator & MCP service runner</p>
         </div>
-        <span id="ha-connection-badge" class="badge badge-secondary">Connecting...</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="ha-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="ha-external-link" href="http://10.1.1.13:8123" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open HA Web App</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
       </div>
       <div class="panel">
         <div class="panel-body" id="ha-stage" style="padding:var(--space-4);">
@@ -954,16 +1648,250 @@
 
     <!-- n8n Automation Pipelines View -->
     <div id="view-n8n" class="view-section" role="region" aria-label="n8n Automations">
-      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <div>
           <h1 class="view-section-title">n8n Automation Pipelines</h1>
           <p class="view-section-subtitle">Visual workflow orchestrator, webhooks & external MCP bridge</p>
         </div>
-        <span id="n8n-connection-badge" class="badge badge-secondary">Connecting...</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="n8n-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="n8n-external-link" href="http://127.0.0.1:5678" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open n8n Web App</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
       </div>
       <div class="panel">
         <div class="panel-body" id="n8n-stage" style="padding:var(--space-4);">
           <div class="agent-loading">Loading n8n automation pipelines...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DeerFlow View -->
+    <div id="view-deerflow" class="view-section" role="region" aria-label="DeerFlow">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">DeerFlow</h1>
+          <p class="view-section-subtitle">Deep multi-agent research workflow, automated literature synthesis & DAG flows</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="deerflow-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="deerflow-external-link" href="http://localhost:8000" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open DeerFlow Web App</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="deerflow-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to DeerFlow...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vane (Perplexica) View -->
+    <div id="view-vane" class="view-section" role="region" aria-label="Vane (Perplexica)">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Vane (Perplexica)</h1>
+          <p class="view-section-subtitle">AI-powered conversational search engine with multi-source web grounding</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="vane-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="vane-external-link" href="http://localhost:3000" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open Vane Web App</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="vane-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Vane...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open WebUI View -->
+    <div id="view-openwebui" class="view-section" role="region" aria-label="Open WebUI">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Open WebUI</h1>
+          <p class="view-section-subtitle">Self-hosted conversational AI workstation with local Ollama, vLLM & OpenAI model endpoints</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="openwebui-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="openwebui-external-link" href="http://localhost:3000" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open WebUI App</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="openwebui-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Open WebUI...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audiobookshelf View -->
+    <div id="view-audiobookshelf" class="view-section" role="region" aria-label="Audiobookshelf">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Audiobookshelf</h1>
+          <p class="view-section-subtitle">Self-hosted audiobook, podcast & sync server</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="audiobookshelf-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="audiobookshelf-external-link" href="http://localhost:13378" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open Audiobookshelf</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="audiobookshelf-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Audiobookshelf...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booklore View -->
+    <div id="view-booklore" class="view-section" role="region" aria-label="Booklore">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Booklore</h1>
+          <p class="view-section-subtitle">Self-hosted eBook library & reading archive</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="booklore-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="booklore-external-link" href="http://localhost:8080" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open Booklore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="booklore-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Booklore...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Immich Photos View -->
+    <div id="view-immich" class="view-section" role="region" aria-label="Immich Photos">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Immich</h1>
+          <p class="view-section-subtitle">High-performance photo & video backup with machine learning visual search</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="immich-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="immich-external-link" href="http://localhost:2283" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open Immich</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="immich-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Immich...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nextcloud View -->
+    <div id="view-nextcloud" class="view-section" role="region" aria-label="Nextcloud">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Nextcloud</h1>
+          <p class="view-section-subtitle">Private cloud hub, file sync, collaborative docs & calendar</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="nextcloud-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="nextcloud-external-link" href="http://localhost:8080" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open Nextcloud</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="nextcloud-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Nextcloud...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seer View -->
+    <div id="view-seer" class="view-section" role="region" aria-label="Seer">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">Seer Requests</h1>
+          <p class="view-section-subtitle">Media discovery and automated request manager (Overseerr / Jellyseerr)</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="seer-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="seer-external-link" href="http://localhost:5055" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open Seer</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="seer-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to Seer...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FreshRSS View -->
+    <div id="view-freshrss" class="view-section" role="region" aria-label="FreshRSS">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">FreshRSS</h1>
+          <p class="view-section-subtitle">Self-hosted RSS/Atom feed aggregator & reader</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="freshrss-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="freshrss-external-link" href="http://localhost:8080" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open FreshRSS</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="freshrss-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to FreshRSS...</div>
         </div>
       </div>
     </div>
@@ -1091,10 +2019,10 @@
 
     <!-- Financial Markets View -->
     <div id="view-markets" class="view-section" role="region" aria-label="Financial Markets">
-      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <div>
-          <h1 class="view-section-title">Financial Markets</h1>
-          <p class="view-section-subtitle">Real-time quotes, technical candlesticks & asset sparklines via yfinance</p>
+          <h1 class="view-section-title">Financial Markets & Multi-API Intelligence</h1>
+          <p class="view-section-subtitle">Universal ticker search, customizable watchlist, technical candlesticks, and multi-API breakdown</p>
         </div>
         <div class="market-timeframe-bar">
           <button class="market-tf-btn" data-tf="1d">1D</button>
@@ -1104,11 +2032,27 @@
           <button class="market-tf-btn" data-tf="1y">1Y</button>
         </div>
       </div>
+
+      <!-- Universal Asset & Ticker Search Omnibar -->
+      <div class="market-search-bar-wrap" id="market-search-bar-wrap" style="position:relative; margin-bottom: var(--space-4);">
+        <div class="market-search-input-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3); flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="market-search-input" placeholder="Search any ticker symbol, stock, crypto, ETF, commodity or index (e.g. AAPL, BTC-USD, SPY, Gold, NVDA)..." autocomplete="off" />
+          <span class="badge badge-purple" style="font-size:0.7rem;">yfinance + Multi-API</span>
+        </div>
+        <!-- Search Dropdown Results -->
+        <div class="market-search-dropdown" id="market-search-dropdown" style="display:none;"></div>
+      </div>
+
       <div class="market-dashboard-grid">
         <!-- Watchlist Table -->
         <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Asset Watchlist</div>
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+              <span>Followed Watchlist</span>
+              <span class="badge badge-cyan" id="market-watchlist-count" style="font-size:0.7rem;">0 Assets</span>
+            </div>
+            <span style="font-size:0.75rem; color:var(--text-3);">Click row for full breakdown</span>
           </div>
           <div class="panel-body" style="padding:0; overflow-x:auto;">
             <table class="market-watchlist-table">
@@ -1118,10 +2062,11 @@
                   <th>Price</th>
                   <th>Change</th>
                   <th>Trend</th>
+                  <th style="width:36px; text-align:center;"></th>
                 </tr>
               </thead>
               <tbody id="market-watchlist-tbody">
-                <tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>
+                <tr><td colspan="5" class="agent-loading">Fetching market quotes...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1143,6 +2088,118 @@
           </div>
         </div>
       </div>
+
+      <!-- Comprehensive Multi-API Breakdown Deck -->
+      <section class="panel" id="market-ticker-breakdown" style="margin-top: var(--space-4);">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.4rem;">📊</span>
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h3 id="breakdown-ticker-symbol" style="margin:0; font-size:1.2rem; font-weight:700;">^GSPC</h3>
+                <span class="badge badge-cyan" id="breakdown-ticker-type">Index</span>
+                <span class="badge badge-purple" id="breakdown-recommendation-badge">HOLD</span>
+              </div>
+              <div id="breakdown-ticker-name" style="font-size:0.8rem; color:var(--text-3); margin-top:2px;">S&P 500 Index</div>
+            </div>
+          </div>
+          <div class="breakdown-provider-tabs" id="breakdown-provider-tabs">
+            <button class="breakdown-tab-btn active" data-tab="yfinance">yfinance Fundamentals</button>
+            <button class="breakdown-tab-btn" data-tab="alphavantage">Alpha Vantage</button>
+            <button class="breakdown-tab-btn" data-tab="finnhub">Finnhub Consensus</button>
+            <button class="breakdown-tab-btn" data-tab="massive">Massive Feeds</button>
+            <button class="breakdown-tab-btn" data-tab="fmp">FMP Valuation & DCF</button>
+            <button class="breakdown-tab-btn" data-tab="twelvedata">Twelve Data</button>
+            <button class="breakdown-tab-btn" data-tab="fred">FRED Macro Pulse</button>
+          </div>
+        </div>
+
+        <div class="panel-body" style="padding:16px;">
+          <!-- 8 Key Metrics KPI Grid -->
+          <div class="breakdown-kpi-grid">
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">Market Cap</div>
+              <div class="breakdown-kpi-value" id="kpi-market-cap">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">P/E Ratio (Trailing)</div>
+              <div class="breakdown-kpi-value" id="kpi-pe-ratio">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">Trailing EPS</div>
+              <div class="breakdown-kpi-value" id="kpi-eps">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">52W High / Low</div>
+              <div class="breakdown-kpi-value" id="kpi-52w">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">Beta (Volatility)</div>
+              <div class="breakdown-kpi-value" id="kpi-beta">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">Dividend Yield</div>
+              <div class="breakdown-kpi-value" id="kpi-dividend">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">Volume / Avg Vol</div>
+              <div class="breakdown-kpi-value" id="kpi-volume">---</div>
+            </div>
+            <div class="breakdown-kpi-card">
+              <div class="breakdown-kpi-label">Analyst Target (Mean)</div>
+              <div class="breakdown-kpi-value" id="kpi-target">---</div>
+            </div>
+          </div>
+
+          <!-- Tab Panels Container -->
+          <div class="breakdown-tab-content" style="margin-top:16px;">
+            <!-- Tab 1: yfinance Fundamentals -->
+            <div class="breakdown-tab-pane active" id="tab-pane-yfinance">
+              <div class="breakdown-subgrid">
+                <div class="breakdown-section-box">
+                  <h4 class="breakdown-section-title">Valuation & Financial Health</h4>
+                  <div class="breakdown-metrics-list" id="yf-valuation-list"></div>
+                </div>
+                <div class="breakdown-section-box">
+                  <h4 class="breakdown-section-title">Company Profile & Operations</h4>
+                  <div class="breakdown-metrics-list" id="yf-profile-list"></div>
+                  <div class="breakdown-summary-text" id="yf-summary-text" style="margin-top:12px; font-size:0.8rem; color:var(--text-2); line-height:1.5;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Alpha Vantage -->
+            <div class="breakdown-tab-pane" id="tab-pane-alphavantage" style="display:none;">
+              <div id="av-breakdown-body"></div>
+            </div>
+
+            <!-- Tab 3: Finnhub -->
+            <div class="breakdown-tab-pane" id="tab-pane-finnhub" style="display:none;">
+              <div id="fh-breakdown-body"></div>
+            </div>
+
+            <!-- Tab 4: Massive -->
+            <div class="breakdown-tab-pane" id="tab-pane-massive" style="display:none;">
+              <div id="ms-breakdown-body"></div>
+            </div>
+
+            <!-- Tab 5: FMP Valuation & DCF -->
+            <div class="breakdown-tab-pane" id="tab-pane-fmp" style="display:none;">
+              <div id="fmp-breakdown-body"></div>
+            </div>
+
+            <!-- Tab 6: Twelve Data Technicals -->
+            <div class="breakdown-tab-pane" id="tab-pane-twelvedata" style="display:none;">
+              <div id="td-breakdown-body"></div>
+            </div>
+
+            <!-- Tab 7: FRED Macro Pulse -->
+            <div class="breakdown-tab-pane" id="tab-pane-fred" style="display:none;">
+              <div id="fred-breakdown-body"></div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 

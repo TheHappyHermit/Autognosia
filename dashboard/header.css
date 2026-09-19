@@ -120,6 +120,106 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* ==========================================================================
+   Header Search Omnibar Dropdown (SearXNG & Knowledge Base Wikis)
+   ========================================================================== */
+.header-search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-primary, #0f172a);
+  border: 1px solid var(--border-subtle, rgba(255,255,255,0.12));
+  border-radius: var(--radius-md, 10px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+  z-index: 2000;
+  max-height: 440px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="light"] .header-search-dropdown {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+.search-dropdown-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+[data-theme="light"] .search-dropdown-item {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.search-dropdown-item:hover,
+.search-dropdown-item.selected {
+  background: var(--bg-secondary, #1e293b);
+}
+
+[data-theme="light"] .search-dropdown-item:hover,
+[data-theme="light"] .search-dropdown-item.selected {
+  background: #f1f5f9;
+}
+
+.search-dropdown-item-icon {
+  font-size: 1.1rem;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.search-dropdown-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-dropdown-item-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-dropdown-item-snippet {
+  font-size: 0.725rem;
+  color: var(--text-3);
+  margin-top: 2px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-dropdown-web-action {
+  background: rgba(99, 102, 241, 0.08);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--accent, #6366f1);
+}
+
+.search-dropdown-web-action:hover,
+.search-dropdown-web-action.selected {
+  background: rgba(99, 102, 241, 0.18);
+}
+
+.search-dropdown-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  padding: 8px 14px 4px 14px;
+}
+
 .header-actions {
   display: flex;
   align-items: center;

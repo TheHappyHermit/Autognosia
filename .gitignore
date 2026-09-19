@@ -31,6 +31,10 @@ hub/
 .DS_Store
 Thumbs.db
 .Xauthority
+.env
+.env.*
+!.env.example
+!example.env
 
 # ── Shell configs ──
 .bash_history

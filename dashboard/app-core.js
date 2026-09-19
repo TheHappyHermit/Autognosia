@@ -52,6 +52,9 @@ export class CommandDeck {
     if (typeof this.initPersonalStateHUD === 'function') this.initPersonalStateHUD();
     if (typeof this.initHitlApprovalsDeck === 'function') this.initHitlApprovalsDeck();
     if (typeof this.initResearchFrontier === 'function') this.initResearchFrontier();
+    if (typeof this.initHeaderOmnibar === 'function') this.initHeaderOmnibar();
+    if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
+    if (typeof this.initSystemSettings === 'function') this.initSystemSettings();
     if (typeof this.refreshAllData === 'function') {
       try {
         await this.refreshAllData();
@@ -73,6 +76,13 @@ export class CommandDeck {
         this.showView(view);
       });
     });
+
+    const profileBadge = document.getElementById('sidebar-profile-badge');
+    if (profileBadge) {
+      profileBadge.addEventListener('click', () => {
+        this.showView('homelab');
+      });
+    }
 
     const hamburger = document.getElementById('hamburger-btn');
     if (hamburger) {
@@ -138,7 +148,15 @@ export class CommandDeck {
     }
   }
 
+  switchView(viewName) {
+    this.showView(viewName);
+  }
+
   showView(viewName) {
+    if (viewName === 'system') {
+      viewName = 'homelab';
+    }
+
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     const link = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
     if (link) link.classList.add('active');
@@ -163,7 +181,6 @@ export class CommandDeck {
       }
     } else if (viewName === 'homelab') {
       if (typeof this.renderHomeLab === 'function') this.renderHomeLab();
-    } else if (viewName === 'system') {
       if (typeof this.fetchSystemStats === 'function') this.fetchSystemStats();
       if (typeof this.renderDashboardServers === 'function') this.renderDashboardServers();
       if (typeof this.fetchTelemetry === 'function') this.fetchTelemetry();
@@ -173,6 +190,7 @@ export class CommandDeck {
       if (typeof this.fetchInferenceCluster === 'function') this.fetchInferenceCluster();
       if (typeof this.fetchTokenLedger === 'function') this.fetchTokenLedger();
       if (typeof this.fetchNotificationHub === 'function') this.fetchNotificationHub();
+      if (typeof this.loadSystemSettings === 'function') this.loadSystemSettings();
     } else if (viewName === 'agents') {
       if (window.botsPage && typeof window.botsPage.init === 'function') {
         window.botsPage.init();
@@ -196,7 +214,12 @@ export class CommandDeck {
         }, 50);
       }
     } else if (viewName === 'markets') {
+      if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
       if (typeof this.fetchMarkets === 'function') this.fetchMarkets();
+    } else if (['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss'].includes(viewName)) {
+      if (typeof this.loadHomelabServiceView === 'function') {
+        this.loadHomelabServiceView(viewName);
+      }
     } else if (viewName === 'dashboard') {
       if (typeof this.refreshAllData === 'function') this.refreshAllData();
     }
