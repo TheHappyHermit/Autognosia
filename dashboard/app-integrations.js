@@ -338,6 +338,7 @@ CommandDeck.prototype.loadHomelabServiceView = async function(serviceName) {
     nextcloud: { title: 'Nextcloud', defaultUrl: 'http://localhost:8080', icon: '☁️', desc: 'Private cloud hub, file sync, collaborative docs & calendar' },
     seer: { title: 'Seer Requests', defaultUrl: 'http://localhost:5055', icon: '🎬', desc: 'Media discovery and automated request manager (Overseerr / Jellyseerr)' },
     freshrss: { title: 'FreshRSS', defaultUrl: 'http://localhost:8080', icon: '📰', desc: 'Self-hosted RSS/Atom feed aggregator & reader' },
+    godseye: { title: "God's Eye View", defaultUrl: 'http://localhost:5173', icon: '🛰️', desc: 'Real-time 3D geospatial intelligence, Cesium photorealistic tiles, satellite & transponder tracking' },
   };
 
   const service = meta[serviceName];
@@ -606,7 +607,10 @@ const math_pi = Math.PI;
 CommandDeck.prototype.fetchMarkets = async function() {
   const quotesList = document.getElementById('market-watchlist-tbody');
   if (!quotesList) return;
-  quotesList.innerHTML = '<tr><td colspan="5" class="agent-loading">Fetching market quotes...</td></tr>';
+  quotesList.innerHTML = '<tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>';
+
+  // Ensure persistent bottom ticker ribbon is loaded with live data
+  this.fetchMarketTickerRibbon();
 
   try {
     const [quotesRes, chartRes] = await Promise.all([
@@ -620,7 +624,7 @@ CommandDeck.prototype.fetchMarkets = async function() {
     this.renderMarketChart(chartData);
     this.loadTickerBreakdown('^GSPC');
   } catch (e) {
-    quotesList.innerHTML = `<tr><td colspan="5" class="empty-hint">Error: ${escapeHtml(e.message)}</td></tr>`;
+    quotesList.innerHTML = `<tr><td colspan="4" class="empty-hint">Error: ${escapeHtml(e.message)}</td></tr>`;
   }
 };
 
@@ -635,28 +639,22 @@ CommandDeck.prototype.renderWatchlist = function(data) {
   }
 
   if (quotes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-hint" style="text-align:center; padding:20px;">No followed assets. Search above to follow assets.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-hint" style="text-align:center; padding:20px;">No followed assets. Search above to follow assets.</td></tr>';
     return;
   }
 
   tbody.innerHTML = quotes.map(q => `
-    <tr data-ticker="${escapeHtml(q.ticker)}">
+    <tr data-ticker="${escapeHtml(q.ticker)}" class="${this.activeMarketTicker === q.ticker ? 'active-watchlist-row' : ''}">
       <td>
         <div style="display:flex; align-items:center; gap:6px;">
           <div style="font-weight:600; color:var(--text-1);">${escapeHtml(q.name)}</div>
           <span class="badge badge-subtle" style="font-size:0.65rem; padding:1px 4px;">${escapeHtml(q.type || 'equity')}</span>
         </div>
-        <div style="font-size:0.7rem; color:var(--text-3);">${escapeHtml(q.ticker)}</div>
+        <div style="font-size:0.7rem; color:var(--text-3); font-family:var(--font-mono);">${escapeHtml(q.ticker)}</div>
       </td>
-      <td style="font-family:var(--font-mono); font-weight:600;">$${Number(q.price).toLocaleString()}</td>
-      <td class="${q.is_positive ? 'market-gain' : 'market-loss'}">
+      <td style="font-family:var(--font-mono); font-weight:600; color:var(--text-1);">$${Number(q.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+      <td class="${q.is_positive ? 'market-gain' : 'market-loss'}" style="font-family:var(--font-mono); font-weight:600;">
         ${q.is_positive ? '+' : ''}${q.change_pct}%
-      </td>
-      <td>
-        <svg width="60" height="20">
-          <polyline fill="none" stroke="${q.is_positive ? '#10b981' : '#ef4444'}" stroke-width="1.5"
-            points="${this.generateSparklinePoints(q.sparkline, 60, 20)}" />
-        </svg>
       </td>
       <td style="text-align:center;">
         <button class="market-unfollow-btn" data-ticker="${escapeHtml(q.ticker)}" title="Unfollow ${escapeHtml(q.ticker)}">&times;</button>
@@ -667,10 +665,16 @@ CommandDeck.prototype.renderWatchlist = function(data) {
   tbody.querySelectorAll('tr').forEach(row => {
     row.onclick = async (e) => {
       if (e.target.closest('.market-unfollow-btn')) return;
-      tbody.querySelectorAll('tr').forEach(r => r.style.background = '');
+      tbody.querySelectorAll('tr').forEach(r => {
+        r.classList.remove('active-watchlist-row');
+        r.style.background = '';
+      });
+      row.classList.add('active-watchlist-row');
       row.style.background = 'var(--bg-tertiary)';
       const ticker = row.dataset.ticker;
       this.activeMarketTicker = ticker;
+      const titleEl = document.getElementById('market-chart-ticker');
+      if (titleEl) titleEl.textContent = `${ticker} Market Overview`;
       await Promise.all([
         this.loadTickerChart(ticker, this.activeMarketPeriod || '1mo'),
         this.loadTickerBreakdown(ticker)
@@ -824,6 +828,8 @@ CommandDeck.prototype.initMarketAssetSearch = function() {
             closeDropdown();
             input.value = sym;
             this.activeMarketTicker = sym;
+            const titleEl = document.getElementById('market-chart-ticker');
+            if (titleEl) titleEl.textContent = `${sym} Market Overview`;
             await Promise.all([
               this.loadTickerChart(sym, this.activeMarketPeriod || '1mo'),
               this.loadTickerBreakdown(sym)
@@ -852,6 +858,21 @@ CommandDeck.prototype.initMarketAssetSearch = function() {
         console.warn('Market search error:', err);
       }
     }, 200);
+  });
+
+  input.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter') {
+      const q = input.value.trim().toUpperCase();
+      if (!q) return;
+      closeDropdown();
+      this.activeMarketTicker = q;
+      const titleEl = document.getElementById('market-chart-ticker');
+      if (titleEl) titleEl.textContent = `${q} Market Overview`;
+      await Promise.all([
+        this.loadTickerChart(q, this.activeMarketPeriod || '1mo'),
+        this.loadTickerBreakdown(q)
+      ]);
+    }
   });
 
   document.addEventListener('click', (e) => {
@@ -1365,6 +1386,8 @@ CommandDeck.prototype.initSystemSettings = function() {
       checkField(document.getElementById('input-url-freshrss'), 'freshrss_url');
       checkField(document.getElementById('input-user-freshrss'), 'freshrss_user');
       checkField(document.getElementById('input-key-freshrss'), 'freshrss_api_key', true);
+      checkField(document.getElementById('input-url-godseye'), 'godseye_url');
+      checkField(document.getElementById('input-key-godseye'), 'godseye_api_key', true);
 
       // Financial API inputs
       checkField(document.getElementById('input-key-alphavantage'), 'alphavantage_api_key', true);
@@ -1541,7 +1564,7 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     }
 
     // Homelab Applications
-    const homelabServices = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss'];
+    const homelabServices = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'];
     homelabServices.forEach(s => {
       const cfg = settings[s];
       if (!cfg) return;
@@ -2496,8 +2519,7 @@ CommandDeck.prototype.findGraphPath = async function(source, target) {
 
 // ── Wire Navigation & Global Shortcuts ────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
-  const initIntegrations = () => {
+const initIntegrations = () => {
     window.commandDeck?.initHeaderOmnibar?.();
     window.commandDeck?.initMarketAssetSearch?.();
     window.commandDeck?.initSystemSettings?.();
@@ -2578,6 +2600,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize workbench & ticker ribbon
     window.commandDeck?.fetchMarketTickerRibbon?.();
     window.commandDeck?.initWorkbenchMode?.();
+    if (!window._tickerRibbonInterval) {
+      window._tickerRibbonInterval = setInterval(() => {
+        window.commandDeck?.fetchMarketTickerRibbon?.();
+      }, 30000);
+    }
   };
 
 // ── 12. Persistent Financial Market Ticker Ribbon ─────────────────────
@@ -2601,26 +2628,34 @@ CommandDeck.prototype.renderMarketTickerRibbon = function(tickers) {
   const track = document.getElementById('market-ticker-track');
   if (!track || !tickers.length) return;
 
-  const list = [...tickers, ...tickers];
+  // Triplicate list to ensure full-width 100vw marquee coverage and seamless infinite scroll
+  const list = [...tickers, ...tickers, ...tickers];
   track.innerHTML = list.map(t => {
     const isUp = (t.change_pct >= 0);
     const sign = isUp ? '+' : '';
     const formattedPrice = t.price >= 1000 ? t.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : t.price.toFixed(2);
+    const hasDollar = t.symbol.includes('USD') || !t.symbol.startsWith('^');
     return `
       <span class="ticker-pill ${isUp ? 'up' : 'down'}" data-ticker="${escapeHtml(t.symbol)}">
         <span class="ticker-sym">${escapeHtml(t.name || t.symbol)}</span>
-        <span class="ticker-price">${t.symbol.includes('USD') || !t.symbol.startsWith('^') ? '$' : ''}${formattedPrice}</span>
-        <span class="ticker-pct">${sign}${t.change_pct.toFixed(2)}%</span>
+        <span class="ticker-price">${hasDollar ? '$' : ''}${formattedPrice}</span>
+        <span class="ticker-pct ${isUp ? 'up' : 'down'}">${sign}${t.change_pct.toFixed(2)}%</span>
       </span>
     `;
   }).join('');
 
   track.querySelectorAll('.ticker-pill').forEach(pill => {
-    pill.onclick = () => {
+    pill.onclick = async () => {
       const sym = pill.dataset.ticker;
       if (sym) {
+        this.activeMarketTicker = sym;
+        const titleEl = document.getElementById('market-chart-ticker');
+        if (titleEl) titleEl.textContent = `${sym} Market Overview`;
         this.showView('markets');
-        setTimeout(() => this.loadTickerChart(sym), 100);
+        await Promise.all([
+          this.loadTickerChart(sym, this.activeMarketPeriod || '1mo'),
+          this.loadTickerBreakdown(sym)
+        ]);
       }
     };
   });
@@ -3020,6 +3055,7 @@ CommandDeck.prototype.createQuickVaultNote = async function(title, content) {
   }
 };
 
+const setupIntegrations = () => {
   if (window.commandDeck) {
     initIntegrations();
   } else {
@@ -3054,4 +3090,10 @@ CommandDeck.prototype.createQuickVaultNote = async function(title, content) {
   if (vaultSaveBtn) {
     vaultSaveBtn.onclick = () => window.commandDeck?.saveVaultNote();
   }
-});
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupIntegrations);
+} else {
+  setupIntegrations();
+}

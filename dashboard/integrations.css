@@ -149,7 +149,7 @@
 /* ── Financial Markets (yfinance & Lightweight Charts) ───────────────────── */
 .market-dashboard-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 2.2fr) minmax(320px, 1fr);
   gap: var(--space-4);
 }
 
@@ -210,6 +210,11 @@
 
 .market-watchlist-table tr:hover {
   background: var(--bg-tertiary);
+}
+
+.market-watchlist-table tr.active-watchlist-row {
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--accent, #22d3ee);
 }
 
 .market-watchlist-table td {
@@ -1176,8 +1181,8 @@
   left: 0;
   right: 0;
   width: 100vw;
-  height: 28px;
-  background: rgba(13, 17, 23, 0.96);
+  height: 30px;
+  background: var(--bg-secondary, #1e293b);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-subtle);
@@ -1186,7 +1191,7 @@
   display: flex;
   align-items: center;
   user-select: none;
-  z-index: 999;
+  z-index: 1000;
 }
 
 .ticker-track {
@@ -1210,17 +1215,17 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 8px;
+  padding: 3px 10px;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, transform 0.1s;
   color: var(--text-2);
 }
 
 .ticker-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-tertiary);
   color: var(--text-1);
 }
 
@@ -1231,7 +1236,8 @@
 
 .ticker-pill .ticker-price {
   font-family: var(--font-mono);
-  color: var(--text-2);
+  font-weight: 600;
+  color: var(--text-1);
 }
 
 .ticker-pill.up .ticker-pct {

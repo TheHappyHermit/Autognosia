@@ -1036,6 +1036,8 @@ ENV_ALIAS_MAP: Dict[str, List[str]] = {
     "IMMICH_API_KEY": ["IMMICH_KEY"],
     "NEXTCLOUD_TOKEN": ["NEXTCLOUD_APP_PASSWORD"],
     "ELEVENLABS_API_KEY": ["ELEVEN_LABS_API_KEY"],
+    "GODS_EYE_URL": ["GODSEYE_URL"],
+    "GODS_EYE_API_KEY": ["GODSEYE_API_KEY"],
 }
 
 
@@ -1060,6 +1062,7 @@ def get_system_settings_raw() -> Dict[str, str]:
     merged["nextcloud_url"] = "http://localhost:8080"
     merged["seer_url"] = "http://localhost:5055"
     merged["freshrss_url"] = "http://localhost:8080"
+    merged["godseye_url"] = "http://localhost:5173"
 
     # 1. Load from root .env and dashboard .env
     env_mappings = {
@@ -1095,6 +1098,8 @@ def get_system_settings_raw() -> Dict[str, str]:
         "freshrss_url": "FRESHRSS_URL",
         "freshrss_api_key": "FRESHRSS_API_KEY",
         "freshrss_user": "FRESHRSS_USER",
+        "godseye_url": "GODS_EYE_URL",
+        "godseye_api_key": "GODS_EYE_API_KEY",
         "alphavantage_api_key": "ALPHAVANTAGE_API_KEY",
         "massive_api_key": "MASSIVE_API_KEY",
         "massive_api_url": "MASSIVE_API_URL",
@@ -1253,6 +1258,11 @@ def get_system_settings() -> Dict[str, Any]:
             "configured": bool(raw.get("freshrss_url")),
             "masked_key": mask_key(raw.get("freshrss_api_key", ""))
         },
+        "godseye": {
+            "url": raw.get("godseye_url", "http://localhost:5173"),
+            "configured": bool(raw.get("godseye_url")),
+            "masked_key": mask_key(raw.get("godseye_api_key", ""))
+        },
         # Financial APIs
         "alphavantage": {
             "url": "https://www.alphavantage.co/",
@@ -1332,6 +1342,8 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
         "freshrss_url": "FRESHRSS_URL",
         "freshrss_api_key": "FRESHRSS_API_KEY",
         "freshrss_user": "FRESHRSS_USER",
+        "godseye_url": "GODS_EYE_URL",
+        "godseye_api_key": "GODS_EYE_API_KEY",
         # Financial APIs
         "alphavantage_api_key": "ALPHAVANTAGE_API_KEY",
         "massive_api_key": "MASSIVE_API_KEY",
@@ -1730,6 +1742,16 @@ def test_api_connection(provider: str, api_key: str = "", api_url: str = "") -> 
             return {"status": "ok", "message": f"FreshRSS reachable at {url} (HTTP {res.status_code})."}
         except Exception as e:
             return {"status": "error", "message": f"Could not reach FreshRSS at {url}. Error: {str(e)}"}
+
+    elif p in ("godseye", "gods-eye-view", "gods_eye"):
+        url = api_url or raw.get("godseye_url", "http://localhost:5173").rstrip("/")
+        try:
+            res = requests.get(url, timeout=5)
+            if res.ok:
+                return {"status": "ok", "message": f"Connected to God's Eye View at {url}! Geospatial intelligence platform is live."}
+            return {"status": "ok", "message": f"God's Eye View reachable at {url} (HTTP {res.status_code})."}
+        except Exception as e:
+            return {"status": "error", "message": f"Could not reach God's Eye View at {url}. Error: {str(e)}"}
 
     return {"status": "error", "message": f"Unknown provider: {provider}"}
 

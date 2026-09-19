@@ -49,7 +49,7 @@
           <span class="sidebar-label">Tasks</span>
         </a>
         <a href="#" class="sidebar-link" data-view="services" aria-label="System" title="System">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
           <span class="sidebar-label">System</span>
         </a>
         <a href="#" class="sidebar-link" data-view="homelab" aria-label="Home Lab" title="Home Lab">
@@ -108,6 +108,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
           <span class="sidebar-label">FreshRSS</span>
         </a>
+        <a href="#" class="sidebar-link" data-view="godseye" aria-label="God's Eye View" title="God's Eye View">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          <span class="sidebar-label">God's Eye</span>
+        </a>
       </div>
       <div class="sidebar-footer">
         <a href="#" class="sidebar-link sidebar-system-link" data-view="system" aria-label="Settings" title="Settings" id="sidebar-profile-badge">
@@ -125,14 +129,6 @@
       <button class="header-hamburger" aria-label="Toggle menu" id="hamburger-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <div class="header-brand">
-        <span class="header-brand-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-        </span>
-        <span>Autognosia</span>
-      </div>
       <div class="header-search" id="header-search-container" style="position:relative;">
         <span class="header-search-icon" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1620,6 +1616,36 @@
               </div>
               <div class="setting-status-msg" id="msg-freshrss"></div>
             </div>
+
+            <!-- God's Eye View Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🛰️</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">God's Eye View</h4>
+                    <a href="http://localhost:5173" id="link-setting-godseye" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent);">http://localhost:5173</a>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-godseye">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Open-source 3D geospatial intelligence platform, Cesium photorealistic tiles, satellite tracking & tactical HUD.</p>
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Endpoint URL / IP:Port</label>
+                <input type="text" id="input-url-godseye" class="setting-key-input" placeholder="http://localhost:5173" autocomplete="off" />
+              </div>
+              <div class="setting-field-group" style="margin-bottom:12px;">
+                <label class="setting-field-label">API Key / Token (Optional)</label>
+                <div class="setting-input-row" style="margin:0;">
+                  <input type="password" id="input-key-godseye" class="setting-key-input" placeholder="Enter API Key / Token (if configured)..." autocomplete="off" />
+                  <button type="button" class="btn btn--ghost btn--sm btn-toggle-key" data-target="input-key-godseye">👁️</button>
+                </div>
+              </div>
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="godseye" style="width:100%;">Test God's Eye Connection</button>
+              </div>
+              <div class="setting-status-msg" id="msg-godseye"></div>
+            </div>
           </div>
 
           <!-- Section 3: Financial Market Data APIs -->
@@ -2055,6 +2081,31 @@
       </div>
     </div>
 
+    <!-- God's Eye View (Geospatial 3D Intelligence) -->
+    <div id="view-godseye" class="view-section" role="region" aria-label="God's Eye View">
+      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="view-section-title">God's Eye View</h1>
+          <p class="view-section-subtitle">Real-time geospatial intelligence, 3D photorealistic tiles, satellite & transponder tracking</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="godseye-connection-badge" class="badge badge-secondary">Connecting...</span>
+          <a id="godseye-external-link" href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+            <span>Open God's Eye View</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="display:inline-flex; align-items:center; gap:4px;">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+      <div class="panel" style="display:flex; flex-direction:column; flex:1; min-height:680px; overflow:hidden;">
+        <div class="panel-body" id="godseye-stage" style="padding:0; flex:1; position:relative; min-height:680px;">
+          <div class="agent-loading">Connecting to God's Eye View...</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Knowledge Vault View -->
     <div id="view-vault" class="view-section" role="region" aria-label="Knowledge Vault">
       <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -2219,11 +2270,7 @@
 
     <!-- Financial Markets View -->
     <div id="view-markets" class="view-section" role="region" aria-label="Financial Markets">
-      <div class="view-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-        <div>
-          <h1 class="view-section-title">Financial Markets & Multi-API Intelligence</h1>
-          <p class="view-section-subtitle">Universal ticker search, customizable watchlist, technical candlesticks, and multi-API breakdown</p>
-        </div>
+      <div class="view-section-header" style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:var(--space-3);">
         <div class="market-timeframe-bar">
           <button class="market-tf-btn" data-tf="1d">1D</button>
           <button class="market-tf-btn" data-tf="5d">5D</button>
@@ -2245,34 +2292,7 @@
       </div>
 
       <div class="market-dashboard-grid">
-        <!-- Watchlist Table -->
-        <div class="panel">
-          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
-              <span>Followed Watchlist</span>
-              <span class="badge badge-cyan" id="market-watchlist-count" style="font-size:0.7rem;">0 Assets</span>
-            </div>
-            <span style="font-size:0.75rem; color:var(--text-3);">Click row for full breakdown</span>
-          </div>
-          <div class="panel-body" style="padding:0; overflow-x:auto;">
-            <table class="market-watchlist-table">
-              <thead>
-                <tr>
-                  <th>Asset</th>
-                  <th>Price</th>
-                  <th>Change</th>
-                  <th>Trend</th>
-                  <th style="width:36px; text-align:center;"></th>
-                </tr>
-              </thead>
-              <tbody id="market-watchlist-tbody">
-                <tr><td colspan="5" class="agent-loading">Fetching market quotes...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Candlestick Chart Panel -->
+        <!-- Candlestick Chart Panel (Left / Larger) -->
         <div class="panel">
           <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
             <div class="panel-title" id="market-chart-ticker">^GSPC Market Overview</div>
@@ -2285,6 +2305,32 @@
             <div class="market-chart-container">
               <canvas id="market-candlestick-canvas"></canvas>
             </div>
+          </div>
+        </div>
+
+        <!-- Watchlist Table (Right / Smaller) -->
+        <div class="panel">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+              <span>Followed Watchlist</span>
+              <span class="badge badge-cyan" id="market-watchlist-count" style="font-size:0.7rem;">0 Assets</span>
+            </div>
+            <span style="font-size:0.75rem; color:var(--text-3);">Click row to load holding</span>
+          </div>
+          <div class="panel-body" style="padding:0; overflow-x:auto;">
+            <table class="market-watchlist-table">
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th>Price</th>
+                  <th>Change</th>
+                  <th style="width:36px; text-align:center;"></th>
+                </tr>
+              </thead>
+              <tbody id="market-watchlist-tbody">
+                <tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -2678,12 +2724,26 @@
   <!-- Persistent Market Ticker-Tape Ribbon (Pinned across bottom of page) -->
   <div class="market-ticker-ribbon" id="market-ticker-ribbon" title="Click any asset to load candlestick chart">
     <div class="ticker-track" id="market-ticker-track">
-      <span class="ticker-pill" data-ticker="^GSPC"><span class="ticker-sym">S&P 500</span> <span class="ticker-price">5,648.40</span> <span class="ticker-pct">+0.42%</span></span>
-      <span class="ticker-pill" data-ticker="^IXIC"><span class="ticker-sym">NASDAQ</span> <span class="ticker-price">17,845.20</span> <span class="ticker-pct">+0.65%</span></span>
-      <span class="ticker-pill up" data-ticker="BTC-USD"><span class="ticker-sym">BTC-USD</span> <span class="ticker-price">$64,120.00</span> <span class="ticker-pct">+1.85%</span></span>
-      <span class="ticker-pill up" data-ticker="NVDA"><span class="ticker-sym">NVDA</span> <span class="ticker-price">$128.90</span> <span class="ticker-pct">+2.40%</span></span>
-      <span class="ticker-pill down" data-ticker="AAPL"><span class="ticker-sym">AAPL</span> <span class="ticker-price">$228.20</span> <span class="ticker-pct">-0.32%</span></span>
-      <span class="ticker-pill up" data-ticker="MSFT"><span class="ticker-sym">MSFT</span> <span class="ticker-price">$435.10</span> <span class="ticker-pct">+0.18%</span></span>
+      <span class="ticker-pill up" data-ticker="^GSPC"><span class="ticker-sym">S&P 500</span> <span class="ticker-price">5,648.40</span> <span class="ticker-pct up">+0.42%</span></span>
+      <span class="ticker-pill up" data-ticker="^IXIC"><span class="ticker-sym">NASDAQ</span> <span class="ticker-price">17,845.20</span> <span class="ticker-pct up">+0.65%</span></span>
+      <span class="ticker-pill up" data-ticker="BTC-USD"><span class="ticker-sym">BTC-USD</span> <span class="ticker-price">$64,120.00</span> <span class="ticker-pct up">+1.85%</span></span>
+      <span class="ticker-pill up" data-ticker="NVDA"><span class="ticker-sym">NVDA</span> <span class="ticker-price">$128.90</span> <span class="ticker-pct up">+2.40%</span></span>
+      <span class="ticker-pill down" data-ticker="AAPL"><span class="ticker-sym">AAPL</span> <span class="ticker-price">$228.20</span> <span class="ticker-pct down">-0.32%</span></span>
+      <span class="ticker-pill up" data-ticker="MSFT"><span class="ticker-sym">MSFT</span> <span class="ticker-price">$435.10</span> <span class="ticker-pct up">+0.18%</span></span>
+      <span class="ticker-pill up" data-ticker="TSLA"><span class="ticker-sym">TSLA</span> <span class="ticker-price">$248.60</span> <span class="ticker-pct up">+3.12%</span></span>
+      <span class="ticker-pill up" data-ticker="AMZN"><span class="ticker-sym">AMZN</span> <span class="ticker-price">$186.40</span> <span class="ticker-pct up">+0.95%</span></span>
+      <span class="ticker-pill down" data-ticker="GOOGL"><span class="ticker-sym">GOOGL</span> <span class="ticker-price">$162.80</span> <span class="ticker-pct down">-0.15%</span></span>
+      <span class="ticker-pill down" data-ticker="ETH-USD"><span class="ticker-sym">ETH-USD</span> <span class="ticker-price">$2,580.50</span> <span class="ticker-pct down">-0.80%</span></span>
+      <span class="ticker-pill up" data-ticker="^GSPC"><span class="ticker-sym">S&P 500</span> <span class="ticker-price">5,648.40</span> <span class="ticker-pct up">+0.42%</span></span>
+      <span class="ticker-pill up" data-ticker="^IXIC"><span class="ticker-sym">NASDAQ</span> <span class="ticker-price">17,845.20</span> <span class="ticker-pct up">+0.65%</span></span>
+      <span class="ticker-pill up" data-ticker="BTC-USD"><span class="ticker-sym">BTC-USD</span> <span class="ticker-price">$64,120.00</span> <span class="ticker-pct up">+1.85%</span></span>
+      <span class="ticker-pill up" data-ticker="NVDA"><span class="ticker-sym">NVDA</span> <span class="ticker-price">$128.90</span> <span class="ticker-pct up">+2.40%</span></span>
+      <span class="ticker-pill down" data-ticker="AAPL"><span class="ticker-sym">AAPL</span> <span class="ticker-price">$228.20</span> <span class="ticker-pct down">-0.32%</span></span>
+      <span class="ticker-pill up" data-ticker="MSFT"><span class="ticker-sym">MSFT</span> <span class="ticker-price">$435.10</span> <span class="ticker-pct up">+0.18%</span></span>
+      <span class="ticker-pill up" data-ticker="TSLA"><span class="ticker-sym">TSLA</span> <span class="ticker-price">$248.60</span> <span class="ticker-pct up">+3.12%</span></span>
+      <span class="ticker-pill up" data-ticker="AMZN"><span class="ticker-sym">AMZN</span> <span class="ticker-price">$186.40</span> <span class="ticker-pct up">+0.95%</span></span>
+      <span class="ticker-pill down" data-ticker="GOOGL"><span class="ticker-sym">GOOGL</span> <span class="ticker-price">$162.80</span> <span class="ticker-pct down">-0.15%</span></span>
+      <span class="ticker-pill down" data-ticker="ETH-USD"><span class="ticker-sym">ETH-USD</span> <span class="ticker-price">$2,580.50</span> <span class="ticker-pct down">-0.80%</span></span>
     </div>
   </div>
 

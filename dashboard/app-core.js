@@ -222,7 +222,7 @@ export class CommandDeck {
     } else if (viewName === 'markets') {
       if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
       if (typeof this.fetchMarkets === 'function') this.fetchMarkets();
-    } else if (['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss'].includes(viewName)) {
+    } else if (['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'].includes(viewName)) {
       if (typeof this.loadHomelabServiceView === 'function') {
         this.loadHomelabServiceView(viewName);
       }

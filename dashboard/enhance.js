@@ -70,6 +70,7 @@
     { id: 'goto-nextcloud', label: 'Go to Nextcloud (Private Cloud)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('nextcloud') },
     { id: 'goto-seer', label: 'Go to Seer (Media Requests)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('seer') },
     { id: 'goto-freshrss', label: 'Go to FreshRSS (Feeds)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('freshrss') },
+    { id: 'goto-godseye', label: "Go to God's Eye View (Geospatial 3D)", hint: 'satellite & tactical HUD', group: 'Homelab', run: () => window.commandDeck?.showView('godseye') },
 
     // Cognitive Decks & Autonomous Research
     { id: 'action-epistemic', label: 'Open Epistemic Truth Ledger', hint: 'disputed claims & evidence', group: 'Cognitive', run: () => { window.commandDeck?.showView('vault'); setTimeout(() => document.getElementById('vault-epistemic-deck')?.scrollIntoView({behavior:'smooth'}), 100); } },
