@@ -1166,3 +1166,255 @@
   color: white !important;
   animation: voice-pulse 1.2s infinite ease-in-out;
 }
+
+/* ==========================================================================
+   Persistent Financial Market Ticker Ribbon
+   ========================================================================== */
+.market-ticker-ribbon {
+  width: 100%;
+  height: 32px;
+  background: rgba(13, 17, 23, 0.88);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  z-index: 10;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 28px;
+  white-space: nowrap;
+  align-items: center;
+  animation: ticker-scroll 45s linear infinite;
+}
+
+.market-ticker-ribbon:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: var(--text-2);
+}
+
+.ticker-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-1);
+}
+
+.ticker-pill .ticker-sym {
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.ticker-pill .ticker-price {
+  font-family: var(--font-mono);
+  color: var(--text-2);
+}
+
+.ticker-pill.up .ticker-pct {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.ticker-pill.down .ticker-pct {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Split-Screen Dual Workbench Mode
+   ========================================================================== */
+.workbench-container {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.workbench-pane-primary {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.workbench-pane-secondary {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.workbench-secondary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 8px;
+}
+
+.workbench-secondary-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* ==========================================================================
+   Docker Container Log Terminal Drawer / Modal
+   ========================================================================== */
+.container-logs-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-logs-drawer.open {
+  display: flex;
+}
+
+.terminal-window {
+  width: 960px;
+  max-width: 95vw;
+  height: 640px;
+  max-height: 90vh;
+  background: #090d13;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: #121820;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
+}
+
+.terminal-search-input {
+  background: #1c2430;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  width: 180px;
+}
+
+.terminal-body {
+  flex: 1;
+  padding: 14px 16px;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #c9d1d9;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.terminal-line-err { color: #f85149 !important; font-weight: 600; }
+.terminal-line-warn { color: #d29922 !important; font-weight: 600; }
+.terminal-line-info { color: #58a6ff !important; }
+
+/* ==========================================================================
+   Homelab Summary Widgets & n8n Control Board
+   ========================================================================== */
+.homelab-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.summary-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-progress-bar {
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.summary-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #38bdf8);
+  border-radius: 3px;
+}
+
+.n8n-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.n8n-action-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.n8n-action-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+

@@ -116,6 +116,8 @@
       palette.removeAttribute('open');
     }
   }
+  let activeDynamicCmds = [];
+
   function renderPalette(q) {
     if (!paletteResults) return;
     const raw = q.trim();
@@ -136,6 +138,100 @@
       });
     }
 
+    if (raw.startsWith('/task')) {
+      const title = raw.replace(/^\/task\s*/i, '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-task',
+        label: title ? `Create Task: "${title}"` : 'Create Task (/task <title>)',
+        hint: 'Quick-create task in pipeline',
+        group: 'Actions',
+        run: async () => {
+          if (!title) {
+            window.commandDeck?.openCreateModal('task');
+            return;
+          }
+          try {
+            const res = await fetch(`${window.location.origin}/api/tasks`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ title, status: 'todo' })
+            });
+            if (res.ok) {
+              window.commandDeck?.showToast?.(`Task created: ${title}`, 'success');
+              if (window.commandDeck?.fetchTasks) window.commandDeck.fetchTasks();
+            }
+          } catch (e) {
+            window.commandDeck?.showToast?.(`Task error: ${e.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    if (raw.startsWith('/ha')) {
+      const arg = raw.replace(/^\/ha\s*/i, '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-ha',
+        label: arg ? `Home Assistant: "${arg}"` : 'Home Assistant (/ha <entity>)',
+        hint: 'Switch to Smart Home view',
+        group: 'Smart Home',
+        run: () => {
+          window.commandDeck?.showView('homeassistant');
+        }
+      });
+    }
+
+    if (raw.startsWith('/n8n')) {
+      const actionId = raw.replace(/^\/n8n\s*/i, '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-n8n',
+        label: actionId ? `Trigger n8n Workflow: "${actionId}"` : 'Trigger n8n Automation (/n8n <id>)',
+        hint: 'Dispatch workflow execution',
+        group: 'Automations',
+        run: () => {
+          if (actionId) {
+            window.commandDeck?.triggerN8nQuickAction?.(actionId);
+          } else {
+            window.commandDeck?.showView('n8n');
+          }
+        }
+      });
+    }
+
+    if (raw.startsWith('/market')) {
+      const sym = raw.replace(/^\/market\s*/i, '').trim().toUpperCase();
+      dynamicCommands.push({
+        id: 'cmd-slash-market',
+        label: sym ? `Analyze $${sym} on Financial Markets` : 'Analyze Market (/market <symbol>)',
+        hint: 'Open candlestick chart',
+        group: 'Markets',
+        run: () => {
+          window.commandDeck?.showView('markets');
+          if (sym) setTimeout(() => window.commandDeck?.loadTickerChart(sym), 100);
+        }
+      });
+    }
+
+    if (raw.startsWith('/note')) {
+      const noteRaw = raw.replace(/^\/note\s*/i, '').trim();
+      const parts = noteRaw.split('|');
+      const title = (parts[0] || '').trim();
+      const content = (parts[1] || '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-note',
+        label: title ? `Save Note to Active Wiki: "${title}"` : 'Save Note (/note <title> | <content>)',
+        hint: 'Direct markdown creation in active-wiki/',
+        group: 'Knowledge',
+        run: () => {
+          if (title) {
+            window.commandDeck?.createQuickVaultNote?.(title, content);
+          } else {
+            window.commandDeck?.showView('vault');
+          }
+        }
+      });
+    }
+
+    activeDynamicCmds = dynamicCommands;
     const allCmds = [...dynamicCommands, ...commands];
     visible = allCmds.filter(
       (c) => !needle || c.label.toLowerCase().includes(needle) || (c.hint || '').toLowerCase().includes(needle) || (c.group || '').toLowerCase().includes(needle)
@@ -154,7 +250,7 @@
       : '<div class="palette-empty">No matching commands — try "task", "calendar", "memory", "$NVDA"…</div>';
   }
   function runCommand(id) {
-    let cmd = commands.find((c) => c.id === id);
+    let cmd = commands.find((c) => c.id === id) || activeDynamicCmds.find((c) => c.id === id);
     if (!cmd && id && id.startsWith('ticker-')) {
       const ticker = id.replace('ticker-', '');
       cmd = {

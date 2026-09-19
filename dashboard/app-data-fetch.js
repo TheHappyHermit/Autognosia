@@ -747,6 +747,9 @@ CommandDeck.prototype.openWikiDrawer = async function(node) {
 // ── Homelab Container Operations (Logs & Restart) ───────────────────────────
 
 CommandDeck.prototype.openContainerLogs = async function(containerName) {
+  if (typeof this.openContainerLogsModal === 'function') {
+    return this.openContainerLogsModal(containerName);
+  }
   const drawer = document.getElementById('container-logs-drawer');
   const titleEl = document.getElementById('container-logs-title');
   const contentEl = document.getElementById('container-logs-content');

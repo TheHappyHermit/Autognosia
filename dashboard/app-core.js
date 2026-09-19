@@ -55,6 +55,8 @@ export class CommandDeck {
     if (typeof this.initHeaderOmnibar === 'function') this.initHeaderOmnibar();
     if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
     if (typeof this.initSystemSettings === 'function') this.initSystemSettings();
+    if (typeof this.fetchMarketTickerRibbon === 'function') this.fetchMarketTickerRibbon();
+    if (typeof this.initWorkbenchMode === 'function') this.initWorkbenchMode();
     if (typeof this.refreshAllData === 'function') {
       try {
         await this.refreshAllData();
@@ -180,6 +182,7 @@ export class CommandDeck {
         this.renderKanbanBoard();
       }
     } else if (viewName === 'homelab') {
+      if (typeof this.fetchHomelabSummaryWidgets === 'function') this.fetchHomelabSummaryWidgets();
       if (typeof this.renderHomeLab === 'function') this.renderHomeLab();
       if (typeof this.fetchHomelabMesh === 'function') this.fetchHomelabMesh();
       if (typeof this.fetchSystemStats === 'function') this.fetchSystemStats();
@@ -203,6 +206,7 @@ export class CommandDeck {
       if (typeof this.fetchHomeAssistant === 'function') this.fetchHomeAssistant();
     } else if (viewName === 'n8n') {
       if (typeof this.fetchN8n === 'function') this.fetchN8n();
+      if (typeof this.fetchN8nQuickActions === 'function') this.fetchN8nQuickActions();
     } else if (viewName === 'vault') {
       if (typeof this.fetchVault === 'function') this.fetchVault();
       if (typeof this.fetchEpistemicLedger === 'function') this.fetchEpistemicLedger();

@@ -1791,6 +1791,220 @@ CommandDeck.prototype.initHeaderOmnibar = function() {
 
     selectedIdx = -1;
 
+    // Omnibar Slash Commands: /task, /ha, /n8n, /market, /note
+    if (query.startsWith('/')) {
+      const lower = query.toLowerCase();
+      let cmdHtml = '';
+
+      if (lower.startsWith('/task')) {
+        const title = query.replace(/^\/task\s*/i, '').trim();
+        cmdHtml = `
+          <div class="search-dropdown-item search-dropdown-web-action" id="dropdown-cmd-action">
+            <span class="search-dropdown-item-icon">📋</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title">
+                ${title ? `Create Task: <span style="font-weight:700; color:var(--text-1);">${escapeHtml(title)}</span>` : 'Create Task in Pipeline'}
+              </div>
+              <div class="search-dropdown-item-snippet">${title ? 'Press ↵ Enter to save task immediately' : 'Type /task <task title> and press Enter'}</div>
+            </div>
+            <span class="badge badge-purple" style="font-size:0.65rem; padding:2px 6px;">/task</span>
+          </div>`;
+      } else if (lower.startsWith('/ha')) {
+        const cmd = query.replace(/^\/ha\s*/i, '').trim();
+        cmdHtml = `
+          <div class="search-dropdown-item search-dropdown-web-action" id="dropdown-cmd-action">
+            <span class="search-dropdown-item-icon">🏠</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title">
+                ${cmd ? `Home Assistant: <span style="font-weight:700; color:var(--text-1);">${escapeHtml(cmd)}</span>` : 'Home Assistant Smart Home'}
+              </div>
+              <div class="search-dropdown-item-snippet">Press ↵ Enter to switch to Smart Home controls</div>
+            </div>
+            <span class="badge badge-cyan" style="font-size:0.65rem; padding:2px 6px;">/ha</span>
+          </div>`;
+      } else if (lower.startsWith('/n8n')) {
+        const actionId = query.replace(/^\/n8n\s*/i, '').trim();
+        cmdHtml = `
+          <div class="search-dropdown-item search-dropdown-web-action" id="dropdown-cmd-action">
+            <span class="search-dropdown-item-icon">⚡</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title">
+                ${actionId ? `Trigger n8n Workflow: <span style="font-weight:700; color:var(--text-1);">${escapeHtml(actionId)}</span>` : 'Automations Orchestrator'}
+              </div>
+              <div class="search-dropdown-item-snippet">${actionId ? 'Press ↵ Enter to trigger automation workflow' : 'Type /n8n <action_id> or press Enter to open n8n view'}</div>
+            </div>
+            <span class="badge badge-primary" style="font-size:0.65rem; padding:2px 6px;">/n8n</span>
+          </div>`;
+      } else if (lower.startsWith('/market')) {
+        const sym = query.replace(/^\/market\s*/i, '').trim().toUpperCase();
+        cmdHtml = `
+          <div class="search-dropdown-item search-dropdown-web-action" id="dropdown-cmd-action">
+            <span class="search-dropdown-item-icon">📈</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title">
+                ${sym ? `Analyze Market Asset: <span style="font-weight:700; color:var(--text-1);">$${escapeHtml(sym)}</span>` : 'Financial Markets'}
+              </div>
+              <div class="search-dropdown-item-snippet">${sym ? `Press ↵ Enter to load candlestick chart for ${sym}` : 'Type /market <symbol> (e.g. /market NVDA)'}</div>
+            </div>
+            <span class="badge badge-ok" style="font-size:0.65rem; padding:2px 6px;">/market</span>
+          </div>`;
+      } else if (lower.startsWith('/note')) {
+        const noteRaw = query.replace(/^\/note\s*/i, '').trim();
+        const parts = noteRaw.split('|');
+        const title = (parts[0] || '').trim();
+        const content = (parts[1] || '').trim();
+        cmdHtml = `
+          <div class="search-dropdown-item search-dropdown-web-action" id="dropdown-cmd-action">
+            <span class="search-dropdown-item-icon">📝</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title">
+                ${title ? `Save Note to Active Wiki: <span style="font-weight:700; color:var(--text-1);">${escapeHtml(title)}</span>` : 'Quick Note to Active Wiki'}
+              </div>
+              <div class="search-dropdown-item-snippet">${title ? 'Press ↵ Enter to save note to active-wiki/' : 'Usage: /note <title> | <content>'}</div>
+            </div>
+            <span class="badge badge-purple" style="font-size:0.65rem; padding:2px 6px;">/note</span>
+          </div>`;
+      } else {
+        cmdHtml = `
+          <div class="search-dropdown-item search-dropdown-web-action" data-slash="/task ">
+            <span class="search-dropdown-item-icon">📋</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title"><strong>/task</strong> &lt;title&gt;</div>
+              <div class="search-dropdown-item-snippet">Quickly create a task in the pipeline</div>
+            </div>
+          </div>
+          <div class="search-dropdown-item search-dropdown-web-action" data-slash="/ha ">
+            <span class="search-dropdown-item-icon">🏠</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title"><strong>/ha</strong> &lt;entity&gt;</div>
+              <div class="search-dropdown-item-snippet">Home Assistant smart home control</div>
+            </div>
+          </div>
+          <div class="search-dropdown-item search-dropdown-web-action" data-slash="/n8n ">
+            <span class="search-dropdown-item-icon">⚡</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title"><strong>/n8n</strong> &lt;action_id&gt;</div>
+              <div class="search-dropdown-item-snippet">Trigger n8n workflow quick actions</div>
+            </div>
+          </div>
+          <div class="search-dropdown-item search-dropdown-web-action" data-slash="/market ">
+            <span class="search-dropdown-item-icon">📈</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title"><strong>/market</strong> &lt;symbol&gt;</div>
+              <div class="search-dropdown-item-snippet">Load candlestick chart for ticker (e.g. /market NVDA)</div>
+            </div>
+          </div>
+          <div class="search-dropdown-item search-dropdown-web-action" data-slash="/note ">
+            <span class="search-dropdown-item-icon">📝</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title"><strong>/note</strong> &lt;title&gt; | &lt;content&gt;</div>
+              <div class="search-dropdown-item-snippet">Directly save a note to the Active Wiki</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (webSection) {
+        webSection.innerHTML = cmdHtml;
+        const singleAction = document.getElementById('dropdown-cmd-action');
+        if (singleAction) {
+          singleAction.onclick = async () => {
+            closeDropdown();
+            searchInput.value = '';
+            if (lower.startsWith('/task')) {
+              const title = query.replace(/^\/task\s*/i, '').trim();
+              if (title) {
+                try {
+                  const res = await fetch(`${this.apiBase}/api/tasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, status: 'todo' })
+                  });
+                  if (res.ok) {
+                    this.showToast?.(`Task created: ${title}`, 'success');
+                    if (typeof this.fetchTasks === 'function') this.fetchTasks();
+                  }
+                } catch (e) {
+                  this.showToast?.(`Task creation error: ${e.message}`, 'error');
+                }
+              } else {
+                this.openCreateModal?.('task');
+              }
+            } else if (lower.startsWith('/ha')) {
+              this.showView?.('homeassistant');
+            } else if (lower.startsWith('/n8n')) {
+              const actionId = query.replace(/^\/n8n\s*/i, '').trim();
+              if (actionId && typeof this.triggerN8nQuickAction === 'function') {
+                this.triggerN8nQuickAction(actionId);
+              } else {
+                this.showView?.('n8n');
+              }
+            } else if (lower.startsWith('/market')) {
+              const sym = query.replace(/^\/market\s*/i, '').trim().toUpperCase();
+              this.showView?.('markets');
+              if (sym && typeof this.loadTickerChart === 'function') {
+                setTimeout(() => this.loadTickerChart(sym), 100);
+              }
+            } else if (lower.startsWith('/note')) {
+              const noteRaw = query.replace(/^\/note\s*/i, '').trim();
+              const parts = noteRaw.split('|');
+              const title = (parts[0] || '').trim();
+              const content = (parts[1] || '').trim();
+              if (title && typeof this.createQuickVaultNote === 'function') {
+                this.createQuickVaultNote(title, content);
+              } else {
+                this.showView?.('vault');
+              }
+            }
+          };
+        }
+
+        webSection.querySelectorAll('[data-slash]').forEach(item => {
+          item.onclick = () => {
+            searchInput.value = item.dataset.slash;
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event('input'));
+          };
+        });
+      }
+
+      if (wikiTitle) wikiTitle.style.display = 'none';
+      if (wikiSection) wikiSection.innerHTML = '';
+      dropdown.style.display = 'flex';
+      return;
+    }
+
+    // Direct Ticker shortcut: $NVDA, $BTC, etc.
+    if (query.startsWith('$') && query.length > 1) {
+      const sym = query.substring(1).trim().toUpperCase();
+      if (webSection) {
+        webSection.innerHTML = `
+          <div class="search-dropdown-item search-dropdown-web-action" id="dropdown-cmd-action">
+            <span class="search-dropdown-item-icon">📈</span>
+            <div class="search-dropdown-item-content">
+              <div class="search-dropdown-item-title">
+                Analyze Market Asset: <span style="font-weight:700; color:var(--text-1);">$${escapeHtml(sym)}</span>
+              </div>
+              <div class="search-dropdown-item-snippet">Press ↵ Enter to load candlestick chart on Markets view</div>
+            </div>
+            <span class="badge badge-ok" style="font-size:0.65rem; padding:2px 6px;">Markets</span>
+          </div>`;
+        const action = document.getElementById('dropdown-cmd-action');
+        if (action) {
+          action.onclick = () => {
+            closeDropdown();
+            searchInput.value = '';
+            this.showView?.('markets');
+            setTimeout(() => this.loadTickerChart?.(sym), 100);
+          };
+        }
+      }
+      if (wikiTitle) wikiTitle.style.display = 'none';
+      if (wikiSection) wikiSection.innerHTML = '';
+      dropdown.style.display = 'flex';
+      return;
+    }
+
     // 1. Render immediate web search action via SearXNG
     if (webSection) {
       webSection.innerHTML = `
@@ -1881,6 +2095,8 @@ CommandDeck.prototype.initHeaderOmnibar = function() {
       const query = searchInput.value.trim();
       if (selectedIdx >= 0 && items[selectedIdx]) {
         items[selectedIdx].click();
+      } else if (items.length > 0 && (query.startsWith('/') || query.startsWith('$'))) {
+        items[0].click();
       } else if (query) {
         closeDropdown();
         this.openSearXNGModal(query);
@@ -2461,7 +2677,456 @@ document.addEventListener('DOMContentLoaded', () => {
         if (researchModal) researchModal.style.display = 'none';
       }
     });
+
+    // Refresh homelab summaries
+    document.getElementById('btn-refresh-summary-widgets')?.addEventListener('click', () => {
+      window.commandDeck?.fetchHomelabSummaryWidgets?.();
+    });
+
+    // Initialize workbench & ticker ribbon
+    window.commandDeck?.fetchMarketTickerRibbon?.();
+    window.commandDeck?.initWorkbenchMode?.();
   };
+
+// ── 12. Persistent Financial Market Ticker Ribbon ─────────────────────
+
+CommandDeck.prototype.fetchMarketTickerRibbon = async function() {
+  const track = document.getElementById('market-ticker-track');
+  if (!track) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/markets/ribbon`);
+    if (res.ok) {
+      const data = await res.json();
+      this.renderMarketTickerRibbon(data.tickers || []);
+    }
+  } catch (e) {
+    console.warn('Ticker ribbon fetch error:', e);
+  }
+};
+
+CommandDeck.prototype.renderMarketTickerRibbon = function(tickers) {
+  const track = document.getElementById('market-ticker-track');
+  if (!track || !tickers.length) return;
+
+  const list = [...tickers, ...tickers];
+  track.innerHTML = list.map(t => {
+    const isUp = (t.change_pct >= 0);
+    const sign = isUp ? '+' : '';
+    const formattedPrice = t.price >= 1000 ? t.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : t.price.toFixed(2);
+    return `
+      <span class="ticker-pill ${isUp ? 'up' : 'down'}" data-ticker="${escapeHtml(t.symbol)}">
+        <span class="ticker-sym">${escapeHtml(t.name || t.symbol)}</span>
+        <span class="ticker-price">${t.symbol.includes('USD') || !t.symbol.startsWith('^') ? '$' : ''}${formattedPrice}</span>
+        <span class="ticker-pct">${sign}${t.change_pct.toFixed(2)}%</span>
+      </span>
+    `;
+  }).join('');
+
+  track.querySelectorAll('.ticker-pill').forEach(pill => {
+    pill.onclick = () => {
+      const sym = pill.dataset.ticker;
+      if (sym) {
+        this.showView('markets');
+        setTimeout(() => this.loadTickerChart(sym), 100);
+      }
+    };
+  });
+};
+
+// ── 13. Homelab Apps Live Summary Widgets ─────────────────────────────
+
+CommandDeck.prototype.fetchHomelabSummaryWidgets = async function() {
+  const container = document.getElementById('homelab-summary-grid');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/widgets/homelab-summary`);
+    if (res.ok) {
+      const data = await res.json();
+      this.renderHomelabSummaryWidgets(data);
+    }
+  } catch (e) {
+    container.innerHTML = `<div class="empty-hint">Error fetching homelab summaries: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderHomelabSummaryWidgets = function(data) {
+  const container = document.getElementById('homelab-summary-grid');
+  if (!container) return;
+
+  const fr = data.freshrss || {};
+  const ab = data.audiobookshelf || {};
+  const seer = data.seer || {};
+  const del = data.deluge || {};
+
+  const currentBook = ab.current_book || {};
+  const pendingRequests = seer.requests || [];
+  const articles = fr.recent_articles || [];
+  const torrents = del.items || [];
+
+  container.innerHTML = `
+    <!-- FreshRSS Summary Card -->
+    <div class="summary-card">
+      <div>
+        <div class="summary-card-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.2rem;">📰</span>
+            <span style="font-weight:700; color:var(--text-1);">FreshRSS Feeds</span>
+          </div>
+          <span class="badge ${fr.unread_count > 0 ? 'badge-warn' : 'badge-ok'}">${fr.unread_count || 0} unread</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:10px;">
+          ${articles.slice(0, 3).map(a => `
+            <div style="font-size:0.76rem; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">
+              <a href="${escapeHtml(a.url)}" target="_blank" style="color:var(--text-1); font-weight:500; text-decoration:none; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${escapeHtml(a.title)}
+              </a>
+              <span style="font-size:0.68rem; color:var(--text-3);">${escapeHtml(a.feed)} • ${escapeHtml(a.time)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('freshrss')" style="font-size:0.72rem; margin-top:8px; align-self:flex-start;">
+        Open Full FreshRSS ➔
+      </button>
+    </div>
+
+    <!-- Audiobookshelf Summary Card -->
+    <div class="summary-card">
+      <div>
+        <div class="summary-card-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.2rem;">🎧</span>
+            <span style="font-weight:700; color:var(--text-1);">Audiobookshelf</span>
+          </div>
+          <span class="badge badge-purple">${currentBook.progress_pct || 0}% Complete</span>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px; align-items:center;">
+          <img src="${escapeHtml(currentBook.cover_url || '')}" alt="Cover" style="width:48px; height:48px; object-fit:cover; border-radius:4px; border:1px solid var(--border-subtle);" />
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:600; font-size:0.8rem; color:var(--text-1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(currentBook.title || 'No active book')}</div>
+            <div style="font-size:0.7rem; color:var(--text-3);">${escapeHtml(currentBook.author || '')} • ${escapeHtml(currentBook.duration_left || '')} left</div>
+            <div class="summary-progress-bar">
+              <div class="summary-progress-fill" style="width:${currentBook.progress_pct || 0}%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('audiobookshelf')" style="font-size:0.72rem; margin-top:8px; align-self:flex-start;">
+        Resume Listening ➔
+      </button>
+    </div>
+
+    <!-- Seer Media Requests Card -->
+    <div class="summary-card">
+      <div>
+        <div class="summary-card-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.2rem;">🎬</span>
+            <span style="font-weight:700; color:var(--text-1);">Seer Requests</span>
+          </div>
+          <span class="badge ${seer.pending_count > 0 ? 'badge-cyan' : 'badge-ok'}">${seer.pending_count || 0} Pending</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+          ${pendingRequests.slice(0, 2).map(r => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-tertiary); padding:6px 8px; border-radius:4px; font-size:0.75rem;">
+              <div>
+                <strong style="color:var(--text-1);">${escapeHtml(r.title)}</strong> (${r.year})
+                <div style="font-size:0.68rem; color:var(--text-3);">By ${escapeHtml(r.requester)}</div>
+              </div>
+              <button class="btn btn--primary btn--sm btn-approve-media" data-id="${escapeHtml(r.id)}" style="font-size:0.68rem; padding:2px 6px;">Approve</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('seer')" style="font-size:0.72rem; margin-top:8px; align-self:flex-start;">
+        Manage All Requests ➔
+      </button>
+    </div>
+
+    <!-- Deluge / Media Queues Card -->
+    <div class="summary-card">
+      <div>
+        <div class="summary-card-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.2rem;">⚡</span>
+            <span style="font-weight:700; color:var(--text-1);">Active Downloads</span>
+          </div>
+          <span class="badge badge-emerald">↓ ${del.download_rate_mb || 0} MB/s</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:10px;">
+          ${torrents.slice(0, 2).map(t => `
+            <div style="font-size:0.75rem;">
+              <div style="display:flex; justify-content:space-between; color:var(--text-2);">
+                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">${escapeHtml(t.name)}</span>
+                <span style="font-size:0.7rem; font-family:var(--font-mono);">${t.progress_pct}%</span>
+              </div>
+              <div class="summary-progress-bar">
+                <div class="summary-progress-fill" style="width:${t.progress_pct}%;"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('services')" style="font-size:0.72rem; margin-top:8px; align-self:flex-start;">
+        View Queues ➔
+      </button>
+    </div>
+  `;
+
+  container.querySelectorAll('.btn-approve-media').forEach(btn => {
+    btn.onclick = () => {
+      btn.textContent = '✓ Approved';
+      btn.classList.replace('btn--primary', 'btn--ghost');
+      this.showToast?.('Media request approved.', 'success');
+    };
+  });
+};
+
+// ── 14. n8n Visual Automation Control Board ───────────────────────────
+
+CommandDeck.prototype.fetchN8nQuickActions = async function() {
+  const container = document.getElementById('n8n-quick-actions-grid');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/n8n/quick-actions`);
+    if (res.ok) {
+      const data = await res.json();
+      this.renderN8nQuickActions(data.actions || []);
+    }
+  } catch (e) {
+    container.innerHTML = `<div class="empty-hint">Error loading automation presets: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderN8nQuickActions = function(actions) {
+  const container = document.getElementById('n8n-quick-actions-grid');
+  const countEl = document.getElementById('n8n-actions-count');
+  if (!container) return;
+
+  if (countEl) countEl.textContent = `${actions.length} Ready`;
+
+  container.innerHTML = actions.map(a => `
+    <div class="n8n-action-card">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <span style="font-size:1.3rem;">${a.icon}</span>
+          <span class="badge badge-secondary" style="font-size:0.65rem;">${escapeHtml(a.category)}</span>
+        </div>
+        <div style="font-weight:600; font-size:0.85rem; color:var(--text-1);">${escapeHtml(a.name)}</div>
+        <div style="font-size:0.72rem; color:var(--text-3); margin-top:2px;">${escapeHtml(a.description)}</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:6px; border-top:1px solid var(--border-subtle);">
+        <span style="font-size:0.68rem; color:var(--text-3);">Last: ${escapeHtml(a.last_run)}</span>
+        <button class="btn btn--primary btn--sm btn-trigger-n8n-action" data-action-id="${escapeHtml(a.id)}" style="font-size:0.72rem; padding:3px 10px;">
+          ⚡ Run Now
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.btn-trigger-n8n-action').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.actionId;
+      btn.disabled = true;
+      btn.textContent = 'Running...';
+      try {
+        const res = await fetch(`${this.apiBase}/api/n8n/trigger`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action_id: id })
+        });
+        const data = await res.json();
+        this.showToast?.(data.message || 'Workflow executed', 'success');
+        btn.textContent = '✓ Done';
+        setTimeout(() => {
+          btn.textContent = '⚡ Run Now';
+          btn.disabled = false;
+        }, 2500);
+      } catch (err) {
+        this.showToast?.(`Workflow failed: ${err.message}`, 'error');
+        btn.textContent = '⚡ Run Now';
+        btn.disabled = false;
+      }
+    };
+  });
+};
+
+// ── 15. Docker Container Log Console Modal ────────────────────────────
+
+CommandDeck.prototype.openContainerLogsModal = async function(containerName) {
+  const drawer = document.getElementById('container-logs-drawer');
+  const titleEl = document.getElementById('container-logs-title');
+  const contentEl = document.getElementById('container-logs-content');
+  const searchInput = document.getElementById('container-logs-search');
+  const closeBtn = document.getElementById('container-logs-close');
+  const refreshBtn = document.getElementById('container-logs-refresh');
+  const restartBtn = document.getElementById('container-logs-restart');
+
+  if (!drawer) return;
+  drawer.classList.add('open');
+  if (titleEl) titleEl.textContent = `${containerName} Logs`;
+  if (contentEl) contentEl.textContent = 'Loading container logs...';
+
+  let rawLogs = '';
+
+  const renderFilteredLogs = () => {
+    if (!contentEl) return;
+    const filter = (searchInput?.value || '').toLowerCase();
+    const lines = rawLogs.split('\n');
+    const filtered = filter ? lines.filter(l => l.toLowerCase().includes(filter)) : lines;
+    contentEl.innerHTML = filtered.map(line => {
+      let cls = '';
+      if (/error|fatal|fail/i.test(line)) cls = 'terminal-line-err';
+      else if (/warn/i.test(line)) cls = 'terminal-line-warn';
+      else if (/info|notice/i.test(line)) cls = 'terminal-line-info';
+      return `<div class="${cls}">${escapeHtml(line)}</div>`;
+    }).join('');
+    contentEl.scrollTop = contentEl.scrollHeight;
+  };
+
+  const fetchLogs = async () => {
+    try {
+      const res = await fetch(`${this.apiBase}/api/docker/containers/${encodeURIComponent(containerName)}/logs`);
+      if (res.ok) {
+        const data = await res.json();
+        rawLogs = data.logs || 'No logs available.';
+        renderFilteredLogs();
+      }
+    } catch (e) {
+      if (contentEl) contentEl.textContent = `Error fetching logs: ${e.message}`;
+    }
+  };
+
+  if (searchInput) searchInput.oninput = renderFilteredLogs;
+  if (refreshBtn) refreshBtn.onclick = fetchLogs;
+  if (restartBtn) {
+    restartBtn.onclick = async () => {
+      if (!confirm(`Restart container "${containerName}"?`)) return;
+      try {
+        const res = await fetch(`${this.apiBase}/api/docker/containers/${encodeURIComponent(containerName)}/restart`, { method: 'POST' });
+        const data = await res.json();
+        this.showToast?.(data.message || 'Container restarted', 'success');
+        setTimeout(fetchLogs, 1500);
+      } catch (err) {
+        this.showToast?.(`Restart failed: ${err.message}`, 'error');
+      }
+    };
+  }
+  if (closeBtn) closeBtn.onclick = () => drawer.classList.remove('open');
+  drawer.onclick = (e) => {
+    if (e.target === drawer) drawer.classList.remove('open');
+  };
+
+  await fetchLogs();
+};
+
+CommandDeck.prototype.openContainerLogs = function(containerName) {
+  return this.openContainerLogsModal(containerName);
+};
+
+CommandDeck.prototype.triggerN8nQuickAction = async function(actionId) {
+  try {
+    const res = await fetch(`${this.apiBase}/api/n8n/trigger`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action_id: actionId })
+    });
+    const data = await res.json();
+    this.showToast?.(data.message || `Workflow ${actionId} executed`, 'success');
+  } catch (err) {
+    this.showToast?.(`Workflow failed: ${err.message}`, 'error');
+  }
+};
+
+// ── 16. Split-Screen Dual Workbench Mode ──────────────────────────────
+
+CommandDeck.prototype.initWorkbenchMode = function() {
+  const btnToggle = document.getElementById('btn-toggle-workbench');
+  const splitStage = document.getElementById('workbench-split-stage');
+  const primaryPane = document.getElementById('workbench-pane-primary');
+  const secondaryBody = document.getElementById('workbench-secondary-body');
+  const secondarySelect = document.getElementById('workbench-secondary-select');
+  const btnClose = document.getElementById('btn-close-workbench');
+
+  if (!btnToggle || !splitStage) return;
+
+  this.isWorkbenchActive = false;
+
+  btnToggle.onclick = () => {
+    this.isWorkbenchActive = !this.isWorkbenchActive;
+    btnToggle.classList.toggle('active', this.isWorkbenchActive);
+    splitStage.style.display = this.isWorkbenchActive ? 'block' : 'none';
+
+    document.querySelectorAll('.view-section').forEach(el => {
+      if (this.isWorkbenchActive) {
+        el.style.display = 'none';
+      }
+    });
+
+    if (this.isWorkbenchActive) {
+      const activeView = this.currentView || 'dashboard';
+      const targetEl = document.getElementById(`view-${activeView}`);
+      if (targetEl && primaryPane) {
+        primaryPane.innerHTML = '';
+        const cloned = targetEl.cloneNode(true);
+        cloned.style.display = 'block';
+        primaryPane.appendChild(cloned);
+      }
+      this.loadWorkbenchSecondary(secondarySelect?.value || 'agents');
+    } else {
+      this.showView(this.currentView || 'dashboard');
+    }
+  };
+
+  if (btnClose) {
+    btnClose.onclick = () => {
+      this.isWorkbenchActive = false;
+      btnToggle.classList.remove('active');
+      splitStage.style.display = 'none';
+      this.showView(this.currentView || 'dashboard');
+    };
+  }
+
+  if (secondarySelect) {
+    secondarySelect.onchange = () => {
+      this.loadWorkbenchSecondary(secondarySelect.value);
+    };
+  }
+};
+
+CommandDeck.prototype.loadWorkbenchSecondary = function(viewName) {
+  const secondaryBody = document.getElementById('workbench-secondary-body');
+  if (!secondaryBody) return;
+
+  const targetEl = document.getElementById(`view-${viewName}`);
+  if (targetEl) {
+    secondaryBody.innerHTML = '';
+    const cloned = targetEl.cloneNode(true);
+    cloned.style.display = 'block';
+    secondaryBody.appendChild(cloned);
+  }
+};
+
+// ── 17. Cross-Page Quick Note Creation ────────────────────────────────
+
+CommandDeck.prototype.createQuickVaultNote = async function(title, content) {
+  try {
+    const res = await fetch(`${this.apiBase}/api/vault/quick-note`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      this.showToast?.(`Note created: ${data.title}`, 'success');
+    }
+  } catch (e) {
+    this.showToast?.(`Failed to create note: ${e.message}`, 'error');
+  }
+};
 
   if (window.commandDeck) {
     initIntegrations();
