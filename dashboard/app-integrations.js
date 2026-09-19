@@ -328,95 +328,14 @@ CommandDeck.prototype.renderN8n = function(wfData, exData) {
 // ── 2b. Homelab Dedicated Services View Loader ────────────────────────────────
 
 CommandDeck.prototype.loadHomelabServiceView = async function(serviceName) {
-  const meta = {
-    deerflow: { title: 'DeerFlow', defaultUrl: 'http://localhost:8000', icon: '🦌', desc: 'Deep multi-agent research workflow, automated literature synthesis & DAG flows' },
-    vane: { title: 'Vane (Perplexica)', defaultUrl: 'http://localhost:3000', icon: '🧭', desc: 'AI-powered conversational search engine with multi-source web grounding' },
-    openwebui: { title: 'Open WebUI', defaultUrl: 'http://localhost:3000', icon: '💬', desc: 'Self-hosted conversational AI workstation with local Ollama, vLLM & OpenAI model endpoints' },
-    audiobookshelf: { title: 'Audiobookshelf', defaultUrl: 'http://localhost:13378', icon: '🎧', desc: 'Self-hosted audiobook, podcast & sync server' },
-    booklore: { title: 'Booklore', defaultUrl: 'http://localhost:8080', icon: '📖', desc: 'Self-hosted eBook library & reading archive' },
-    immich: { title: 'Immich', defaultUrl: 'http://localhost:2283', icon: '📷', desc: 'High-performance photo and video backup with machine learning visual search' },
-    nextcloud: { title: 'Nextcloud', defaultUrl: 'http://localhost:8080', icon: '☁️', desc: 'Private cloud hub, file sync, collaborative docs & calendar' },
-    seer: { title: 'Seer Requests', defaultUrl: 'http://localhost:5055', icon: '🎬', desc: 'Media discovery and automated request manager (Overseerr / Jellyseerr)' },
-    freshrss: { title: 'FreshRSS', defaultUrl: 'http://localhost:8080', icon: '📰', desc: 'Self-hosted RSS/Atom feed aggregator & reader' },
-    godseye: { title: "God's Eye View", defaultUrl: 'http://localhost:5173', icon: '🛰️', desc: 'Real-time 3D geospatial intelligence, Cesium photorealistic tiles, satellite & transponder tracking' },
-  };
-
-  const service = meta[serviceName];
-  if (!service) return;
-
+  const linkItem = (this.systemSettings?.navbar_links || []).find(l => l.id === serviceName);
   const cfg = this.systemSettings?.[serviceName] || {};
-  const currentUrl = cfg.url || service.defaultUrl;
-
-  const stage = document.getElementById(`${serviceName}-stage`);
-  const badge = document.getElementById(`${serviceName}-connection-badge`);
-  const extLink = document.getElementById(`${serviceName}-external-link`);
-
-  if (extLink) extLink.href = currentUrl;
-
-  if (stage) {
-    stage.innerHTML = `
-      <div style="display:flex; flex-direction:column; width:100%; height:100%; position:absolute; inset:0;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 16px; background:var(--bg-secondary); border-bottom:1px solid var(--border-subtle);">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:1.1rem;">${service.icon}</span>
-            <span style="font-weight:600; font-size:0.85rem; color:var(--text-1);">${service.title} Live Node</span>
-            <a href="${escapeHtml(currentUrl)}" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem; color:var(--accent); font-family:var(--font-mono); text-decoration:underline;">${escapeHtml(currentUrl)}</a>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <button class="btn btn--ghost btn--sm btn-reload-frame" data-service="${serviceName}" style="font-size:0.75rem; padding:3px 8px;">↻ Reload Frame</button>
-            <a href="${escapeHtml(currentUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--sm" style="font-size:0.75rem; padding:3px 10px; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
-              <span>Open in New Tab ↗</span>
-            </a>
-          </div>
-        </div>
-        <div style="padding:8px 16px; background:rgba(59,130,246,0.05); border-bottom:1px solid var(--border-subtle); font-size:0.75rem; color:var(--text-3); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-          <span>💡 Embedded Sandbox View. If the web app is blocked by container X-Frame-Options, use <strong>Open in New Tab ↗</strong>.</span>
-          <button class="btn btn--ghost btn--sm btn-goto-system-settings" style="font-size:0.75rem; padding:2px 6px;">⚙️ Configure URL / Token</button>
-        </div>
-        <div style="flex:1; width:100%; height:calc(100% - 75px); position:relative; overflow:hidden;">
-          <iframe id="iframe-${serviceName}" src="${escapeHtml(currentUrl)}" style="width:100%; height:100%; border:none; background:var(--bg-primary);" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals" loading="lazy"></iframe>
-        </div>
-      </div>
-    `;
-
-    const reloadBtn = stage.querySelector('.btn-reload-frame');
-    if (reloadBtn) {
-      reloadBtn.onclick = () => {
-        const frame = document.getElementById(`iframe-${serviceName}`);
-        if (frame) frame.src = currentUrl;
-      };
-    }
-
-    stage.querySelectorAll('.btn-goto-system-settings').forEach(btn => {
-      btn.onclick = (e) => {
-        e.preventDefault();
-        this.showView('system');
-      };
-    });
-  }
-
-  // Check connectivity in background
-  try {
-    const testRes = await fetch(`${this.apiBase}/api/system/test-connection?provider=${serviceName}`);
-    if (testRes.ok) {
-      const testData = await testRes.json();
-      if (badge) {
-        if (testData.status === 'ok') {
-          badge.textContent = 'Live Connected';
-          badge.className = 'badge badge-ok';
-        } else {
-          badge.textContent = 'Configured / Offline';
-          badge.className = 'badge badge-secondary';
-        }
-      }
-    }
-  } catch (e) {
-    if (badge) {
-      badge.textContent = 'Offline';
-      badge.className = 'badge badge-secondary';
-    }
+  const currentUrl = linkItem?.url || cfg.url || linkItem?.default_url;
+  if (currentUrl) {
+    window.open(currentUrl, '_blank', 'noopener,noreferrer');
   }
 };
+
 
 
 // ── 3. Obsidian Vault & pgvector Semantic Visualizer ──────────────────────────
@@ -1509,6 +1428,33 @@ CommandDeck.prototype.initSystemSettings = function() {
       checkField(document.getElementById('input-key-twelvedata'), 'twelvedata_api_key', true);
       checkField(document.getElementById('input-key-fred'), 'fred_api_key', true);
 
+      // Collect dynamic external navbar links
+      const navlinkRows = document.querySelectorAll('#navbar-links-manager-container .navlink-manager-row');
+      if (navlinkRows.length > 0) {
+        const links = [];
+        navlinkRows.forEach(row => {
+          const id = row.dataset.id;
+          const nameInput = row.querySelector('.navlink-input-name');
+          const urlInput = row.querySelector('.navlink-input-url');
+          const iconInput = row.querySelector('.navlink-input-icon');
+          const toggle = row.querySelector('.navlink-toggle-enabled');
+          const envVar = row.dataset.envVar || '';
+          if (id && nameInput && urlInput) {
+            links.push({
+              id,
+              name: nameInput.value.trim() || id,
+              url: urlInput.value.trim(),
+              icon: (iconInput ? iconInput.value.trim() : '') || '🔗',
+              env_var: envVar,
+              enabled: toggle ? toggle.checked : true
+            });
+          }
+        });
+        payload.navbar_links = links;
+      } else if (Array.isArray(this.systemSettings?.navbar_links)) {
+        payload.navbar_links = this.systemSettings.navbar_links;
+      }
+
       try {
         const res = await fetch(`${this.apiBase}/api/system/settings`, {
           method: 'POST',
@@ -1523,6 +1469,54 @@ CommandDeck.prototype.initSystemSettings = function() {
         }
       } catch (err) {
         console.warn('Error saving system settings:', err);
+      }
+    };
+  }
+
+  // Wire Add New Navbar Link Button
+  const addNavLinkBtn = document.getElementById('btn-add-navlink');
+  if (addNavLinkBtn && !addNavLinkBtn.dataset.initDone) {
+    addNavLinkBtn.dataset.initDone = 'true';
+    addNavLinkBtn.onclick = () => {
+      const nameInput = document.getElementById('new-navlink-name');
+      const urlInput = document.getElementById('new-navlink-url');
+      const iconInput = document.getElementById('new-navlink-icon');
+
+      const name = nameInput ? nameInput.value.trim() : '';
+      const url = urlInput ? urlInput.value.trim() : '';
+      const icon = (iconInput ? iconInput.value.trim() : '') || '🔗';
+
+      if (!name || !url) {
+        if (typeof this.showToast === 'function') {
+          this.showToast('Please enter both a name and a target URL.', 'warning');
+        }
+        return;
+      }
+
+      const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString(36);
+      if (!this.systemSettings) this.systemSettings = {};
+      if (!Array.isArray(this.systemSettings.navbar_links)) {
+        this.systemSettings.navbar_links = [];
+      }
+
+      this.systemSettings.navbar_links.push({
+        id,
+        name,
+        url,
+        icon,
+        env_var: '',
+        enabled: true
+      });
+
+      if (nameInput) nameInput.value = '';
+      if (urlInput) urlInput.value = '';
+      if (iconInput) iconInput.value = '🔗';
+
+      this.renderNavbarLinksSettings(this.systemSettings.navbar_links);
+      this.renderSidebarExternalLinks(this.systemSettings.navbar_links);
+
+      if (typeof this.showToast === 'function') {
+        this.showToast(`Added "${name}" to navbar! Click "Save & Sync Settings" to persist.`, 'success');
       }
     };
   }
@@ -1750,10 +1744,150 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     setField(document.getElementById('input-key-fmp'), settings.fmp?.masked_key);
     setField(document.getElementById('input-key-twelvedata'), settings.twelvedata?.masked_key);
     setField(document.getElementById('input-key-fred'), settings.fred?.masked_key);
+
+    // Dynamic External Navbar Links
+    if (Array.isArray(settings.navbar_links)) {
+      this.renderSidebarExternalLinks(settings.navbar_links);
+      this.renderNavbarLinksSettings(settings.navbar_links);
+    }
   } catch (err) {
     console.warn('Failed to load system settings:', err);
   }
 };
+
+
+// ── 4b. External Navbar Links & Settings Manager ─────────────────────────────
+
+CommandDeck.prototype.renderSidebarExternalLinks = function(links) {
+  const container = document.getElementById('sidebar-external-links');
+  if (!container) return;
+
+  const linkItems = Array.isArray(links) && links.length > 0
+    ? links
+    : (this.systemSettings?.navbar_links || [
+        { id: "deerflow", name: "DeerFlow", url: "http://localhost:8000", icon: "🦌", enabled: true },
+        { id: "vane", name: "Vane (Perplexica)", url: "http://localhost:3000", icon: "🧭", enabled: true },
+        { id: "openwebui", name: "Open WebUI", url: "http://localhost:3000", icon: "💬", enabled: true },
+        { id: "audiobookshelf", name: "Audiobookshelf", url: "http://localhost:13378", icon: "🎧", enabled: true },
+        { id: "booklore", name: "Booklore", url: "http://localhost:8080", icon: "📚", enabled: true },
+        { id: "immich", name: "Immich Photos", url: "http://localhost:2283", icon: "📸", enabled: true },
+        { id: "nextcloud", name: "Nextcloud", url: "http://localhost:8080", icon: "☁️", enabled: true },
+        { id: "seer", name: "Seer Requests", url: "http://localhost:5055", icon: "🎬", enabled: true },
+        { id: "freshrss", name: "FreshRSS", url: "http://localhost:8080", icon: "📰", enabled: true },
+        { id: "godseye", name: "God's Eye View", url: "http://localhost:5173", icon: "👁️", enabled: true }
+      ]);
+
+  container.innerHTML = linkItems
+    .filter(link => link.enabled !== false)
+    .map(link => {
+      const url = link.url || '#';
+      const name = escapeHtml(link.name || link.id);
+      const icon = link.icon || '🔗';
+      return `
+        <a href="${url}" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-external-link" aria-label="${name}" title="${name} (Opens in new tab)" data-link-id="${escapeHtml(link.id)}">
+          <span class="sidebar-icon" style="font-size:1rem; width:17px; height:17px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${icon}</span>
+          <span class="sidebar-label" style="display:flex; align-items:center; justify-content:space-between; flex:1; min-width:0;">
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4; margin-left:4px; flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </span>
+        </a>
+      `;
+    }).join('');
+};
+
+CommandDeck.prototype.renderNavbarLinksSettings = function(links) {
+  const container = document.getElementById('navbar-links-manager-container');
+  if (!container) return;
+
+  const linkItems = Array.isArray(links) ? links : (this.systemSettings?.navbar_links || []);
+  if (linkItems.length === 0) {
+    container.innerHTML = `
+      <div style="padding: 14px; text-align:center; color:var(--text-3); font-size:0.85rem; border:1px dashed var(--border-subtle); border-radius:var(--radius-md);">
+        No external navbar links configured. Use the form above to add your first quick tab link.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = linkItems.map((link, idx) => {
+    const id = escapeHtml(link.id || `link_${idx}`);
+    const name = escapeHtml(link.name || '');
+    const url = escapeHtml(link.url || '');
+    const icon = escapeHtml(link.icon || '🔗');
+    const isEnabled = link.enabled !== false;
+    const envVar = escapeHtml(link.env_var || '');
+
+    return `
+      <div class="navlink-manager-row panel" data-id="${id}" data-env-var="${envVar}" style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--surface-2, rgba(255,255,255,0.02)); border:1px solid var(--border-subtle); border-radius:var(--radius-md); flex-wrap:wrap;">
+        <input type="text" class="setting-key-input navlink-input-icon" data-id="${id}" value="${icon}" maxlength="4" style="width:44px; text-align:center; font-size:1.1rem; padding:4px;" title="Emoji / Icon" />
+        <div style="flex:1; min-width:140px;">
+          <input type="text" class="setting-key-input navlink-input-name" data-id="${id}" value="${name}" placeholder="Display Name" style="font-weight:600; width:100%;" />
+        </div>
+        <div style="flex:2; min-width:200px;">
+          <input type="url" class="setting-key-input navlink-input-url" data-id="${id}" value="${url}" placeholder="http://..." style="width:100%;" />
+        </div>
+        ${envVar ? `<span class="badge badge-secondary" style="font-size:0.7rem;" title="Synchronized with ${envVar} in .env">${envVar}</span>` : ''}
+        <label style="display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--text-2); cursor:pointer; user-select:none; margin:0 4px;">
+          <input type="checkbox" class="navlink-toggle-enabled" data-id="${id}" ${isEnabled ? 'checked' : ''} />
+          <span>Show</span>
+        </label>
+        <a href="${url || '#'}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" title="Test link in new tab" style="padding:4px 10px; display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+          <span>Test</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <button type="button" class="btn btn--ghost btn--sm navlink-btn-remove" data-id="${id}" title="Remove link from navbar" style="color:var(--rose, #ef4444); padding:4px 8px; border:1px solid rgba(239,68,68,0.2);">
+          🗑️
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  // Wire event handlers for real-time sidebar preview & state updates
+  const syncStateFromDom = () => {
+    const rows = container.querySelectorAll('.navlink-manager-row');
+    const updated = [];
+    rows.forEach(r => {
+      const id = r.dataset.id;
+      const nameInput = r.querySelector('.navlink-input-name');
+      const urlInput = r.querySelector('.navlink-input-url');
+      const iconInput = r.querySelector('.navlink-input-icon');
+      const toggle = r.querySelector('.navlink-toggle-enabled');
+      const envVar = r.dataset.envVar || '';
+      if (id && nameInput && urlInput) {
+        updated.push({
+          id,
+          name: nameInput.value.trim() || id,
+          url: urlInput.value.trim(),
+          icon: (iconInput ? iconInput.value.trim() : '') || '🔗',
+          env_var: envVar,
+          enabled: toggle ? toggle.checked : true
+        });
+      }
+    });
+    if (!this.systemSettings) this.systemSettings = {};
+    this.systemSettings.navbar_links = updated;
+    this.renderSidebarExternalLinks(updated);
+  };
+
+  container.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', syncStateFromDom);
+    inp.addEventListener('change', syncStateFromDom);
+  });
+
+  container.querySelectorAll('.navlink-btn-remove').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.id;
+      if (!this.systemSettings) this.systemSettings = {};
+      this.systemSettings.navbar_links = (this.systemSettings.navbar_links || []).filter(l => l.id !== id);
+      this.renderNavbarLinksSettings(this.systemSettings.navbar_links);
+      this.renderSidebarExternalLinks(this.systemSettings.navbar_links);
+      if (typeof this.showToast === 'function') {
+        this.showToast('Navbar link removed. Click "Save & Sync Settings" to persist.', 'info');
+      }
+    };
+  });
+};
+
 
 
 // ── 5. SearXNG Private Metasearch Omnibar ───────────────────────────────────────

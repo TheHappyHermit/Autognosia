@@ -1043,6 +1043,52 @@ ENV_ALIAS_MAP: Dict[str, List[str]] = {
     "UPTIME_KUMA_TOKEN": ["UPTIMEKUMA_TOKEN", "KUMA_TOKEN", "UPTIME_KUMA_API_KEY"],
 }
 
+DEFAULT_NAVBAR_LINKS: List[Dict[str, Any]] = [
+    {"id": "deerflow", "name": "DeerFlow", "url": "http://localhost:8000", "icon": "🦌", "env_var": "DEERFLOW_URL", "enabled": True},
+    {"id": "vane", "name": "Vane", "url": "http://localhost:3000", "icon": "🧭", "env_var": "VANE_URL", "enabled": True},
+    {"id": "openwebui", "name": "Open WebUI", "url": "http://localhost:3000", "icon": "💬", "env_var": "OPENWEBUI_URL", "enabled": True},
+    {"id": "audiobookshelf", "name": "Audiobookshelf", "url": "http://localhost:13378", "icon": "🎧", "env_var": "AUDIOBOOKSHELF_URL", "enabled": True},
+    {"id": "booklore", "name": "Booklore", "url": "http://localhost:8080", "icon": "📖", "env_var": "BOOKLORE_URL", "enabled": True},
+    {"id": "immich", "name": "Immich", "url": "http://localhost:2283", "icon": "📷", "env_var": "IMMICH_URL", "enabled": True},
+    {"id": "nextcloud", "name": "Nextcloud", "url": "http://localhost:8080", "icon": "☁️", "env_var": "NEXTCLOUD_URL", "enabled": True},
+    {"id": "seer", "name": "Seer", "url": "http://localhost:5055", "icon": "🎬", "env_var": "SEER_URL", "enabled": True},
+    {"id": "freshrss", "name": "FreshRSS", "url": "http://localhost:8080", "icon": "📰", "env_var": "FRESHRSS_URL", "enabled": True},
+    {"id": "godseye", "name": "God's Eye", "url": "http://localhost:5173", "icon": "🛰️", "env_var": "GODS_EYE_URL", "enabled": True},
+]
+
+
+def get_navbar_links() -> List[Dict[str, Any]]:
+    """Return configured external navbar links, dynamically resolving URLs from env/settings."""
+    raw = get_system_settings_raw()
+    links = []
+
+    # Check ~/.autognosia/system_settings.json for saved custom_navbar_links
+    if SYSTEM_SETTINGS_FILE.exists():
+        try:
+            file_data = json.loads(SYSTEM_SETTINGS_FILE.read_text(encoding="utf-8"))
+            if isinstance(file_data.get("custom_navbar_links"), list) and file_data["custom_navbar_links"]:
+                links = [dict(item) for item in file_data["custom_navbar_links"]]
+        except Exception:
+            pass
+
+    if not links:
+        # Deep copy defaults
+        links = [dict(item) for item in DEFAULT_NAVBAR_LINKS]
+
+    # Dynamically resolve URLs if env_var is configured
+    resolved_links = []
+    for item in links:
+        link = dict(item)
+        env_var = link.get("env_var")
+        if env_var:
+            # Check os.environ or raw
+            env_val = os.environ.get(env_var) or raw.get(env_var.lower())
+            if env_val:
+                link["url"] = env_val
+        resolved_links.append(link)
+
+    return resolved_links
+
 
 def get_system_settings_raw() -> Dict[str, str]:
     """Load raw system settings merged across .env files, os.environ, and JSON storage."""
@@ -1312,12 +1358,14 @@ def get_system_settings() -> Dict[str, Any]:
         "yfinance": {
             "installed": yf is not None,
             "version": getattr(yf, "__version__", "1.7.0") if yf else None
-        }
+        },
+        # External Navbar Links
+        "navbar_links": get_navbar_links()
     }
 
 
 def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Save API keys and endpoints to system_settings.json, legacy files, and synchronize with .env."""
+    """Save API keys, endpoints, and navbar links to system_settings.json, legacy files, and synchronize with .env."""
     raw = get_system_settings_raw()
     env_updates = {}
 
@@ -1381,6 +1429,43 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
                 for alias_k in ENV_ALIAS_MAP[env_k]:
                     env_updates[alias_k] = val
                     os.environ[alias_k] = val
+
+    # Process custom navbar links
+    if "navbar_links" in payload and isinstance(payload["navbar_links"], list):
+        clean_links = []
+        for item in payload["navbar_links"]:
+            if not isinstance(item, dict):
+                continue
+            lid = str(item.get("id") or item.get("name", "")).lower().replace(" ", "-")
+            name = str(item.get("name", "")).strip()
+            url = str(item.get("url", "")).strip()
+            icon = str(item.get("icon", "🔗")).strip() or "🔗"
+            env_var = str(item.get("env_var", "")).strip()
+            enabled = bool(item.get("enabled", True))
+            
+            if not name or not url:
+                continue
+
+            clean_links.append({
+                "id": lid,
+                "name": name,
+                "url": url,
+                "icon": icon,
+                "env_var": env_var,
+                "enabled": enabled
+            })
+
+            # If it has an env_var, sync it to .env and os.environ
+            if env_var:
+                env_updates[env_var] = url
+                os.environ[env_var] = url
+                # Also update in raw
+                raw[env_var.lower()] = url
+                for setting_k, mapped_env in key_map.items():
+                    if mapped_env == env_var:
+                        raw[setting_k] = url
+
+        raw["custom_navbar_links"] = clean_links
 
     # Save to main system_settings.json
     SYSTEM_SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)

@@ -79,7 +79,18 @@
   gap: clamp(2px, 0.35vh, 4px);
   padding: 0 8px;
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+.sidebar-external-links-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.35vh, 4px);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 4px;
+  margin-top: 2px;
 }
 
 .sidebar-link {

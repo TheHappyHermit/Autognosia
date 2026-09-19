@@ -55,6 +55,7 @@ export class CommandDeck {
     if (typeof this.initHeaderOmnibar === 'function') this.initHeaderOmnibar();
     if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
     if (typeof this.initSystemSettings === 'function') this.initSystemSettings();
+    if (typeof this.renderSidebarExternalLinks === 'function') this.renderSidebarExternalLinks();
     if (typeof this.fetchMarketTickerRibbon === 'function') this.fetchMarketTickerRibbon();
     if (typeof this.initWorkbenchMode === 'function') this.initWorkbenchMode();
     if (typeof this.refreshAllData === 'function') {
@@ -73,6 +74,7 @@ export class CommandDeck {
   initViewRouting() {
     document.querySelectorAll('.sidebar-link').forEach(link => {
       link.addEventListener('click', (e) => {
+        if (link.target === '_blank' || link.classList.contains('sidebar-external-link')) return;
         e.preventDefault();
         const view = link.dataset.view;
         this.showView(view);
@@ -224,8 +226,10 @@ export class CommandDeck {
       if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
       if (typeof this.fetchMarkets === 'function') this.fetchMarkets();
     } else if (['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'].includes(viewName)) {
-      if (typeof this.loadHomelabServiceView === 'function') {
-        this.loadHomelabServiceView(viewName);
+      const linkItem = (this.systemSettings?.navbar_links || []).find(l => l.id === viewName);
+      const url = linkItem?.url || linkItem?.default_url || this.systemSettings?.[viewName]?.url;
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
       }
     } else if (viewName === 'dashboard') {
       if (typeof this.refreshAllData === 'function') this.refreshAllData();
