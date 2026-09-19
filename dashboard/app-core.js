@@ -181,6 +181,7 @@ export class CommandDeck {
       }
     } else if (viewName === 'homelab') {
       if (typeof this.renderHomeLab === 'function') this.renderHomeLab();
+      if (typeof this.fetchHomelabMesh === 'function') this.fetchHomelabMesh();
       if (typeof this.fetchSystemStats === 'function') this.fetchSystemStats();
       if (typeof this.renderDashboardServers === 'function') this.renderDashboardServers();
       if (typeof this.fetchTelemetry === 'function') this.fetchTelemetry();
@@ -195,6 +196,7 @@ export class CommandDeck {
       if (window.botsPage && typeof window.botsPage.init === 'function') {
         window.botsPage.init();
       }
+      if (typeof this.fetchExperienceStats === 'function') this.fetchExperienceStats();
       if (typeof this.fetchSkillsCatalog === 'function') this.fetchSkillsCatalog();
       if (typeof this.fetchLocalModels === 'function') this.fetchLocalModels();
     } else if (viewName === 'homeassistant') {
@@ -203,6 +205,7 @@ export class CommandDeck {
       if (typeof this.fetchN8n === 'function') this.fetchN8n();
     } else if (viewName === 'vault') {
       if (typeof this.fetchVault === 'function') this.fetchVault();
+      if (typeof this.fetchEpistemicLedger === 'function') this.fetchEpistemicLedger();
       if (typeof this.fetchResearchQueue === 'function') this.fetchResearchQueue();
       if (typeof this.fetchKnowledgeGraph === 'function') {
         setTimeout(() => {

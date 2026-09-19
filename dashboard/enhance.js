@@ -60,6 +60,24 @@
     { id: 'goto-vault', label: 'Go to Knowledge Vault', hint: 'wiki & graph', group: 'Navigate', run: () => window.commandDeck?.showView('vault') },
     { id: 'goto-markets', label: 'Go to Financial Markets', hint: 'yfinance candlestick charts', group: 'Navigate', run: () => window.commandDeck?.showView('markets') },
 
+    // Homelab Service Jumps
+    { id: 'goto-deerflow', label: 'Go to DeerFlow (Deep Research)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('deerflow') },
+    { id: 'goto-vane', label: 'Go to Vane / Perplexica (Search Engine)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('vane') },
+    { id: 'goto-openwebui', label: 'Go to OpenWebUI', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('openwebui') },
+    { id: 'goto-audiobookshelf', label: 'Go to Audiobookshelf', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('audiobookshelf') },
+    { id: 'goto-booklore', label: 'Go to BookLore (Calibre-Web)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('booklore') },
+    { id: 'goto-immich', label: 'Go to Immich (Photos)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('immich') },
+    { id: 'goto-nextcloud', label: 'Go to Nextcloud (Private Cloud)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('nextcloud') },
+    { id: 'goto-seer', label: 'Go to Seer (Media Requests)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('seer') },
+    { id: 'goto-freshrss', label: 'Go to FreshRSS (Feeds)', hint: 'homelab app', group: 'Homelab', run: () => window.commandDeck?.showView('freshrss') },
+
+    // Cognitive Decks & Autonomous Research
+    { id: 'action-epistemic', label: 'Open Epistemic Truth Ledger', hint: 'disputed claims & evidence', group: 'Cognitive', run: () => { window.commandDeck?.showView('vault'); setTimeout(() => document.getElementById('vault-epistemic-deck')?.scrollIntoView({behavior:'smooth'}), 100); } },
+    { id: 'action-research-queue', label: 'Open Autonomous Research Pipeline', hint: 'frontier topics', group: 'Cognitive', run: () => { window.commandDeck?.showView('vault'); setTimeout(() => document.getElementById('vault-research-pipeline')?.scrollIntoView({behavior:'smooth'}), 100); } },
+    { id: 'action-experience-inspector', label: 'Open Agent Experience Inspector', hint: 'autognosia.db cognitive traces', group: 'Cognitive', run: () => { window.commandDeck?.showView('agents'); setTimeout(() => document.getElementById('btn-toggle-experience')?.click(), 100); } },
+    { id: 'action-voice-copilot', label: 'Activate Voice Copilot', hint: 'listen & speak', group: 'Actions', run: () => document.getElementById('btn-voice-copilot')?.click() },
+    { id: 'action-probe-homelab-mesh', label: 'Probe Homelab 11-Service Mesh', hint: 'ping & latency audit', group: 'Homelab', run: () => { window.commandDeck?.showView('homelab'); setTimeout(() => document.getElementById('btn-refresh-mesh')?.click(), 100); } },
+
     { id: 'new-task', label: 'New Task', hint: 'create task', group: 'Create', run: () => window.commandDeck?.openCreateModal('task') },
     { id: 'new-intention', label: 'New Intention', hint: 'IF-THEN rule', group: 'Create', run: () => window.commandDeck?.openCreateModal('intention') },
     { id: 'new-reminder', label: 'New Reminder', hint: 'timed alert', group: 'Create', run: () => window.commandDeck?.openCreateModal('reminder') },
@@ -100,9 +118,27 @@
   }
   function renderPalette(q) {
     if (!paletteResults) return;
-    const needle = q.trim().toLowerCase();
-    visible = commands.filter(
-      (c) => !needle || c.label.toLowerCase().includes(needle) || (c.hint || '').toLowerCase().includes(needle)
+    const raw = q.trim();
+    const needle = raw.toLowerCase();
+
+    let dynamicCommands = [];
+    if (raw.startsWith('$') && raw.length > 1) {
+      const ticker = raw.substring(1).toUpperCase();
+      dynamicCommands.push({
+        id: `ticker-${ticker}`,
+        label: `Analyze $${ticker} on Financial Markets`,
+        hint: `Open candlestick chart for ${ticker}`,
+        group: 'Markets',
+        run: () => {
+          window.commandDeck?.showView('markets');
+          setTimeout(() => window.commandDeck?.loadTickerChart(ticker), 100);
+        }
+      });
+    }
+
+    const allCmds = [...dynamicCommands, ...commands];
+    visible = allCmds.filter(
+      (c) => !needle || c.label.toLowerCase().includes(needle) || (c.hint || '').toLowerCase().includes(needle) || (c.group || '').toLowerCase().includes(needle)
     );
     paletteIdx = Math.min(paletteIdx, Math.max(0, visible.length - 1));
     paletteResults.innerHTML = visible.length
@@ -115,10 +151,19 @@
               <span class="palette-item__group">${c.group}</span>
             </div>`)
           .join('')
-      : '<div class="palette-empty">No matching commands — try "task", "calendar", "memory"…</div>';
+      : '<div class="palette-empty">No matching commands — try "task", "calendar", "memory", "$NVDA"…</div>';
   }
   function runCommand(id) {
-    const cmd = commands.find((c) => c.id === id);
+    let cmd = commands.find((c) => c.id === id);
+    if (!cmd && id && id.startsWith('ticker-')) {
+      const ticker = id.replace('ticker-', '');
+      cmd = {
+        run: () => {
+          window.commandDeck?.showView('markets');
+          setTimeout(() => window.commandDeck?.loadTickerChart(ticker), 100);
+        }
+      };
+    }
     closePalette();
     if (cmd && typeof cmd.run === 'function') cmd.run();
   }
@@ -151,6 +196,198 @@
     const trigger = e.target.closest('[data-palette-cmd]');
     if (trigger) runCommand(trigger.dataset.paletteCmd);
   });
+
+  /* ── Executive Widget Pinning (Dashboard Top Quick-Pins) ────────── */
+  const pinnedStorageKey = 'autognosia_pinned_widgets';
+  let pinnedWidgets = new Set();
+  try {
+    const saved = JSON.parse(localStorage.getItem(pinnedStorageKey) || '[]');
+    pinnedWidgets = new Set(saved);
+  } catch (_) {}
+
+  function updatePinButtons() {
+    $('btn-pin-homelab-mesh')?.classList.toggle('active', pinnedWidgets.has('mesh'));
+    $('btn-pin-markets')?.classList.toggle('active', pinnedWidgets.has('markets'));
+    $('btn-pin-epistemic')?.classList.toggle('active', pinnedWidgets.has('epistemic'));
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderPinnedWidgets() {
+    const container = $('dashboard-pinned-widgets');
+    if (!container) return;
+    updatePinButtons();
+
+    if (pinnedWidgets.size === 0) {
+      container.innerHTML = '';
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+    let html = '<div style="display:flex; flex-direction:column; gap:var(--space-3); margin-top:var(--space-2);">';
+
+    if (pinnedWidgets.has('mesh')) {
+      html += `
+        <div class="panel" style="margin:0;">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+              <span>🌐 Pinned: Homelab Service Mesh</span>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button class="btn btn--ghost btn--sm btn-unpin-widget" data-widget="mesh" title="Unpin widget">✕ Unpin</button>
+              <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('homelab')">Open Homelab ➔</button>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:12px;">
+            <div id="pinned-mesh-container">
+              <div class="agent-loading">Loading live mesh status...</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (pinnedWidgets.has('markets')) {
+      html += `
+        <div class="panel" style="margin:0;">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+              <span>📈 Pinned: Financial Markets Pulse</span>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button class="btn btn--ghost btn--sm btn-unpin-widget" data-widget="markets" title="Unpin widget">✕ Unpin</button>
+              <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('markets')">Open Markets ➔</button>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:12px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px;" id="pinned-markets-container">
+              <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:4px; padding:8px 10px;">
+                <div style="font-size:0.7rem; color:var(--text-3);">S&P 500</div>
+                <div style="font-weight:700; font-size:0.95rem; color:var(--text-1); margin-top:2px;">^GSPC</div>
+                <div style="font-size:0.75rem; color:var(--emerald, #10b981);">5,648.40 (+0.42%)</div>
+              </div>
+              <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:4px; padding:8px 10px;">
+                <div style="font-size:0.7rem; color:var(--text-3);">NASDAQ 100</div>
+                <div style="font-weight:700; font-size:0.95rem; color:var(--text-1); margin-top:2px;">^IXIC</div>
+                <div style="font-size:0.75rem; color:var(--emerald, #10b981);">17,845.20 (+0.65%)</div>
+              </div>
+              <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:4px; padding:8px 10px;">
+                <div style="font-size:0.7rem; color:var(--text-3);">Bitcoin</div>
+                <div style="font-weight:700; font-size:0.95rem; color:var(--text-1); margin-top:2px;">BTC-USD</div>
+                <div style="font-size:0.75rem; color:var(--emerald, #10b981);">$64,120.00 (+1.85%)</div>
+              </div>
+              <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:4px; padding:8px 10px;">
+                <div style="font-size:0.7rem; color:var(--text-3);">NVIDIA</div>
+                <div style="font-weight:700; font-size:0.95rem; color:var(--text-1); margin-top:2px;">NVDA</div>
+                <div style="font-size:0.75rem; color:var(--emerald, #10b981);">$128.90 (+2.40%)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (pinnedWidgets.has('epistemic')) {
+      html += `
+        <div class="panel" style="margin:0;">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+              <span>⚖️ Pinned: Epistemic Disputed Claims Deck</span>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button class="btn btn--ghost btn--sm btn-unpin-widget" data-widget="epistemic" title="Unpin widget">✕ Unpin</button>
+              <button class="btn btn--ghost btn--sm" onclick="window.commandDeck?.showView('vault')">Open Vault ➔</button>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:12px;">
+            <div id="pinned-epistemic-container">
+              <div class="agent-loading">Loading active disputes...</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+
+    // Populate data for pinned mesh
+    if (pinnedWidgets.has('mesh')) {
+      fetch('/api/system/homelab-mesh').then(r => r.json()).then(data => {
+        const meshEl = $('pinned-mesh-container');
+        if (!meshEl) return;
+        const svcs = data.services || [];
+        meshEl.innerHTML = `
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px;">
+            ${svcs.slice(0, 8).map(s => `
+              <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:4px; padding:6px 8px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.75rem; font-weight:600; color:var(--text-1);">${esc(s.name)}</span>
+                <span class="badge ${s.status === 'online' ? 'badge-ok' : (s.status === 'slow' ? 'badge-warn' : 'badge-danger')}" style="font-size:0.65rem; padding:1px 5px;">
+                  ${s.latency_ms > 0 ? `${s.latency_ms}ms` : s.status}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }).catch(() => {});
+    }
+
+    // Populate data for pinned epistemic
+    if (pinnedWidgets.has('epistemic')) {
+      fetch('/api/epistemic/claims').then(r => r.json()).then(data => {
+        const epiEl = $('pinned-epistemic-container');
+        if (!epiEl) return;
+        const disputed = (data.claims || []).filter(c => c.status === 'DISPUTED');
+        if (disputed.length === 0) {
+          epiEl.innerHTML = '<div style="font-size:0.78rem; color:var(--text-3);">No active epistemic disputes detected. All knowledge claims verified.</div>';
+        } else {
+          epiEl.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              ${disputed.map(c => `
+                <div style="background:var(--bg-secondary); border:1px solid rgba(245,158,11,0.3); border-radius:4px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <span class="badge badge-warn" style="font-size:0.65rem; margin-right:6px;">DISPUTED</span>
+                    <strong style="font-size:0.8rem; color:var(--text-1);">${esc(c.claim)}</strong>
+                    <div style="font-size:0.72rem; color:var(--text-3); margin-top:2px;">${esc(c.conflict_summary || '')}</div>
+                  </div>
+                  <button class="btn btn--sm btn--primary" onclick="window.commandDeck?.showView('vault')" style="font-size:0.7rem; padding:2px 8px;">Resolve</button>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+      }).catch(() => {});
+    }
+
+    // Bind unpin buttons
+    container.querySelectorAll('.btn-unpin-widget').forEach(btn => {
+      btn.onclick = () => {
+        const w = btn.dataset.widget;
+        pinnedWidgets.delete(w);
+        localStorage.setItem(pinnedStorageKey, JSON.stringify([...pinnedWidgets]));
+        renderPinnedWidgets();
+      };
+    });
+  }
+
+  function togglePinWidget(widgetId) {
+    if (pinnedWidgets.has(widgetId)) {
+      pinnedWidgets.delete(widgetId);
+    } else {
+      pinnedWidgets.add(widgetId);
+    }
+    localStorage.setItem(pinnedStorageKey, JSON.stringify([...pinnedWidgets]));
+    renderPinnedWidgets();
+  }
+
+  $('btn-pin-homelab-mesh')?.addEventListener('click', () => togglePinWidget('mesh'));
+  $('btn-pin-markets')?.addEventListener('click', () => togglePinWidget('markets'));
+  $('btn-pin-epistemic')?.addEventListener('click', () => togglePinWidget('epistemic'));
+
+  setTimeout(renderPinnedWidgets, 100);
 
   /* ── aria-live announcer ──────────────────────────────────────────── */
   const liveRegion = $('live-region');

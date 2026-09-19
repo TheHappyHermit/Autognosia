@@ -776,3 +776,393 @@
   padding: 20px;
   text-align: center;
 }
+
+/* ==========================================================================
+   Homelab 11-Service Live Health & Latency Mesh
+   ========================================================================== */
+.homelab-mesh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.homelab-mesh-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all var(--motion-fast);
+  position: relative;
+}
+
+.homelab-mesh-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.homelab-mesh-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.homelab-mesh-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.homelab-mesh-icon {
+  font-size: 1.25rem;
+}
+
+.homelab-mesh-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-1);
+}
+
+.homelab-mesh-category {
+  font-size: 0.7rem;
+  color: var(--text-3);
+}
+
+.homelab-mesh-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.homelab-mesh-status-dot.online {
+  background: var(--emerald, #10b981);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.homelab-mesh-status-dot.slow {
+  background: var(--amber, #f59e0b);
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+.homelab-mesh-status-dot.offline {
+  background: var(--rose, #ef4444);
+  opacity: 0.7;
+}
+
+.homelab-mesh-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.latency-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-2);
+}
+
+.latency-pill.online {
+  color: var(--emerald, #10b981);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.latency-pill.slow {
+  color: var(--amber, #f59e0b);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.latency-pill.offline {
+  color: var(--rose, #ef4444);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================================================
+   Multi-Host Inference Cluster & GPU/VRAM Telemetry
+   ========================================================================== */
+.cluster-nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.cluster-node-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cluster-node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cluster-node-role {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.cluster-gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cluster-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+.cluster-gauge-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cluster-gauge-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* ==========================================================================
+   Epistemic Truth Ledger & Disputed Claims Deck
+   ========================================================================== */
+.epistemic-deck {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.epistemic-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.claim-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color var(--motion-fast);
+}
+
+.claim-card:hover {
+  border-color: var(--accent);
+}
+
+.claim-card.status-DISPUTED {
+  border-left: 4px solid var(--amber, #f59e0b);
+}
+
+.claim-card.status-VERIFIED {
+  border-left: 4px solid var(--emerald, #10b981);
+}
+
+.claim-card.status-SUPERSEDED {
+  border-left: 4px solid var(--text-4, #64748b);
+  opacity: 0.85;
+}
+
+.claim-card.status-UNVERIFIED {
+  border-left: 4px solid var(--cyan, #06b6d4);
+}
+
+.claim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.claim-topic {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+}
+
+.claim-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-1);
+}
+
+.evidence-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 720px) {
+  .evidence-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.evidence-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.evidence-source {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.evidence-assertion {
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
+
+.action-gate-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+.action-gate-tag.HOLD {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.action-gate-tag.ALLOW {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.action-gate-tag.REJECT {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================================================
+   Autonomous Deep Research Pipeline Stepper
+   ========================================================================== */
+.research-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 16px 0;
+  padding: 0 8px;
+}
+
+.research-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+
+.research-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-3);
+  transition: all 0.3s;
+}
+
+.research-step.active .research-step-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.research-step.completed .research-step-dot {
+  border-color: var(--emerald, #10b981);
+  background: var(--emerald, #10b981);
+  color: #ffffff;
+}
+
+.research-step-label {
+  font-size: 0.7rem;
+  color: var(--text-3);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.research-step.active .research-step-label {
+  color: var(--text-1);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Voice Copilot & Waveform HUD
+   ========================================================================== */
+.voice-copilot-btn {
+  position: relative;
+}
+
+.voice-copilot-btn.listening {
+  color: var(--rose, #ef4444) !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  animation: voice-pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes voice-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.bots-chat-mic.listening {
+  background: var(--rose, #ef4444) !important;
+  color: white !important;
+  animation: voice-pulse 1.2s infinite ease-in-out;
+}

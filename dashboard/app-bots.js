@@ -252,6 +252,24 @@ class BotsPage {
       ragClose.onclick = () => { ragPanel.style.display = 'none'; };
     }
 
+    // Agent Experience & Competence Inspector Toggle (autognosia.db)
+    const expBtn = document.getElementById('btn-toggle-experience');
+    const expPanel = document.getElementById('bots-experience-panel');
+    const expClose = document.getElementById('btn-experience-close');
+    if (expBtn && expPanel) {
+      expBtn.onclick = () => {
+        const isHidden = expPanel.style.display === 'none';
+        expPanel.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+          if (ragPanel) ragPanel.style.display = 'none';
+          window.commandDeck?.fetchExperienceStats?.();
+        }
+      };
+    }
+    if (expClose && expPanel) {
+      expClose.onclick = () => { expPanel.style.display = 'none'; };
+    }
+
     // Dynamic Skill & MCP Capability Switcher
     this.initCapabilitiesSwitcher();
   }
@@ -732,6 +750,10 @@ class BotsPage {
     } finally {
       this.isGenerating = false;
       this.toggleSendStopButton(false);
+      if (this.voiceCopilotActive && accumulatedText) {
+        this.speakText(accumulatedText);
+        this.voiceCopilotActive = false;
+      }
     }
   }
 
@@ -969,6 +991,10 @@ class BotsPage {
   }
 
   speakText(text) {
+    if (window.commandDeck && typeof window.commandDeck.playAgentVoice === 'function') {
+      window.commandDeck.playAgentVoice(text);
+      return;
+    }
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     // Clean markdown syntax from text for speech
@@ -980,16 +1006,43 @@ class BotsPage {
 
   initVoiceInput() {
     const micBtn = document.getElementById('bot-chat-mic');
+    const copilotBtn = document.getElementById('btn-voice-copilot');
     const input = document.getElementById('bot-chat-input');
-    if (!micBtn || !input) return;
 
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRec) {
-      micBtn.title = 'Speech recognition not supported in this browser';
-      micBtn.style.opacity = '0.5';
+      if (micBtn) {
+        micBtn.title = 'Speech recognition not supported in this browser';
+        micBtn.style.opacity = '0.5';
+      }
+      if (copilotBtn) {
+        copilotBtn.title = 'Speech recognition not supported in this browser';
+        copilotBtn.style.opacity = '0.5';
+      }
       return;
     }
 
+    if (copilotBtn && !copilotBtn._voiceBound) {
+      copilotBtn._voiceBound = true;
+      copilotBtn.onclick = () => {
+        if (this.isRecording) {
+          this.recognition?.stop();
+          this.stopVoiceInput();
+        } else {
+          if (window.commandDeck && window.commandDeck.currentView !== 'agents') {
+            window.commandDeck.showView('agents');
+          }
+          this.voiceCopilotActive = true;
+          try {
+            this.recognition?.start();
+          } catch (err) {
+            console.warn('Voice copilot start error:', err);
+          }
+        }
+      };
+    }
+
+    if (!micBtn || !input) return;
     if (this.recognition) return;
 
     this.recognition = new SpeechRec();
@@ -999,9 +1052,17 @@ class BotsPage {
 
     this.recognition.onstart = () => {
       this.isRecording = true;
-      micBtn.style.background = 'var(--rose, #ef4444)';
-      micBtn.style.color = '#fff';
-      micBtn.title = 'Listening... Click to stop';
+      const mBtn = document.getElementById('bot-chat-mic');
+      const cBtn = document.getElementById('btn-voice-copilot');
+      if (mBtn) {
+        mBtn.classList.add('listening');
+        mBtn.style.background = 'var(--rose, #ef4444)';
+        mBtn.style.color = '#fff';
+        mBtn.title = 'Listening... Click to stop';
+      }
+      if (cBtn) {
+        cBtn.classList.add('listening');
+      }
     };
 
     this.recognition.onresult = (e) => {
@@ -1014,7 +1075,16 @@ class BotsPage {
           interim += e.results[i][0].transcript;
         }
       }
-      input.value = (final || interim);
+      const text = (final || interim);
+      const chatInput = document.getElementById('bot-chat-input');
+      if (chatInput) chatInput.value = text;
+
+      if (final && this.voiceCopilotActive) {
+        this.recognition.stop();
+        setTimeout(() => {
+          this.sendMessage();
+        }, 350);
+      }
     };
 
     this.recognition.onerror = () => this.stopVoiceInput();
@@ -1024,6 +1094,7 @@ class BotsPage {
       if (this.isRecording) {
         this.recognition.stop();
       } else {
+        this.voiceCopilotActive = false;
         try {
           this.recognition.start();
         } catch (err) {
@@ -1036,10 +1107,15 @@ class BotsPage {
   stopVoiceInput() {
     this.isRecording = false;
     const micBtn = document.getElementById('bot-chat-mic');
+    const copilotBtn = document.getElementById('btn-voice-copilot');
     if (micBtn) {
+      micBtn.classList.remove('listening');
       micBtn.style.background = 'var(--bg-secondary)';
       micBtn.style.color = '';
       micBtn.title = 'Voice Input (Speech-to-Text)';
+    }
+    if (copilotBtn) {
+      copilotBtn.classList.remove('listening');
     }
   }
 

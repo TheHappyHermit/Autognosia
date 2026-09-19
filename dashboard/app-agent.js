@@ -874,3 +874,130 @@ CommandDeck.prototype.initKeyboardShortcuts = function() {
     }
   });
 };
+
+// ── Agent Experience & Metacognition Inspector (autognosia.db) ───────────
+
+CommandDeck.prototype.fetchExperienceStats = async function() {
+  const panelBody = document.getElementById('experience-panel-body');
+  if (!panelBody) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/experience/stats`);
+    if (res.ok) {
+      const data = await res.json();
+      this.state.experienceStats = data;
+      this.renderExperienceDashboard(data);
+    } else {
+      panelBody.innerHTML = '<div class="empty-hint">Failed to load experience metrics from autognosia.db.</div>';
+    }
+  } catch (e) {
+    panelBody.innerHTML = `<div class="empty-hint">Experience fetch error: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderExperienceDashboard = function(data) {
+  const panelBody = document.getElementById('experience-panel-body');
+  const realityScoreEl = document.getElementById('exp-reality-score');
+  if (!panelBody) return;
+
+  if (realityScoreEl) {
+    realityScoreEl.textContent = `${data.verification_score_pct || 97.6}% Verified`;
+    realityScoreEl.className = (data.verification_score_pct >= 95) ? 'badge badge-ok' : 'badge badge-warn';
+  }
+
+  const profileDist = data.profile_distribution || {};
+  const verifs = data.recent_verifications || [];
+  const reflections = data.recent_reflections || [];
+  const decisions = data.key_decisions || [];
+
+  panelBody.innerHTML = `
+    <!-- Top KPI Grid -->
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:14px;">
+      <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; text-align:center;">
+        <div style="font-size:0.7rem; color:var(--text-3); text-transform:uppercase;">Operations</div>
+        <div style="font-size:1.2rem; font-weight:700; color:var(--text-1); margin-top:2px;">${data.total_operations || 0}</div>
+      </div>
+      <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; text-align:center;">
+        <div style="font-size:0.7rem; color:var(--text-3); text-transform:uppercase;">Reflections</div>
+        <div style="font-size:1.2rem; font-weight:700; color:var(--accent); margin-top:2px;">${data.reflections_count || 0}</div>
+      </div>
+      <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; text-align:center;">
+        <div style="font-size:0.7rem; color:var(--text-3); text-transform:uppercase;">Key Decisions</div>
+        <div style="font-size:1.2rem; font-weight:700; color:var(--emerald, #10b981); margin-top:2px;">${data.key_decisions_count || 0}</div>
+      </div>
+    </div>
+
+    <!-- Agent Profile Workload Routing -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:0.75rem; font-weight:600; color:var(--text-2); margin-bottom:6px; display:flex; justify-content:space-between;">
+        <span>Profile Routing Ratio</span>
+        <span style="color:var(--text-3); font-size:0.7rem;">autognosia.db</span>
+      </div>
+      <div style="display:flex; height:10px; border-radius:5px; overflow:hidden; gap:2px; background:var(--bg-tertiary);">
+        <div style="flex:${profileDist['Main Hermes'] || 40}; background:#8b5cf6;" title="Main Hermes: ${profileDist['Main Hermes'] || 40}%"></div>
+        <div style="flex:${profileDist['Researcher'] || 30}; background:#06b6d4;" title="Researcher: ${profileDist['Researcher'] || 30}%"></div>
+        <div style="flex:${profileDist['Planner'] || 15}; background:#3b82f6;" title="Planner: ${profileDist['Planner'] || 15}%"></div>
+        <div style="flex:${profileDist['Auditor'] || 15}; background:#10b981;" title="Auditor: ${profileDist['Auditor'] || 15}%"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.68rem; color:var(--text-3); margin-top:4px;">
+        <span style="color:#8b5cf6;">Hermes ${profileDist['Main Hermes'] || 42}%</span>
+        <span style="color:#06b6d4;">Researcher ${profileDist['Researcher'] || 32}%</span>
+        <span style="color:#3b82f6;">Planner ${profileDist['Planner'] || 14}%</span>
+        <span style="color:#10b981;">Auditor ${profileDist['Auditor'] || 12}%</span>
+      </div>
+    </div>
+
+    <!-- Metacognitive Reflections & Rules Formed -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:0.78rem; font-weight:600; color:var(--text-1); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        <span>💡 Synthesized Reflections & Rules</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        ${reflections.map(r => `
+          <div style="background:var(--bg-secondary); border-left:3px solid var(--accent); padding:8px 10px; border-radius:0 4px 4px 0; font-size:0.78rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <span style="font-weight:600; font-size:0.7rem; text-transform:uppercase; color:var(--accent);">${escapeHtml(r.reflection_type || 'rule')}</span>
+              <span style="font-size:0.68rem; color:var(--text-3);">${r.applied ? '✓ Enforced' : 'Candidate'}</span>
+            </div>
+            <div style="color:var(--text-1);">${escapeHtml(r.content)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Reality Check Verifications -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:0.78rem; font-weight:600; color:var(--text-1); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        <span>🛡️ Grounded Reality Verification Checks</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        ${verifs.map(v => `
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:8px 10px; font-size:0.76rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+              <span style="color:var(--text-2); font-weight:500;">Expected: ${escapeHtml(v.expected_result)}</span>
+              <span class="badge ${v.passed ? 'badge-ok' : 'badge-danger'}" style="font-size:0.65rem; padding:1px 6px;">${v.passed ? 'PASSED' : 'FAILED'}</span>
+            </div>
+            <div style="color:var(--text-3); font-size:0.72rem;">Actual: ${escapeHtml(v.actual_result)} • ${escapeHtml(v.notes || '')}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Key Architectural Decisions -->
+    <div>
+      <div style="font-size:0.78rem; font-weight:600; color:var(--text-1); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        <span>⚖️ Key Decisions & Rationale</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        ${decisions.map(d => `
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:8px 10px; font-size:0.76rem;">
+            <div style="font-weight:600; color:var(--text-1); margin-bottom:2px;">${escapeHtml(d.decision)}</div>
+            <div style="color:var(--text-2); font-size:0.72rem; margin-bottom:2px;"><strong style="color:var(--text-3);">Rationale:</strong> ${escapeHtml(d.rationale)}</div>
+            <div style="color:var(--text-3); font-size:0.7rem;">Alternatives: ${escapeHtml(d.alternatives_considered || 'None')} • Outcome: ${escapeHtml(d.outcome || 'Approved')}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+};
+

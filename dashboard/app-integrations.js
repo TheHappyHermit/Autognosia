@@ -1997,6 +1997,395 @@ CommandDeck.prototype.playAgentVoice = async function(text, voiceId = '21m00Tcm4
 };
 
 
+// ── 7. Homelab 11-Service Live Health & Latency Mesh ──────────────────────────
+
+CommandDeck.prototype.fetchHomelabMesh = async function() {
+  const container = document.getElementById('homelab-mesh-grid');
+  const badge = document.getElementById('homelab-mesh-online-badge');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/system/homelab-mesh`);
+    if (res.ok) {
+      const data = await res.json();
+      this.renderHomelabMesh(data);
+    } else {
+      container.innerHTML = '<div class="empty-hint">Unable to probe homelab services.</div>';
+    }
+  } catch (e) {
+    container.innerHTML = `<div class="empty-hint">Error probing homelab mesh: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderHomelabMesh = function(data) {
+  const container = document.getElementById('homelab-mesh-grid');
+  const badge = document.getElementById('homelab-mesh-online-badge');
+  if (!container) return;
+
+  const online = data.services_online || 0;
+  const total = data.services_total || 11;
+
+  if (badge) {
+    badge.textContent = `${online}/${total} Online`;
+    badge.className = online >= 1 ? 'badge badge-emerald' : 'badge badge-secondary';
+  }
+
+  const services = data.services || [];
+  container.innerHTML = services.map(s => {
+    const statusClass = s.status === 'online' ? 'online' : (s.status === 'slow' ? 'slow' : 'offline');
+    const latencyText = s.latency_ms ? `${s.latency_ms}ms` : 'offline';
+    return `
+      <div class="homelab-mesh-card" data-service="${escapeHtml(s.id)}" data-view="${escapeHtml(s.target_view)}">
+        <div class="homelab-mesh-card-top">
+          <div class="homelab-mesh-identity">
+            <span class="homelab-mesh-icon">${s.icon || '📦'}</span>
+            <div>
+              <div class="homelab-mesh-name">${escapeHtml(s.name)}</div>
+              <div class="homelab-mesh-category">${escapeHtml(s.category)}</div>
+            </div>
+          </div>
+          <span class="homelab-mesh-status-dot ${statusClass}" title="${statusClass.toUpperCase()}"></span>
+        </div>
+        <div class="homelab-mesh-card-bottom">
+          <span class="latency-pill ${statusClass}">⚡ ${latencyText}</span>
+          <button class="btn btn--ghost btn--sm btn-jump-service" data-view="${escapeHtml(s.target_view)}" style="font-size:0.75rem; padding:2px 8px;">Launch ➔</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.homelab-mesh-card, .btn-jump-service').forEach(el => {
+    el.onclick = () => {
+      const targetView = el.dataset.view || el.closest('.homelab-mesh-card')?.dataset.view;
+      if (targetView) {
+        window.commandDeck?.showView(targetView);
+      }
+    };
+  });
+};
+
+
+// ── 8. Multi-Host Local Inference Cluster & GPU/VRAM Telemetry ────────────────
+
+CommandDeck.prototype.fetchInferenceCluster = async function() {
+  const container = document.getElementById('cluster-nodes-grid');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/system/inference-cluster`);
+    if (res.ok) {
+      const data = await res.json();
+      this.renderInferenceCluster(data);
+    }
+  } catch (e) {
+    console.warn('Inference cluster probe error:', e);
+  }
+};
+
+CommandDeck.prototype.renderInferenceCluster = function(data) {
+  const container = document.getElementById('cluster-nodes-grid');
+  const vramBadge = document.getElementById('cluster-vram-summary');
+  const statusBadge = document.getElementById('cluster-status-badge');
+  if (!container) return;
+
+  if (vramBadge && data.total_vram_gb) {
+    vramBadge.textContent = `${data.used_vram_gb || 0} / ${data.total_vram_gb} GB VRAM`;
+  }
+  if (statusBadge) {
+    const online = data.nodes_online || 0;
+    statusBadge.textContent = `${online}/${data.nodes_total || 3} Nodes Ready`;
+    statusBadge.className = online >= 1 ? 'badge badge-ok' : 'badge badge-warn';
+  }
+
+  const nodes = data.nodes || [];
+  container.innerHTML = nodes.map(n => {
+    const vramPct = n.vram_total_gb > 0 ? Math.round((n.vram_used_gb / n.vram_total_gb) * 100) : 0;
+    const isOnline = n.online;
+    return `
+      <div class="cluster-node-card">
+        <div class="cluster-node-header">
+          <div>
+            <div style="font-weight:700; font-size:0.92rem; color:var(--text-1);">${escapeHtml(n.name)}</div>
+            <div class="cluster-node-role">${escapeHtml(n.engine)} • ${escapeHtml(n.role)}</div>
+          </div>
+          <span class="badge ${isOnline ? 'badge-emerald' : 'badge-secondary'}" style="font-size:0.7rem;">${isOnline ? (n.latency_ms ? `${n.latency_ms}ms` : 'Online') : 'Standby'}</span>
+        </div>
+        <div style="font-size:0.75rem; color:var(--accent); font-family:var(--font-mono);">${escapeHtml(n.model)}</div>
+        
+        <div class="cluster-gauge-wrap">
+          <div class="cluster-gauge-labels">
+            <span>VRAM Allocation</span>
+            <span>${n.vram_used_gb} / ${n.vram_total_gb} GB (${vramPct}%)</span>
+          </div>
+          <div class="cluster-gauge-bar-track">
+            <div class="cluster-gauge-bar-fill" style="width:${vramPct}%;"></div>
+          </div>
+        </div>
+
+        <div class="cluster-gauge-wrap">
+          <div class="cluster-gauge-labels">
+            <span>KV-Cache Saturation</span>
+            <span>${n.kv_cache_pct || 0}%</span>
+          </div>
+          <div class="cluster-gauge-bar-track">
+            <div class="cluster-gauge-bar-fill" style="width:${n.kv_cache_pct || 0}%; background:linear-gradient(90deg, #10b981, #f59e0b);"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
+
+
+// ── 9. Epistemic Truth Ledger & Disputed Claims Deck ──────────────────────────
+
+CommandDeck.prototype.fetchEpistemicLedger = async function() {
+  const stage = document.getElementById('epistemic-claims-stage');
+  if (!stage) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/epistemic/claims`);
+    if (res.ok) {
+      const data = await res.json();
+      this.epistemicData = data;
+      this.renderEpistemicLedger(data.claims, this.activeEpistemicFilter || 'all');
+    } else {
+      stage.innerHTML = '<div class="empty-hint">Unable to load epistemic ledger.</div>';
+    }
+  } catch (e) {
+    stage.innerHTML = `<div class="empty-hint">Error loading claims: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderEpistemicLedger = function(claims = [], filter = 'all') {
+  const stage = document.getElementById('epistemic-claims-stage');
+  if (!stage) return;
+
+  const counts = this.epistemicData?.counts || {};
+  const elDisputed = document.getElementById('count-disputed');
+  const elVerified = document.getElementById('count-verified');
+  const elUnverified = document.getElementById('count-unverified');
+  const elSuperseded = document.getElementById('count-superseded');
+  if (elDisputed) elDisputed.textContent = counts.disputed || 0;
+  if (elVerified) elVerified.textContent = counts.verified || 0;
+  if (elUnverified) elUnverified.textContent = counts.unverified || 0;
+  if (elSuperseded) elSuperseded.textContent = counts.superseded || 0;
+
+  const filtered = filter === 'all' ? claims : claims.filter(c => c.status === filter);
+
+  if (filtered.length === 0) {
+    stage.innerHTML = `<div class="empty-state"><div class="empty-state__title">No ${escapeHtml(filter)} claims found</div><div class="empty-state__desc">All claims in this category have been reconciled.</div></div>`;
+    return;
+  }
+
+  stage.innerHTML = `
+    <div class="epistemic-deck">
+      ${filtered.map(c => `
+        <div class="claim-card status-${c.status}">
+          <div class="claim-header">
+            <div>
+              <span class="claim-topic">${escapeHtml(c.topic)}</span>
+              <div class="claim-text">${escapeHtml(c.claim)}</div>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span class="action-gate-tag ${c.action_gate || 'HOLD'}">Gate: ${c.action_gate || 'HOLD'}</span>
+              <span class="badge ${c.status === 'VERIFIED' ? 'badge-emerald' : (c.status === 'DISPUTED' ? 'badge-warn' : 'badge-secondary')}">${c.status}</span>
+            </div>
+          </div>
+
+          ${c.conflict_summary ? `
+            <div style="font-size:0.8rem; color:var(--text-3); font-style:italic; padding:6px 10px; background:rgba(245,158,11,0.06); border-radius:4px;">
+              ⚠️ Conflict Note: ${escapeHtml(c.conflict_summary)}
+            </div>
+          ` : ''}
+
+          <div class="evidence-comparison-grid">
+            ${(c.evidence || []).map(ev => `
+              <div class="evidence-item">
+                <span class="evidence-source">📄 ${escapeHtml(ev.source)} [${escapeHtml(ev.type)}]</span>
+                <span class="evidence-assertion">"${escapeHtml(ev.assertion)}"</span>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <span style="font-size:0.75rem; color:var(--text-3);">Confidence: <strong>${Math.round((c.confidence || 0.8) * 100)}%</strong></span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn--ghost btn--sm btn-resolve-claim" data-id="${escapeHtml(c.id)}" data-status="VERIFIED" style="font-size:0.72rem; color:var(--emerald);">✓ Ground / Verify</button>
+              <button class="btn btn--ghost btn--sm btn-resolve-claim" data-id="${escapeHtml(c.id)}" data-status="SUPERSEDED" style="font-size:0.72rem;">Archive Superseded</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  stage.querySelectorAll('.btn-resolve-claim').forEach(btn => {
+    btn.onclick = async () => {
+      const claimId = btn.dataset.id;
+      const status = btn.dataset.status;
+      await this.resolveEpistemicClaim(claimId, status, 'Resolved from Command Deck Epistemic Deck');
+    };
+  });
+};
+
+CommandDeck.prototype.resolveEpistemicClaim = async function(claimId, status, note = '') {
+  try {
+    const res = await fetch(`${this.apiBase}/api/epistemic/resolve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ claim_id: claimId, status, resolution_note: note })
+    });
+    if (res.ok) {
+      await this.fetchEpistemicLedger();
+      this.showToast?.(`Claim ${claimId} marked as ${status}`, 'success');
+    }
+  } catch (e) {
+    this.showToast?.(`Failed to update claim: ${e.message}`, 'error');
+  }
+};
+
+
+// ── 10. Autonomous Deep Research Pipeline (Curiosity Engine) ──────────────────
+
+CommandDeck.prototype.fetchResearchQueue = async function() {
+  const stage = document.getElementById('research-queue-stage');
+  if (!stage) return;
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/knowledge/research-queue`);
+    if (res.ok) {
+      const data = await res.json();
+      this.renderResearchQueue(data);
+    }
+  } catch (e) {
+    stage.innerHTML = `<div class="empty-hint">Error loading research queue: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderResearchQueue = function(data) {
+  const stage = document.getElementById('research-queue-stage');
+  if (!stage) return;
+
+  const active = data.active_topic || {};
+  const catalog = data.frontier_catalog || [];
+
+  stage.innerHTML = `
+    <!-- Active Research Stage Stepper -->
+    <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--accent);">Active Research Synthesis</span>
+        <span class="badge badge-purple">Synthesizing</span>
+      </div>
+      <h3 style="margin:0 0 4px 0; font-size:1.05rem; color:var(--text-1);">${escapeHtml(active.title || 'Complementary Learning Systems Theory')}</h3>
+      <p style="margin:0 0 14px 0; font-size:0.82rem; color:var(--text-3);">${escapeHtml(active.description || 'Rapid hippocampal learning vs slow neocortical memory consolidation.')}</p>
+
+      <div class="research-stepper">
+        <div class="research-step completed">
+          <div class="research-step-dot">✓</div>
+          <span class="research-step-label">1. Query Gen</span>
+        </div>
+        <div class="research-step completed">
+          <div class="research-step-dot">✓</div>
+          <span class="research-step-label">2. SearXNG Crawl</span>
+        </div>
+        <div class="research-step active">
+          <div class="research-step-dot">3</div>
+          <span class="research-step-label">3. Synthesis</span>
+        </div>
+        <div class="research-step">
+          <div class="research-step-dot">4</div>
+          <span class="research-step-label">4. OKF Verification</span>
+        </div>
+        <div class="research-step">
+          <div class="research-step-dot">5</div>
+          <span class="research-step-label">5. pgvector Ingest</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Frontier Cognition Catalog Browser -->
+    <div style="margin-top:14px;">
+      <h4 style="margin:0 0 10px 0; font-size:0.9rem; color:var(--text-1);">Cognitive Architecture Frontier Topics</h4>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:10px;">
+        ${catalog.map(item => `
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:12px; display:flex; flex-direction:column; justify-content:space-between; gap:8px;">
+            <div>
+              <div style="font-size:0.7rem; color:var(--accent); text-transform:uppercase; font-weight:600;">${escapeHtml(item.domain)}</div>
+              <div style="font-weight:600; font-size:0.88rem; color:var(--text-1); margin-top:2px;">${escapeHtml(item.title)}</div>
+              <div style="font-size:0.75rem; color:var(--text-3); margin-top:4px;">${escapeHtml(item.description)}</div>
+            </div>
+            <button class="btn btn--ghost btn--sm btn-enqueue-topic" data-topic="${escapeHtml(item.title)}" data-rationale="${escapeHtml(item.description)}" style="font-size:0.72rem; align-self:flex-start;">
+              + Enqueue Research
+            </button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  stage.querySelectorAll('.btn-enqueue-topic').forEach(btn => {
+    btn.onclick = async () => {
+      const topic = btn.dataset.topic;
+      const rationale = btn.dataset.rationale;
+      await this.enqueueResearchTopic(topic, rationale);
+    };
+  });
+};
+
+CommandDeck.prototype.enqueueResearchTopic = async function(topic, rationale) {
+  try {
+    const res = await fetch(`${this.apiBase}/api/knowledge/research-queue/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, rationale })
+    });
+    if (res.ok) {
+      await this.fetchResearchQueue();
+      this.showToast?.(`Enqueued research: ${topic}`, 'success');
+    }
+  } catch (e) {
+    this.showToast?.(`Failed to enqueue topic: ${e.message}`, 'error');
+  }
+};
+
+
+// ── 11. Dual-Graph Switcher & Multi-Hop Path Finder ───────────────────────────
+
+CommandDeck.prototype.filterGraphTier = function(tier = 'all') {
+  document.querySelectorAll('#view-vault .filter-chips-group button').forEach(b => {
+    b.classList.toggle('active', b.dataset.graphTier === tier);
+  });
+  if (typeof this.fetchKnowledgeGraph === 'function') {
+    this.activeGraphTier = tier;
+    this.fetchKnowledgeGraph(tier);
+  }
+};
+
+CommandDeck.prototype.findGraphPath = async function(source, target) {
+  const resultEl = document.getElementById('pathfinder-result');
+  if (!resultEl) return;
+  resultEl.textContent = 'Tracing shortest relationship path...';
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/graphify/path?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.status === 'no_path') {
+        resultEl.innerHTML = `<span style="color:var(--rose);">No path found between "${escapeHtml(source)}" and "${escapeHtml(target)}".</span>`;
+      } else {
+        const pathStr = (data.path || []).map(p => escapeHtml(p.label || p.id)).join(' ➔ ');
+        resultEl.innerHTML = `<strong>Found Path (${data.hops} hops):</strong> <span style="color:var(--text-1);">${pathStr}</span>`;
+      }
+    } else {
+      resultEl.innerHTML = `<span style="color:var(--rose);">Node not found in graph index.</span>`;
+    }
+  } catch (e) {
+    resultEl.innerHTML = `<span style="color:var(--rose);">Pathfinding error: ${escapeHtml(e.message)}</span>`;
+  }
+};
+
+
 // ── Wire Navigation & Global Shortcuts ────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2004,6 +2393,74 @@ document.addEventListener('DOMContentLoaded', () => {
     window.commandDeck?.initHeaderOmnibar?.();
     window.commandDeck?.initMarketAssetSearch?.();
     window.commandDeck?.initSystemSettings?.();
+
+    // Homelab Mesh & Cluster refresh
+    document.getElementById('btn-refresh-mesh')?.addEventListener('click', () => {
+      window.commandDeck?.fetchHomelabMesh?.();
+    });
+
+    // Epistemic Ledger refresh & filters
+    document.getElementById('btn-refresh-epistemic')?.addEventListener('click', () => {
+      window.commandDeck?.fetchEpistemicLedger?.();
+    });
+    document.querySelectorAll('#epistemic-filter-group button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('#epistemic-filter-group button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.epistemicFilter;
+        window.commandDeck.activeEpistemicFilter = filter;
+        window.commandDeck?.renderEpistemicLedger?.(window.commandDeck.epistemicData?.claims || [], filter);
+      };
+    });
+
+    // Dual-Graph filters & pathfinder
+    document.querySelectorAll('#view-vault .filter-chips-group button').forEach(btn => {
+      btn.onclick = () => {
+        const tier = btn.dataset.graphTier;
+        window.commandDeck?.filterGraphTier?.(tier);
+      };
+    });
+
+    const btnPathfinder = document.getElementById('btn-graph-pathfinder');
+    const drawerPathfinder = document.getElementById('graph-pathfinder-drawer');
+    if (btnPathfinder && drawerPathfinder) {
+      btnPathfinder.onclick = () => {
+        const isHidden = drawerPathfinder.style.display === 'none';
+        drawerPathfinder.style.display = isHidden ? 'flex' : 'none';
+      };
+    }
+
+    document.getElementById('btn-run-pathfinder')?.addEventListener('click', () => {
+      const src = document.getElementById('input-path-source')?.value?.trim();
+      const tgt = document.getElementById('input-path-target')?.value?.trim();
+      if (src && tgt) {
+        window.commandDeck?.findGraphPath?.(src, tgt);
+      }
+    });
+
+    // Enqueue research modal controls
+    const researchModal = document.getElementById('research-enqueue-modal');
+    document.getElementById('btn-open-research-modal')?.addEventListener('click', () => {
+      if (researchModal) researchModal.style.display = 'flex';
+    });
+    document.getElementById('btn-close-research-modal')?.addEventListener('click', () => {
+      if (researchModal) researchModal.style.display = 'none';
+    });
+    document.getElementById('btn-cancel-research-modal')?.addEventListener('click', () => {
+      if (researchModal) researchModal.style.display = 'none';
+    });
+    document.getElementById('btn-submit-research-modal')?.addEventListener('click', async () => {
+      const topicInput = document.getElementById('research-topic-input');
+      const rationaleInput = document.getElementById('research-rationale-input');
+      const topic = topicInput?.value?.trim();
+      const rationale = rationaleInput?.value?.trim();
+      if (topic) {
+        await window.commandDeck?.enqueueResearchTopic?.(topic, rationale);
+        if (topicInput) topicInput.value = '';
+        if (rationaleInput) rationaleInput.value = '';
+        if (researchModal) researchModal.style.display = 'none';
+      }
+    });
   };
 
   if (window.commandDeck) {
