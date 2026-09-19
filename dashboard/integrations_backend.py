@@ -1000,16 +1000,43 @@ def sync_env_file(path: Path, updates: Dict[str, str]):
         key, _ = stripped.split("=", 1)
         key = key.strip()
         if key in updates:
-            new_lines.append(f"{key}={updates[key]}")
+            val = updates[key]
+            if " " in val and not (val.startswith('"') and val.endswith('"')):
+                val = f'"{val}"'
+            new_lines.append(f"{key}={val}")
             updated_keys.add(key)
         else:
             new_lines.append(line)
 
     for k, v in updates.items():
-        if k not in updated_keys and v:
-            new_lines.append(f"{k}={v}")
+        if k not in updated_keys:
+            val = v
+            if " " in val and not (val.startswith('"') and val.endswith('"')):
+                val = f'"{val}"'
+            new_lines.append(f"{k}={val}")
 
     path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+
+
+ENV_ALIAS_MAP: Dict[str, List[str]] = {
+    "ALPHAVANTAGE_API_KEY": ["ALPHA_VANTAGE_API_KEY"],
+    "FMP_API_KEY": ["FINANCIAL_MODELING_PREP_API_KEY"],
+    "TWELVEDATA_API_KEY": ["TWELVE_DATA_API_KEY"],
+    "FRED_API_KEY": ["FRED_KEY", "STLOUISFED_FRED_API_KEY"],
+    "VANE_URL": ["PERPLEXICA_URL"],
+    "VANE_API_KEY": ["PERPLEXICA_API_KEY"],
+    "SEER_URL": ["OVERSEERR_URL", "JELLYSEERR_URL"],
+    "SEER_API_KEY": ["OVERSEERR_API_KEY", "JELLYSEERR_API_KEY"],
+    "PG_URL": ["DATABASE_URL"],
+    "AUDIOBOOKSHELF_TOKEN": ["AUDIOBOOKSHELF_API_KEY"],
+    "BOOKLORE_URL": ["CALIBRE_WEB_URL"],
+    "BOOKLORE_API_KEY": ["CALIBRE_WEB_API_KEY"],
+    "HASS_URL": ["HOME_ASSISTANT_URL"],
+    "HASS_TOKEN": ["HOME_ASSISTANT_TOKEN"],
+    "IMMICH_API_KEY": ["IMMICH_KEY"],
+    "NEXTCLOUD_TOKEN": ["NEXTCLOUD_APP_PASSWORD"],
+    "ELEVENLABS_API_KEY": ["ELEVEN_LABS_API_KEY"],
+}
 
 
 def get_system_settings_raw() -> Dict[str, str]:
@@ -1077,12 +1104,11 @@ def get_system_settings_raw() -> Dict[str, str]:
         "fred_api_key": "FRED_API_KEY",
     }
     inv_mappings = {v: k for k, v in env_mappings.items()}
-    inv_mappings["DATABASE_URL"] = "pg_url"
-    inv_mappings["FINANCIAL_MODELING_PREP_API_KEY"] = "fmp_api_key"
-    inv_mappings["TWELVE_DATA_API_KEY"] = "twelvedata_api_key"
-    inv_mappings["PERPLEXICA_URL"] = "vane_url"
-    inv_mappings["OVERSEERR_URL"] = "seer_url"
-    inv_mappings["JELLYSEERR_URL"] = "seer_url"
+    for primary_env, aliases in ENV_ALIAS_MAP.items():
+        if primary_env in inv_mappings:
+            setting_key = inv_mappings[primary_env]
+            for a in aliases:
+                inv_mappings[a] = setting_key
 
     for env_file in [ROOT_ENV_FILE, DASHBOARD_ENV_FILE]:
         env_dict = parse_env_file(env_file)
@@ -1322,6 +1348,10 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
             raw[setting_k] = val
             env_updates[env_k] = val
             os.environ[env_k] = val
+            if env_k in ENV_ALIAS_MAP:
+                for alias_k in ENV_ALIAS_MAP[env_k]:
+                    env_updates[alias_k] = val
+                    os.environ[alias_k] = val
 
     # Save to main system_settings.json
     SYSTEM_SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)

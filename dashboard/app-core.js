@@ -156,6 +156,7 @@ export class CommandDeck {
   }
 
   showView(viewName) {
+    if (viewName === 'settings') viewName = 'system';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     const link = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
     if (link) link.classList.add('active');

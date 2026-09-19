@@ -1297,103 +1297,82 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
 };
 
 CommandDeck.prototype.initSystemSettings = function() {
+  const settingsPanel = document.getElementById('system-settings-panel');
+  if (settingsPanel) {
+    settingsPanel.querySelectorAll('input').forEach(input => {
+      if (!input.dataset.dirtyBound) {
+        input.dataset.dirtyBound = 'true';
+        input.addEventListener('input', () => {
+          input.dataset.dirty = 'true';
+        });
+      }
+    });
+  }
+
   const saveBtn = document.getElementById('btn-save-system-settings');
   if (saveBtn && !saveBtn.dataset.initDone) {
     saveBtn.dataset.initDone = 'true';
     saveBtn.onclick = async () => {
       const payload = {};
 
+      const checkField = (inp, key, isSecret = false) => {
+        if (!inp) return;
+        const v = inp.value;
+        if (isSecret && (v.includes('•••') || v.includes('••••'))) {
+          return; // Unmodified masked secret from server
+        }
+        if (inp.dataset.dirty === 'true' || (!isSecret && v.trim() !== '') || (isSecret && v !== '')) {
+          payload[key] = v.trim();
+        }
+      };
+
       // Homelab & Automation inputs
-      const n8nUrl = document.getElementById('input-url-n8n');
-      const n8nKey = document.getElementById('input-key-n8n');
-      const n8nMcp = document.getElementById('input-mcp-n8n');
-      const hassUrl = document.getElementById('input-url-hass');
-      const hassToken = document.getElementById('input-token-hass');
-      const searxngUrl = document.getElementById('input-url-searxng');
-      const pgUrl = document.getElementById('input-url-pg');
-      const infMain = document.getElementById('input-url-inference-main');
-      const infVision = document.getElementById('input-url-inference-vision');
-      const infVllm = document.getElementById('input-url-inference-vllm');
-      const infKey = document.getElementById('input-key-inference');
-      const elKey = document.getElementById('input-key-elevenlabs');
+      checkField(document.getElementById('input-url-n8n'), 'n8n_url');
+      checkField(document.getElementById('input-key-n8n'), 'n8n_api_key', true);
+      checkField(document.getElementById('input-mcp-n8n'), 'n8n_mcp_token', true);
+
+      checkField(document.getElementById('input-url-hass'), 'hass_url');
+      checkField(document.getElementById('input-token-hass'), 'hass_token', true);
+
+      checkField(document.getElementById('input-url-searxng'), 'searxng_url');
+      checkField(document.getElementById('input-url-pg'), 'pg_url');
+
+      checkField(document.getElementById('input-url-inference-main'), 'inference_node_main');
+      checkField(document.getElementById('input-url-inference-vision'), 'inference_node_vision');
+      checkField(document.getElementById('input-url-inference-vllm'), 'inference_node_vllm');
+      checkField(document.getElementById('input-key-inference'), 'inference_api_key', true);
+
+      checkField(document.getElementById('input-key-elevenlabs'), 'elevenlabs_api_key', true);
 
       // Homelab Applications inputs
-      const deerflowUrl = document.getElementById('input-url-deerflow');
-      const deerflowKey = document.getElementById('input-key-deerflow');
-      const vaneUrl = document.getElementById('input-url-vane');
-      const vaneKey = document.getElementById('input-key-vane');
-      const owuiUrl = document.getElementById('input-url-openwebui');
-      const owuiKey = document.getElementById('input-key-openwebui');
-      const absUrl = document.getElementById('input-url-audiobookshelf');
-      const absToken = document.getElementById('input-token-audiobookshelf');
-      const blUrl = document.getElementById('input-url-booklore');
-      const blKey = document.getElementById('input-key-booklore');
-      const immichUrl = document.getElementById('input-url-immich');
-      const immichKey = document.getElementById('input-key-immich');
-      const ncUrl = document.getElementById('input-url-nextcloud');
-      const ncToken = document.getElementById('input-token-nextcloud');
-      const ncUser = document.getElementById('input-user-nextcloud');
-      const seerUrl = document.getElementById('input-url-seer');
-      const seerKey = document.getElementById('input-key-seer');
-      const frssUrl = document.getElementById('input-url-freshrss');
-      const frssKey = document.getElementById('input-key-freshrss');
-      const frssUser = document.getElementById('input-user-freshrss');
+      checkField(document.getElementById('input-url-deerflow'), 'deerflow_url');
+      checkField(document.getElementById('input-key-deerflow'), 'deerflow_api_key', true);
+      checkField(document.getElementById('input-url-vane'), 'vane_url');
+      checkField(document.getElementById('input-key-vane'), 'vane_api_key', true);
+      checkField(document.getElementById('input-url-openwebui'), 'openwebui_url');
+      checkField(document.getElementById('input-key-openwebui'), 'openwebui_api_key', true);
+      checkField(document.getElementById('input-url-audiobookshelf'), 'audiobookshelf_url');
+      checkField(document.getElementById('input-token-audiobookshelf'), 'audiobookshelf_token', true);
+      checkField(document.getElementById('input-url-booklore'), 'booklore_url');
+      checkField(document.getElementById('input-key-booklore'), 'booklore_api_key', true);
+      checkField(document.getElementById('input-url-immich'), 'immich_url');
+      checkField(document.getElementById('input-key-immich'), 'immich_api_key', true);
+      checkField(document.getElementById('input-url-nextcloud'), 'nextcloud_url');
+      checkField(document.getElementById('input-user-nextcloud'), 'nextcloud_user');
+      checkField(document.getElementById('input-token-nextcloud'), 'nextcloud_token', true);
+      checkField(document.getElementById('input-url-seer'), 'seer_url');
+      checkField(document.getElementById('input-key-seer'), 'seer_api_key', true);
+      checkField(document.getElementById('input-url-freshrss'), 'freshrss_url');
+      checkField(document.getElementById('input-user-freshrss'), 'freshrss_user');
+      checkField(document.getElementById('input-key-freshrss'), 'freshrss_api_key', true);
 
       // Financial API inputs
-      const avInput = document.getElementById('input-key-alphavantage');
-      const msInput = document.getElementById('input-key-massive');
-      const fhInput = document.getElementById('input-key-finnhub');
-      const fmpInput = document.getElementById('input-key-fmp');
-      const tdInput = document.getElementById('input-key-twelvedata');
-      const fredInput = document.getElementById('input-key-fred');
-
-      // Add homelab values to payload
-      if (n8nUrl && n8nUrl.value.trim()) payload.n8n_url = n8nUrl.value.trim();
-      if (n8nKey && n8nKey.value && !n8nKey.value.includes('•••')) payload.n8n_api_key = n8nKey.value.trim();
-      if (n8nMcp && n8nMcp.value && !n8nMcp.value.includes('•••')) payload.n8n_mcp_token = n8nMcp.value.trim();
-
-      if (hassUrl && hassUrl.value.trim()) payload.hass_url = hassUrl.value.trim();
-      if (hassToken && hassToken.value && !hassToken.value.includes('•••')) payload.hass_token = hassToken.value.trim();
-
-      if (searxngUrl && searxngUrl.value.trim()) payload.searxng_url = searxngUrl.value.trim();
-      if (pgUrl && pgUrl.value.trim()) payload.pg_url = pgUrl.value.trim();
-
-      if (infMain && infMain.value.trim()) payload.inference_node_main = infMain.value.trim();
-      if (infVision && infVision.value.trim()) payload.inference_node_vision = infVision.value.trim();
-      if (infVllm && infVllm.value.trim()) payload.inference_node_vllm = infVllm.value.trim();
-      if (infKey && infKey.value && !infKey.value.includes('•••')) payload.inference_api_key = infKey.value.trim();
-
-      if (elKey && elKey.value && !elKey.value.includes('•••')) payload.elevenlabs_api_key = elKey.value.trim();
-
-      // Add homelab applications to payload
-      if (deerflowUrl && deerflowUrl.value.trim()) payload.deerflow_url = deerflowUrl.value.trim();
-      if (deerflowKey && deerflowKey.value && !deerflowKey.value.includes('•••')) payload.deerflow_api_key = deerflowKey.value.trim();
-      if (vaneUrl && vaneUrl.value.trim()) payload.vane_url = vaneUrl.value.trim();
-      if (vaneKey && vaneKey.value && !vaneKey.value.includes('•••')) payload.vane_api_key = vaneKey.value.trim();
-      if (owuiUrl && owuiUrl.value.trim()) payload.openwebui_url = owuiUrl.value.trim();
-      if (owuiKey && owuiKey.value && !owuiKey.value.includes('•••')) payload.openwebui_api_key = owuiKey.value.trim();
-      if (absUrl && absUrl.value.trim()) payload.audiobookshelf_url = absUrl.value.trim();
-      if (absToken && absToken.value && !absToken.value.includes('•••')) payload.audiobookshelf_token = absToken.value.trim();
-      if (blUrl && blUrl.value.trim()) payload.booklore_url = blUrl.value.trim();
-      if (blKey && blKey.value && !blKey.value.includes('•••')) payload.booklore_api_key = blKey.value.trim();
-      if (immichUrl && immichUrl.value.trim()) payload.immich_url = immichUrl.value.trim();
-      if (immichKey && immichKey.value && !immichKey.value.includes('•••')) payload.immich_api_key = immichKey.value.trim();
-      if (ncUrl && ncUrl.value.trim()) payload.nextcloud_url = ncUrl.value.trim();
-      if (ncToken && ncToken.value && !ncToken.value.includes('•••')) payload.nextcloud_token = ncToken.value.trim();
-      if (ncUser && ncUser.value.trim()) payload.nextcloud_user = ncUser.value.trim();
-      if (seerUrl && seerUrl.value.trim()) payload.seer_url = seerUrl.value.trim();
-      if (seerKey && seerKey.value && !seerKey.value.includes('•••')) payload.seer_api_key = seerKey.value.trim();
-      if (frssUrl && frssUrl.value.trim()) payload.freshrss_url = frssUrl.value.trim();
-      if (frssKey && frssKey.value && !frssKey.value.includes('•••')) payload.freshrss_api_key = frssKey.value.trim();
-      if (frssUser && frssUser.value.trim()) payload.freshrss_user = frssUser.value.trim();
-
-      // Add financial values to payload
-      if (avInput && avInput.value && !avInput.value.includes('•••')) payload.alphavantage_api_key = avInput.value.trim();
-      if (msInput && msInput.value && !msInput.value.includes('•••')) payload.massive_api_key = msInput.value.trim();
-      if (fhInput && fhInput.value && !fhInput.value.includes('•••')) payload.finnhub_api_key = fhInput.value.trim();
-      if (fmpInput && fmpInput.value && !fmpInput.value.includes('•••')) payload.fmp_api_key = fmpInput.value.trim();
-      if (tdInput && tdInput.value && !tdInput.value.includes('•••')) payload.twelvedata_api_key = tdInput.value.trim();
-      if (fredInput && fredInput.value && !fredInput.value.includes('•••')) payload.fred_api_key = fredInput.value.trim();
+      checkField(document.getElementById('input-key-alphavantage'), 'alphavantage_api_key', true);
+      checkField(document.getElementById('input-key-massive'), 'massive_api_key', true);
+      checkField(document.getElementById('input-key-finnhub'), 'finnhub_api_key', true);
+      checkField(document.getElementById('input-key-fmp'), 'fmp_api_key', true);
+      checkField(document.getElementById('input-key-twelvedata'), 'twelvedata_api_key', true);
+      checkField(document.getElementById('input-key-fred'), 'fred_api_key', true);
 
       try {
         const res = await fetch(`${this.apiBase}/api/system/settings`, {
@@ -1403,7 +1382,7 @@ CommandDeck.prototype.initSystemSettings = function() {
         });
         if (res.ok) {
           if (typeof this.showToast === 'function') {
-            this.showToast('System, Homelab & Financial settings saved and synced with .env!', 'success');
+            this.showToast('Settings successfully saved and synchronized with .env!', 'success');
           }
           await this.loadSystemSettings();
         }
@@ -1433,56 +1412,38 @@ CommandDeck.prototype.initSystemSettings = function() {
     btn.onclick = async () => {
       const provider = btn.dataset.provider;
       const msgEl = document.getElementById(`msg-${provider}`);
-
-      let keyVal = '';
-      let urlVal = '';
-
-      if (provider === 'n8n') {
-        const kInp = document.getElementById('input-key-n8n');
-        const uInp = document.getElementById('input-url-n8n');
-        if (kInp && kInp.value && !kInp.value.includes('•••')) keyVal = kInp.value.trim();
-        if (uInp && uInp.value) urlVal = uInp.value.trim();
-      } else if (provider === 'homeassistant') {
-        const kInp = document.getElementById('input-token-hass');
-        const uInp = document.getElementById('input-url-hass');
-        if (kInp && kInp.value && !kInp.value.includes('•••')) keyVal = kInp.value.trim();
-        if (uInp && uInp.value) urlVal = uInp.value.trim();
-      } else if (provider === 'searxng') {
-        const uInp = document.getElementById('input-url-searxng');
-        if (uInp && uInp.value) urlVal = uInp.value.trim();
-      } else if (provider === 'pgvector') {
-        const uInp = document.getElementById('input-url-pg');
-        if (uInp && uInp.value) urlVal = uInp.value.trim();
-      } else if (provider === 'inference') {
-        const kInp = document.getElementById('input-key-inference');
-        const uInp = document.getElementById('input-url-inference-main');
-        if (kInp && kInp.value && !kInp.value.includes('•••')) keyVal = kInp.value.trim();
-        if (uInp && uInp.value) urlVal = uInp.value.trim();
-      } else if (provider === 'elevenlabs') {
-        const kInp = document.getElementById('input-key-elevenlabs');
-        if (kInp && kInp.value && !kInp.value.includes('•••')) keyVal = kInp.value.trim();
-      } else {
-        const inp = document.getElementById(`input-key-${provider}`) || document.getElementById(`input-token-${provider}`);
-        if (inp && inp.value && !inp.value.includes('•••')) keyVal = inp.value.trim();
-        const uInp = document.getElementById(`input-url-${provider}`);
-        if (uInp && uInp.value) urlVal = uInp.value.trim();
-      }
-
       if (msgEl) {
         msgEl.className = 'setting-status-msg';
         msgEl.textContent = 'Testing connection...';
+      }
+
+      // Check if user typed a key in the input
+      let typedKey = '';
+      const keyInp = document.getElementById(`input-key-${provider}`);
+      if (keyInp && keyInp.value && !keyInp.value.includes('•••')) {
+        typedKey = keyInp.value.trim();
+      }
+
+      let typedUrl = '';
+      const urlInp = document.getElementById(`input-url-${provider}`);
+      if (urlInp && urlInp.value) {
+        typedUrl = urlInp.value.trim();
       }
 
       try {
         const res = await fetch(`${this.apiBase}/api/system/settings/test`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider, api_key: keyVal, api_url: urlVal })
+          body: JSON.stringify({
+            provider,
+            api_key: typedKey,
+            api_url: typedUrl
+          })
         });
         const data = await res.json();
         if (msgEl) {
           msgEl.className = `setting-status-msg ${data.status === 'ok' ? 'success' : 'error'}`;
-          msgEl.textContent = data.message || 'Test complete';
+          msgEl.textContent = data.message || (data.status === 'ok' ? 'Connection successful!' : 'Connection failed.');
         }
       } catch (err) {
         if (msgEl) {
@@ -1526,15 +1487,18 @@ CommandDeck.prototype.loadSystemSettings = async function() {
       badgeEl.className = isConfigured ? 'badge badge-green' : 'badge badge-amber';
     };
 
+    const setField = (inp, val) => {
+      if (!inp) return;
+      inp.value = val || '';
+      inp.dataset.dirty = 'false';
+    };
+
     // Homelab & Automation
     if (settings.n8n) {
       updateBadge(document.getElementById('setting-badge-n8n'), settings.n8n.configured);
-      const uInp = document.getElementById('input-url-n8n');
-      const kInp = document.getElementById('input-key-n8n');
-      const mInp = document.getElementById('input-mcp-n8n');
-      if (uInp && settings.n8n.url && !uInp.value) uInp.value = settings.n8n.url;
-      if (kInp && settings.n8n.masked_key && !kInp.value) kInp.value = settings.n8n.masked_key;
-      if (mInp && settings.n8n.masked_mcp_token && !mInp.value) mInp.value = settings.n8n.masked_mcp_token;
+      setField(document.getElementById('input-url-n8n'), settings.n8n.url);
+      setField(document.getElementById('input-key-n8n'), settings.n8n.masked_key);
+      setField(document.getElementById('input-mcp-n8n'), settings.n8n.masked_mcp_token);
 
       const n8nLink = document.getElementById('n8n-external-link');
       if (n8nLink && settings.n8n.url) {
@@ -1544,10 +1508,8 @@ CommandDeck.prototype.loadSystemSettings = async function() {
 
     if (settings.homeassistant) {
       updateBadge(document.getElementById('setting-badge-homeassistant'), settings.homeassistant.configured);
-      const uInp = document.getElementById('input-url-hass');
-      const tInp = document.getElementById('input-token-hass');
-      if (uInp && settings.homeassistant.url && !uInp.value) uInp.value = settings.homeassistant.url;
-      if (tInp && settings.homeassistant.masked_token && !tInp.value) tInp.value = settings.homeassistant.masked_token;
+      setField(document.getElementById('input-url-hass'), settings.homeassistant.url);
+      setField(document.getElementById('input-token-hass'), settings.homeassistant.masked_token);
 
       const haLink = document.getElementById('ha-external-link');
       if (haLink && settings.homeassistant.url) {
@@ -1557,32 +1519,25 @@ CommandDeck.prototype.loadSystemSettings = async function() {
 
     if (settings.searxng) {
       updateBadge(document.getElementById('setting-badge-searxng'), settings.searxng.configured);
-      const uInp = document.getElementById('input-url-searxng');
-      if (uInp && settings.searxng.url && !uInp.value) uInp.value = settings.searxng.url;
+      setField(document.getElementById('input-url-searxng'), settings.searxng.url);
     }
 
     if (settings.pgvector) {
       updateBadge(document.getElementById('setting-badge-pgvector'), settings.pgvector.configured);
-      const uInp = document.getElementById('input-url-pg');
-      if (uInp && settings.pgvector.url && !uInp.value) uInp.value = settings.pgvector.url;
+      setField(document.getElementById('input-url-pg'), settings.pgvector.url);
     }
 
     if (settings.inference) {
       updateBadge(document.getElementById('setting-badge-inference'), settings.inference.configured);
-      const mInp = document.getElementById('input-url-inference-main');
-      const vInp = document.getElementById('input-url-inference-vision');
-      const lInp = document.getElementById('input-url-inference-vllm');
-      const kInp = document.getElementById('input-key-inference');
-      if (mInp && settings.inference.node_main && !mInp.value) mInp.value = settings.inference.node_main;
-      if (vInp && settings.inference.node_vision && !vInp.value) vInp.value = settings.inference.node_vision;
-      if (lInp && settings.inference.node_vllm && !lInp.value) lInp.value = settings.inference.node_vllm;
-      if (kInp && settings.inference.masked_key && !kInp.value) kInp.value = settings.inference.masked_key;
+      setField(document.getElementById('input-url-inference-main'), settings.inference.node_main);
+      setField(document.getElementById('input-url-inference-vision'), settings.inference.node_vision);
+      setField(document.getElementById('input-url-inference-vllm'), settings.inference.node_vllm);
+      setField(document.getElementById('input-key-inference'), settings.inference.masked_key);
     }
 
     if (settings.elevenlabs) {
       updateBadge(document.getElementById('setting-badge-elevenlabs'), settings.elevenlabs.configured);
-      const kInp = document.getElementById('input-key-elevenlabs');
-      if (kInp && settings.elevenlabs.masked_key && !kInp.value) kInp.value = settings.elevenlabs.masked_key;
+      setField(document.getElementById('input-key-elevenlabs'), settings.elevenlabs.masked_key);
     }
 
     // Homelab Applications
@@ -1591,15 +1546,12 @@ CommandDeck.prototype.loadSystemSettings = async function() {
       const cfg = settings[s];
       if (!cfg) return;
       updateBadge(document.getElementById(`setting-badge-${s}`), cfg.configured);
-      const uInp = document.getElementById(`input-url-${s}`);
-      const kInp = document.getElementById(`input-key-${s}`) || document.getElementById(`input-token-${s}`);
-      const userInp = document.getElementById(`input-user-${s}`);
+      setField(document.getElementById(`input-url-${s}`), cfg.url);
+      setField(document.getElementById(`input-key-${s}`) || document.getElementById(`input-token-${s}`), cfg.masked_key || cfg.masked_token);
+      setField(document.getElementById(`input-user-${s}`), cfg.user);
       const linkEl = document.getElementById(`link-setting-${s}`);
       const extLink = document.getElementById(`${s}-external-link`);
 
-      if (uInp && cfg.url && !uInp.value) uInp.value = cfg.url;
-      if (kInp && (cfg.masked_key || cfg.masked_token) && !kInp.value) kInp.value = cfg.masked_key || cfg.masked_token;
-      if (userInp && cfg.user && !userInp.value) userInp.value = cfg.user;
       if (linkEl && cfg.url) {
         linkEl.href = cfg.url;
         linkEl.textContent = cfg.url;
@@ -1610,63 +1562,21 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     });
 
     // Financial APIs
-    const avBadge = document.getElementById('setting-badge-alphavantage');
-    const msBadge = document.getElementById('setting-badge-massive');
-    const fhBadge = document.getElementById('setting-badge-finnhub');
-    const fmpBadge = document.getElementById('setting-badge-fmp');
-    const tdBadge = document.getElementById('setting-badge-twelvedata');
-    const fredBadge = document.getElementById('setting-badge-fred');
+    updateBadge(document.getElementById('setting-badge-alphavantage'), settings.alphavantage?.configured);
+    updateBadge(document.getElementById('setting-badge-massive'), settings.massive?.configured);
+    updateBadge(document.getElementById('setting-badge-finnhub'), settings.finnhub?.configured);
+    updateBadge(document.getElementById('setting-badge-fmp'), settings.fmp?.configured);
+    updateBadge(document.getElementById('setting-badge-twelvedata'), settings.twelvedata?.configured);
+    updateBadge(document.getElementById('setting-badge-fred'), settings.fred?.configured);
 
-    const avInput = document.getElementById('input-key-alphavantage');
-    const msInput = document.getElementById('input-key-massive');
-    const fhInput = document.getElementById('input-key-finnhub');
-    const fmpInput = document.getElementById('input-key-fmp');
-    const tdInput = document.getElementById('input-key-twelvedata');
-    const fredInput = document.getElementById('input-key-fred');
-
-    if (settings.alphavantage) {
-      updateBadge(avBadge, settings.alphavantage.configured);
-      if (avInput && settings.alphavantage.masked_key && !avInput.value) {
-        avInput.value = settings.alphavantage.masked_key;
-      }
-    }
-
-    if (settings.massive) {
-      updateBadge(msBadge, settings.massive.configured);
-      if (msInput && settings.massive.masked_key && !msInput.value) {
-        msInput.value = settings.massive.masked_key;
-      }
-    }
-
-    if (settings.finnhub) {
-      updateBadge(fhBadge, settings.finnhub.configured);
-      if (fhInput && settings.finnhub.masked_key && !fhInput.value) {
-        fhInput.value = settings.finnhub.masked_key;
-      }
-    }
-
-    if (settings.fmp) {
-      updateBadge(fmpBadge, settings.fmp.configured);
-      if (fmpInput && settings.fmp.masked_key && !fmpInput.value) {
-        fmpInput.value = settings.fmp.masked_key;
-      }
-    }
-
-    if (settings.twelvedata) {
-      updateBadge(tdBadge, settings.twelvedata.configured);
-      if (tdInput && settings.twelvedata.masked_key && !tdInput.value) {
-        tdInput.value = settings.twelvedata.masked_key;
-      }
-    }
-
-    if (settings.fred) {
-      updateBadge(fredBadge, settings.fred.configured);
-      if (fredInput && settings.fred.masked_key && !fredInput.value) {
-        fredInput.value = settings.fred.masked_key;
-      }
-    }
+    setField(document.getElementById('input-key-alphavantage'), settings.alphavantage?.masked_key);
+    setField(document.getElementById('input-key-massive'), settings.massive?.masked_key);
+    setField(document.getElementById('input-key-finnhub'), settings.finnhub?.masked_key);
+    setField(document.getElementById('input-key-fmp'), settings.fmp?.masked_key);
+    setField(document.getElementById('input-key-twelvedata'), settings.twelvedata?.masked_key);
+    setField(document.getElementById('input-key-fred'), settings.fred?.masked_key);
   } catch (err) {
-    console.warn('Error loading system settings:', err);
+    console.warn('Failed to load system settings:', err);
   }
 };
 
