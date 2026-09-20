@@ -305,6 +305,33 @@ export class CommandDeck {
   }
 
   showView(viewName) {
+    if (!viewName) return;
+
+    // External new-tab links: open in new tab and DO NOT deactivate the current dashboard view
+    const defaultUrls = {
+      deerflow: "http://localhost:8000",
+      vane: "http://localhost:3000",
+      openwebui: "http://localhost:3000",
+      audiobookshelf: "http://localhost:13378",
+      booklore: "http://localhost:8080",
+      immich: "http://localhost:2283",
+      nextcloud: "http://localhost:8080",
+      seer: "http://localhost:5055",
+      freshrss: "http://localhost:8080",
+      godseye: "http://localhost:5173"
+    };
+
+    const isExternalNewTab = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'].includes(viewName) || viewName.startsWith('link:');
+    if (isExternalNewTab) {
+      const linkId = viewName.startsWith('link:') ? viewName.replace('link:', '') : viewName;
+      const linkItem = (this.systemSettings?.navbar_links || []).find(l => l.id === linkId);
+      const url = linkItem?.url || linkItem?.default_url || this.systemSettings?.[linkId]?.url || defaultUrls[linkId];
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+      return;
+    }
+
     if (viewName === 'settings') viewName = 'system';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     const link = document.querySelector(`.sidebar-link[data-view="${viewName}"]`);
@@ -372,12 +399,6 @@ export class CommandDeck {
     } else if (viewName === 'markets') {
       if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
       if (typeof this.fetchMarkets === 'function') this.fetchMarkets();
-    } else if (['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'].includes(viewName)) {
-      const linkItem = (this.systemSettings?.navbar_links || []).find(l => l.id === viewName);
-      const url = linkItem?.url || linkItem?.default_url || this.systemSettings?.[viewName]?.url;
-      if (url) {
-        window.open(url, '_blank', 'noopener,noreferrer');
-      }
     } else if (viewName === 'dashboard') {
       if (typeof this.refreshAllData === 'function') this.refreshAllData();
     }

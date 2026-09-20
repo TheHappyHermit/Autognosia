@@ -1974,6 +1974,8 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     if (Array.isArray(settings.navbar_links)) {
       this.renderSidebarExternalLinks(settings.navbar_links);
       this.renderNavbarLinksSettings(settings.navbar_links);
+    } else {
+      this.renderSidebarExternalLinks();
     }
     if (Array.isArray(settings.navbar_order) && settings.navbar_order.length > 0) {
       if (typeof this.applyNavbarOrder === 'function') {
@@ -1982,6 +1984,7 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     }
   } catch (err) {
     console.warn('Failed to load system settings:', err);
+    this.renderSidebarExternalLinks();
   }
 };
 
@@ -1989,40 +1992,56 @@ CommandDeck.prototype.loadSystemSettings = async function() {
 // ── 4b. External Navbar Links & Settings Manager ─────────────────────────────
 
 CommandDeck.prototype.renderSidebarExternalLinks = function(links) {
-  const container = document.getElementById('sidebar-external-links');
-  if (!container) return;
-
+  const defaultIds = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'];
   const linkItems = Array.isArray(links) && links.length > 0
     ? links
     : (this.systemSettings?.navbar_links || [
         { id: "deerflow", name: "DeerFlow", url: "http://localhost:8000", icon: "🦌", enabled: true },
-        { id: "vane", name: "Vane (Perplexica)", url: "http://localhost:3000", icon: "🧭", enabled: true },
+        { id: "vane", name: "Vane", url: "http://localhost:3000", icon: "🧭", enabled: true },
         { id: "openwebui", name: "Open WebUI", url: "http://localhost:3000", icon: "💬", enabled: true },
         { id: "audiobookshelf", name: "Audiobookshelf", url: "http://localhost:13378", icon: "🎧", enabled: true },
         { id: "booklore", name: "Booklore", url: "http://localhost:8080", icon: "📚", enabled: true },
-        { id: "immich", name: "Immich Photos", url: "http://localhost:2283", icon: "📸", enabled: true },
+        { id: "immich", name: "Immich", url: "http://localhost:2283", icon: "📸", enabled: true },
         { id: "nextcloud", name: "Nextcloud", url: "http://localhost:8080", icon: "☁️", enabled: true },
-        { id: "seer", name: "Seer Requests", url: "http://localhost:5055", icon: "🎬", enabled: true },
+        { id: "seer", name: "Seer", url: "http://localhost:5055", icon: "🎬", enabled: true },
         { id: "freshrss", name: "FreshRSS", url: "http://localhost:8080", icon: "📰", enabled: true },
-        { id: "godseye", name: "God's Eye View", url: "http://localhost:5173", icon: "👁️", enabled: true }
+        { id: "godseye", name: "God's Eye", url: "http://localhost:5173", icon: "👁️", enabled: true }
       ]);
 
-  container.innerHTML = linkItems
-    .filter(link => link.enabled !== false)
-    .map(link => {
-      const url = link.url || '#';
-      const name = escapeHtml(link.name || link.id);
-      const icon = link.icon || '🔗';
-      return `
-        <a href="${url}" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-external-link" aria-label="${name}" title="${name} (Opens in new tab)" data-link-id="${escapeHtml(link.id)}" data-nav-id="link:${escapeHtml(link.id)}">
-          <span class="sidebar-icon" style="font-size:1rem; width:17px; height:17px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${icon}</span>
-          <span class="sidebar-label" style="display:flex; align-items:center; justify-content:space-between; flex:1; min-width:0;">
-            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4; margin-left:4px; flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </span>
-        </a>
-      `;
-    }).join('');
+  // 1. Control visibility of default links on the navbar
+  defaultIds.forEach(id => {
+    const el = document.querySelector(`.sidebar-link[data-view="${id}"]`);
+    const cfg = linkItems.find(l => l.id === id);
+    if (el) {
+      if (cfg && cfg.enabled === false) {
+        el.style.display = 'none';
+      } else {
+        el.style.display = '';
+      }
+    }
+  });
+
+  // 2. Render any custom links added by the user
+  const customContainer = document.getElementById('sidebar-custom-links') || document.getElementById('sidebar-external-links');
+  if (customContainer) {
+    const customLinks = linkItems.filter(l => !defaultIds.includes(l.id));
+    customContainer.innerHTML = customLinks
+      .filter(link => link.enabled !== false)
+      .map(link => {
+        const url = link.url || '#';
+        const name = escapeHtml(link.name || link.id);
+        const icon = link.icon || '🔗';
+        return `
+          <a href="${url}" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-external-link" aria-label="${name}" title="${name} (Opens in new tab)" data-link-id="${escapeHtml(link.id)}" data-nav-id="link:${escapeHtml(link.id)}" data-view="link:${escapeHtml(link.id)}">
+            <span class="sidebar-icon" style="font-size:1rem; width:17px; height:17px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${icon}</span>
+            <span class="sidebar-label" style="display:flex; align-items:center; justify-content:space-between; flex:1; min-width:0;">
+              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${name}</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4; margin-left:4px; flex-shrink:0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </span>
+          </a>
+        `;
+      }).join('');
+  }
 
   if (typeof this.applyNavbarOrder === 'function') {
     this.applyNavbarOrder();
@@ -2035,6 +2054,7 @@ CommandDeck.prototype.renderNavbarLinksSettings = function(links) {
   const container = document.getElementById('navbar-links-manager-container');
   if (!container) return;
 
+  const defaultIds = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'];
   const linkItems = Array.isArray(links) ? links : (this.systemSettings?.navbar_links || []);
   if (linkItems.length === 0) {
     container.innerHTML = `
@@ -2071,7 +2091,7 @@ CommandDeck.prototype.renderNavbarLinksSettings = function(links) {
           <span>Test</span>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
-        <button type="button" class="btn btn--ghost btn--sm navlink-btn-remove" data-id="${id}" title="Remove link from navbar" style="color:var(--rose, #ef4444); padding:4px 8px; border:1px solid rgba(239,68,68,0.2);">
+        <button type="button" class="btn btn--ghost btn--sm navlink-btn-remove" data-id="${id}" title="Remove or disable link from navbar" style="color:var(--rose, #ef4444); padding:4px 8px; border:1px solid rgba(239,68,68,0.2);">
           🗑️
         </button>
       </div>
@@ -2114,11 +2134,16 @@ CommandDeck.prototype.renderNavbarLinksSettings = function(links) {
     btn.onclick = () => {
       const id = btn.dataset.id;
       if (!this.systemSettings) this.systemSettings = {};
-      this.systemSettings.navbar_links = (this.systemSettings.navbar_links || []).filter(l => l.id !== id);
+      if (defaultIds.includes(id)) {
+        const found = (this.systemSettings.navbar_links || []).find(l => l.id === id);
+        if (found) found.enabled = false;
+      } else {
+        this.systemSettings.navbar_links = (this.systemSettings.navbar_links || []).filter(l => l.id !== id);
+      }
       this.renderNavbarLinksSettings(this.systemSettings.navbar_links);
       this.renderSidebarExternalLinks(this.systemSettings.navbar_links);
       if (typeof this.showToast === 'function') {
-        this.showToast('Navbar link removed. Click "Save & Sync Settings" to persist.', 'info');
+        this.showToast('Navbar link disabled/removed. Click "Save & Sync Settings" to persist.', 'info');
       }
     };
   });
@@ -3045,6 +3070,7 @@ const initIntegrations = () => {
     window.commandDeck?.initHeaderOmnibar?.();
     window.commandDeck?.initMarketAssetSearch?.();
     window.commandDeck?.initSystemSettings?.();
+    window.commandDeck?.loadSystemSettings?.();
 
     // Homelab Mesh & Cluster refresh
     document.getElementById('btn-refresh-mesh')?.addEventListener('click', () => {
