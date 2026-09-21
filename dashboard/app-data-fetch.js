@@ -38,35 +38,49 @@ CommandDeck.prototype.renderBriefing = function() {
 };
 
 CommandDeck.prototype.refreshAllData = async function() {
-  const safe = async (fn) => {
+  const safe = async (fn, panelId) => {
     try {
       if (typeof fn === 'function') await fn();
+      // Clear any error state on success
+      if (panelId) {
+        const panel = document.getElementById(panelId);
+        if (panel) panel.querySelector('.panel-error-banner')?.remove();
+      }
     } catch (e) {
       console.warn('Fetch error:', e);
+      if (panelId) {
+        const panel = document.getElementById(panelId);
+        if (panel && !panel.querySelector('.panel-error-banner')) {
+          const banner = document.createElement('div');
+          banner.className = 'panel-error-banner';
+          banner.innerHTML = `<span>⚠ Failed to load</span> <button onclick="this.parentElement.remove(); window.commandDeck?.refreshAllData();">Retry</button>`;
+          panel.prepend(banner);
+        }
+      }
     }
   };
   await Promise.all([
     safe(() => this.fetchSystemStats && this.fetchSystemStats()),
-    safe(() => this.fetchOverview && this.fetchOverview()),
-    safe(() => this.fetchBriefing && this.fetchBriefing()),
-    safe(() => this.fetchTasks && this.fetchTasks()),
-    safe(() => this.fetchReminders && this.fetchReminders()),
-    safe(() => this.fetchProjects && this.fetchProjects()),
-    safe(() => this.fetchCalendar && this.fetchCalendar()),
-    safe(() => this.fetchEmails && this.fetchEmails()),
-    safe(() => this.fetchIntentions && this.fetchIntentions()),
-    safe(() => this.fetchTelemetry && this.fetchTelemetry()),
-    safe(() => this.fetchServices && this.fetchServices()),
-    safe(() => this.fetchMedia && this.fetchMedia()),
-    safe(() => this.fetchQueue && this.fetchQueue()),
-    safe(() => this.renderDashboardServers && this.renderDashboardServers()),
-    safe(() => this.fetchMemoryStatus && this.fetchMemoryStatus()),
-    safe(() => this.fetchNotifications && this.fetchNotifications()),
-    safe(() => this.fetchKnowledgeGraph && this.fetchKnowledgeGraph()),
-    safe(() => this.fetchAgentStatus && this.fetchAgentStatus()),
-    safe(() => this.fetchCronJobs && this.fetchCronJobs()),
-    safe(() => this.fetchSkillsCatalog && this.fetchSkillsCatalog()),
-    safe(() => this.fetchGatewayStatus && this.fetchGatewayStatus())
+    safe(() => this.fetchOverview && this.fetchOverview(), 'overview-panel'),
+    safe(() => this.fetchBriefing && this.fetchBriefing(), 'briefing-summary'),
+    safe(() => this.fetchTasks && this.fetchTasks(), 'tasks-list'),
+    safe(() => this.fetchReminders && this.fetchReminders(), 'reminders-list'),
+    safe(() => this.fetchProjects && this.fetchProjects(), 'projects-grid'),
+    safe(() => this.fetchCalendar && this.fetchCalendar(), 'calendar-stage'),
+    safe(() => this.fetchEmails && this.fetchEmails(), 'email-list'),
+    safe(() => this.fetchIntentions && this.fetchIntentions(), 'intentions-list'),
+    safe(() => this.fetchTelemetry && this.fetchTelemetry(), 'telemetry-grid'),
+    safe(() => this.fetchServices && this.fetchServices(), 'services-list'),
+    safe(() => this.fetchMedia && this.fetchMedia(), 'media-list'),
+    safe(() => this.fetchQueue && this.fetchQueue(), 'queue-list'),
+    safe(() => this.renderDashboardServers && this.renderDashboardServers(), 'dashboard-server-grid'),
+    safe(() => this.fetchMemoryStatus && this.fetchMemoryStatus(), 'memory-status-box'),
+    safe(() => this.fetchNotifications && this.fetchNotifications(), 'notification-drawer-body'),
+    safe(() => this.fetchKnowledgeGraph && this.fetchKnowledgeGraph(), 'graph-canvas'),
+    safe(() => this.fetchAgentStatus && this.fetchAgentStatus(), 'agent-status-panel'),
+    safe(() => this.fetchCronJobs && this.fetchCronJobs(), 'cron-jobs-list'),
+    safe(() => this.fetchSkillsCatalog && this.fetchSkillsCatalog(), 'skills-catalog-container'),
+    safe(() => this.fetchGatewayStatus && this.fetchGatewayStatus(), 'gateway-status-panel')
   ]);
 };
 

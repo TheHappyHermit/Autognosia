@@ -113,7 +113,7 @@
   font-size: var(--fs-kicker, 11px);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--cyan, #06b6d4);
+  color: var(--accent);
 }
 
 .media-card__title {

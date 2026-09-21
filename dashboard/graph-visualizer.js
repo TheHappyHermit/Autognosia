@@ -104,10 +104,16 @@ export class GraphVisualizer {
     this.startSimulation();
   }
 
+  _getCSSVar(name) {
+    return (typeof window !== 'undefined' && window.getComputedStyle)
+      ? getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+      : '';
+  }
+
   getNodeColor(node) {
-    if (node.epistemic === 'fact') return '#10b981'; // emerald
-    if (node.tier === 'oracle') return '#a855f7';    // purple
-    return '#06b6d4';                                // cyan
+    if (node.epistemic === 'fact') return this._getCSSVar('--success') || '#10b981';
+    if (node.tier === 'oracle') return this._getCSSVar('--purple') || '#a855f7';
+    return this._getCSSVar('--accent') || '#06b6d4';
   }
 
   startSimulation() {
@@ -187,9 +193,12 @@ export class GraphVisualizer {
 
     // Draw Links
     ctx.lineWidth = 1 / this.scale;
+    const isLight = (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light');
     this.links.forEach(l => {
       const isConnectedToHover = this.hoveredNode && (l.source === this.hoveredNode || l.target === this.hoveredNode);
-      ctx.strokeStyle = isConnectedToHover ? 'rgba(6, 182, 212, 0.7)' : 'rgba(255, 255, 255, 0.12)';
+      ctx.strokeStyle = isConnectedToHover
+        ? (this._getCSSVar('--accent') || 'rgba(6, 182, 212, 0.7)')
+        : (isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)');
       ctx.lineWidth = isConnectedToHover ? 2 / this.scale : 1 / this.scale;
       ctx.beginPath();
       ctx.moveTo(l.source.x, l.source.y);
@@ -214,13 +223,15 @@ export class GraphVisualizer {
       ctx.fillStyle = n.color;
       ctx.fill();
 
-      ctx.strokeStyle = '#0f172a';
+      ctx.strokeStyle = this._getCSSVar('--bg-primary') || '#0f172a';
       ctx.lineWidth = 1.5 / this.scale;
       ctx.stroke();
 
       if (this.scale > 0.6 || isHovered) {
         ctx.shadowBlur = 0;
-        ctx.fillStyle = isHovered ? '#ffffff' : 'rgba(255, 255, 255, 0.8)';
+        const text1 = this._getCSSVar('--text-1') || (isLight ? '#0f172a' : '#ffffff');
+        const text2 = this._getCSSVar('--text-2') || (isLight ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)');
+        ctx.fillStyle = isHovered ? text1 : text2;
         ctx.font = `${isHovered ? 'bold ' : ''}${Math.max(10, 11 / this.scale)}px Inter, sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(n.label, n.x, n.y + r + 12 / this.scale);

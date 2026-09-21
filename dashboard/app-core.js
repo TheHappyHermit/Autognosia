@@ -325,7 +325,9 @@ export class CommandDeck {
     if (isExternalNewTab) {
       const linkId = viewName.startsWith('link:') ? viewName.replace('link:', '') : viewName;
       const linkItem = (this.systemSettings?.navbar_links || []).find(l => l.id === linkId);
-      const url = linkItem?.url || linkItem?.default_url || this.systemSettings?.[linkId]?.url || defaultUrls[linkId];
+      const domLink = document.querySelector(`.sidebar-link[data-view="${linkId}"]`) || document.querySelector(`.sidebar-link[data-link-id="${linkId}"]`);
+      const domHref = domLink && domLink.getAttribute('href') && domLink.getAttribute('href') !== '#' ? domLink.getAttribute('href') : null;
+      const url = linkItem?.url || linkItem?.default_url || this.systemSettings?.[linkId]?.url || domHref || defaultUrls[linkId];
       if (url) {
         window.open(url, '_blank', 'noopener,noreferrer');
       }

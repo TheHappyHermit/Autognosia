@@ -262,13 +262,13 @@
 }
 
 /* ── Telemetry Grid ───────────────────────────────────────────────────── */
-.telemetry-grid {
+.homelab-telemetry-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-2);
 }
 
-.telemetry-metric {
+.homelab-telemetry-metric {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -277,12 +277,12 @@
   transition: all var(--motion-fast);
 }
 
-.telemetry-metric:hover {
+.homelab-telemetry-metric:hover {
   border-color: var(--border-medium);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.telemetry-metric__value {
+.homelab-telemetry-metric__value {
   font-size: var(--fs-xl);
   font-weight: 700;
   color: var(--text-1);
@@ -291,7 +291,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.telemetry-metric__label {
+.homelab-telemetry-metric__label {
   font-size: var(--fs-sm);
   color: var(--text-3);
   font-family: var(--font-mono);
@@ -300,7 +300,7 @@
   margin-top: 2px;
 }
 
-.telemetry-metric__sub {
+.homelab-telemetry-metric__sub {
   font-size: var(--fs-xs);
   color: var(--text-4);
   font-family: var(--font-mono);

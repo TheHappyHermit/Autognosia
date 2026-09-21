@@ -123,13 +123,13 @@
 }
 
 .sidebar-link.drag-over-top {
-  border-top: 2px solid var(--accent, #3b82f6) !important;
+  border-top: 2px solid var(--accent) !important;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
 .sidebar-link.drag-over-bottom {
-  border-bottom: 2px solid var(--accent, #3b82f6) !important;
+  border-bottom: 2px solid var(--accent) !important;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

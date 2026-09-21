@@ -10,37 +10,79 @@
   const $ = (id) => document.getElementById(id);
 
   /* ── Freshness stamps ─────────────────────────────────────────────────
-     Every panel footer gets "updated Xs ago"; amber + "stale" after 90s. */
-  const freshnessTargets = [
-    { el: $('briefing-freshness'), label: 'briefing' },
-    { el: $('cal-freshness-text'), label: 'calendar' },
-  ].filter((t) => t.el);
+     Every panel gets "updated Xs ago"; amber + "stale" after 90s. */
+  function initFreshnessStamps() {
+    const explicitTargets = [
+      { el: $('briefing-freshness'), label: 'briefing' },
+      { el: $('cal-freshness-text'), label: 'calendar' },
+    ].filter((t) => t.el);
 
-  function stampFresh() {
-    const now = new Date();
-    for (const t of freshnessTargets) {
-      t.lastUpdate = now;
-      render(t);
+    function stampAllPanels() {
+      const now = new Date();
+      const nowMs = now.getTime();
+      explicitTargets.forEach((t) => {
+        t.lastUpdate = now;
+        renderExplicit(t);
+      });
+
+      // Target all .panel elements with data
+      document.querySelectorAll('.panel').forEach((panel) => {
+        panel.setAttribute('data-last-refresh', nowMs.toString());
+        const stampEl = panel.querySelector('.panel-freshness, .panel-freshness-text');
+        if (stampEl) {
+          stampEl.textContent = 'just now';
+          stampEl.classList.remove('is-stale');
+        }
+      });
+    }
+
+    function renderExplicit(t) {
+      if (!t.lastUpdate) return;
+      const age = Math.round((Date.now() - t.lastUpdate.getTime()) / 1000);
+      if (age > 90) {
+        t.el.textContent = 'stale';
+        t.el.classList.add('is-stale');
+      } else {
+        t.el.textContent = `updated ${age}s ago`;
+        t.el.classList.remove('is-stale');
+      }
+    }
+
+    function updateAllPanels() {
+      explicitTargets.forEach(renderExplicit);
+      const now = Date.now();
+      document.querySelectorAll('.panel[data-last-refresh]').forEach((panel) => {
+        const last = parseInt(panel.getAttribute('data-last-refresh'), 10);
+        if (!last) return;
+        const age = Math.round((now - last) / 1000);
+        const stampEl = panel.querySelector('.panel-freshness, .panel-freshness-text');
+        if (stampEl) {
+          if (age > 90) {
+            stampEl.textContent = 'stale';
+            stampEl.classList.add('is-stale');
+          } else {
+            stampEl.textContent = `updated ${age}s ago`;
+            stampEl.classList.remove('is-stale');
+          }
+        }
+      });
+    }
+
+    setInterval(updateAllPanels, 5000);
+    stampAllPanels();
+
+    // Generalize MutationObserver to observe main content area
+    const mainContainer = document.querySelector('main') || document.getElementById('deck-main') || document.body;
+    if (mainContainer && window.MutationObserver) {
+      let debounceTimer = null;
+      new MutationObserver(() => {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => stampAllPanels(), 250);
+      }).observe(mainContainer, { childList: true, subtree: true });
     }
   }
-  function render(t) {
-    if (!t.lastUpdate) return;
-    const age = Math.round((Date.now() - t.lastUpdate.getTime()) / 1000);
-    if (age > 90) {
-      t.el.textContent = 'stale';
-      t.el.classList.add('is-stale');
-    } else {
-      t.el.textContent = `updated ${age}s ago`;
-      t.el.classList.remove('is-stale');
-    }
-  }
-  setInterval(() => freshnessTargets.forEach(render), 5000);
-  stampFresh();
-  // Refresh the stamps whenever the base app refetches (it re-renders panels).
-  const overviewEl = $('briefing-summary');
-  if (overviewEl && window.MutationObserver) {
-    new MutationObserver(() => stampFresh()).observe(overviewEl, { childList: true });
-  }
+
+  initFreshnessStamps();
 
   /* ── Command palette (⌘K) ─────────────────────────────────────────── */
   const palette = $('command-palette');
@@ -117,6 +159,14 @@
       palette.removeAttribute('open');
     }
   }
+
+  function deckToast(msg, sub, type = 'info') {
+    if (window.commandDeck?.showToast) {
+      window.commandDeck.showToast(msg, type);
+    } else {
+      console.log(`[Toast] ${msg}`);
+    }
+  }
   let activeDynamicCmds = [];
 
   function renderPalette(q) {
@@ -172,11 +222,25 @@
       const arg = raw.replace(/^\/ha\s*/i, '').trim();
       dynamicCommands.push({
         id: 'cmd-slash-ha',
-        label: arg ? `Home Assistant: "${arg}"` : 'Home Assistant (/ha <entity>)',
-        hint: 'Switch to Smart Home view',
+        label: arg ? `Smart Home: Toggle "${arg}"` : 'Home Assistant (/ha <entity>)',
+        hint: arg ? 'Toggle entity state' : 'Switch to Smart Home view',
         group: 'Smart Home',
-        run: () => {
-          window.commandDeck?.showView('homeassistant');
+        run: async () => {
+          if (arg) {
+            try {
+              await fetch('/api/ha/service', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ domain: 'homeassistant', service: 'toggle', entity_id: arg })
+              });
+              deckToast(`Toggled: ${arg}`);
+            } catch(e) {
+              window.commandDeck?.showView('homeassistant');
+            }
+          } else {
+            window.commandDeck?.showView('homeassistant');
+          }
+          closePalette();
         }
       });
     }
@@ -228,6 +292,107 @@
           } else {
             window.commandDeck?.showView('vault');
           }
+        }
+      });
+    }
+
+    // /remind <text> in <duration> — Quick-create reminder
+    if (raw.startsWith('/remind')) {
+      const reminderRaw = raw.replace(/^\/remind\s*/i, '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-remind',
+        label: reminderRaw ? `Create Reminder: "${reminderRaw}"` : 'Create Reminder (/remind <text> in <duration>)',
+        hint: 'Quick-set timed reminder',
+        group: 'Actions',
+        run: async () => {
+          if (!reminderRaw) { window.commandDeck?.openCreateModal('reminder'); closePalette(); return; }
+          // Parse "text in Xm/Xh" pattern
+          const match = reminderRaw.match(/^(.+?)\s+in\s+(\d+)\s*(m|min|h|hr|hour|d|day)s?$/i);
+          if (match) {
+            const title = match[1].trim();
+            const amount = parseInt(match[2]);
+            const unit = match[3].toLowerCase();
+            const minutes = unit.startsWith('h') ? amount * 60 : unit.startsWith('d') ? amount * 1440 : amount;
+            try {
+              await fetch('/api/reminders', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title, offset_minutes: minutes, channel: 'all' }) });
+              deckToast(`Reminder set: "${title}" in ${minutes}m`);
+              window.commandDeck?.refreshAllData();
+            } catch(e) { deckToast('Failed to create reminder', null, 'error'); }
+          } else {
+            window.commandDeck?.openCreateModal('reminder');
+          }
+          closePalette();
+        }
+      });
+    }
+
+    // /intention IF <cue> THEN <action> — Quick-create prospective intention
+    if (raw.startsWith('/intention') || raw.startsWith('/if')) {
+      const intentionRaw = raw.replace(/^\/(intention|if)\s*/i, '').trim();
+      const ifThenMatch = intentionRaw.match(/^(?:if\s+)?(.+?)\s+then\s+(.+)$/i);
+      dynamicCommands.push({
+        id: 'cmd-slash-intention',
+        label: ifThenMatch ? `Create Intention: IF "${ifThenMatch[1]}" THEN "${ifThenMatch[2]}"` : 'Create Intention (/intention IF <cue> THEN <action>)',
+        hint: 'Prospective memory rule',
+        group: 'Actions',
+        run: async () => {
+          if (ifThenMatch) {
+            try {
+              await fetch('/api/intentions', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ cue: ifThenMatch[1].trim(), action: ifThenMatch[2].trim(), status: 'active' }) });
+              deckToast(`Intention created: IF "${ifThenMatch[1]}" THEN "${ifThenMatch[2]}"`);
+              window.commandDeck?.refreshAllData();
+            } catch(e) { deckToast('Failed to create intention', null, 'error'); }
+          } else {
+            window.commandDeck?.openCreateModal('intention');
+          }
+          closePalette();
+        }
+      });
+    }
+
+    // /research <topic> — Enqueue to Curiosity Engine
+    if (raw.startsWith('/research')) {
+      const topic = raw.replace(/^\/research\s*/i, '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-research',
+        label: topic ? `Enqueue Research: "${topic}"` : 'Enqueue Research Topic (/research <topic>)',
+        hint: 'Add to autonomous research pipeline',
+        group: 'Knowledge',
+        run: async () => {
+          if (topic) {
+            try {
+              await fetch('/api/knowledge/research-queue/add', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ topic, rationale: 'Enqueued via Command Palette' }) });
+              deckToast(`Research enqueued: "${topic}"`);
+            } catch(e) { deckToast('Failed to enqueue research', null, 'error'); }
+          } else {
+            window.commandDeck?.showView('vault');
+            setTimeout(() => document.getElementById('vault-research-pipeline')?.scrollIntoView({behavior:'smooth'}), 100);
+          }
+          closePalette();
+        }
+      });
+    }
+
+    // /brain <query> — Semantic brain search with inline preview
+    if (raw.startsWith('/brain') || raw.startsWith('/search')) {
+      const query = raw.replace(/^\/(brain|search)\s*/i, '').trim();
+      dynamicCommands.push({
+        id: 'cmd-slash-brain',
+        label: query ? `Search Brain: "${query}"` : 'Search Second Brain (/brain <query>)',
+        hint: 'Hybrid BM25 + vector search',
+        group: 'Knowledge',
+        run: async () => {
+          if (query) {
+            window.commandDeck?.showView('vault');
+            setTimeout(() => {
+              const searchInput = document.getElementById('wiki-search-input');
+              if (searchInput) { searchInput.value = query; searchInput.dispatchEvent(new Event('input')); }
+            }, 100);
+          } else {
+            window.commandDeck?.showView('vault');
+            setTimeout(() => document.getElementById('wiki-search-input')?.focus(), 80);
+          }
+          closePalette();
         }
       });
     }
@@ -527,10 +692,10 @@
   if (!grid) return;
 
   function tile(label, value, sub) {
-    return `<div class="telemetry-metric">
-      <div class="telemetry-metric__value">${value}</div>
-      <div class="telemetry-metric__label">${label}</div>
-      ${sub ? `<div class="telemetry-metric__sub">${sub}</div>` : ''}
+    return `<div class="homelab-telemetry-metric">
+      <div class="homelab-telemetry-metric__value">${value}</div>
+      <div class="homelab-telemetry-metric__label">${label}</div>
+      ${sub ? `<div class="homelab-telemetry-metric__sub">${sub}</div>` : ''}
     </div>`;
   }
 

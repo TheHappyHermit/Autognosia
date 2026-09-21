@@ -438,7 +438,7 @@
 .searxng-result-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--accent, #3b82f6);
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -611,7 +611,7 @@
   top: calc(100% + 6px);
   left: 0;
   right: 0;
-  background: var(--bg-primary, #0f172a);
+  background: var(--bg-primary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
@@ -995,7 +995,7 @@
 
 .cluster-gauge-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, var(--info), #8b5cf6);
   border-radius: 3px;
   transition: width 0.4s ease;
 }
@@ -1045,7 +1045,7 @@
 }
 
 .claim-card.status-UNVERIFIED {
-  border-left: 4px solid var(--cyan, #06b6d4);
+  border-left: 4px solid var(--accent);
 }
 
 .claim-header {
@@ -1228,7 +1228,7 @@
   right: 0;
   width: 100vw;
   height: 30px;
-  background: var(--bg-secondary, #1e293b);
+  background: var(--bg-secondary);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-subtle);
@@ -1365,7 +1365,7 @@
   max-width: 95vw;
   height: 640px;
   max-height: 90vh;
-  background: #090d13;
+  background: var(--bg-primary);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   display: flex;
@@ -1379,13 +1379,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  background: #121820;
+  background: var(--bg-secondary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   gap: 12px;
 }
 
 .terminal-search-input {
-  background: #1c2430;
+  background: var(--bg-tertiary);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   color: #fff;

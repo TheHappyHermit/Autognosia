@@ -273,7 +273,15 @@
   overflow-y: auto;
   flex: 1;
 }
+#view-tasks .panel:has(.projects-grid),
+.projects-grid-wrap {
+  container-type: inline-size;
+}
+
 @container (max-width: 360px) {
+  .projects-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 360px) {
   .projects-grid { grid-template-columns: 1fr; }
 }
 
@@ -693,7 +701,7 @@
 
 .kanban-column__body.drag-over {
   background: rgba(6, 182, 212, 0.08);
-  outline: 2px dashed var(--accent, #06b6d4);
+  outline: 2px dashed var(--accent);
   outline-offset: -4px;
 }
 

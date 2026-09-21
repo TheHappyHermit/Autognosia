@@ -227,7 +227,17 @@
 }
 
 /* Container query: narrow calendar hides week labels [18] */
+.calendar-view,
+#view-calendar .panel,
+.calendar-grid {
+  container-type: inline-size;
+}
+
 @container (max-width: 380px) {
+  .week-day-header { font-size: 9px; }
+  .week-event { font-size: 9px; padding: 1px 4px; }
+}
+@media (max-width: 380px) {
   .week-day-header { font-size: 9px; }
   .week-event { font-size: 9px; padding: 1px 4px; }
 }

@@ -158,7 +158,13 @@
    All numbers tabular [19]; sparklines + delta arrows; thresholds tint number
    ────────────────────────────────────────────────────────────────────────── */
 
-.telemetry-grid {
+.telemetry-panel,
+#view-comms .panel,
+.comms-telemetry-container {
+  container-type: inline-size;
+}
+
+.comms-telemetry-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-2);
@@ -167,10 +173,13 @@
   padding: var(--space-3);
 }
 @container (max-width: 300px) {
-  .telemetry-grid { grid-template-columns: 1fr; }
+  .comms-telemetry-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 300px) {
+  .comms-telemetry-grid { grid-template-columns: 1fr; }
 }
 
-.telemetry-metric {
+.comms-telemetry-metric {
   background: var(--bg-2);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -180,14 +189,14 @@
   gap: var(--space-2);
 }
 
-.telemetry-metric__header {
+.comms-telemetry-metric__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
 }
 
-.telemetry-metric__name {
+.comms-telemetry-metric__name {
   font-family: var(--font-mono);
   font-size: var(--fs-kicker);
   font-weight: 600;
@@ -196,29 +205,29 @@
   letter-spacing: 0.04em;
 }
 
-.telemetry-metric__value {
+.comms-telemetry-metric__value {
   font-family: var(--font-mono);
   font-size: 24px;
   font-weight: 600;
   color: var(--text-1);
   line-height: 1;
 }
-.telemetry-metric__value--ok      { color: var(--emerald); }
-.telemetry-metric__value--warn    { color: var(--amber); }
-.telemetry-metric__value--danger  { color: var(--rose); }
+.comms-telemetry-metric__value--ok      { color: var(--emerald); }
+.comms-telemetry-metric__value--warn    { color: var(--amber); }
+.comms-telemetry-metric__value--danger  { color: var(--rose); }
 
-.telemetry-metric__sparkline { margin-top: auto; }
+.comms-telemetry-metric__sparkline { margin-top: auto; }
 
-.telemetry-metric__delta {
+.comms-telemetry-metric__delta {
   font-family: var(--font-mono);
   font-size: var(--fs-kicker);
   display: flex;
   align-items: center;
   gap: 4px;
 }
-.telemetry-metric__delta--up   { color: var(--emerald); }
-.telemetry-metric__delta--down { color: var(--rose); }
-.telemetry-metric__delta--flat { color: var(--text-3); }
+.comms-telemetry-metric__delta--up   { color: var(--emerald); }
+.comms-telemetry-metric__delta--down { color: var(--rose); }
+.comms-telemetry-metric__delta--flat { color: var(--text-3); }
 
 /* Container blocks for docker, profiles, databases */
 .telemetry-block {

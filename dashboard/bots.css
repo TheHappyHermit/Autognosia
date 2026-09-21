@@ -216,7 +216,7 @@
   height: 7px;
   min-width: 7px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--info);
   flex-shrink: 0;
 }
 
@@ -272,7 +272,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--purple), #8b5cf6);
   color: white;
   font-size: 0.75rem;
   font-weight: 700;
@@ -535,7 +535,7 @@
 
 .bot-message--user {
   align-self: flex-end;
-  background: #18181b;
+  background: var(--bg-elevated);
   color: #ffffff;
   border-radius: 18px 18px 4px 18px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -612,7 +612,7 @@
 }
 
 .chat-hashtag {
-  color: #3b82f6;
+  color: var(--info);
   font-weight: 500;
   cursor: pointer;
 }
@@ -693,7 +693,7 @@
   min-width: 32px;
   border-radius: 50%;
   border: none;
-  background: #18181b;
+  background: var(--bg-elevated);
   color: #ffffff;
   cursor: pointer;
   display: flex;
@@ -728,9 +728,6 @@
 
 .bots-chat-send:hover {
   transform: scale(1.05);
-}
-  color: var(--text-3);
-  margin-top: var(--space-1);
 }
 
 .bot-typing {
@@ -827,9 +824,9 @@
 }
 
 .bot-tool-trace {
-  background: var(--bg-tertiary, #0f172a);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-  border-left: 3px solid var(--accent, #06b6d4);
+  border-left: 3px solid var(--accent);
   border-radius: var(--radius-sm, 6px);
   padding: 6px 10px;
   font-size: 0.8rem;
@@ -838,7 +835,7 @@
 }
 
 .bot-tool-trace:hover {
-  background: rgba(15, 23, 42, 0.8);
+  background: var(--bg-tertiary);
 }
 
 .bot-tool-trace summary {
@@ -1088,7 +1085,7 @@
 }
 
 .agent-skills-modal-dialog {
-  background: var(--bg-card, #131722);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle, rgba(255,255,255,0.1));
   border-radius: 16px;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
@@ -1112,7 +1109,7 @@
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
-  background: var(--bg-secondary, #181c28);
+  background: var(--bg-secondary);
 }
 
 .btn-skills-modal-close {
@@ -1141,7 +1138,7 @@
   gap: 4px;
   padding: 8px 16px 0;
   border-bottom: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
-  background: var(--bg-secondary, #181c28);
+  background: var(--bg-secondary);
 }
 
 .skills-tab-btn {
@@ -1161,8 +1158,8 @@
 }
 
 .skills-tab-btn.active {
-  color: var(--accent, #6366f1);
-  border-bottom-color: var(--accent, #6366f1);
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 .skills-tab-pane {
@@ -1179,21 +1176,21 @@
    ========================================================================== */
 .btn-checkpoints {
   padding: 4px 8px;
-  background: var(--bg-secondary, #181c28);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle, rgba(255,255,255,0.1));
   border-radius: 6px;
   color: var(--text-1);
   cursor: pointer;
 }
 .btn-checkpoints:hover {
-  border-color: var(--accent, #6366f1);
+  border-color: var(--accent);
 }
 .checkpoints-dropdown-menu {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
   width: 280px;
-  background: var(--bg-primary, #0f172a);
+  background: var(--bg-primary);
   border: 1px solid var(--border-subtle, rgba(255,255,255,0.12));
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
@@ -1227,7 +1224,7 @@
   transition: background 0.15s ease;
 }
 .checkpoint-item:hover {
-  background: var(--bg-secondary, #1e293b);
+  background: var(--bg-secondary);
 }
 
 /* ==========================================================================
@@ -1259,7 +1256,7 @@
   border-radius: 12px;
   font-size: 0.7rem;
   font-weight: 600;
-  background: var(--bg-secondary, #181c28);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
   color: var(--text-3);
   cursor: pointer;
@@ -1278,7 +1275,7 @@
    ========================================================================== */
 .bots-context-panel {
   width: 360px;
-  background: var(--bg-secondary, #141824);
+  background: var(--bg-secondary);
   border-left: 1px solid var(--border-subtle, rgba(255,255,255,0.08));
   display: flex;
   flex-direction: column;
@@ -1300,7 +1297,7 @@
   gap: 12px;
 }
 .context-chunk-card {
-  background: var(--bg-tertiary, #1e293b);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle, rgba(255,255,255,0.06));
   border-radius: 6px;
   padding: 10px;

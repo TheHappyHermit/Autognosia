@@ -1078,6 +1078,8 @@ DEFAULT_NAVBAR_LINKS: List[Dict[str, Any]] = [
     {"id": "godseye", "name": "God's Eye", "url": "http://localhost:5173", "icon": "🛰️", "env_var": "GODS_EYE_URL", "enabled": True},
 ]
 
+NAVBAR_ENV_MAP: Dict[str, str] = {item["id"]: item["env_var"] for item in DEFAULT_NAVBAR_LINKS}
+
 
 def get_navbar_links() -> List[Dict[str, Any]]:
     """Return configured external navbar links, dynamically resolving URLs from env/settings."""
@@ -1097,14 +1099,16 @@ def get_navbar_links() -> List[Dict[str, Any]]:
         # Deep copy defaults
         links = [dict(item) for item in DEFAULT_NAVBAR_LINKS]
 
-    # Dynamically resolve URLs if env_var is configured
+    # Dynamically resolve URLs if env_var is configured or matches known homelab service
     resolved_links = []
     for item in links:
         link = dict(item)
-        env_var = link.get("env_var")
+        link_id = link.get("id", "")
+        env_var = link.get("env_var") or NAVBAR_ENV_MAP.get(link_id, "")
         if env_var:
-            # Check os.environ or raw
-            env_val = os.environ.get(env_var) or raw.get(env_var.lower())
+            link["env_var"] = env_var
+            # Check raw (which includes .env) first, then os.environ
+            env_val = raw.get(env_var.lower()) or raw.get(f"{link_id}_url") or os.environ.get(env_var)
             if env_val:
                 link["url"] = env_val
         resolved_links.append(link)
@@ -1191,21 +1195,13 @@ def get_system_settings_raw() -> Dict[str, str]:
             for a in aliases:
                 inv_mappings[a] = setting_key
 
-    for env_file in [ROOT_ENV_FILE, DASHBOARD_ENV_FILE]:
-        env_dict = parse_env_file(env_file)
-        for k, v in env_dict.items():
-            if v:
-                merged[k.lower()] = v
-                if k in inv_mappings:
-                    merged[inv_mappings[k]] = v
-
-    # 2. Check os.environ
+    # 1. Check os.environ (base environment)
     for setting_key, os_key in env_mappings.items():
         val = os.environ.get(os_key, "").strip()
         if val:
             merged[setting_key] = val
 
-    # 3. Check legacy config files in ~/.autognosia/
+    # 2. Check legacy config files in ~/.autognosia/
     ha_cfg = AUTOGNOSIA_HOME / "homeassistant_config.json"
     if ha_cfg.exists():
         try:
@@ -1230,7 +1226,7 @@ def get_system_settings_raw() -> Dict[str, str]:
         except Exception:
             pass
 
-    # 4. Check ~/.autognosia/system_settings.json
+    # 3. Check ~/.autognosia/system_settings.json
     if SYSTEM_SETTINGS_FILE.exists():
         try:
             file_data = json.loads(SYSTEM_SETTINGS_FILE.read_text(encoding="utf-8"))
@@ -1242,6 +1238,15 @@ def get_system_settings_raw() -> Dict[str, str]:
                         merged[k] = str(v).strip()
         except Exception:
             pass
+
+    # 4. Load from root .env and dashboard .env (highest precedence so .env is the authoritative source of truth)
+    for env_file in [ROOT_ENV_FILE, DASHBOARD_ENV_FILE]:
+        env_dict = parse_env_file(env_file)
+        for k, v in env_dict.items():
+            if v:
+                merged[k.lower()] = v
+                if k in inv_mappings:
+                    merged[inv_mappings[k]] = v
 
     return merged
 
@@ -1467,9 +1472,16 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
             name = str(item.get("name", "")).strip()
             url = str(item.get("url", "")).strip()
             icon = str(item.get("icon", "🔗")).strip() or "🔗"
-            env_var = str(item.get("env_var", "")).strip()
+            env_var = str(item.get("env_var", "")).strip() or NAVBAR_ENV_MAP.get(lid, "")
             enabled = bool(item.get("enabled", True))
             
+            # If this service URL was also in payload, keep them in sync
+            setting_key = f"{lid}_url"
+            if setting_key in payload and str(payload[setting_key]).strip():
+                payload_val = str(payload[setting_key]).strip()
+                if payload_val != raw.get(setting_key):
+                    url = payload_val
+
             if not name or not url:
                 continue
 
@@ -1491,8 +1503,19 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
                 for setting_k, mapped_env in key_map.items():
                     if mapped_env == env_var:
                         raw[setting_k] = url
+                        env_updates[mapped_env] = url
 
         raw["custom_navbar_links"] = clean_links
+
+    # Ensure existing custom_navbar_links in storage reflect any updated service URLs
+    if "custom_navbar_links" in raw and isinstance(raw["custom_navbar_links"], list):
+        for cl in raw["custom_navbar_links"]:
+            cl_id = cl.get("id")
+            if cl_id in NAVBAR_ENV_MAP:
+                cl_env = NAVBAR_ENV_MAP[cl_id]
+                cl["env_var"] = cl_env
+                if cl_env in env_updates:
+                    cl["url"] = env_updates[cl_env]
 
     # Process custom navbar order
     if "navbar_order" in payload and isinstance(payload["navbar_order"], list):

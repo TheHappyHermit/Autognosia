@@ -203,7 +203,7 @@
 .search-dropdown-web-action {
   background: rgba(99, 102, 241, 0.08);
   border-bottom: 1px solid var(--border-subtle);
-  color: var(--accent, #6366f1);
+  color: var(--accent);
 }
 
 .search-dropdown-web-action:hover,

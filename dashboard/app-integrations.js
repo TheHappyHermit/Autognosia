@@ -1,5 +1,14 @@
 import { CommandDeck, escapeHtml } from './app-core.js';
 
+function getThemeColor(varName, fallback) {
+  return (typeof window !== 'undefined' && window.getComputedStyle)
+    ? getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback
+    : fallback;
+}
+function isLightTheme() {
+  return typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light';
+}
+
 // ── 1. Home Assistant Smart Home Integration ──────────────────────────────────
 
 CommandDeck.prototype.fetchHomeAssistant = async function() {
@@ -481,7 +490,7 @@ CommandDeck.prototype.renderVectorScatterPlot = function(data) {
   ctx.clearRect(0, 0, w, h);
 
   // Background grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.strokeStyle = isLightTheme() ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.05)';
   ctx.lineWidth = 1;
   for (let x = 0; x < w; x += 40) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
@@ -837,8 +846,8 @@ CommandDeck.prototype.renderMarketChart = function(data) {
 
     // Subtle horizontal gridlines & price labels
     const gridSteps = 4;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-    ctx.fillStyle = 'rgba(156, 163, 175, 0.65)';
+    ctx.strokeStyle = isLightTheme() ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.06)';
+    ctx.fillStyle = getThemeColor('--text-3', isLightTheme() ? 'rgba(100, 116, 139, 0.9)' : 'rgba(156, 163, 175, 0.65)');
     ctx.font = '10px monospace';
     ctx.lineWidth = 1;
     ctx.textAlign = 'right';
@@ -909,8 +918,8 @@ CommandDeck.prototype.renderMarketChart = function(data) {
 
         const grad = ctx.createLinearGradient(0, 20, 0, h - 35);
         grad.addColorStop(0, topGradient);
-        grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.02)');
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        grad.addColorStop(0.8, isLightTheme() ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)');
+        grad.addColorStop(1, isLightTheme() ? 'rgba(255, 255, 255, 0)' : 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = grad;
         ctx.fill();
 
@@ -940,14 +949,14 @@ CommandDeck.prototype.renderMarketChart = function(data) {
         ctx.arc(lastPt.x, lastPt.y, 3.5, 0, 2 * Math.PI);
         ctx.fillStyle = strokeColor;
         ctx.fill();
-        ctx.strokeStyle = '#ffffff';
+        ctx.strokeStyle = getThemeColor('--bg-primary', '#ffffff');
         ctx.lineWidth = 1.5;
         ctx.stroke();
       }
     }
 
     // Draw time labels at bottom
-    ctx.fillStyle = 'rgba(156, 163, 175, 0.7)';
+    ctx.fillStyle = getThemeColor('--text-3', isLightTheme() ? 'rgba(100, 116, 139, 0.9)' : 'rgba(156, 163, 175, 0.7)');
     ctx.font = '9px monospace';
     ctx.textAlign = 'center';
     const labelStep = Math.max(1, Math.floor(renderCandles.length / 6));
@@ -1643,6 +1652,26 @@ CommandDeck.prototype.initSystemSettings = function() {
     });
   }
 
+  const homelabServices = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'];
+  homelabServices.forEach(s => {
+    const urlInp = document.getElementById(`input-url-${s}`);
+    if (urlInp && !urlInp.dataset.syncBound) {
+      urlInp.dataset.syncBound = 'true';
+      urlInp.addEventListener('input', () => {
+        const val = urlInp.value.trim();
+        const linkEl = document.getElementById(`link-setting-${s}`);
+        if (linkEl && val) {
+          linkEl.href = val;
+          linkEl.textContent = val;
+        }
+        const navInp = document.querySelector(`#navbar-links-manager-container .navlink-input-url[data-id="${s}"]`);
+        if (navInp && navInp.value !== val) {
+          navInp.value = val;
+        }
+      });
+    }
+  });
+
   const saveBtn = document.getElementById('btn-save-system-settings');
   if (saveBtn && !saveBtn.dataset.initDone) {
     saveBtn.dataset.initDone = 'true';
@@ -2078,26 +2107,47 @@ CommandDeck.prototype.loadSystemSettings = async function() {
 
 CommandDeck.prototype.renderSidebarExternalLinks = function(links) {
   const defaultIds = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'];
+  const defaultUrls = {
+    deerflow: "http://localhost:8000",
+    vane: "http://localhost:3000",
+    openwebui: "http://localhost:3000",
+    audiobookshelf: "http://localhost:13378",
+    booklore: "http://localhost:8080",
+    immich: "http://localhost:2283",
+    nextcloud: "http://localhost:8080",
+    seer: "http://localhost:5055",
+    freshrss: "http://localhost:8080",
+    godseye: "http://localhost:5173"
+  };
   const linkItems = Array.isArray(links) && links.length > 0
     ? links
     : (this.systemSettings?.navbar_links || [
-        { id: "deerflow", name: "DeerFlow", url: "http://localhost:8000", icon: "🦌", enabled: true },
-        { id: "vane", name: "Vane", url: "http://localhost:3000", icon: "🧭", enabled: true },
-        { id: "openwebui", name: "Open WebUI", url: "http://localhost:3000", icon: "💬", enabled: true },
-        { id: "audiobookshelf", name: "Audiobookshelf", url: "http://localhost:13378", icon: "🎧", enabled: true },
-        { id: "booklore", name: "Booklore", url: "http://localhost:8080", icon: "📚", enabled: true },
-        { id: "immich", name: "Immich", url: "http://localhost:2283", icon: "📸", enabled: true },
-        { id: "nextcloud", name: "Nextcloud", url: "http://localhost:8080", icon: "☁️", enabled: true },
-        { id: "seer", name: "Seer", url: "http://localhost:5055", icon: "🎬", enabled: true },
-        { id: "freshrss", name: "FreshRSS", url: "http://localhost:8080", icon: "📰", enabled: true },
-        { id: "godseye", name: "God's Eye", url: "http://localhost:5173", icon: "👁️", enabled: true }
+        { id: "deerflow", name: "DeerFlow", url: "http://localhost:8000", icon: "🦌", env_var: "DEERFLOW_URL", enabled: true },
+        { id: "vane", name: "Vane", url: "http://localhost:3000", icon: "🧭", env_var: "VANE_URL", enabled: true },
+        { id: "openwebui", name: "Open WebUI", url: "http://localhost:3000", icon: "💬", env_var: "OPENWEBUI_URL", enabled: true },
+        { id: "audiobookshelf", name: "Audiobookshelf", url: "http://localhost:13378", icon: "🎧", env_var: "AUDIOBOOKSHELF_URL", enabled: true },
+        { id: "booklore", name: "Booklore", url: "http://localhost:8080", icon: "📚", env_var: "BOOKLORE_URL", enabled: true },
+        { id: "immich", name: "Immich", url: "http://localhost:2283", icon: "📸", env_var: "IMMICH_URL", enabled: true },
+        { id: "nextcloud", name: "Nextcloud", url: "http://localhost:8080", icon: "☁️", env_var: "NEXTCLOUD_URL", enabled: true },
+        { id: "seer", name: "Seer", url: "http://localhost:5055", icon: "🎬", env_var: "SEER_URL", enabled: true },
+        { id: "freshrss", name: "FreshRSS", url: "http://localhost:8080", icon: "📰", env_var: "FRESHRSS_URL", enabled: true },
+        { id: "godseye", name: "God's Eye", url: "http://localhost:5173", icon: "👁️", env_var: "GODS_EYE_URL", enabled: true }
       ]);
 
-  // 1. Control visibility of default links on the navbar
+  // 1. Update URLs and control visibility of default links on the navbar
   defaultIds.forEach(id => {
     const el = document.querySelector(`.sidebar-link[data-view="${id}"]`);
     const cfg = linkItems.find(l => l.id === id);
+    const targetUrl = cfg?.url || this.systemSettings?.[id]?.url || defaultUrls[id];
     if (el) {
+      if (targetUrl) {
+        el.href = targetUrl;
+        el.target = '_blank';
+        el.rel = 'noopener noreferrer';
+        const label = cfg?.name || el.querySelector('.sidebar-label')?.textContent?.trim() || id;
+        el.title = `${label} (${targetUrl})`;
+        el.classList.add('sidebar-external-link');
+      }
       if (cfg && cfg.enabled === false) {
         el.style.display = 'none';
       } else {
@@ -2195,14 +2245,27 @@ CommandDeck.prototype.renderNavbarLinksSettings = function(links) {
       const toggle = r.querySelector('.navlink-toggle-enabled');
       const envVar = r.dataset.envVar || '';
       if (id && nameInput && urlInput) {
+        const val = urlInput.value.trim();
         updated.push({
           id,
           name: nameInput.value.trim() || id,
-          url: urlInput.value.trim(),
+          url: val,
           icon: (iconInput ? iconInput.value.trim() : '') || '🔗',
           env_var: envVar,
           enabled: toggle ? toggle.checked : true
         });
+
+        // Keep homelab card inputs in sync
+        const cardUrlInp = document.getElementById(`input-url-${id}`);
+        if (cardUrlInp && cardUrlInp.value !== val) {
+          cardUrlInp.value = val;
+          cardUrlInp.dataset.dirty = 'true';
+        }
+        const linkEl = document.getElementById(`link-setting-${id}`);
+        if (linkEl && val) {
+          linkEl.href = val;
+          linkEl.textContent = val;
+        }
       }
     });
     if (!this.systemSettings) this.systemSettings = {};
@@ -3607,12 +3670,20 @@ CommandDeck.prototype.triggerN8nQuickAction = async function(actionId) {
 
 // ── 16. Split-Screen Dual Workbench Mode ──────────────────────────────
 
+const WORKBENCH_PRESETS = {
+  operator:   { left: 'agents',    right: 'tasks' },
+  researcher: { left: 'vault',     right: 'markets' },
+  monitor:    { left: 'homelab',   right: 'services' },
+  morning:    { left: 'dashboard', right: 'calendar' },
+};
+
 CommandDeck.prototype.initWorkbenchMode = function() {
   const btnToggle = document.getElementById('btn-toggle-workbench');
   const splitStage = document.getElementById('workbench-split-stage');
   const primaryPane = document.getElementById('workbench-pane-primary');
   const secondaryBody = document.getElementById('workbench-secondary-body');
   const secondarySelect = document.getElementById('workbench-secondary-select');
+  const presetSelect = document.getElementById('workbench-preset-select');
   const btnClose = document.getElementById('btn-close-workbench');
 
   if (!btnToggle || !splitStage) return;
@@ -3656,9 +3727,49 @@ CommandDeck.prototype.initWorkbenchMode = function() {
 
   if (secondarySelect) {
     secondarySelect.onchange = () => {
+      if (presetSelect) presetSelect.value = '';
       this.loadWorkbenchSecondary(secondarySelect.value);
     };
   }
+
+  if (presetSelect) {
+    presetSelect.onchange = () => {
+      if (presetSelect.value) {
+        this.loadWorkbenchPreset(presetSelect.value);
+      }
+    };
+  }
+};
+
+CommandDeck.prototype.loadWorkbenchPreset = function(presetName) {
+  const preset = WORKBENCH_PRESETS[presetName];
+  if (!preset) return;
+
+  const btnToggle = document.getElementById('btn-toggle-workbench');
+  const splitStage = document.getElementById('workbench-split-stage');
+  const primaryPane = document.getElementById('workbench-pane-primary');
+  const secondarySelect = document.getElementById('workbench-secondary-select');
+  const presetSelect = document.getElementById('workbench-preset-select');
+
+  if (!this.isWorkbenchActive) {
+    this.isWorkbenchActive = true;
+    btnToggle?.classList.add('active');
+    if (splitStage) splitStage.style.display = 'block';
+    document.querySelectorAll('.view-section').forEach(el => { el.style.display = 'none'; });
+  }
+
+  this.currentView = preset.left;
+  const leftTarget = document.getElementById(`view-${preset.left}`);
+  if (leftTarget && primaryPane) {
+    primaryPane.innerHTML = '';
+    const cloned = leftTarget.cloneNode(true);
+    cloned.style.display = 'block';
+    primaryPane.appendChild(cloned);
+  }
+
+  if (secondarySelect) secondarySelect.value = preset.right;
+  if (presetSelect) presetSelect.value = presetName;
+  this.loadWorkbenchSecondary(preset.right);
 };
 
 CommandDeck.prototype.loadWorkbenchSecondary = function(viewName) {
