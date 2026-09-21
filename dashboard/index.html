@@ -2129,16 +2129,6 @@
 
     <!-- Financial Markets View -->
     <div id="view-markets" class="view-section" role="region" aria-label="Financial Markets">
-      <div class="view-section-header" style="display:flex; justify-content:flex-end; align-items:center; margin-bottom:var(--space-3);">
-        <div class="market-timeframe-bar">
-          <button class="market-tf-btn" data-tf="1d">1D</button>
-          <button class="market-tf-btn" data-tf="5d">5D</button>
-          <button class="market-tf-btn active" data-tf="1mo">1M</button>
-          <button class="market-tf-btn" data-tf="ytd">YTD</button>
-          <button class="market-tf-btn" data-tf="1y">1Y</button>
-        </div>
-      </div>
-
       <!-- Universal Asset & Ticker Search Omnibar -->
       <div class="market-search-bar-wrap" id="market-search-bar-wrap" style="position:relative; margin-bottom: var(--space-4);">
         <div class="market-search-input-box">
@@ -2159,6 +2149,13 @@
               <div class="chart-style-toggle" id="market-chart-style-toggle" role="group" aria-label="Chart Style">
                 <button type="button" id="btn-chart-style-line" class="btn-chart-style active" data-style="line" title="Smooth Historical Line Chart">📈 Line</button>
                 <button type="button" id="btn-chart-style-candle" class="btn-chart-style" data-style="candle" title="Candlestick Chart">🕯️ Candle</button>
+              </div>
+              <div class="market-timeframe-switcher" id="market-timeframe-switcher" role="group" aria-label="Chart Timeframe">
+                <button type="button" class="market-tf-btn" data-tf="1d" title="1 Day">Day</button>
+                <button type="button" class="market-tf-btn" data-tf="5d" title="5 Days">5 Day</button>
+                <button type="button" class="market-tf-btn active" data-tf="1mo" title="1 Month">Month</button>
+                <button type="button" class="market-tf-btn" data-tf="ytd" title="Year to Date">YTD</button>
+                <button type="button" class="market-tf-btn" data-tf="1y" title="1 Year">1 Year</button>
               </div>
             </div>
             <div style="display:flex; gap:12px; align-items:baseline;">

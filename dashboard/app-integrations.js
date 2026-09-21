@@ -539,6 +539,7 @@ CommandDeck.prototype.initMarketChartControls = function() {
   this._marketChartControlsInit = true;
 
   this.marketChartStyle = localStorage.getItem('market_chart_style') || 'line';
+  this.activeMarketPeriod = this.activeMarketPeriod || '1mo';
 
   const lineBtn = document.getElementById('btn-chart-style-line');
   const candleBtn = document.getElementById('btn-chart-style-candle');
@@ -572,6 +573,25 @@ CommandDeck.prototype.initMarketChartControls = function() {
     };
   }
 
+  // Timeframe buttons wiring
+  const updateTfButtons = (tf) => {
+    document.querySelectorAll('.market-tf-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tf === tf);
+    });
+  };
+
+  updateTfButtons(this.activeMarketPeriod);
+
+  document.querySelectorAll('.market-tf-btn').forEach(btn => {
+    btn.onclick = () => {
+      const tf = btn.dataset.tf;
+      this.activeMarketPeriod = tf;
+      updateTfButtons(tf);
+      const currentTicker = this.activeMarketTicker || '^GSPC';
+      this.loadTickerChart(currentTicker, tf);
+    };
+  });
+
   window.addEventListener('resize', () => {
     if (this.lastMarketChartData && document.getElementById('view-markets')?.classList.contains('active')) {
       this.renderMarketChart(this.lastMarketChartData);
@@ -595,26 +615,34 @@ CommandDeck.prototype.initMarketChartControls = function() {
 
 CommandDeck.prototype.fetchMarkets = async function() {
   const quotesList = document.getElementById('market-watchlist-tbody');
-  if (!quotesList) return;
-  quotesList.innerHTML = '<tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>';
 
-  // Ensure persistent bottom ticker ribbon and chart style controls are initialized
+  // Ensure persistent bottom ticker ribbon and chart controls are initialized
   this.fetchMarketTickerRibbon();
   this.initMarketChartControls();
 
-  try {
-    const [quotesRes, chartRes] = await Promise.all([
-      fetch(`${this.apiBase}/api/markets/quotes`),
-      fetch(`${this.apiBase}/api/markets/chart?ticker=^GSPC&period=1mo`)
-    ]);
-    const quotesData = await quotesRes.json();
-    const chartData = await chartRes.json();
+  const currentTicker = this.activeMarketTicker || '^GSPC';
+  const currentPeriod = this.activeMarketPeriod || '1mo';
 
-    this.renderWatchlist(quotesData);
-    this.renderMarketChart(chartData);
-    this.loadTickerBreakdown('^GSPC');
-  } catch (e) {
-    quotesList.innerHTML = `<tr><td colspan="4" class="empty-hint">Error: ${escapeHtml(e.message)}</td></tr>`;
+  // 1. Fetch & render yfinance market chart immediately without blocking on other APIs
+  this.loadTickerChart(currentTicker, currentPeriod);
+
+  // 2. Load detailed multi-metric breakdown asynchronously
+  this.loadTickerBreakdown(currentTicker);
+
+  // 3. Load followed watchlist quotes asynchronously
+  if (quotesList) {
+    quotesList.innerHTML = '<tr><td colspan="4" class="agent-loading">Fetching market quotes...</td></tr>';
+    try {
+      const quotesRes = await fetch(`${this.apiBase}/api/markets/quotes`);
+      if (quotesRes.ok) {
+        const quotesData = await quotesRes.json();
+        this.renderWatchlist(quotesData);
+      } else {
+        quotesList.innerHTML = '<tr><td colspan="4" class="empty-hint">Could not load market quotes</td></tr>';
+      }
+    } catch (e) {
+      quotesList.innerHTML = `<tr><td colspan="4" class="empty-hint">Error: ${escapeHtml(e.message)}</td></tr>`;
+    }
   }
 };
 
@@ -1056,17 +1084,7 @@ CommandDeck.prototype.initMarketAssetSearch = function() {
     }
   });
 
-  // Timeframe buttons wiring
-  document.querySelectorAll('.market-tf-btn').forEach(btn => {
-    btn.onclick = async () => {
-      document.querySelectorAll('.market-tf-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const tf = btn.dataset.tf;
-      this.activeMarketPeriod = tf;
-      const ticker = this.activeMarketTicker || '^GSPC';
-      await this.loadTickerChart(ticker, tf);
-    };
-  });
+  // Timeframe buttons are wired in initMarketChartControls
 };
 
 CommandDeck.prototype.followTicker = async function(ticker, name, type) {
@@ -1125,9 +1143,9 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
     if (!res.ok) return;
     const data = await res.json();
 
-    const t = data.ticker || ticker;
-    const n = data.name || (t === '^GSPC' ? 'S&P 500' : t);
-    const displayName = formatHoldingDisplayName(n, t);
+    const tickerSym = data.ticker || ticker;
+    const n = data.name || (tickerSym === '^GSPC' ? 'S&P 500' : tickerSym);
+    const displayName = formatHoldingDisplayName(n, tickerSym);
 
     if (symEl) symEl.textContent = displayName;
     if (nameEl) nameEl.textContent = data.profile?.industry || data.profile?.sector || (data.profile?.long_name !== n ? data.profile?.long_name : '') || 'Asset Breakdown';
@@ -1161,7 +1179,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
 
     const q = data.quote || {};
     const v = data.valuation || {};
-    const t = data.targets || {};
+    const tg = data.targets || {};
     const f = data.financials || {};
     const p = data.profile || {};
     const providers = data.providers || {};
@@ -1182,7 +1200,7 @@ CommandDeck.prototype.loadTickerBreakdown = async function(ticker) {
     if (elBeta) elBeta.textContent = v.beta ? v.beta.toFixed(2) : '1.00';
     if (elDiv) elDiv.textContent = v.dividend_yield ? `${v.dividend_yield}%` : '0.00%';
     if (elVol) elVol.textContent = `${fmtNum(q.volume, '')} / ${fmtNum(q.avg_volume, '')}`;
-    if (elTarget) elTarget.textContent = t.target_mean_price ? `$${t.target_mean_price.toFixed(2)}` : '---';
+    if (elTarget) elTarget.textContent = tg.target_mean_price ? `$${tg.target_mean_price.toFixed(2)}` : '---';
 
     // 1. yfinance Valuation & Profile Lists
     const valList = document.getElementById('yf-valuation-list');

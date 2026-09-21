@@ -183,7 +183,8 @@
   display: block;
 }
 
-.market-timeframe-switcher {
+.market-timeframe-switcher,
+.market-timeframe-bar {
   display: inline-flex;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
