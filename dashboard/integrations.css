@@ -169,6 +169,20 @@
   gap: var(--space-3);
 }
 
+.market-chart-container {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  min-height: 280px;
+  display: block;
+}
+
+#market-candlestick-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .market-timeframe-switcher {
   display: inline-flex;
   border: 1px solid var(--border-subtle);

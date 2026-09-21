@@ -399,6 +399,9 @@ export class CommandDeck {
     } else if (viewName === 'markets') {
       if (typeof this.initMarketAssetSearch === 'function') this.initMarketAssetSearch();
       if (typeof this.fetchMarkets === 'function') this.fetchMarkets();
+      if (this.lastMarketChartData && typeof this.renderMarketChart === 'function') {
+        setTimeout(() => this.renderMarketChart(this.lastMarketChartData), 50);
+      }
     } else if (viewName === 'dashboard') {
       if (typeof this.refreshAllData === 'function') this.refreshAllData();
     }

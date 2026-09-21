@@ -577,6 +577,20 @@ CommandDeck.prototype.initMarketChartControls = function() {
       this.renderMarketChart(this.lastMarketChartData);
     }
   });
+
+  const chartContainer = document.querySelector('.market-chart-container');
+  if (chartContainer && window.ResizeObserver) {
+    let resizeTimer = null;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (this.lastMarketChartData && document.getElementById('view-markets')?.classList.contains('active')) {
+          this.renderMarketChart(this.lastMarketChartData);
+        }
+      }, 40);
+    });
+    ro.observe(chartContainer);
+  }
 };
 
 CommandDeck.prototype.fetchMarkets = async function() {
@@ -684,6 +698,8 @@ CommandDeck.prototype.generateSparklinePoints = function(pts, w, h) {
 };
 
 CommandDeck.prototype.loadTickerChart = async function(ticker, period = '1mo') {
+  this.activeMarketTicker = ticker;
+  this.activeMarketPeriod = period;
   try {
     const res = await fetch(`${this.apiBase}/api/markets/chart?ticker=${encodeURIComponent(ticker)}&period=${period}`);
     if (res.ok) {
@@ -728,147 +744,198 @@ CommandDeck.prototype.renderMarketChart = function(data) {
   if (candleBtn) candleBtn.classList.toggle('active', chartStyle === 'candle');
 
   const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.parentElement?.clientWidth || 640;
-  const h = canvas.height = 280;
+  if (!ctx) return;
 
+  // Measure container layout safely
+  const container = canvas.parentElement;
+  const containerRect = container ? container.getBoundingClientRect() : null;
+  let w = Math.floor(containerRect?.width || container?.clientWidth || canvas.clientWidth || 640);
+  let h = Math.floor(containerRect?.height || container?.clientHeight || canvas.clientHeight || 280);
+  if (w < 200) w = 640;
+  if (h < 120) h = 280;
+
+  // Crisp high-DPI scaling
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
+
+  ctx.save();
+  ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, w, h);
 
-  const candles = data.candles || [];
-  if (candles.length === 0) {
+  try {
+    const rawCandles = data.candles || [];
+    const candles = rawCandles.filter(c => c && (c.close != null || c.open != null)).map(c => {
+      const close = Number(c.close != null ? c.close : c.open) || 0;
+      const open = Number(c.open != null ? c.open : close) || close;
+      const high = Number(c.high != null ? c.high : Math.max(open, close)) || Math.max(open, close);
+      const low = Number(c.low != null ? c.low : Math.min(open, close)) || Math.min(open, close);
+      return {
+        time: c.time || '',
+        open,
+        high,
+        low,
+        close,
+        volume: Number(c.volume) || 0
+      };
+    });
+
+    if (candles.length === 0) {
+      ctx.fillStyle = 'rgba(156, 163, 175, 0.7)';
+      ctx.font = '13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('No chart data available for selected period', w / 2, h / 2);
+      ctx.restore();
+      return;
+    }
+
+    // If only 1 candle, synthesize open & close points for smooth line / candle rendering
+    const renderCandles = candles.length === 1 ? [
+      { ...candles[0], time: candles[0].time + ' Open', close: candles[0].open },
+      { ...candles[0], time: candles[0].time + ' Close' }
+    ] : candles;
+
+    const minPrice = Math.min(...renderCandles.map(c => c.low));
+    const maxPrice = Math.max(...renderCandles.map(c => c.high));
+    let priceMargin = (maxPrice - minPrice) * 0.08;
+    if (!priceMargin || priceMargin <= 0 || !Number.isFinite(priceMargin)) {
+      priceMargin = Math.max(1, maxPrice * 0.01);
+    }
+    const plotMin = minPrice - priceMargin;
+    const plotMax = maxPrice + priceMargin;
+    const range = (plotMax - plotMin) || 1;
+
+    // Subtle horizontal gridlines & price labels
+    const gridSteps = 4;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    ctx.fillStyle = 'rgba(156, 163, 175, 0.65)';
+    ctx.font = '10px monospace';
+    ctx.lineWidth = 1;
+    ctx.textAlign = 'right';
+
+    for (let i = 0; i <= gridSteps; i++) {
+      const y = 20 + (i / gridSteps) * (h - 55);
+      const p = plotMax - (i / gridSteps) * range;
+      ctx.beginPath();
+      ctx.moveTo(35, y);
+      ctx.lineTo(w - 20, y);
+      ctx.stroke();
+      ctx.fillText(`$${p.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, w - 24, y - 4);
+    }
+
+    if (chartStyle === 'candle') {
+      // ── Candlestick Chart ──
+      const candleWidth = Math.max(3, Math.min(24, Math.floor((w - 95) / renderCandles.length) - 3));
+
+      renderCandles.forEach((c, idx) => {
+        const x = 35 + idx * ((w - 95) / (renderCandles.length - 1 || 1));
+        const isBull = c.close >= c.open;
+        const color = isBull ? '#10b981' : '#ef4444';
+
+        const yHigh = (h - 35) - ((c.high - plotMin) / range) * (h - 55);
+        const yLow = (h - 35) - ((c.low - plotMin) / range) * (h - 55);
+        const yOpen = (h - 35) - ((c.open - plotMin) / range) * (h - 55);
+        const yClose = (h - 35) - ((c.close - plotMin) / range) * (h - 55);
+
+        // Wick
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(x, yHigh);
+        ctx.lineTo(x, yLow);
+        ctx.stroke();
+
+        // Body
+        ctx.fillStyle = color;
+        const bodyTop = Math.min(yOpen, yClose);
+        const bodyHeight = Math.max(2, Math.abs(yClose - yOpen));
+        ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+      });
+    } else {
+      // ── Regular Smooth Historical Line Chart ──
+      const isBull = (data.period_change_pct || 0) >= 0;
+      const strokeColor = isBull ? '#10b981' : '#ef4444';
+      const topGradient = isBull ? 'rgba(16, 185, 129, 0.28)' : 'rgba(239, 68, 68, 0.28)';
+
+      const points = renderCandles.map((c, idx) => {
+        const x = 35 + idx * ((w - 100) / (renderCandles.length - 1 || 1));
+        const y = (h - 35) - ((c.close - plotMin) / range) * (h - 55);
+        return { x, y, price: c.close, time: c.time };
+      });
+
+      if (points.length > 1) {
+        // Area gradient fill under smooth curve
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 0; i < points.length - 1; i++) {
+          const xc = (points[i].x + points[i + 1].x) / 2;
+          const yc = (points[i].y + points[i + 1].y) / 2;
+          ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+        }
+        ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+        ctx.lineTo(points[points.length - 1].x, h - 35);
+        ctx.lineTo(points[0].x, h - 35);
+        ctx.closePath();
+
+        const grad = ctx.createLinearGradient(0, 20, 0, h - 35);
+        grad.addColorStop(0, topGradient);
+        grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.02)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Stroke smooth line
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 0; i < points.length - 1; i++) {
+          const xc = (points[i].x + points[i + 1].x) / 2;
+          const yc = (points[i].y + points[i + 1].y) / 2;
+          ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+        }
+        ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Draw pulse dot at final data point
+        const lastPt = points[points.length - 1];
+        ctx.beginPath();
+        ctx.arc(lastPt.x, lastPt.y, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = isBull ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(lastPt.x, lastPt.y, 3.5, 0, 2 * Math.PI);
+        ctx.fillStyle = strokeColor;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    // Draw time labels at bottom
     ctx.fillStyle = 'rgba(156, 163, 175, 0.7)';
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'center';
+    const labelStep = Math.max(1, Math.floor(renderCandles.length / 6));
+    for (let i = 0; i < renderCandles.length; i += labelStep) {
+      const x = 35 + i * ((w - 100) / (renderCandles.length - 1 || 1));
+      const timeText = renderCandles[i].time || '';
+      ctx.fillText(timeText, x, h - 12);
+    }
+  } catch (err) {
+    console.error('Error rendering market chart:', err);
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.7)';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('No chart data available for selected period', w / 2, h / 2);
-    return;
-  }
-
-  const minPrice = Math.min(...candles.map(c => c.low != null ? c.low : c.close));
-  const maxPrice = Math.max(...candles.map(c => c.high != null ? c.high : c.close));
-  const priceMargin = (maxPrice - minPrice) * 0.08 || 1;
-  const plotMin = minPrice - priceMargin;
-  const plotMax = maxPrice + priceMargin;
-  const range = plotMax - plotMin || 1;
-
-  // Draw subtle horizontal gridlines & price labels
-  const gridSteps = 4;
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-  ctx.fillStyle = 'rgba(156, 163, 175, 0.65)';
-  ctx.font = '10px monospace';
-  ctx.lineWidth = 1;
-  ctx.textAlign = 'right';
-
-  for (let i = 0; i <= gridSteps; i++) {
-    const y = 20 + (i / gridSteps) * (h - 55);
-    const p = plotMax - (i / gridSteps) * range;
-    ctx.beginPath();
-    ctx.moveTo(35, y);
-    ctx.lineTo(w - 20, y);
-    ctx.stroke();
-    ctx.fillText(`$${p.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, w - 24, y - 4);
-  }
-
-  if (chartStyle === 'candle') {
-    // ── Candlestick Chart ──
-    const candleWidth = Math.max(3, Math.floor((w - 90) / candles.length) - 3);
-
-    candles.forEach((c, idx) => {
-      const x = 35 + idx * ((w - 95) / (candles.length || 1));
-      const isBull = c.close >= c.open;
-      const color = isBull ? '#10b981' : '#ef4444';
-
-      const yHigh = (h - 35) - ((c.high - plotMin) / range) * (h - 55);
-      const yLow = (h - 35) - ((c.low - plotMin) / range) * (h - 55);
-      const yOpen = (h - 35) - ((c.open - plotMin) / range) * (h - 55);
-      const yClose = (h - 35) - ((c.close - plotMin) / range) * (h - 55);
-
-      // Wick
-      ctx.beginPath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.moveTo(x + candleWidth / 2, yHigh);
-      ctx.lineTo(x + candleWidth / 2, yLow);
-      ctx.stroke();
-
-      // Body
-      ctx.fillStyle = color;
-      const bodyTop = Math.min(yOpen, yClose);
-      const bodyHeight = Math.max(2, Math.abs(yClose - yOpen));
-      ctx.fillRect(x, bodyTop, candleWidth, bodyHeight);
-    });
-  } else {
-    // ── Regular Smooth Historical Line Chart ──
-    const isBull = (data.period_change_pct || 0) >= 0;
-    const strokeColor = isBull ? '#10b981' : '#ef4444';
-    const topGradient = isBull ? 'rgba(16, 185, 129, 0.28)' : 'rgba(239, 68, 68, 0.28)';
-
-    const points = candles.map((c, idx) => {
-      const x = 35 + idx * ((w - 100) / (candles.length - 1 || 1));
-      const y = (h - 35) - ((c.close - plotMin) / range) * (h - 55);
-      return { x, y, price: c.close, time: c.time };
-    });
-
-    if (points.length > 0) {
-      // Area gradient fill under smooth curve
-      ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for (let i = 0; i < points.length - 1; i++) {
-        const xc = (points[i].x + points[i + 1].x) / 2;
-        const yc = (points[i].y + points[i + 1].y) / 2;
-        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
-      }
-      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-      ctx.lineTo(points[points.length - 1].x, h - 35);
-      ctx.lineTo(points[0].x, h - 35);
-      ctx.closePath();
-
-      const grad = ctx.createLinearGradient(0, 20, 0, h - 35);
-      grad.addColorStop(0, topGradient);
-      grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.02)');
-      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Stroke smooth line
-      ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for (let i = 0; i < points.length - 1; i++) {
-        const xc = (points[i].x + points[i + 1].x) / 2;
-        const yc = (points[i].y + points[i + 1].y) / 2;
-        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
-      }
-      ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-      ctx.strokeStyle = strokeColor;
-      ctx.lineWidth = 2.5;
-      ctx.lineJoin = 'round';
-      ctx.lineCap = 'round';
-      ctx.stroke();
-
-      // Draw pulse dot at final data point
-      const lastPt = points[points.length - 1];
-      ctx.beginPath();
-      ctx.arc(lastPt.x, lastPt.y, 6, 0, 2 * Math.PI);
-      ctx.fillStyle = isBull ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(lastPt.x, lastPt.y, 3.5, 0, 2 * Math.PI);
-      ctx.fillStyle = strokeColor;
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-  }
-
-  // Draw time labels at bottom
-  ctx.fillStyle = 'rgba(156, 163, 175, 0.7)';
-  ctx.font = '9px monospace';
-  ctx.textAlign = 'center';
-  const labelStep = Math.max(1, Math.floor(candles.length / 6));
-  for (let i = 0; i < candles.length; i += labelStep) {
-    const x = 35 + i * ((w - 100) / (candles.length - 1 || 1));
-    const timeText = candles[i].time || '';
-    ctx.fillText(timeText, x, h - 12);
+    ctx.fillText('Chart rendering error. Please try another timeframe.', w / 2, h / 2);
+  } finally {
+    ctx.restore();
   }
 };
 
@@ -3632,8 +3699,11 @@ const setupIntegrations = () => {
       document.querySelectorAll('.market-tf-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const tf = btn.dataset.tf;
-      const currentTicker = window.commandDeck?.activeMarketTicker || '^GSPC';
-      window.commandDeck?.loadTickerChart(currentTicker, tf);
+      if (window.commandDeck) {
+        window.commandDeck.activeMarketPeriod = tf;
+        const currentTicker = window.commandDeck.activeMarketTicker || '^GSPC';
+        window.commandDeck.loadTickerChart(currentTicker, tf);
+      }
     };
   });
 

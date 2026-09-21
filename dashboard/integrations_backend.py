@@ -837,12 +837,16 @@ def get_market_chart(ticker: str = "^GSPC", period: str = "1mo") -> Dict[str, An
         try:
             ticker_obj = yf.Ticker(ticker)
             yf_period = period
-            if period == "ytd":
-                yf_period = "ytd"
-            hist = ticker_obj.history(period=yf_period)
+            interval_map = {"1d": "5m", "5d": "30m", "1mo": "1d", "ytd": "1d", "1y": "1d"}
+            interval = interval_map.get(period, "1d")
+            hist = ticker_obj.history(period=yf_period, interval=interval)
+            if hist.empty and interval != "1d":
+                hist = ticker_obj.history(period=yf_period)
             if not hist.empty:
                 for idx_dt, row in hist.iterrows():
-                    if period in ("1d", "5d"):
+                    if period == "1d":
+                        ts = idx_dt.strftime("%H:%M")
+                    elif period == "5d":
                         ts = idx_dt.strftime("%a %H:%M")
                     else:
                         ts = idx_dt.strftime("%b %d")
