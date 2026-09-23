@@ -2322,25 +2322,45 @@ async def voice_stt(request: Request):
     """
     Speech-to-Text proxy: Accepts recorded audio blob, sends to configured local
     OpenAI-compatible voice gateway (/v1/audio/transcriptions) or Whisper endpoint.
+    Supports both raw audio body and multipart/form-data.
     """
     raw_settings = integrations_backend.get_system_settings_raw()
     gateway_url = raw_settings.get("voice_gateway_url", "http://10.1.1.151").rstrip("/")
-    gateway_port = raw_settings.get("voice_gateway_port", "8000")
+    gateway_port = str(raw_settings.get("voice_gateway_port", "8000")).strip()
     api_key = raw_settings.get("voice_api_key", "")
     model = raw_settings.get("voice_model", "whisper-1")
 
-    target_endpoint = f"{gateway_url}:{gateway_port}/v1/audio/transcriptions"
+    if gateway_port and not re.search(r":\d+$", gateway_url):
+        base_endpoint = f"{gateway_url}:{gateway_port}"
+    else:
+        base_endpoint = gateway_url
+    target_endpoint = f"{base_endpoint}/v1/audio/transcriptions"
 
     try:
-        body = await request.body()
         content_type = request.headers.get("content-type", "audio/webm")
+        if content_type.startswith("multipart/form-data"):
+            try:
+                form = await request.form()
+                uploaded = form.get("file")
+                if uploaded and hasattr(uploaded, "read"):
+                    audio_bytes = await uploaded.read()
+                    audio_type = uploaded.content_type or "audio/webm"
+                else:
+                    audio_bytes = await request.body()
+                    audio_type = "audio/webm"
+            except Exception:
+                audio_bytes = await request.body()
+                audio_type = "audio/webm"
+        else:
+            audio_bytes = await request.body()
+            audio_type = content_type or "audio/webm"
 
         headers = {}
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
 
         files = {
-            "file": ("recording.webm", body, content_type)
+            "file": ("recording.webm", audio_bytes, audio_type)
         }
         data = {
             "model": model,
@@ -2370,7 +2390,7 @@ async def voice_tts(payload: Dict[str, Any] = Body(...)):
     raw_settings = integrations_backend.get_system_settings_raw()
     provider = raw_settings.get("voice_provider", "openai_compatible")
     gateway_url = raw_settings.get("voice_gateway_url", "http://10.1.1.151").rstrip("/")
-    gateway_port = raw_settings.get("voice_gateway_port", "8000")
+    gateway_port = str(raw_settings.get("voice_gateway_port", "8000")).strip()
     api_key = raw_settings.get("voice_api_key", "")
     model = payload.get("model") or raw_settings.get("voice_model", "tts-1")
     voice = payload.get("voice") or raw_settings.get("voice_tts_voice", "alloy")
@@ -2396,7 +2416,12 @@ async def voice_tts(payload: Dict[str, Any] = Body(...)):
             return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
     # Otherwise OpenAI-compatible local server gateway
-    target_endpoint = f"{gateway_url}:{gateway_port}/v1/audio/speech"
+    if gateway_port and not re.search(r":\d+$", gateway_url):
+        base_endpoint = f"{gateway_url}:{gateway_port}"
+    else:
+        base_endpoint = gateway_url
+    target_endpoint = f"{base_endpoint}/v1/audio/speech"
+
     headers = {"Content-Type": "application/json"}
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"

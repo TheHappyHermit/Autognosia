@@ -2057,13 +2057,18 @@ CommandDeck.prototype.loadSystemSettings = async function() {
 
     if (settings.voice) {
       updateBadge(document.getElementById('setting-badge-voice'), settings.voice.configured);
-      setField(document.getElementById('input-url-voice'), settings.voice.url);
-      setField(document.getElementById('input-port-voice'), settings.voice.port);
+      setField(document.getElementById('input-url-voice'), settings.voice.gateway_url || settings.voice.url);
+      setField(document.getElementById('input-port-voice'), settings.voice.gateway_port || settings.voice.port);
       setField(document.getElementById('input-model-voice'), settings.voice.model);
       setField(document.getElementById('input-voice-tts-voice'), settings.voice.tts_voice);
       const voiceProvSelect = document.getElementById('select-voice-provider');
       if (voiceProvSelect && settings.voice.provider) {
-        voiceProvSelect.value = settings.voice.provider;
+        const prov = settings.voice.provider === 'openai_compatible' ? 'openai_compatible' : settings.voice.provider;
+        voiceProvSelect.value = prov;
+        // If exact match not found, try fallback
+        if (!voiceProvSelect.value && prov.startsWith('openai')) {
+          voiceProvSelect.value = 'openai_compatible';
+        }
       }
     }
 

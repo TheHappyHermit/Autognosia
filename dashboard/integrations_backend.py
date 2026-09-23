@@ -1298,6 +1298,8 @@ def get_system_settings() -> Dict[str, Any]:
         "voice": {
             "gateway_url": raw.get("voice_gateway_url", "http://10.1.1.151"),
             "gateway_port": raw.get("voice_gateway_port", "8000"),
+            "url": raw.get("voice_gateway_url", "http://10.1.1.151"),
+            "port": raw.get("voice_gateway_port", "8000"),
             "provider": raw.get("voice_provider", "openai_compatible"),
             "model": raw.get("voice_model", "whisper-1"),
             "tts_voice": raw.get("voice_tts_voice", "alloy"),
