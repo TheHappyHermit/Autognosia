@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS decisions (
     created_by      TEXT,                          -- agent profile name, "user", etc.
     source_session  TEXT,                          -- session ID or identifier where decision was made
     metadata        JSONB NOT NULL DEFAULT '{}'    -- tags, refs, rejected[], etc.
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes

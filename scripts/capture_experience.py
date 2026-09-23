@@ -20,6 +20,8 @@ import sys
 import json
 import sqlite3
 import time
+import re
+import argparse
 from datetime import datetime, timedelta
 
 # Paths - use environment variables with sensible defaults for cross-platform support
@@ -339,10 +341,23 @@ def extract_routing_events(sessions_rows):
 def detect_reflections(operations, messages):
     """Detect lessons from failures, corrections, and repeated patterns."""
     reflections = []
+    # False positive negation patterns (e.g. "no error", "0 errors", "failed to mention")
+    negation_pattern = re.compile(
+        r'\b(no errors?|0 errors?|without errors?|never fail(?:ed)?|failed to mention|not fail(?:ed)?|without failure)\b',
+        re.IGNORECASE
+    )
+    failure_pattern = re.compile(
+        r'\b(error|failed|failure|exception|traceback|fatal|crash)\b',
+        re.IGNORECASE
+    )
+
     # Check for tool failures in messages
     for role, content, tool_name, tool_calls_str, ts, _, finish_reason, reasoning in messages:
-        if content and ("error" in content.lower() or "failed" in content.lower() or "exception" in content.lower()):
-            if role == "assistant" or (role == "user" and "error" in content.lower()):
+        if content and failure_pattern.search(content):
+            if negation_pattern.search(content):
+                continue
+
+            if role == "assistant" or (role == "user" and re.search(r'\b(error|failed|broken|bug|wrong)\b', content, re.IGNORECASE)):
                 # Try to get tool name from parsed tool_calls string
                 source_tool = tool_name or "unknown"
                 if tool_calls_str:
@@ -352,9 +367,10 @@ def detect_reflections(operations, messages):
                 reflections.append({
                     "session_id": None,
                     "reflection_type": "warning",
-                    "content": content[:300],
+                    "content": content[:300].strip(),
                     "source_tool": source_tool,
                 })
+
     # Check for repeated tool calls (pattern detection)
     tool_counts = {}
     for role, content, tool_name, tool_calls_str, _, _, _, _ in messages:
@@ -373,6 +389,30 @@ def detect_reflections(operations, messages):
                 "source_tool": tool,
             })
     return reflections
+
+
+def consult_experience(query_topic: str = "", limit: int = 5) -> list[dict]:
+    """Query past reflections and lessons from autognosia.db."""
+    if not os.path.exists(DB_PATH):
+        return []
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    if query_topic:
+        rows = conn.execute("""
+            SELECT id, timestamp, reflection_type, content, source_tool, applied
+            FROM reflections
+            WHERE content LIKE ? OR source_tool LIKE ?
+            ORDER BY id DESC LIMIT ?
+        """, (f"%{query_topic}%", f"%{query_topic}%", limit)).fetchall()
+    else:
+        rows = conn.execute("""
+            SELECT id, timestamp, reflection_type, content, source_tool, applied
+            FROM reflections
+            ORDER BY id DESC LIMIT ?
+        """, (limit,)).fetchall()
+    results = [dict(r) for r in rows]
+    conn.close()
+    return results
 
 
 def insert_routing(autognosia_conn, events):
@@ -407,6 +447,21 @@ def insert_reflections(autognosia_conn, reflections):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Capture experience from Hermes sessions or consult past lessons.")
+    parser.add_argument("--query", "-q", help="Query past reflections and lessons by topic/keyword")
+    parser.add_argument("--limit", "-l", type=int, default=5, help="Number of reflections to retrieve")
+    args, unknown = parser.parse_known_args()
+
+    if args.query:
+        reflections = consult_experience(args.query, limit=args.limit)
+        if not reflections:
+            print(f"No reflections found matching: {args.query}")
+            return 0
+        print(f"--- Past Experience & Reflections ({len(reflections)} matches) ---")
+        for r in reflections:
+            print(f"[{r['reflection_type'].upper()}] ({r['timestamp']}) [Tool: {r.get('source_tool') or 'general'}]: {r['content']}")
+        return 0
+
     start_time = time.time()
     ensure_dirs()
     ensure_db()

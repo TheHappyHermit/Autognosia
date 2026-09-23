@@ -1,6 +1,6 @@
 model:
-  default: meituan/longcat-2.0:free
-  provider: nous
+  default: Qwen3.6-35B-A3B-Q4_K_M.gguf
+  provider: llamaCPP
 providers:
   llamaCPP:
     api: http://10.1.1.10:8080/v1

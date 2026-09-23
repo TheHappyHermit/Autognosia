@@ -62,6 +62,9 @@ PG_DB = os.environ.get("BRAIN_PG_DB", "brain")
 OLLAMA_URL = os.environ.get("BRAIN_OLLAMA_URL", "http://10.1.1.10:18082")
 EMBED_MODEL = os.environ.get("BRAIN_EMBED_MODEL", "/models/Qwen3-Embedding-4B-Q8_0.gguf")
 
+# API mode: "ollama" for native Ollama, "openai" for llama.cpp / OpenAI-compatible
+API_MODE = os.environ.get("BRAIN_API_MODE", "openai")
+
 CHUNK_TOKENS = int(os.environ.get("BRAIN_CHUNK_TOKENS", "512"))
 CHUNK_OVERLAP = int(os.environ.get("BRAIN_CHUNK_OVERLAP", "25"))
 
@@ -205,23 +208,39 @@ def chunk_markdown(text: str, source: str, slug: str) -> list[dict]:
 # ── Embedding with retry and fallback ───────────────────────────────────
 
 def embed_texts(texts: list[str], dim: int = 2000, timeout: int = None) -> list[list[float]]:
-    """Embed a batch of texts via Ollama /api/embed with dimension truncation."""
+    """Embed a batch of texts via Ollama /api/embed or OpenAI /v1/embeddings with dimension truncation."""
     if timeout is None:
         timeout = EMBED_TIMEOUT_BASE + len(texts) * EMBED_TIMEOUT_PER_TEXT
-    data = json.dumps({
-        "model": EMBED_MODEL,
-        "input": texts,
-        
-    }).encode()
+
+    if API_MODE == "ollama":
+        # Native Ollama API
+        data = json.dumps({
+            "model": EMBED_MODEL,
+            "input": texts,
+            "dimensions": dim,
+        }).encode()
+        url = f"{OLLAMA_URL}/api/embed"
+    else:
+        # OpenAI-compatible API (llama.cpp, vLLM, etc.)
+        data = json.dumps({
+            "model": EMBED_MODEL,
+            "input": texts,
+        }).encode()
+        url = f"{OLLAMA_URL}/v1/embeddings"
+
     req = urllib.request.Request(
-        f"{OLLAMA_URL}/v1/embeddings",
+        url,
         data=data,
         headers={"Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         result = json.loads(resp.read())
+        if API_MODE == "ollama":
+            embeddings = result.get("embeddings", [])
+        else:
+            embeddings = [item["embedding"] for item in result.get("data", [])]
         # Truncate to target dimension if server returns more
-        return [item["embedding"][:dim] for item in result["data"]]
+        return [emb[:dim] if dim and len(emb) > dim else emb for emb in embeddings]
 
 
 def embed_texts_with_retry(texts: list[str], dim: int = 2000) -> list[list[float]]:
