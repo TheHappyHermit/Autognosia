@@ -1,0 +1,12 @@
+# Autognosia Command Deck Dashboard — Python dependencies
+# Install: pip install -r requirements.txt
+
+# Web server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# HTTP client
+requests>=2.31.0
+
+# Config parsing (YAML profiles)
+PyYAML>=6.0
