@@ -318,7 +318,7 @@ export class CommandDeck {
       nextcloud: "http://localhost:8080",
       seer: "http://localhost:5055",
       freshrss: "http://localhost:8080",
-      godseye: "http://localhost:5173"
+      godseye: "https://godseye.wineandgecko.com"
     };
 
     const isExternalNewTab = ['deerflow', 'vane', 'openwebui', 'audiobookshelf', 'booklore', 'immich', 'nextcloud', 'seer', 'freshrss', 'godseye'].includes(viewName) || viewName.startsWith('link:');

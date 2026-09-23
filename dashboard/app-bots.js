@@ -1100,7 +1100,7 @@ class BotsPage {
 
     if (copilotBtn && !copilotBtn._voiceBound) {
       copilotBtn._voiceBound = true;
-      copilotBtn.onclick = () => {
+      copilotBtn.onclick = async () => {
         if (this.isRecording) {
           this.stopVoiceInput();
         } else {
@@ -1108,7 +1108,11 @@ class BotsPage {
             window.commandDeck.showView('agents');
           }
           this.voiceCopilotActive = true;
-          this.startVoiceInput();
+          // Try WebRTC S2S first, fall back to MediaRecorder STT
+          const started = await this.startWebRTCS2S();
+          if (!started) {
+            this.startVoiceInput();
+          }
         }
       };
     }
@@ -1225,6 +1229,29 @@ class BotsPage {
 
   stopVoiceInput() {
     this.isRecording = false;
+
+    // WebRTC cleanup
+    if (this.webrtcPc) {
+      try { this.webrtcPc.close(); } catch(e) {}
+      this.webrtcPc = null;
+    }
+    if (this.webrtcStream) {
+      this.webrtcStream.getTracks().forEach(t => t.stop());
+      this.webrtcStream = null;
+    }
+    if (this.webrtcAudioEl) {
+      this.webrtcAudioEl.remove();
+      this.webrtcAudioEl = null;
+    }
+    if (this.webrtcCallId) {
+      fetch(`/api/s2s/calls/${encodeURIComponent(this.webrtcCallId)}`, { method: 'DELETE' }).catch(()=>{});
+      this.webrtcCallId = null;
+    }
+    if (this.webrtcStatusEl) {
+      this.webrtcStatusEl.textContent = '';
+      this.webrtcStatusEl.style.display = 'none';
+    }
+
     const micBtn = document.getElementById('bot-chat-mic');
     const copilotBtn = document.getElementById('btn-voice-copilot');
     if (micBtn) {
@@ -1246,6 +1273,101 @@ class BotsPage {
       try {
         this.recognition.stop();
       } catch (e) {}
+    }
+  }
+
+  async startWebRTCS2S() {
+    if (!window.RTCPeerConnection || !navigator.mediaDevices?.getUserMedia) return false;
+
+    // Create status indicator
+    let statusEl = document.getElementById('webrtc-s2s-status');
+    if (!statusEl) {
+      statusEl = document.createElement('div');
+      statusEl.id = 'webrtc-s2s-status';
+      statusEl.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(30,30,40,0.92);color:#fff;padding:8px 16px;border-radius:8px;font-size:0.85rem;display:none;';
+      document.body.appendChild(statusEl);
+    }
+    this.webrtcStatusEl = statusEl;
+    statusEl.textContent = '🎙️ Connecting to speech-to-speech server...';
+    statusEl.style.display = 'block';
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      this.webrtcStream = stream;
+
+      const pc = new RTCPeerConnection();
+      this.webrtcPc = pc;
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+      // Handle incoming audio from server
+      const audioEl = document.createElement('audio');
+      audioEl.autoplay = true;
+      audioEl.style.display = 'none';
+      document.body.appendChild(audioEl);
+      this.webrtcAudioEl = audioEl;
+      pc.ontrack = (e) => {
+        audioEl.srcObject = e.streams[0];
+        statusEl.textContent = '🔊 Listening to response...';
+      };
+
+      // Data channel for events
+      const dc = pc.createDataChannel('oai-events');
+      this.webrtcDc = dc;
+      dc.onopen = () => { statusEl.textContent = '💬 Connected — speak now'; };
+      dc.onmessage = (e) => {
+        try {
+          const evt = JSON.parse(e.data);
+          if (evt.type === 'response.audio.delta') {
+            statusEl.textContent = '🔊 Response playing...';
+          } else if (evt.type === 'response.done' || evt.type === 'response.complete') {
+            statusEl.textContent = '✅ Response complete';
+            setTimeout(() => { statusEl.style.display = 'none'; }, 1500);
+          }
+        } catch(_) {}
+      };
+
+      // Create SDP offer
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      // Send offer to S2S proxy
+      const res = await fetch('/api/s2s/calls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/sdp' },
+        body: offer.sdp
+      });
+
+      if (!res.ok) {
+        statusEl.textContent = '❌ Failed to connect: HTTP ' + res.status;
+        setTimeout(() => { statusEl.style.display = 'none'; }, 2000);
+        this.stopVoiceInput();
+        return false;
+      }
+
+      const data = await res.json();
+      if (data.status !== 'ok') {
+        statusEl.textContent = '❌ ' + (data.message || 'Connection failed');
+        setTimeout(() => { statusEl.style.display = 'none'; }, 2000);
+        this.stopVoiceInput();
+        return false;
+      }
+
+      this.webrtcCallId = data.call_id;
+      await pc.setRemoteDescription({ type: 'answer', sdp: data.sdp });
+
+      // Also update isRecording so the mic button shows listening state
+      this.isRecording = true;
+      const copilotBtn = document.getElementById('btn-voice-copilot');
+      if (copilotBtn) copilotBtn.classList.add('listening');
+
+      return true;
+
+    } catch (err) {
+      if (statusEl) {
+        statusEl.textContent = '❌ WebRTC error: ' + err.message;
+        setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+      }
+      return false;
     }
   }
 

@@ -67,6 +67,7 @@ from dashboard.backend.routes.knowledge_memory import router as knowledge_memory
 from dashboard.backend.routes.integrations import router as integrations_router
 from dashboard.backend.routes.markets_voice import router as markets_voice_router
 from dashboard.backend.routes.static import router as static_router
+from dashboard.backend.routes.s2s_webrtc import router as s2s_webrtc_router
 
 app = FastAPI(title="Autognosia Command Deck API", version="2.6.0")
 
@@ -116,6 +117,7 @@ app.include_router(agent_bots_router)
 app.include_router(knowledge_memory_router)
 app.include_router(integrations_router)
 app.include_router(markets_voice_router)
+app.include_router(s2s_webrtc_router)
 app.include_router(static_router)
 
 

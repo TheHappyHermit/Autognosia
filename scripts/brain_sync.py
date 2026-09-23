@@ -24,7 +24,7 @@ Environment:
   BRAIN_PG_USER     (default: brain)
   BRAIN_PG_PASSWORD (default: brain)
   BRAIN_PG_DB       (default: brain)
-  BRAIN_OLLAMA_URL  (default: http://10.x.x.x:18082)
+  BRAIN_OLLAMA_URL  (default: http://10.1.1.10:18082)
   BRAIN_EMBED_MODEL (default: qwen3-embedding:8b)
   BRAIN_CHUNK_TOKENS (default: 512)
   BRAIN_CHUNK_OVERLAP (default: 50)
@@ -51,6 +51,7 @@ SOURCES = {
     "active-wiki": AUTOGNOSIA_HOME / "active-wiki",
     "oracle-brain": AUTOGNOSIA_HOME / "oracle" / "brain",
     "exchange-research": AUTOGNOSIA_HOME / "exchange" / "research",
+    "decisions": None,  # virtual source — reads from decisions table, not filesystem
 }
 
 PG_HOST = os.environ.get("BRAIN_PG_HOST", "127.0.0.1")
@@ -337,9 +338,9 @@ def scan_source(source_name: str, source_dir: Path) -> list[dict]:
         return files
 
     for md_file in source_dir.rglob("*.md"):
-        # Skip hidden dirs, .git, graphify-out, _archive
+        # Skip hidden dirs, .git, graphify-out
         parts = md_file.relative_to(source_dir).parts
-        if any(p.startswith(".") or p == "graphify-out" or p == "_archive" for p in parts):
+        if any(p.startswith(".") or p == "graphify-out" for p in parts):
             continue
 
         try:
@@ -449,6 +450,172 @@ def get_stored_hash(conn, source: str, slug: str) -> str | None:
     return row[0] if row else None
 
 
+# ── Decisions sync ────────────────────────────────────────────────────────
+
+def sync_decisions(conn, force: bool = False, dry_run: bool = False) -> dict:
+    """
+    Sync decisions from the decisions table into the pages + embeddings tables.
+
+    Each decision becomes a markdown page in the "decisions" virtual source,
+    which then gets chunked and embedded like any other wiki page.
+
+    Deduplication: a decision is written as a page with slug
+    "decisions/{slug}.md".  If the page already exists and its content hash
+    matches the current decision text, it is skipped.
+    """
+    stats = {"source": "decisions", "scanned": 0, "new": 0, "updated": 0, "unchanged": 0, "errors": 0, "chunks": 0}
+
+    print(f"\n=== Syncing: decisions (from decisions table) ===")
+
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, slug, topic, title, decision_text, rationale, status, created_at, metadata
+        FROM decisions
+        ORDER BY created_at ASC
+    """)
+    rows = cur.fetchall()
+    columns = [desc[0] for desc in cur.description]
+    stats["scanned"] = len(rows)
+    print(f"  Scanned {len(rows)} decisions from table")
+
+    dim = 2000
+    if not dry_run:
+        ensure_hnsw_index(conn, dim)
+
+    for row in rows:
+        d = dict(zip(columns, row))
+        slug = d["slug"]
+        decision_text = d["decision_text"]
+        rationale = d.get("rationale", "") or ""
+        topic = d.get("topic", "general") or "general"
+        title = d.get("title", "") or d.get("decision_text", "Decision")[:80]
+        created_at = d.get("created_at", "")
+        metadata_raw = d.get("metadata", {}) or {}
+
+        # Build markdown page content
+        if isinstance(metadata_raw, str):
+            try:
+                metadata_raw = json.loads(metadata_raw)
+            except (json.JSONDecodeError, TypeError):
+                metadata_raw = {}
+
+        md_content = f"""---
+okf_version: "0.2"
+id: {slug}
+title: "{title}"
+type: decision
+status: {d.get("status", "active")}
+topic: {topic}
+created_by: {d.get("created_by", "decision_logger")}
+created_at: "{created_at}"
+source: "decisions-table"
+---
+
+# {title}
+
+**Topic:** {topic}
+
+**Decision:**
+
+{decision_text}
+
+**Rationale:**
+
+{rationale if rationale else "_Not captured._"}
+
+**Metadata:**
+
+- Status: {d.get("status", "active")}
+- Created by: {d.get("created_by", "decision_logger")}
+- Decision ID: {d.get("id")}
+
+---
+
+*Auto-synced from decisions table by brain_sync.py.*
+"""
+
+        # Compute content hash for dedup
+        content_hash = hashlib.sha256(md_content.encode()).hexdigest()
+
+        # Check if page already exists with same content
+        stored_hash = get_stored_hash(conn, "decisions", f"{slug}.md")
+        if stored_hash == content_hash and not force:
+            stats["unchanged"] += 1
+            continue
+
+        if stored_hash is None:
+            stats["new"] += 1
+        else:
+            stats["updated"] += 1
+
+        # Wait if Ollama is busy
+        wait_if_ollama_busy(max_wait=30)
+
+        # Chunk the markdown
+        chunks = chunk_markdown(md_content, "decisions", f"{slug}.md")
+        if not chunks:
+            continue
+
+        # Embed chunks
+        embeddings = []
+        embed_errors = 0
+        for i in range(0, len(chunks), BATCH_SIZE):
+            batch = chunks[i:i + BATCH_SIZE]
+            texts = [c["text"] for c in batch]
+            try:
+                batch_embeddings = embed_texts_with_retry(texts, dim=dim)
+                embeddings.extend(batch_embeddings)
+            except Exception as e:
+                print(f"  [error] All retries failed for decisions/{slug}.md batch {i}: {str(e)[:60]}")
+                embed_errors += 1
+                embeddings.extend([None] * len(batch))
+
+        valid_embeddings = [e for e in embeddings if e is not None]
+        if not valid_embeddings:
+            print(f"  [error] No embeddings for decisions/{slug}.md")
+            stats["errors"] += 1
+            continue
+
+        if dry_run:
+            stats["chunks"] += len(valid_embeddings)
+            continue
+
+        # Write page + embeddings
+        try:
+            page_id = upsert_page(
+                conn, "decisions", f"{slug}.md", title,
+                md_content, content_hash,
+                {**metadata_raw, "decision_table_id": d["id"], "topic": topic},
+                len(chunks), EMBED_MODEL
+            )
+
+            inserted = 0
+            for chunk, embedding in zip(chunks, embeddings):
+                if embedding is None:
+                    continue
+                insert_embedding(conn, page_id, chunk["index"], chunk["text"], embedding, chunk["token_count"])
+                inserted += 1
+
+            cur = conn.cursor()
+            cur.execute("DELETE FROM embeddings WHERE page_id = %s AND chunk_index >= %s", (page_id, len(chunks)))
+
+            conn.commit()
+            stats["chunks"] += inserted
+
+            if embed_errors > 0:
+                print(f"  [partial] decisions/{slug}.md: {inserted}/{len(chunks)} chunks ({embed_errors} failures)")
+            else:
+                print(f"  [ok] decisions/{slug}.md: {len(chunks)} chunks")
+
+        except Exception as e:
+            print(f"  [error] Upsert failed for decisions/{slug}.md: {e}")
+            conn.rollback()
+            stats["errors"] += 1
+
+    print(f"  Stats: {stats}")
+    return stats
+
+
 # ── Main sync logic ─────────────────────────────────────────────────────
 
 def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = False) -> dict:
@@ -465,7 +632,7 @@ def sync_source(conn, source_name: str, force: bool = False, dry_run: bool = Fal
     stats["scanned"] = len(files)
     print(f"  Scanned {len(files)} .md files")
 
-    # Embedding dimension: truncate to 2000 for HNSW index compatibility (pgvector max)
+    # Embedding dimension is fixed at 2000 (pgvector HNSW max)
     dim = 2000
     print(f"  Embedding dimension: {dim}")
 
@@ -633,7 +800,10 @@ def main():
 
     for source_name in sources:
         try:
-            stats = sync_source(conn, source_name, force=args.force, dry_run=args.dry_run)
+            if source_name == "decisions":
+                stats = sync_decisions(conn, force=args.force, dry_run=args.dry_run)
+            else:
+                stats = sync_source(conn, source_name, force=args.force, dry_run=args.dry_run)
             for k in total_stats:
                 total_stats[k] += stats.get(k, 0)
             # Record sync state
