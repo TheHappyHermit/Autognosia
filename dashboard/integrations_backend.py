@@ -1294,6 +1294,16 @@ def get_system_settings() -> Dict[str, Any]:
             "configured": bool(raw.get("elevenlabs_api_key")),
             "masked_key": mask_key(raw.get("elevenlabs_api_key", ""))
         },
+        # Voice Engine & Local Speech-to-Speech Gateway (Domain 10, #30)
+        "voice": {
+            "gateway_url": raw.get("voice_gateway_url", "http://10.1.1.151"),
+            "gateway_port": raw.get("voice_gateway_port", "8000"),
+            "provider": raw.get("voice_provider", "openai_compatible"),
+            "model": raw.get("voice_model", "whisper-1"),
+            "tts_voice": raw.get("voice_tts_voice", "alloy"),
+            "configured": bool(raw.get("voice_gateway_url")),
+            "masked_key": mask_key(raw.get("voice_api_key", ""))
+        },
         # Homelab Applications
         "deerflow": {
             "url": raw.get("deerflow_url", "http://localhost:8000"),
@@ -1415,6 +1425,13 @@ def save_system_settings(payload: Dict[str, Any]) -> Dict[str, Any]:
         "inference_node_vllm": "INFERENCE_NODE_VLLM",
         "inference_api_key": "INFERENCE_API_KEY",
         "elevenlabs_api_key": "ELEVENLABS_API_KEY",
+        # Voice Engine & Local Speech-to-Speech Gateway (Domain 10, #30)
+        "voice_gateway_url": "VOICE_GATEWAY_URL",
+        "voice_gateway_port": "VOICE_GATEWAY_PORT",
+        "voice_provider": "VOICE_PROVIDER",
+        "voice_model": "VOICE_MODEL",
+        "voice_tts_voice": "VOICE_TTS_VOICE",
+        "voice_api_key": "VOICE_API_KEY",
         # Homelab Applications
         "deerflow_url": "DEERFLOW_URL",
         "deerflow_api_key": "DEERFLOW_API_KEY",
@@ -1733,6 +1750,18 @@ def test_api_connection(provider: str, api_key: str = "", api_url: str = "") -> 
             return {"status": "error", "message": "No PostgreSQL connection URI configured."}
         clean_target = pg_url.split("@")[-1] if "@" in pg_url else "valid URI"
         return {"status": "ok", "message": f"PostgreSQL pgvector URI configured: {clean_target}"}
+
+    elif p in ("voice", "voice_gateway", "speaktospeech"):
+        voice_url = api_url or raw.get("voice_gateway_url", "http://127.0.0.1")
+        voice_port = raw.get("voice_gateway_port", "8000")
+        full_url = f"{voice_url.rstrip('/')}:{voice_port}" if voice_port and not voice_url.endswith(f":{voice_port}") else voice_url.rstrip('/')
+        try:
+            res = requests.get(f"{full_url}/v1/models", timeout=4)
+            if res.status_code in (200, 404, 405):
+                return {"status": "ok", "message": f"Connected to Voice Gateway successfully at {full_url}!"}
+            return {"status": "ok", "message": f"Voice Gateway reachable at {full_url} (HTTP {res.status_code})."}
+        except Exception as e:
+            return {"status": "error", "message": f"Could not reach Voice Gateway at {full_url}. Error: {str(e)}"}
 
     elif p in ("inference", "inference_cluster", "hermes_nodes"):
         url = api_url or raw.get("inference_node_main", "http://10.1.1.10:8080").rstrip("/")

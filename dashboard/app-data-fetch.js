@@ -670,7 +670,7 @@ CommandDeck.prototype.initBriefingTTS = function() {
 
 // ── Interactive Knowledge Graph & Wiki Preview ──────────────────────────────
 
-CommandDeck.prototype.fetchKnowledgeGraph = async function() {
+CommandDeck.prototype.fetchKnowledgeGraph = async function(tier = 'all') {
   const canvas = document.getElementById('knowledge-graph-canvas');
   if (!canvas) return;
   
@@ -682,19 +682,73 @@ CommandDeck.prototype.fetchKnowledgeGraph = async function() {
     if (resetBtn) {
       resetBtn.onclick = () => this.graphVisualizer.resetZoom();
     }
+
+    // Wire filter chips: all, active, oracle (Domain 3, #10)
+    const btnAll = document.getElementById('btn-graph-filter-all');
+    const btnActive = document.getElementById('btn-graph-filter-active');
+    const btnOracle = document.getElementById('btn-graph-filter-oracle');
+    const chips = [btnAll, btnActive, btnOracle].filter(Boolean);
+
+    chips.forEach(chip => {
+      chip.onclick = () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const t = chip.dataset.graphTier || 'all';
+        this.fetchKnowledgeGraph(t);
+      };
+    });
+
+    // Wire Pathfinder Drawer (Domain 3, #10)
+    const pathBtn = document.getElementById('btn-graph-pathfinder');
+    const drawer = document.getElementById('graph-pathfinder-drawer');
+    const runPathBtn = document.getElementById('btn-run-pathfinder');
+    const pathRes = document.getElementById('pathfinder-result');
+    const srcInp = document.getElementById('input-path-source');
+    const tgtInp = document.getElementById('input-path-target');
+
+    if (pathBtn && drawer) {
+      pathBtn.onclick = () => {
+        const isHidden = drawer.style.display === 'none';
+        drawer.style.display = isHidden ? 'flex' : 'none';
+      };
+    }
+
+    if (runPathBtn && srcInp && tgtInp && pathRes) {
+      runPathBtn.onclick = async () => {
+        const src = srcInp.value.trim();
+        const tgt = tgtInp.value.trim();
+        if (!src || !tgt) {
+          pathRes.textContent = 'Please enter both source and target concept IDs.';
+          return;
+        }
+        pathRes.textContent = 'Tracing relationship path...';
+        try {
+          const res = await fetch(`${this.apiBase}/api/graphify/path?source=${encodeURIComponent(src)}&target=${encodeURIComponent(tgt)}`);
+          const data = await res.json();
+          if (data.path && data.path.length > 0) {
+            pathRes.innerHTML = `<strong>Path found (${data.hops || data.path.length - 1} hops):</strong> ` + data.path.map(escapeHtml).join(' ➔ ');
+          } else {
+            pathRes.textContent = data.message || 'No direct or multi-hop path found between these concepts.';
+          }
+        } catch(e) {
+          pathRes.textContent = `Pathfinder error: ${e.message}`;
+        }
+      };
+    }
   } else {
     this.graphVisualizer.initCanvasSize();
     this.graphVisualizer.render();
   }
   
   try {
-    const res = await fetch(`${this.apiBase}/api/graphify/data`);
+    const q = tier === 'oracle' ? '?graph=oracle' : (tier === 'active' ? '?graph=active' : '');
+    const res = await fetch(`${this.apiBase}/api/graphify/data${q}`);
     if (!res.ok) return;
     const data = await res.json();
     this.graphVisualizer.setData(data);
     
     const countEl = document.getElementById('graph-node-count');
-    if (countEl) countEl.textContent = `${data.nodes?.length || 0} nodes`;
+    if (countEl) countEl.textContent = `${data.nodes?.length || 0} nodes (${tier})`;
   } catch (e) {
     console.warn('Knowledge graph fetch error:', e);
   }

@@ -343,7 +343,7 @@ class BotsPage {
     setTimeout(() => document.getElementById('bot-chat-input')?.focus(), 50);
   }
 
-  renderSessionHeader(botId) {
+  async renderSessionHeader(botId) {
     const headerActions = document.querySelector('.bots-chat-header-actions');
     if (!headerActions) return;
 
@@ -377,6 +377,30 @@ class BotsPage {
         this.currentSessionId = e.target.value;
         this.loadChatHistory(botId, this.currentSessionId);
       };
+
+      // Fetch bi-directional native Hermes sessions (Domain 9, #27)
+      try {
+        const res = await fetch('/api/agent/sessions');
+        if (res.ok) {
+          const data = await res.json();
+          const sessions = data.sessions || [];
+          if (sessions.length > 0) {
+            const defaultOpts = [
+              { id: `dash-bot-${botId}-default`, title: 'Main Thread' },
+              { id: `dash-bot-${botId}-research`, title: 'Research' },
+              { id: `dash-bot-${botId}-ops`, title: 'Operations' }
+            ];
+            const all = [...defaultOpts];
+            sessions.forEach(s => {
+              if (!all.some(x => x.id === s.id)) {
+                all.push({ id: s.id, title: s.title || s.name || s.id });
+              }
+            });
+            select.innerHTML = all.map(s => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.title)}</option>`).join('');
+            select.value = this.currentSessionId;
+          }
+        }
+      } catch(e) {}
     }
   }
 
@@ -690,7 +714,10 @@ class BotsPage {
 
           const type = eventType || parsed.type;
 
-          if (type === 'tool' || parsed.type === 'tool') {
+          if (type === 'delegation' || parsed.type === 'delegation') {
+            this.renderDelegationBlock(toolsContainer, parsed);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          } else if (type === 'tool' || parsed.type === 'tool') {
             this.renderToolTraceBlock(toolsContainer, parsed);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -750,11 +777,37 @@ class BotsPage {
     } finally {
       this.isGenerating = false;
       this.toggleSendStopButton(false);
-      if (this.voiceCopilotActive && accumulatedText) {
+      if ((this.voiceCopilotActive || this.voiceConversationMode) && accumulatedText) {
         this.speakText(accumulatedText);
         this.voiceCopilotActive = false;
       }
     }
+  }
+
+  renderDelegationBlock(container, parsed) {
+    const delEl = document.createElement('div');
+    delEl.className = 'bot-delegation-trace';
+    delEl.style.margin = '6px 0';
+    delEl.style.padding = '8px 12px';
+    delEl.style.background = 'rgba(139, 92, 246, 0.08)';
+    delEl.style.border = '1px solid rgba(139, 92, 246, 0.3)';
+    delEl.style.borderRadius = 'var(--radius-md)';
+    delEl.style.fontSize = '0.8rem';
+
+    const subagent = parsed.subagent || 'Subagent';
+    const task = parsed.task || parsed.content || '';
+    delEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <span style="font-weight:600; color:var(--accent); display:flex; align-items:center; gap:6px;">
+          <span>🔀</span> Delegated to: <strong>${escapeHtml(subagent)}</strong>
+        </span>
+        <span class="badge badge-purple" style="font-size:0.65rem;">Active Subagent</span>
+      </div>
+      <div style="color:var(--text-2); font-size:0.75rem; margin-top:2px;">
+        <strong>Task:</strong> ${escapeHtml(task)}
+      </div>
+    `;
+    container.appendChild(delEl);
   }
 
   stopGenerating() {
@@ -990,15 +1043,36 @@ class BotsPage {
     }
   }
 
-  speakText(text) {
+  async speakText(text) {
+    if (!text) return;
+    const cleanText = text.replace(/[*_`#]/g, '').replace(/```[\s\S]*?```/g, 'Code block omitted.').slice(0, 1500);
+
+    try {
+      const res = await fetch('/api/voice/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: cleanText })
+      });
+      if (res.ok) {
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('audio')) {
+          const blob = await res.blob();
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+          await audio.play();
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Voice Gateway TTS failed, falling back to browser SpeechSynthesis:', e);
+    }
+
     if (window.commandDeck && typeof window.commandDeck.playAgentVoice === 'function') {
       window.commandDeck.playAgentVoice(text);
       return;
     }
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    // Clean markdown syntax from text for speech
-    const cleanText = text.replace(/[*_`#]/g, '').replace(/```[\s\S]*?```/g, 'Code block omitted.');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.rate = 1.05;
     window.speechSynthesis.speak(utterance);
@@ -1007,101 +1081,146 @@ class BotsPage {
   initVoiceInput() {
     const micBtn = document.getElementById('bot-chat-mic');
     const copilotBtn = document.getElementById('btn-voice-copilot');
+    const voiceModeBtn = document.getElementById('btn-voice-mode-toggle');
     const input = document.getElementById('bot-chat-input');
 
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRec) {
-      if (micBtn) {
-        micBtn.title = 'Speech recognition not supported in this browser';
-        micBtn.style.opacity = '0.5';
-      }
-      if (copilotBtn) {
-        copilotBtn.title = 'Speech recognition not supported in this browser';
-        copilotBtn.style.opacity = '0.5';
-      }
-      return;
+    // Wire Voice Mode Toggle
+    if (voiceModeBtn && !voiceModeBtn._bound) {
+      voiceModeBtn._bound = true;
+      voiceModeBtn.onclick = () => {
+        this.voiceConversationMode = !this.voiceConversationMode;
+        voiceModeBtn.style.opacity = this.voiceConversationMode ? '1' : '0.6';
+        voiceModeBtn.style.transform = this.voiceConversationMode ? 'scale(1.15)' : 'none';
+        voiceModeBtn.title = this.voiceConversationMode ? 'Voice Mode Active: Agent will speak responses aloud' : 'Toggle Auto-Voice Conversation Mode (Speaks responses aloud)';
+        if (window.commandDeck && typeof window.commandDeck.showToast === 'function') {
+          window.commandDeck.showToast(`Voice Conversation Mode ${this.voiceConversationMode ? 'Enabled' : 'Disabled'}`, 'ok');
+        }
+      };
     }
 
     if (copilotBtn && !copilotBtn._voiceBound) {
       copilotBtn._voiceBound = true;
       copilotBtn.onclick = () => {
         if (this.isRecording) {
-          this.recognition?.stop();
           this.stopVoiceInput();
         } else {
           if (window.commandDeck && window.commandDeck.currentView !== 'agents') {
             window.commandDeck.showView('agents');
           }
           this.voiceCopilotActive = true;
-          try {
-            this.recognition?.start();
-          } catch (err) {
-            console.warn('Voice copilot start error:', err);
-          }
+          this.startVoiceInput();
         }
       };
     }
 
     if (!micBtn || !input) return;
-    if (this.recognition) return;
-
-    this.recognition = new SpeechRec();
-    this.recognition.continuous = false;
-    this.recognition.interimResults = true;
-    this.isRecording = false;
-
-    this.recognition.onstart = () => {
-      this.isRecording = true;
-      const mBtn = document.getElementById('bot-chat-mic');
-      const cBtn = document.getElementById('btn-voice-copilot');
-      if (mBtn) {
-        mBtn.classList.add('listening');
-        mBtn.style.background = 'var(--rose, #ef4444)';
-        mBtn.style.color = '#fff';
-        mBtn.title = 'Listening... Click to stop';
-      }
-      if (cBtn) {
-        cBtn.classList.add('listening');
-      }
-    };
-
-    this.recognition.onresult = (e) => {
-      let interim = '';
-      let final = '';
-      for (let i = e.resultIndex; i < e.results.length; ++i) {
-        if (e.results[i].isFinal) {
-          final += e.results[i][0].transcript;
-        } else {
-          interim += e.results[i][0].transcript;
-        }
-      }
-      const text = (final || interim);
-      const chatInput = document.getElementById('bot-chat-input');
-      if (chatInput) chatInput.value = text;
-
-      if (final && this.voiceCopilotActive) {
-        this.recognition.stop();
-        setTimeout(() => {
-          this.sendMessage();
-        }, 350);
-      }
-    };
-
-    this.recognition.onerror = () => this.stopVoiceInput();
-    this.recognition.onend = () => this.stopVoiceInput();
+    if (micBtn._bound) return;
+    micBtn._bound = true;
 
     micBtn.onclick = () => {
       if (this.isRecording) {
-        this.recognition.stop();
+        this.stopVoiceInput();
       } else {
-        this.voiceCopilotActive = false;
-        try {
-          this.recognition.start();
-        } catch (err) {
-          console.warn('Speech start error:', err);
-        }
+        this.startVoiceInput();
       }
     };
+  }
+
+  async startVoiceInput() {
+    this.isRecording = true;
+    const micBtn = document.getElementById('bot-chat-mic');
+    const copilotBtn = document.getElementById('btn-voice-copilot');
+    if (micBtn) {
+      micBtn.classList.add('listening');
+      micBtn.style.background = 'var(--rose, #ef4444)';
+      micBtn.style.color = '#fff';
+      micBtn.title = 'Recording... Click to finish & send';
+    }
+    if (copilotBtn) copilotBtn.classList.add('listening');
+
+    // Try MediaRecorder to record audio for /api/voice/stt (local OpenAI gateway / Speech-to-Speech)
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this.mediaStream = stream;
+        this.audioChunks = [];
+        this.mediaRecorder = new MediaRecorder(stream);
+        this.mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) this.audioChunks.push(e.data);
+        };
+        this.mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          if (this.audioChunks.length > 0) {
+            const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+            await this.transcribeAudioBlob(audioBlob);
+          }
+        };
+        this.mediaRecorder.start();
+        return;
+      } catch (err) {
+        console.warn('getUserMedia error, falling back to SpeechRecognition:', err);
+      }
+    }
+
+    // Fallback to browser SpeechRecognition
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      if (!this.recognition) {
+        this.recognition = new SpeechRec();
+        this.recognition.continuous = false;
+        this.recognition.interimResults = true;
+        this.recognition.onresult = (e) => {
+          let text = '';
+          for (let i = e.resultIndex; i < e.results.length; ++i) {
+            text += e.results[i][0].transcript;
+          }
+          const chatInput = document.getElementById('bot-chat-input');
+          if (chatInput) chatInput.value = text;
+        };
+        this.recognition.onend = () => {
+          this.stopVoiceInput();
+          if (this.voiceConversationMode || this.voiceCopilotActive) {
+            this.sendMessage();
+          }
+        };
+        this.recognition.onerror = () => this.stopVoiceInput();
+      }
+      try {
+        this.recognition.start();
+      } catch (e) {}
+    }
+  }
+
+  async transcribeAudioBlob(blob) {
+    const input = document.getElementById('bot-chat-input');
+    if (input) input.placeholder = 'Transcribing voice input...';
+
+    try {
+      const formData = new FormData();
+      formData.append('file', blob, 'audio.webm');
+
+      const res = await fetch('/api/voice/stt', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const text = data.text || '';
+        if (input) {
+          input.value = text;
+          input.placeholder = `Message ${this.currentBot?.name || 'Agent'}`;
+        }
+        if (text && (this.voiceConversationMode || this.voiceCopilotActive)) {
+          this.sendMessage();
+        }
+      } else {
+        if (input) input.placeholder = `Message ${this.currentBot?.name || 'Agent'}`;
+      }
+    } catch (e) {
+      console.warn('STT transcription error:', e);
+      if (input) input.placeholder = `Message ${this.currentBot?.name || 'Agent'}`;
+    }
   }
 
   stopVoiceInput() {
@@ -1116,6 +1235,17 @@ class BotsPage {
     }
     if (copilotBtn) {
       copilotBtn.classList.remove('listening');
+    }
+
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      try {
+        this.mediaRecorder.stop();
+      } catch (e) {}
+    }
+    if (this.recognition) {
+      try {
+        this.recognition.stop();
+      } catch (e) {}
     }
   }
 

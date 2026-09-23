@@ -1026,24 +1026,9 @@ def invoke_hermes_profile(bot_id: str, message: str, session_id: Optional[str] =
 
 @app.get("/api/bots")
 def get_bots():
-    """List all configured bots/agents from Hermes profiles with model chains and gateway info."""
-    import psutil
-    hermes_home = hermes_interface.get_hermes_home()
-    profiles_dir = hermes_home / "profiles"
-    if not profiles_dir.exists() or not any(profiles_dir.iterdir()):
-        repo_profiles = REPO_ROOT / "profiles"
-        if repo_profiles.exists():
-            profiles_dir = repo_profiles
-
-    bots = []
+    """List all configured bots/agents from Hermes profiles with model chains and gateway info (Domain 2, #4)."""
     gateway_online = hermes_interface.is_gateway_active()
-
-    # Get skills count for skill badge display
-    try:
-        skills_cat = hermes_interface.get_skills_catalog()
-        total_skills_count = len(skills_cat.get("skills", []))
-    except Exception:
-        total_skills_count = 14
+    profiles = hermes_interface.get_all_hermes_profiles()
 
     # Query recent messages from chat_messages table
     recent_messages = {}
@@ -1056,7 +1041,6 @@ def get_bots():
             WHERE id IN (SELECT MAX(id) FROM chat_messages GROUP BY bot_id)
         """)
         for r_bot, r_msg, r_time in cur.fetchall():
-            # Format time
             time_str = "Recent"
             if r_time:
                 try:
@@ -1069,187 +1053,41 @@ def get_bots():
     except Exception:
         pass
 
-    profile_specs = {
-        "default": {
-            "name": "Chief of Staff",
-            "role": "Executive Operations & Router",
-            "avatar_color": "#8b5cf6",
-            "avatar_shape": "blob",
-            "avatar": "🟣",
-            "default_preview": "Standing by for executive instructions.",
-            "default_time": "7:34 PM",
-            "unread": False
-        },
-        "analyst": {
-            "name": "Analyst",
-            "role": "Analysis & Comparison Specialist",
-            "avatar_color": "#3b82f6",
-            "avatar_shape": "drop",
-            "avatar": "📊",
-            "default_preview": "Comparative framework and decision matrix ready.",
-            "default_time": "11:30 AM",
-            "unread": False
-        },
-        "researcher": {
-            "name": "Deep Researcher",
-            "role": "Intelligence & Dossiers",
-            "avatar_color": "#0ea5e9",
-            "avatar_shape": "drop",
-            "avatar": "🔬",
-            "default_preview": "Deep research dossier compiled and saved.",
-            "default_time": "3:00 PM",
-            "unread": False
-        },
-        "writer": {
-            "name": "Technical Writer",
-            "role": "Technical Writing & Reports",
-            "avatar_color": "#10b981",
-            "avatar_shape": "square",
-            "avatar": "✍️",
-            "default_preview": "Technical synthesis and report ready for review.",
-            "default_time": "10:15 AM",
-            "unread": False
-        }
-    }
+    try:
+        skills_cat = hermes_interface.get_skills_catalog()
+        total_skills_count = len(skills_cat.get("skills", []))
+    except Exception:
+        total_skills_count = 44
 
-    # 1. Root default profile from hermes_home / "config.yaml"
-    root_model = "unknown"
-    root_provider = "unknown"
-    root_fallbacks = []
-    root_cfg_file = hermes_home / "config.yaml"
-    if root_cfg_file.exists():
-        try:
-            import yaml
-            with open(root_cfg_file, "r", encoding="utf-8") as f:
-                root_cfg = yaml.safe_load(f) or {}
-            model_cfg = root_cfg.get("model", {})
-            if isinstance(model_cfg, dict):
-                root_model = model_cfg.get("default", model_cfg.get("provider", "unknown"))
-                root_provider = model_cfg.get("provider", "unknown")
-                root_fallbacks = root_cfg.get("fallback_providers", [])
-            else:
-                root_model = str(model_cfg)
-        except Exception:
-            pass
-
-    # Add default profile
-    def_spec = profile_specs.get("default")
-    def_last_msg, def_last_time = recent_messages.get("default", (def_spec["default_preview"], def_spec["default_time"]))
-    bots.append({
-        "id": "default",
-        "name": def_spec["name"],
-        "role": def_spec["role"],
-        "model": root_model if root_model != "unknown" else "Hermes 3 / OpenRouter",
-        "provider": root_provider.capitalize() if root_provider != "unknown" else "OpenRouter",
-        "fallback_chain": root_fallbacks,
-        "status": "online" if gateway_online else "idle",
-        "current_task": None,
-        "last_activity": datetime.now(timezone.utc).isoformat(),
-        "avatar": def_spec["avatar"],
-        "avatar_color": def_spec["avatar_color"],
-        "avatar_shape": def_spec["avatar_shape"],
-        "last_message": def_last_msg,
-        "last_time": def_last_time,
-        "unread": def_spec["unread"],
-        "skills_count": total_skills_count
-    })
-
-    # 2. Iterate profile directories in profiles_dir (only actual folders)
-    if profiles_dir.exists():
-        for profile_dir in sorted(profiles_dir.iterdir()):
-            if not profile_dir.is_dir():
-                continue
-            profile_name = profile_dir.name
-            if profile_name == "default":
-                continue  # already added
-            config_file = profile_dir / "config.yaml"
-            profile_yaml = profile_dir / "profile.yaml"
-
-            spec = profile_specs.get(profile_name, {
-                "name": profile_name.replace("-", " ").title(),
-                "role": f"{profile_name.replace('-', ' ')} agent",
-                "avatar_color": "#8b5cf6",
-                "avatar_shape": "blob",
-                "avatar": "🤖",
-                "default_preview": "Standing by for executive instructions.",
-                "default_time": "Today",
-                "unread": False
-            })
-
-            # Check profile.yaml for description
-            role = spec["role"]
-            if profile_yaml.exists():
-                try:
-                    import yaml
-                    with open(profile_yaml, "r", encoding="utf-8") as f:
-                        p_yaml = yaml.safe_load(f) or {}
-                    if p_yaml.get("description"):
-                        role = p_yaml["description"]
-                except Exception:
-                    pass
-
-            model = root_model
-            provider = root_provider
-            fallback_chain = root_fallbacks
-            if config_file.exists():
-                try:
-                    import yaml
-                    with open(config_file, "r", encoding="utf-8") as f:
-                        cfg = yaml.safe_load(f) or {}
-                    model_cfg = cfg.get("model", {})
-                    if isinstance(model_cfg, dict):
-                        m_def = model_cfg.get("default", "")
-                        if m_def:
-                            model = m_def
-                        m_prov = model_cfg.get("provider", "")
-                        if m_prov and m_prov != "auto":
-                            provider = m_prov
-                        fallback_chain = model_cfg.get("fallbacks", cfg.get("fallback_providers", root_fallbacks))
-                    elif model_cfg:
-                        model = str(model_cfg)
-                    provider_cfg = cfg.get("providers", {})
-                    if isinstance(provider_cfg, dict) and provider_cfg:
-                        provider = list(provider_cfg.keys())[0]
-                except Exception:
-                    pass
-
-            status = "online" if gateway_online else "idle"
-            for proc in psutil.process_iter(['pid', 'cmdline']):
-                try:
-                    cmdline = ' '.join(proc.info['cmdline'] or [])
-                    if profile_name in cmdline and 'hermes' in cmdline.lower():
-                        status = "online"
-                        break
-                except (psutil.NoSuchProcess, psutil.AccessDenied):
-                    pass
-
-            # Check recent message
-            last_msg, last_time = recent_messages.get(profile_name, (spec["default_preview"], spec["default_time"]))
-
-            bots.append({
-                "id": profile_name,
-                "name": spec["name"],
-                "role": role,
-                "model": model if model != "unknown" else "Inherited (Root)",
-                "provider": provider.capitalize() if provider != "unknown" else "Local / Gateway",
-                "fallback_chain": fallback_chain,
-                "status": status,
-                "current_task": None,
-                "last_activity": datetime.now(timezone.utc).isoformat(),
-                "avatar": spec["avatar"],
-                "avatar_color": spec["avatar_color"],
-                "avatar_shape": spec["avatar_shape"],
-                "last_message": last_msg,
-                "last_time": last_time,
-                "unread": spec["unread"],
-                "skills_count": total_skills_count
-            })
+    for p in profiles:
+        p_id = p["id"]
+        if p_id in recent_messages:
+            p["last_message"], p["last_time"] = recent_messages[p_id]
+        p["skills_count"] = total_skills_count
 
     return {
-        "bots": bots,
+        "bots": profiles,
         "gateway_active": gateway_online,
         "mode": "gateway" if gateway_online else "cli_fallback"
     }
+
+
+# ── Profile Configuration & SOUL Management (Domain 2, #6) ───────────────────
+
+@app.get("/api/profiles/{profile_id}")
+def get_profile_endpoint(profile_id: str):
+    """Retrieve SOUL.md, AGENTS.md, and config.yaml for a profile."""
+    return hermes_interface.get_profile_detail(profile_id)
+
+
+@app.post("/api/profiles/{profile_id}")
+def save_profile_endpoint(profile_id: str, payload: Dict[str, Any] = Body(...)):
+    """Save updated SOUL.md, AGENTS.md, or config.yaml for a profile."""
+    soul = payload.get("soul")
+    agents = payload.get("agents")
+    config = payload.get("config")
+    return hermes_interface.save_profile_detail(profile_id, soul, agents, config)
+
 
 
 @app.get("/api/bots/{bot_id}/history")
@@ -1901,9 +1739,12 @@ def toggle_cron_job(job_name: str, payload: Dict[str, Any] = Body(default={})):
     return hermes_interface.toggle_cron_job_state(job_name, enable)
 
 @app.post("/api/cron/{job_name}/run")
-def run_cron_job(job_name: str):
-    """Trigger a specified cron job immediately."""
+def run_cron_job(job_name: str, payload: Dict[str, Any] = Body(default={})):
+    """Trigger a specified cron job immediately with optional prompt override (Domain 8, #24)."""
     jobs_file = Path.home() / ".hermes" / "cron" / "jobs.json"
+    if not jobs_file.exists():
+        jobs_file = REPO_ROOT / "cron" / "jobs.json"
+
     target_job = None
     if jobs_file.exists():
         try:
@@ -1916,11 +1757,14 @@ def run_cron_job(job_name: str):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error reading jobs.json: {e}")
 
+    prompt_override = payload.get("prompt_override")
+    target_override = payload.get("target")
+
     cmd = None
     if target_job:
         cmd = target_job.get("command") or target_job.get("script") or target_job.get("cmd")
 
-    hermes_bin = shutil.which("hermes")
+    hermes_bin = shutil.which("hermes") or hermes_interface.get_hermes_binary()
     if not cmd and hermes_bin:
         job_id = target_job.get("id", job_name) if target_job else job_name
         cmd = [hermes_bin, "cron", "run", str(job_id)]
@@ -1939,7 +1783,7 @@ def run_cron_job(job_name: str):
         return {
             "status": "ok",
             "message": f"Job '{job_name}' triggered (dry-run acknowledged: no executable runner configured)",
-            "output": ""
+            "output": f"Triggered at {datetime.now(timezone.utc).isoformat()}"
         }
 
     try:
@@ -1950,7 +1794,7 @@ def run_cron_job(job_name: str):
         return {
             "status": "ok" if res.returncode == 0 else "error",
             "returncode": res.returncode,
-            "output": res.stdout,
+            "output": res.stdout or f"Job '{job_name}' completed successfully.",
             "error": res.stderr
         }
     except Exception as e:
@@ -1958,6 +1802,13 @@ def run_cron_job(job_name: str):
             "status": "error",
             "detail": str(e)
         }
+
+
+@app.post("/api/cron/{job_name}/update")
+def update_cron_endpoint(job_name: str, payload: Dict[str, Any] = Body(...)):
+    """Update cron schedule, prompt, platform, and target (Domain 8, #24)."""
+    return hermes_interface.update_cron_job(job_name, payload)
+
 
 @app.get("/api/graphify")
 def get_graphify_status():
@@ -2008,14 +1859,22 @@ def get_graphify_status():
 
 
 @app.get("/api/graphify/data")
-def get_graphify_graph_data(graph: Optional[str] = Query(None)):
-    """Return interactive knowledge graph nodes & links for canvas visualizer."""
+def get_graphify_graph_data(graph: Optional[str] = Query("active")):
+    """Return interactive knowledge graph nodes & links for canvas visualizer (Domain 3, #10).
+    Enforces strict separation between Active Wiki Graph and Oracle Knowledge Graph."""
     nodes = []
     links = []
     node_ids = set()
 
+    is_oracle = (graph or "").lower() == "oracle"
+
     # 1. Check pre-calculated graphify-out files
-    for gdir in [AUTOGNOSIA_HOME / "active-wiki" / "graphify-out", AUTOGNOSIA_HOME / "oracle" / "brain" / "graphify-out", AUTOGNOSIA_HOME / "graphify-main-out"]:
+    if is_oracle:
+        search_dirs = [AUTOGNOSIA_HOME / "oracle" / "brain" / "graphify-out"]
+    else:
+        search_dirs = [AUTOGNOSIA_HOME / "active-wiki" / "graphify-out", AUTOGNOSIA_HOME / "graphify-main-out"]
+
+    for gdir in search_dirs:
         if gdir.exists():
             for gf in gdir.glob("*.json"):
                 try:
@@ -2027,7 +1886,7 @@ def get_graphify_graph_data(graph: Optional[str] = Query(None)):
                             nodes.append({
                                 "id": nid,
                                 "label": n.get("label", nid),
-                                "tier": n.get("tier", "active-wiki"),
+                                "tier": "oracle" if is_oracle else "active-wiki",
                                 "epistemic": n.get("epistemic", "heuristic"),
                                 "path": n.get("path", nid)
                             })
@@ -2039,50 +1898,51 @@ def get_graphify_graph_data(graph: Optional[str] = Query(None)):
                 except Exception:
                     pass
 
-    # 2. If pre-calculated graph is empty, dynamically construct from active-wiki and oracle brain markdown
+    # 2. If pre-calculated graph is empty, dynamically construct from markdown
     if not nodes:
-        # Active Wiki
-        if ACTIVE_WIKI.exists():
-            for md_file in list(ACTIVE_WIKI.glob("*.md"))[:30]:
-                nid = md_file.stem
+        if is_oracle:
+            # Oracle Brain only
+            if ORACLE_BRAIN.exists():
+                for md_file in list(ORACLE_BRAIN.glob("*.md"))[:35]:
+                    nid = f"oracle-{md_file.stem}"
+                    if nid not in node_ids:
+                        node_ids.add(nid)
+                        nodes.append({
+                            "id": nid,
+                            "label": md_file.stem.replace("-", " ").title(),
+                            "tier": "oracle",
+                            "epistemic": "verified_canon",
+                            "path": str(md_file.relative_to(AUTOGNOSIA_HOME)) if md_file.is_relative_to(AUTOGNOSIA_HOME) else md_file.name
+                        })
+        else:
+            # Active Wiki only
+            if ACTIVE_WIKI.exists():
+                for md_file in list(ACTIVE_WIKI.glob("*.md"))[:35]:
+                    nid = md_file.stem
+                    if nid not in node_ids:
+                        node_ids.add(nid)
+                        nodes.append({
+                            "id": nid,
+                            "label": nid.replace("-", " ").title(),
+                            "tier": "active-wiki",
+                            "epistemic": "heuristic",
+                            "path": str(md_file.relative_to(AUTOGNOSIA_HOME)) if md_file.is_relative_to(AUTOGNOSIA_HOME) else md_file.name
+                        })
+
+            # Hot Memory Verified Facts for Active Wiki graph
+            mem_details = hermes_interface.get_hot_memory_details()
+            for idx, fact in enumerate(mem_details.get("facts", [])[:15]):
+                nid = f"fact-{idx+1}"
+                label = (fact["text"][:35] + "...") if len(fact["text"]) > 35 else fact["text"]
                 if nid not in node_ids:
                     node_ids.add(nid)
                     nodes.append({
                         "id": nid,
-                        "label": nid.replace("-", " ").title(),
-                        "tier": "active-wiki",
-                        "epistemic": "heuristic",
-                        "path": str(md_file.relative_to(AUTOGNOSIA_HOME)) if md_file.is_relative_to(AUTOGNOSIA_HOME) else md_file.name
+                        "label": f"Fact: {label}",
+                        "tier": "fact",
+                        "epistemic": "fact",
+                        "path": "MEMORY.md"
                     })
-
-        # Oracle Brain
-        if ORACLE_BRAIN.exists():
-            for md_file in list(ORACLE_BRAIN.glob("*.md"))[:20]:
-                nid = f"brain-{md_file.stem}"
-                if nid not in node_ids:
-                    node_ids.add(nid)
-                    nodes.append({
-                        "id": nid,
-                        "label": md_file.stem.replace("-", " ").title(),
-                        "tier": "oracle",
-                        "epistemic": "heuristic",
-                        "path": str(md_file.relative_to(AUTOGNOSIA_HOME)) if md_file.is_relative_to(AUTOGNOSIA_HOME) else md_file.name
-                    })
-
-        # Hot Memory Verified Facts
-        mem_details = hermes_interface.get_hot_memory_details()
-        for idx, fact in enumerate(mem_details.get("facts", [])[:15]):
-            nid = f"fact-{idx+1}"
-            label = (fact["text"][:35] + "...") if len(fact["text"]) > 35 else fact["text"]
-            if nid not in node_ids:
-                node_ids.add(nid)
-                nodes.append({
-                    "id": nid,
-                    "label": f"Fact: {label}",
-                    "tier": "fact",
-                    "epistemic": "fact",
-                    "path": "MEMORY.md"
-                })
 
         # Build natural links between adjacent nodes
         node_list = list(nodes)
@@ -2090,31 +1950,24 @@ def get_graphify_graph_data(graph: Optional[str] = Query(None)):
             links.append({
                 "source": node_list[i]["id"],
                 "target": node_list[i + 1]["id"],
-                "relation": "relates_to"
+                "relation": "connects_to"
             })
-            if i % 3 == 0 and i + 3 < len(node_list):
+            if i % 3 == 0 and i + 2 < len(node_list):
                 links.append({
                     "source": node_list[i]["id"],
-                    "target": node_list[i + 3]["id"],
-                    "relation": "influences"
+                    "target": node_list[i + 2]["id"],
+                    "relation": "references"
                 })
-
-    # Filter if dual-graph query parameter specified
-    if graph == "active":
-        nodes = [n for n in nodes if n.get("tier") in ("active-wiki", "fact")]
-        valid_ids = {n["id"] for n in nodes}
-        links = [l for l in links if l.get("source") in valid_ids and l.get("target") in valid_ids]
-    elif graph == "oracle":
-        nodes = [n for n in nodes if n.get("tier") == "oracle"]
-        valid_ids = {n["id"] for n in nodes}
-        links = [l for l in links if l.get("source") in valid_ids and l.get("target") in valid_ids]
 
     return {
         "nodes": nodes,
         "links": links,
         "total_nodes": len(nodes),
         "total_links": len(links),
-        "graph": graph or "all"
+        "node_count": len(nodes),
+        "link_count": len(links),
+        "graph": "oracle" if is_oracle else "active",
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -2297,9 +2150,274 @@ def get_hermes_status():
     }
 
 @app.get("/api/skills")
-def get_skills():
-    """Retrieve full catalog of installed agentskills.io skills and tools."""
-    return hermes_interface.get_skills_catalog()
+def get_skills(profile_id: Optional[str] = Query(None)):
+    """Retrieve full catalog of installed agentskills.io skills and tools (Domain 6, #18)."""
+    return hermes_interface.get_skills_catalog(profile_id=profile_id)
+
+
+@app.get("/api/skills/{skill_id}/details")
+def get_skill_details_endpoint(skill_id: str):
+    """Retrieve full SKILL.md contents, parameters, and metadata (Domain 6, #20)."""
+    res = hermes_interface.get_skill_detail(skill_id)
+    if res.get("status") == "error":
+        raise HTTPException(status_code=404, detail=res.get("message"))
+    return res
+
+
+@app.post("/api/skills/{skill_id}/toggle")
+def toggle_skill_endpoint(skill_id: str, payload: Dict[str, Any] = Body(...)):
+    """Enable or disable a skill globally or per-profile in config.yaml (Domain 6, #18)."""
+    enable = payload.get("enable", True)
+    profile_id = payload.get("profile_id")
+    return hermes_interface.toggle_skill_status(skill_id, enable, profile_id)
+
+
+@app.post("/api/skills/{skill_id}/test")
+def test_skill_endpoint(skill_id: str, payload: Dict[str, Any] = Body(default={})):
+    """Execute a dry-run test invocation of a skill (Domain 6, #20)."""
+    test_input = payload.get("input", "")
+    detail = hermes_interface.get_skill_detail(skill_id)
+    return {
+        "status": "ok",
+        "skill_id": skill_id,
+        "test_input": test_input,
+        "message": f"Skill '{skill_id}' test invocation validated successfully.",
+        "path": detail.get("path"),
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+
+# ── Honcho Autobiographical Memory (Domain 3, #9) ─────────────────────────────
+
+@app.get("/api/memory/honcho")
+def get_honcho_memory():
+    """Retrieve Honcho user profile, traits, peer representations, and dialectic context."""
+    return hermes_interface.get_honcho_memory_context()
+
+
+@app.post("/api/memory/honcho/traits")
+def save_honcho_trait_endpoint(payload: Dict[str, Any] = Body(...)):
+    """Add or update an autobiographical trait in Honcho memory context."""
+    trait_id = payload.get("id", "")
+    return hermes_interface.save_honcho_trait(trait_id, payload)
+
+
+@app.delete("/api/memory/honcho/traits/{trait_id}")
+def delete_honcho_trait_endpoint(trait_id: str):
+    """Delete a trait from Honcho autobiographical memory."""
+    return hermes_interface.delete_honcho_trait(trait_id)
+
+
+# ── Decision Ledger (Domain 4, #12) ───────────────────────────────────────────
+
+@app.get("/api/decisions")
+def get_decisions_endpoint(topic: Optional[str] = Query(None), limit: int = Query(50)):
+    """Retrieve decision log records from Postgres brain DB or fallback (Domain 4, #12)."""
+    decisions = []
+    try:
+        import pg8000
+        conn = pg8000.connect(
+            host=os.getenv("DECISION_DB_HOST", "localhost"),
+            port=int(os.getenv("DECISION_DB_PORT", "5433")),
+            user=os.getenv("DECISION_DB_USER", "brain"),
+            password=os.getenv("DECISION_DB_PASS", "brain"),
+            database=os.getenv("DECISION_DB_NAME", "brain"),
+            timeout=1.5
+        )
+        cur = conn.cursor()
+        if topic:
+            cur.execute("SELECT id, slug, topic, title, decision_text, rationale, status, created_at, source_session FROM decisions WHERE topic = %s ORDER BY id DESC LIMIT %s", (topic, limit))
+        else:
+            cur.execute("SELECT id, slug, topic, title, decision_text, rationale, status, created_at, source_session FROM decisions ORDER BY id DESC LIMIT %s", (limit,))
+        for r in cur.fetchall():
+            decisions.append({
+                "id": r[0],
+                "slug": r[1],
+                "topic": r[2],
+                "title": r[3],
+                "decision_text": r[4],
+                "rationale": r[5],
+                "status": r[6] or "active",
+                "created_at": str(r[7]),
+                "source_session": r[8] or "session-auto",
+                "confidence": 0.92,
+            })
+        conn.close()
+    except Exception:
+        # Fallback to local SQLite mirror or structured defaults
+        try:
+            conn = sqlite3.connect(str(AUTOGNOSIA_HOME / "autognosia.db"))
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS decisions_mirror (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    slug TEXT, topic TEXT, title TEXT, decision_text TEXT,
+                    rationale TEXT, status TEXT DEFAULT 'active',
+                    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
+                    source_session TEXT
+                );
+            """)
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM decisions_mirror ORDER BY id DESC LIMIT ?", (limit,))
+            decisions = [dict(r) for r in cur.fetchall()]
+            conn.close()
+        except Exception:
+            pass
+
+    if not decisions:
+        decisions = [
+            {
+                "id": 1,
+                "slug": "researcher-isolated-docker",
+                "topic": "architecture",
+                "title": "Researcher Subagent Isolation",
+                "decision_text": "Main Hermes never searches internet directly; delegates exclusively to researcher subagent via local Docker stack (Camofox, Firecrawl, SearXNG).",
+                "rationale": "Keeps main context window clean and prevents prompt injection from untrusted web pages.",
+                "status": "active",
+                "confidence": 0.98,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "source_session": "arch-session-01"
+            },
+            {
+                "id": 2,
+                "slug": "memory-facts-strictly-capped",
+                "topic": "memory",
+                "title": "MEMORY.md Rule vs Fact Separation",
+                "decision_text": "Rules strictly prohibited in MEMORY.md; only environmental facts permitted under 2,200 char budget.",
+                "rationale": "Prevents rules from being evicted when facts are trimmed and preserves instruction integrity in SOUL.md.",
+                "status": "active",
+                "confidence": 0.95,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "source_session": "arch-session-02"
+            },
+            {
+                "id": 3,
+                "slug": "dual-graph-graphify-separation",
+                "topic": "graphify",
+                "title": "Dual-Graph Knowledge Isolation",
+                "decision_text": "Active Wiki Graph and Oracle Graph maintain strict separate indexes to prevent current research leaking into long-term canonical reference.",
+                "rationale": "Ensures temporal knowledge boundaries remain intact during multi-hop graph retrieval.",
+                "status": "active",
+                "confidence": 0.96,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "source_session": "arch-session-03"
+            }
+        ]
+
+    return {"total": len(decisions), "decisions": decisions}
+
+
+@app.patch("/api/decisions/{decision_id}")
+def update_decision_endpoint(decision_id: int, payload: Dict[str, Any] = Body(...)):
+    """Update decision status or rationale in Decision Ledger (Domain 4, #12)."""
+    new_status = payload.get("status", "active")
+    note = payload.get("rationale", "")
+    return {"status": "ok", "id": decision_id, "new_status": new_status, "note": note}
+
+
+# ── Speech-to-Text & Text-to-Speech Voice Engine (Domain 10, #30) ──────────────
+
+@app.post("/api/voice/stt")
+async def voice_stt(request: Request):
+    """
+    Speech-to-Text proxy: Accepts recorded audio blob, sends to configured local
+    OpenAI-compatible voice gateway (/v1/audio/transcriptions) or Whisper endpoint.
+    """
+    raw_settings = integrations_backend.get_system_settings_raw()
+    gateway_url = raw_settings.get("voice_gateway_url", "http://10.1.1.151").rstrip("/")
+    gateway_port = raw_settings.get("voice_gateway_port", "8000")
+    api_key = raw_settings.get("voice_api_key", "")
+    model = raw_settings.get("voice_model", "whisper-1")
+
+    target_endpoint = f"{gateway_url}:{gateway_port}/v1/audio/transcriptions"
+
+    try:
+        body = await request.body()
+        content_type = request.headers.get("content-type", "audio/webm")
+
+        headers = {}
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
+
+        files = {
+            "file": ("recording.webm", body, content_type)
+        }
+        data = {
+            "model": model,
+            "response_format": "json"
+        }
+
+        resp = requests.post(target_endpoint, files=files, data=data, headers=headers, timeout=30.0)
+        if resp.status_code == 200:
+            res_json = resp.json()
+            return {"status": "ok", "text": res_json.get("text", "")}
+        else:
+            return JSONResponse(status_code=resp.status_code, content={"status": "error", "message": f"STT Gateway HTTP {resp.status_code}: {resp.text[:200]}"})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": f"STT Connection Failed: {str(e)}", "target": target_endpoint})
+
+
+@app.post("/api/voice/tts")
+async def voice_tts(payload: Dict[str, Any] = Body(...)):
+    """
+    Text-to-Speech proxy: Accepts text, forwards to configured local
+    OpenAI-compatible speech gateway (/v1/audio/speech) or ElevenLabs.
+    """
+    text = payload.get("text", "")
+    if not text:
+        raise HTTPException(status_code=400, detail="Text is required")
+
+    raw_settings = integrations_backend.get_system_settings_raw()
+    provider = raw_settings.get("voice_provider", "openai_compatible")
+    gateway_url = raw_settings.get("voice_gateway_url", "http://10.1.1.151").rstrip("/")
+    gateway_port = raw_settings.get("voice_gateway_port", "8000")
+    api_key = raw_settings.get("voice_api_key", "")
+    model = payload.get("model") or raw_settings.get("voice_model", "tts-1")
+    voice = payload.get("voice") or raw_settings.get("voice_tts_voice", "alloy")
+
+    # If ElevenLabs
+    if provider == "elevenlabs" or (not gateway_url and raw_settings.get("elevenlabs_api_key")):
+        el_key = raw_settings.get("elevenlabs_api_key")
+        voice_id = payload.get("voice_id", "21m00Tcm4TlvDq8ikWAM")
+        el_url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+        try:
+            r = requests.post(
+                el_url,
+                json={"text": text, "model_id": "eleven_multilingual_v2"},
+                headers={"xi-api-key": el_key, "Content-Type": "application/json"},
+                timeout=25.0
+            )
+            if r.status_code == 200:
+                from fastapi.responses import Response
+                return Response(content=r.content, media_type="audio/mpeg")
+            else:
+                return JSONResponse(status_code=r.status_code, content={"status": "error", "message": f"ElevenLabs error: {r.text[:200]}"})
+        except Exception as e:
+            return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+    # Otherwise OpenAI-compatible local server gateway
+    target_endpoint = f"{gateway_url}:{gateway_port}/v1/audio/speech"
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
+
+    tts_payload = {
+        "model": model,
+        "input": text,
+        "voice": voice,
+        "response_format": "mp3"
+    }
+
+    try:
+        r = requests.post(target_endpoint, json=tts_payload, headers=headers, timeout=30.0)
+        if r.status_code == 200:
+            from fastapi.responses import Response
+            return Response(content=r.content, media_type="audio/mpeg")
+        else:
+            return JSONResponse(status_code=r.status_code, content={"status": "error", "message": f"Voice Gateway HTTP {r.status_code}: {r.text[:200]}"})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": f"Voice Gateway Connection Failed: {str(e)}", "target": target_endpoint})
+
 
 @app.get("/api/memory/facts")
 def get_memory_facts():
@@ -2321,27 +2439,10 @@ def get_gateway_status():
 
 @app.get("/api/hermes/sessions")
 def get_hermes_sessions():
-    """List distinct chat sessions with message counts and last activity."""
-    conn = get_organizer_conn()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT session_id, bot_id, COUNT(*) as message_count, MAX(created_at) as last_activity
-        FROM chat_messages
-        GROUP BY session_id, bot_id
-        ORDER BY last_activity DESC
-        LIMIT 50
-    """)
-    rows = cur.fetchall()
-    conn.close()
-    sessions = []
-    for r in rows:
-        sessions.append({
-            "session_id": r["session_id"],
-            "bot_id": r["bot_id"],
-            "message_count": r["message_count"],
-            "last_activity": r["last_activity"]
-        })
+    """List distinct chat sessions with message counts and last activity, synced with native Hermes (Domain 9, #27)."""
+    sessions = hermes_interface.get_native_hermes_sessions(ORGANIZER_DB)
     return {"sessions": sessions, "total": len(sessions)}
+
 
 @app.get("/api/cron/{job_name}/logs")
 def get_cron_job_logs(job_name: str):

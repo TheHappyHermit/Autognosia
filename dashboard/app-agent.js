@@ -166,17 +166,25 @@ CommandDeck.prototype.renderSkillsCatalog = function() {
   }
 
   container.innerHTML = catalog.skills.map(s => `
-    <div class="skill-card" style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; display:flex; flex-direction:column; gap:6px;">
+    <div class="skill-card" data-skill-id="${escapeHtml(s.id)}" style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; display:flex; flex-direction:column; gap:6px; cursor:pointer;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-weight:600; font-size:0.875rem; color:var(--text-1);">📦 ${escapeHtml(s.name)}</span>
-        <span class="badge badge-cyan" style="font-size:0.65rem;">agentskills.io</span>
+        <span class="badge ${s.enabled === false ? 'badge-secondary' : 'badge-cyan'}" style="font-size:0.65rem;">${s.enabled === false ? 'Disabled' : 'Active'}</span>
       </div>
       <div style="font-size:0.8rem; color:var(--text-2); line-height:1.4;">${escapeHtml(s.description)}</div>
-      <div style="margin-top:auto; padding-top:6px; border-top:1px solid var(--border-subtle); font-size:0.7rem; color:var(--text-3); font-family:var(--font-mono);">
-        ${escapeHtml(s.id)}
+      <div style="margin-top:auto; padding-top:6px; border-top:1px solid var(--border-subtle); font-size:0.7rem; color:var(--text-3); font-family:var(--font-mono); display:flex; justify-content:space-between; align-items:center;">
+        <span>${escapeHtml(s.id)}</span>
+        <button class="btn btn--ghost btn--sm btn-inspect-skill" data-skill-id="${escapeHtml(s.id)}" style="padding:1px 6px; font-size:0.7rem;">Inspect &amp; Test ➔</button>
       </div>
     </div>
   `).join('');
+
+  container.querySelectorAll('.skill-card').forEach(card => {
+    card.onclick = () => {
+      const sId = card.dataset.skillId;
+      if (sId) window.commandDeck?.openSkillInspectorModal(sId);
+    };
+  });
 };
 
 CommandDeck.prototype.renderCronJobs = function() {
@@ -222,6 +230,9 @@ CommandDeck.prototype.renderCronJobs = function() {
         <button class="btn btn--ghost btn--sm cron-toggle-btn" data-job="${escapeHtml(job.id || job.name)}" data-enabled="${job.enabled ? 'true' : 'false'}" style="padding:2px 8px; font-size:0.75rem;">
           ${job.enabled ? '⏸ Pause' : '▶ Enable'}
         </button>
+        <button class="btn btn--ghost btn--sm cron-edit-btn" data-job="${escapeHtml(job.name)}" title="Edit schedule & parameters" style="padding:2px 8px; font-size:0.75rem;">
+          ✏️ Edit
+        </button>
         <button class="btn btn--ghost btn--sm cron-run-btn" data-job="${escapeHtml(job.id || job.name)}" title="Run this job now" style="padding:2px 8px; font-size:0.75rem;">
           ⚡ Run
         </button>
@@ -231,6 +242,15 @@ CommandDeck.prototype.renderCronJobs = function() {
       </div>
     </div>
   `).join('');
+
+  // Wire Edit buttons
+  list.querySelectorAll('.cron-edit-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const jobName = btn.dataset.job;
+      this.openCronEditModal(jobName);
+    };
+  });
 
   // Wire Run buttons
   list.querySelectorAll('.cron-run-btn').forEach(btn => {
@@ -360,6 +380,7 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
           <button class="memory-tab-btn active" data-mem-tab="memory">🧠 MEMORY.md (Hot Facts)</button>
           <button class="memory-tab-btn" data-mem-tab="user">👤 USER.md (Profile)</button>
           <button class="memory-tab-btn" data-mem-tab="soul">✨ SOUL.md (Directives)</button>
+          <button class="memory-tab-btn" data-mem-tab="honcho">🧬 Honcho Memory</button>
         </div>
 
         <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column;">
@@ -400,6 +421,21 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
               <button id="btn-save-soul-directives" class="btn btn--primary btn--sm">Save SOUL.md</button>
             </div>
           </div>
+
+          <!-- Tab 4: Honcho Autobiographical Memory (Domain 3, #9) -->
+          <div id="mem-tab-honcho" class="memory-tab-content">
+            <div style="margin-bottom:10px; font-size:0.85rem; color:var(--text-2);">
+              Honcho dialectic user traits, peer representations, and personalized context.
+            </div>
+            <div id="honcho-traits-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px; max-height:220px; overflow-y:auto;"></div>
+            <div style="border-top:1px solid var(--border-subtle); padding-top:10px; margin-top:auto;">
+              <label style="font-weight:600; font-size:0.8rem; display:block; margin-bottom:4px;">Add User Trait / Preference:</label>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="new-honcho-trait-input" placeholder="e.g. Prefers concise bulleted executive summaries" style="flex:1; padding:6px 10px; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem;" />
+                <button id="btn-save-honcho-trait" class="btn btn--primary btn--sm">Add Trait</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -421,8 +457,32 @@ CommandDeck.prototype.openMemoryEditorModal = async function() {
         if (tabKey === 'user') this.loadUserProfile();
         if (tabKey === 'soul') this.loadSoulDirectives();
         if (tabKey === 'memory') this.loadMemoryModalFacts();
+        if (tabKey === 'honcho') this.loadHonchoMemory();
       };
     });
+
+    const addTraitBtn = document.getElementById('btn-save-honcho-trait');
+    if (addTraitBtn) {
+      addTraitBtn.onclick = async () => {
+        const input = document.getElementById('new-honcho-trait-input');
+        const trait = input.value.trim();
+        if (!trait) return;
+        try {
+          const res = await fetch(`${this.apiBase}/api/memory/honcho/traits`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trait })
+          });
+          if (res.ok) {
+            input.value = '';
+            this.showToast?.('Honcho trait added', 'ok');
+            this.loadHonchoMemory();
+          }
+        } catch (e) {
+          this.showToast?.('Error saving trait', 'warn');
+        }
+      };
+    }
 
     document.getElementById('btn-save-new-fact').onclick = async () => {
       const input = document.getElementById('new-memory-fact-input');
@@ -554,6 +614,469 @@ CommandDeck.prototype.loadSoulDirectives = async function() {
     }
   } catch (e) {
     console.warn('Error loading soul directives:', e);
+  }
+};
+
+CommandDeck.prototype.loadHonchoMemory = async function() {
+  const container = document.getElementById('honcho-traits-list');
+  if (!container) return;
+  container.innerHTML = '<div class="agent-loading">Loading Honcho traits...</div>';
+  try {
+    const res = await fetch(`${this.apiBase}/api/memory/honcho`);
+    if (res.ok) {
+      const data = await res.json();
+      const traits = data.user_traits || [];
+      if (traits.length === 0) {
+        container.innerHTML = '<div class="empty-hint">No Honcho user traits recorded yet.</div>';
+        return;
+      }
+      container.innerHTML = traits.map(t => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--bg-tertiary); border-radius:var(--radius-sm); font-size:0.8rem;">
+          <span style="color:var(--accent); margin-right:6px;">✦</span>
+          <span style="flex:1; color:var(--text-1);">${escapeHtml(t.trait || t.content || JSON.stringify(t))}</span>
+          <button class="btn btn--ghost btn--sm btn-delete-honcho-trait" data-id="${escapeHtml(t.id)}" style="color:var(--danger); padding:1px 6px; font-size:0.75rem;">✕</button>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.btn-delete-honcho-trait').forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          try {
+            await fetch(`${this.apiBase}/api/memory/honcho/traits/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            this.showToast?.('Trait removed', 'ok');
+            this.loadHonchoMemory();
+          } catch(e) {
+            this.showToast?.('Failed to delete trait', 'warn');
+          }
+        };
+      });
+    }
+  } catch (e) {
+    container.innerHTML = `<div class="empty-hint">Error: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+// ── Profile Configuration & SOUL Editor (Domain 2, #6) ─────────────────────────
+
+CommandDeck.prototype.openProfileEditorModal = async function(profileId = 'default') {
+  const modal = document.getElementById('modal-profile-editor');
+  if (!modal) return;
+  modal.style.display = 'flex';
+
+  const select = document.getElementById('profile-editor-select');
+  const statusEl = document.getElementById('profile-editor-status');
+  const textarea = document.getElementById('profile-editor-content');
+  const closeBtn = document.getElementById('btn-close-profile-editor');
+  const cancelBtn = document.getElementById('btn-cancel-profile-editor');
+  const saveBtn = document.getElementById('btn-save-profile-editor');
+
+  const closeModal = () => { modal.style.display = 'none'; };
+  if (closeBtn) closeBtn.onclick = closeModal;
+  if (cancelBtn) cancelBtn.onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+  if (select && select.children.length === 0) {
+    try {
+      const res = await fetch(`${this.apiBase}/api/bots`);
+      if (res.ok) {
+        const data = await res.json();
+        const bots = data.bots || [];
+        select.innerHTML = bots.map(b => `<option value="${escapeHtml(b.id)}">${escapeHtml(b.name)} (${escapeHtml(b.id)})</option>`).join('');
+      }
+    } catch(e) {}
+  }
+  if (select) select.value = profileId;
+
+  let currentPData = null;
+  let activeTab = 'soul';
+
+  const loadProfile = async (pId) => {
+    if (statusEl) statusEl.textContent = `Loading ${pId}...`;
+    textarea.value = 'Loading...';
+    try {
+      const res = await fetch(`${this.apiBase}/api/profiles/${encodeURIComponent(pId)}`);
+      if (res.ok) {
+        currentPData = await res.json();
+        renderActiveTab();
+        if (statusEl) statusEl.textContent = `Editing: ${currentPData.name || pId}`;
+      }
+    } catch(e) {
+      if (statusEl) statusEl.textContent = `Error: ${e.message}`;
+    }
+  };
+
+  const renderActiveTab = () => {
+    if (!currentPData) return;
+    if (activeTab === 'soul') textarea.value = currentPData.soul || '';
+    if (activeTab === 'agents') textarea.value = currentPData.agents || '';
+    if (activeTab === 'config') textarea.value = currentPData.config || '';
+  };
+
+  if (select) {
+    select.onchange = () => loadProfile(select.value);
+  }
+
+  modal.querySelectorAll('.skills-tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      if (currentPData) {
+        if (activeTab === 'soul') currentPData.soul = textarea.value;
+        if (activeTab === 'agents') currentPData.agents = textarea.value;
+        if (activeTab === 'config') currentPData.config = textarea.value;
+      }
+      modal.querySelectorAll('.skills-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTab = btn.dataset.ptab;
+      renderActiveTab();
+    };
+  });
+
+  if (saveBtn) {
+    saveBtn.onclick = async () => {
+      if (!currentPData) return;
+      if (activeTab === 'soul') currentPData.soul = textarea.value;
+      if (activeTab === 'agents') currentPData.agents = textarea.value;
+      if (activeTab === 'config') currentPData.config = textarea.value;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+      try {
+        const pId = select?.value || profileId;
+        const res = await fetch(`${this.apiBase}/api/profiles/${encodeURIComponent(pId)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            soul: currentPData.soul,
+            agents: currentPData.agents,
+            config: currentPData.config
+          })
+        });
+        if (res.ok) {
+          this.showToast?.(`Profile "${pId}" updated successfully`, 'ok');
+          closeModal();
+          if (typeof window.botsPage?.loadBots === 'function') {
+            await window.botsPage.loadBots();
+            window.botsPage.render();
+          }
+        } else {
+          this.showToast?.(`Failed to save profile`, 'warn');
+        }
+      } catch(e) {
+        this.showToast?.(`Error saving profile: ${e.message}`, 'warn');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Changes';
+      }
+    };
+  }
+
+  await loadProfile(profileId);
+};
+
+// ── Interactive Skill Inspector & Test Playground (Domain 6, #20) ─────────────
+
+CommandDeck.prototype.openSkillInspectorModal = async function(skillId, profileId = 'default') {
+  const modal = document.getElementById('modal-skill-inspector');
+  if (!modal) return;
+  modal.style.display = 'flex';
+
+  const nameEl = document.getElementById('skill-inspector-name');
+  const pathEl = document.getElementById('skill-inspector-path');
+  const chkEl = document.getElementById('skill-inspector-toggle-enabled');
+  const docPre = document.getElementById('skill-inspector-content');
+  const closeBtn = document.getElementById('btn-close-skill-inspector');
+  const tabDoc = document.getElementById('tab-skill-doc');
+  const tabTest = document.getElementById('tab-skill-test');
+  const paneDoc = document.getElementById('skill-tab-pane-doc');
+  const paneTest = document.getElementById('skill-tab-pane-test');
+  const runBtn = document.getElementById('btn-run-skill-test');
+  const testInput = document.getElementById('skill-test-input');
+  const testResult = document.getElementById('skill-test-result');
+
+  const closeModal = () => { modal.style.display = 'none'; };
+  if (closeBtn) closeBtn.onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+  if (tabDoc && tabTest) {
+    tabDoc.onclick = () => {
+      tabDoc.classList.add('active');
+      tabTest.classList.remove('active');
+      paneDoc.style.display = 'flex';
+      paneTest.style.display = 'none';
+    };
+    tabTest.onclick = () => {
+      tabTest.classList.add('active');
+      tabDoc.classList.remove('active');
+      paneDoc.style.display = 'none';
+      paneTest.style.display = 'flex';
+    };
+  }
+
+  nameEl.textContent = `Skill: ${skillId}`;
+  pathEl.textContent = 'Loading...';
+  docPre.textContent = 'Loading SKILL.md...';
+  if (testResult) testResult.textContent = 'Ready to test.';
+
+  try {
+    const res = await fetch(`${this.apiBase}/api/skills/${encodeURIComponent(skillId)}/details`);
+    if (res.ok) {
+      const data = await res.json();
+      nameEl.textContent = `${data.name || skillId}`;
+      pathEl.textContent = `Path: ${data.path || '~/.hermes/skills/' + skillId}`;
+      docPre.textContent = data.content || 'No content found.';
+      if (chkEl) {
+        chkEl.checked = data.enabled !== false;
+        chkEl.onchange = async () => {
+          try {
+            await fetch(`${this.apiBase}/api/skills/${encodeURIComponent(skillId)}/toggle`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ enable: chkEl.checked, profile_id: profileId })
+            });
+            this.showToast?.(`Skill ${chkEl.checked ? 'enabled' : 'disabled'} for profile`, 'ok');
+            this.fetchSkillsCatalog?.();
+          } catch(e) {
+            this.showToast?.('Failed to toggle skill', 'warn');
+          }
+        };
+      }
+    }
+  } catch(e) {
+    docPre.textContent = `Error loading skill: ${e.message}`;
+  }
+
+  if (runBtn) {
+    runBtn.onclick = async () => {
+      const inp = testInput?.value.trim() || '';
+      runBtn.disabled = true;
+      runBtn.textContent = 'Running...';
+      testResult.textContent = 'Executing skill test...';
+      try {
+        let parsed = inp;
+        try { parsed = JSON.parse(inp); } catch(e) {}
+        const res = await fetch(`${this.apiBase}/api/skills/${encodeURIComponent(skillId)}/test`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input: parsed })
+        });
+        const out = await res.json();
+        testResult.textContent = JSON.stringify(out, null, 2);
+      } catch(e) {
+        testResult.textContent = `Test execution error: ${e.message}`;
+      } finally {
+        runBtn.disabled = false;
+        runBtn.textContent = '⚡ Execute Test';
+      }
+    };
+  }
+};
+
+// ── Rich Cron Job Editor & Runner (Domain 8, #24) ─────────────────────────────
+
+CommandDeck.prototype.openCronEditModal = function(jobName) {
+  const modal = document.getElementById('modal-cron-editor');
+  if (!modal) return;
+  modal.style.display = 'flex';
+
+  const titleEl = document.getElementById('cron-editor-title');
+  const jobInp = document.getElementById('cron-editor-job-name');
+  const schedInp = document.getElementById('cron-editor-schedule');
+  const platSelect = document.getElementById('cron-editor-platform');
+  const promptInp = document.getElementById('cron-editor-prompt');
+  const closeBtn = document.getElementById('btn-close-cron-editor');
+  const cancelBtn = document.getElementById('btn-cancel-cron-editor');
+  const saveBtn = document.getElementById('btn-save-cron-editor');
+  const runOverrideBtn = document.getElementById('btn-cron-run-override');
+
+  const closeModal = () => { modal.style.display = 'none'; };
+  if (closeBtn) closeBtn.onclick = closeModal;
+  if (cancelBtn) cancelBtn.onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+  const jobs = this.state.cronJobs?.jobs || [];
+  const job = jobs.find(j => (j.id || j.name) === jobName) || { name: jobName, schedule: '0 9 * * *', platform: 'dashboard', prompt: '' };
+
+  titleEl.textContent = `Edit Cron: ${job.name}`;
+  jobInp.value = job.name;
+  schedInp.value = job.schedule_expr || job.schedule || '0 9 * * *';
+  platSelect.value = job.platform || 'dashboard';
+  promptInp.value = job.prompt || '';
+
+  if (saveBtn) {
+    saveBtn.onclick = async () => {
+      saveBtn.disabled = true;
+      try {
+        const res = await fetch(`${this.apiBase}/api/cron/${encodeURIComponent(job.name)}/update`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            schedule: schedInp.value.trim(),
+            platform: platSelect.value,
+            prompt: promptInp.value.trim()
+          })
+        });
+        if (res.ok) {
+          this.showToast?.(`Cron job "${job.name}" updated`, 'ok');
+          closeModal();
+          this.fetchCronJobs();
+        }
+      } catch(e) {
+        this.showToast?.(`Failed to save cron job: ${e.message}`, 'warn');
+      } finally {
+        saveBtn.disabled = false;
+      }
+    };
+  }
+
+  if (runOverrideBtn) {
+    runOverrideBtn.onclick = async () => {
+      runOverrideBtn.disabled = true;
+      runOverrideBtn.textContent = '⏳ Running...';
+      try {
+        const res = await fetch(`${this.apiBase}/api/cron/${encodeURIComponent(job.name)}/run`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: promptInp.value.trim() })
+        });
+        const out = await res.json();
+        this.showToast?.(`Job "${job.name}" triggered: ${out.message || 'Dispatched'}`, 'ok');
+        closeModal();
+      } catch(e) {
+        this.showToast?.(`Error running job: ${e.message}`, 'warn');
+      } finally {
+        runOverrideBtn.disabled = false;
+        runOverrideBtn.textContent = '⚡ Run Now';
+      }
+    };
+  }
+};
+
+// ── Dedicated Decision Ledger (Domain 4, #12) ─────────────────────────────────
+
+CommandDeck.prototype.fetchDecisionLedger = async function(status = 'all') {
+  const container = document.getElementById('decision-ledger-stage');
+  if (!container) return;
+  container.innerHTML = '<div class="agent-loading">Loading decision ledger records...</div>';
+
+  try {
+    const url = status && status !== 'all' ? `${this.apiBase}/api/decisions?status=${status}` : `${this.apiBase}/api/decisions`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      this.state.decisions = data.decisions || [];
+      this.renderDecisionLedger(this.state.decisions);
+    }
+  } catch(e) {
+    container.innerHTML = `<div class="empty-hint">Failed to load decisions: ${escapeHtml(e.message)}</div>`;
+  }
+};
+
+CommandDeck.prototype.renderDecisionLedger = function(decisions = []) {
+  const container = document.getElementById('decision-ledger-stage');
+  if (!container) return;
+
+  if (decisions.length === 0) {
+    container.innerHTML = '<div class="empty-hint">No decision records found matching filter.</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-subtle); color:var(--text-3);">
+            <th style="padding:6px 10px;">Timestamp</th>
+            <th style="padding:6px 10px;">Agent / Bot</th>
+            <th style="padding:6px 10px;">Category</th>
+            <th style="padding:6px 10px;">Decision</th>
+            <th style="padding:6px 10px;">Status</th>
+            <th style="padding:6px 10px;">Outcome</th>
+            <th style="padding:6px 10px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${decisions.map(d => {
+            const statusBadge = d.status === 'approved' ? 'badge-ok' : (d.status === 'rejected' ? 'badge-danger' : 'badge-warn');
+            return `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer;" class="decision-row" data-id="${escapeHtml(d.id)}">
+                <td style="padding:8px 10px; color:var(--text-3); font-size:0.72rem;">${d.timestamp ? new Date(d.timestamp).toLocaleTimeString() : 'Recent'}</td>
+                <td style="padding:8px 10px; font-weight:600; color:var(--text-1);">${escapeHtml(d.bot || 'Hermes')}</td>
+                <td style="padding:8px 10px; color:var(--accent);">${escapeHtml(d.category || 'Architecture')}</td>
+                <td style="padding:8px 10px; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(d.decision)}">${escapeHtml(d.decision)}</td>
+                <td style="padding:8px 10px;"><span class="badge ${statusBadge}" style="font-size:0.65rem;">${escapeHtml(d.status || 'approved')}</span></td>
+                <td style="padding:8px 10px; color:var(--text-2); font-size:0.75rem;">${escapeHtml(d.outcome || 'Active')}</td>
+                <td style="padding:8px 10px;"><button class="btn btn--ghost btn--sm btn-inspect-decision" data-id="${escapeHtml(d.id)}" style="padding:1px 6px; font-size:0.7rem;">View ➔</button></td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  container.querySelectorAll('.decision-row, .btn-inspect-decision').forEach(el => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      const id = el.dataset.id;
+      const dec = decisions.find(d => d.id === id);
+      if (dec) this.openDecisionDetailModal(dec);
+    };
+  });
+};
+
+CommandDeck.prototype.openDecisionDetailModal = function(decision) {
+  const modal = document.getElementById('modal-decision-detail');
+  if (!modal) return;
+  modal.style.display = 'flex';
+
+  const titleEl = document.getElementById('decision-detail-title');
+  const metaEl = document.getElementById('decision-detail-meta');
+  const idInp = document.getElementById('decision-detail-id');
+  const decEl = document.getElementById('decision-detail-decision');
+  const ratEl = document.getElementById('decision-detail-rationale');
+  const altEl = document.getElementById('decision-detail-alternatives');
+  const statusSel = document.getElementById('decision-detail-status');
+  const outcomeInp = document.getElementById('decision-detail-outcome');
+  const closeBtn = document.getElementById('btn-close-decision-detail');
+  const cancelBtn = document.getElementById('btn-cancel-decision-detail');
+  const saveBtn = document.getElementById('btn-save-decision-detail');
+
+  const closeModal = () => { modal.style.display = 'none'; };
+  if (closeBtn) closeBtn.onclick = closeModal;
+  if (cancelBtn) cancelBtn.onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+  idInp.value = decision.id;
+  titleEl.textContent = `Decision #${decision.id}`;
+  metaEl.textContent = `Logged by ${decision.bot || 'Hermes'} in ${decision.category || 'General'} at ${decision.timestamp || 'Recent'}`;
+  decEl.textContent = decision.decision || '';
+  ratEl.textContent = decision.rationale || 'None provided';
+  altEl.textContent = decision.alternatives_considered || 'None considered';
+  statusSel.value = decision.status || 'approved';
+  outcomeInp.value = decision.outcome || '';
+
+  if (saveBtn) {
+    saveBtn.onclick = async () => {
+      saveBtn.disabled = true;
+      try {
+        const res = await fetch(`${this.apiBase}/api/decisions/${encodeURIComponent(decision.id)}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: statusSel.value,
+            outcome: outcomeInp.value.trim()
+          })
+        });
+        if (res.ok) {
+          this.showToast?.('Decision record updated', 'ok');
+          closeModal();
+          this.fetchDecisionLedger();
+        }
+      } catch(e) {
+        this.showToast?.(`Error updating decision: ${e.message}`, 'warn');
+      } finally {
+        saveBtn.disabled = false;
+      }
+    };
   }
 };
 
@@ -729,6 +1252,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const savePermsBtn = document.getElementById('btn-save-tool-perms');
   if (savePermsBtn) {
     savePermsBtn.onclick = () => window.commandDeck?.saveToolPermissions?.();
+  }
+
+  const editProfileBtn = document.getElementById('btn-edit-agent-profile');
+  if (editProfileBtn) {
+    editProfileBtn.onclick = () => {
+      const activeBotId = window.botsPage?.currentBot?.id || 'default';
+      window.commandDeck?.openProfileEditorModal(activeBotId);
+    };
+  }
+
+  const refreshDecisionsBtn = document.getElementById('btn-refresh-decisions');
+  if (refreshDecisionsBtn) {
+    refreshDecisionsBtn.onclick = () => window.commandDeck?.fetchDecisionLedger();
+  }
+
+  const decisionFilterGroup = document.getElementById('decision-filter-group');
+  if (decisionFilterGroup) {
+    decisionFilterGroup.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.onclick = () => {
+        decisionFilterGroup.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        const filter = chip.dataset.decisionFilter;
+        window.commandDeck?.fetchDecisionLedger(filter);
+      };
+    });
   }
 });
 

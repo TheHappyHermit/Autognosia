@@ -389,6 +389,7 @@ export class CommandDeck {
       if (typeof this.fetchVault === 'function') this.fetchVault();
       if (typeof this.fetchEpistemicLedger === 'function') this.fetchEpistemicLedger();
       if (typeof this.fetchResearchQueue === 'function') this.fetchResearchQueue();
+      if (typeof this.fetchDecisionLedger === 'function') this.fetchDecisionLedger();
       if (typeof this.fetchKnowledgeGraph === 'function') {
         setTimeout(() => {
           this.fetchKnowledgeGraph();

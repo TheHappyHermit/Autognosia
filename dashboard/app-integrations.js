@@ -1707,6 +1707,16 @@ CommandDeck.prototype.initSystemSettings = function() {
 
       checkField(document.getElementById('input-key-elevenlabs'), 'elevenlabs_api_key', true);
 
+      // Voice Gateway (STT / TTS)
+      checkField(document.getElementById('input-url-voice'), 'voice_gateway_url');
+      checkField(document.getElementById('input-port-voice'), 'voice_gateway_port');
+      checkField(document.getElementById('input-model-voice'), 'voice_model');
+      checkField(document.getElementById('input-voice-tts-voice'), 'voice_tts_voice');
+      const voiceProvSelect = document.getElementById('select-voice-provider');
+      if (voiceProvSelect) {
+        payload['voice_provider'] = voiceProvSelect.value;
+      }
+
       // Homelab Applications inputs
       checkField(document.getElementById('input-url-deerflow'), 'deerflow_url');
       checkField(document.getElementById('input-key-deerflow'), 'deerflow_api_key', true);
@@ -2043,6 +2053,18 @@ CommandDeck.prototype.loadSystemSettings = async function() {
     if (settings.elevenlabs) {
       updateBadge(document.getElementById('setting-badge-elevenlabs'), settings.elevenlabs.configured);
       setField(document.getElementById('input-key-elevenlabs'), settings.elevenlabs.masked_key);
+    }
+
+    if (settings.voice) {
+      updateBadge(document.getElementById('setting-badge-voice'), settings.voice.configured);
+      setField(document.getElementById('input-url-voice'), settings.voice.url);
+      setField(document.getElementById('input-port-voice'), settings.voice.port);
+      setField(document.getElementById('input-model-voice'), settings.voice.model);
+      setField(document.getElementById('input-voice-tts-voice'), settings.voice.tts_voice);
+      const voiceProvSelect = document.getElementById('select-voice-provider');
+      if (voiceProvSelect && settings.voice.provider) {
+        voiceProvSelect.value = settings.voice.provider;
+      }
     }
 
     // Homelab Applications

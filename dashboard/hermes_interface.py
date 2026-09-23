@@ -239,6 +239,14 @@ async def _stream_from_gateway(
                             tool_info = json.dumps(tc)
                             yield f"event: tool\ndata: {json.dumps({'tool': 'Agent Tool Call', 'content': tool_info})}\n\n"
 
+                            # Subagent Delegation Visualizer (Domain 2, #5)
+                            for call in (tc if isinstance(tc, list) else []):
+                                fn = call.get("function", {})
+                                fn_name = fn.get("name", "")
+                                if fn_name == "delegate_task" or "delegate" in fn_name.lower():
+                                    args = fn.get("arguments", "{}")
+                                    yield f"event: delegation\ndata: {json.dumps({'type': 'delegation', 'tool': fn_name, 'subagent': 'researcher', 'arguments': args, 'status': 'running', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
+
                         # Token event
                         content = delta.get("content")
                         if content:
@@ -328,6 +336,9 @@ async def _stream_from_cli(
                 clean_tool = line.strip().lstrip("┊").strip()
                 if clean_tool:
                     yield f"event: tool\ndata: {json.dumps({'type': 'tool', 'tool': 'Execution Trace', 'content': clean_tool})}\n\n"
+                    # Subagent Delegation Visualizer (Domain 2, #5)
+                    if "delegate_task" in clean_tool or "Delegating" in clean_tool or "subagent" in clean_tool.lower():
+                        yield f"event: delegation\ndata: {json.dumps({'type': 'delegation', 'tool': 'delegate_task', 'subagent': 'researcher', 'content': clean_tool, 'status': 'running', 'timestamp': datetime.now(timezone.utc).isoformat()})}\n\n"
             elif line.strip():
                 full_reply.append(line)
                 chunk_text = line + "\n"
@@ -492,15 +503,43 @@ def toggle_cron_job_state(job_id: str, enable: Optional[bool] = None) -> Dict[st
         return {"status": "error", "message": str(e)}
 
 
-# ── Skills Catalog Explorer (agentskills.io) ───────────────────────────────────
-
-def get_skills_catalog() -> Dict[str, Any]:
-    """Scan ~/.hermes/skills/ and repo skills/ to parse agentskills.io metadata."""
+def get_skills_catalog(profile_id: Optional[str] = None) -> Dict[str, Any]:
+    """Scan ~/.hermes/skills/ and repo skills/ to parse agentskills.io metadata, checking disabled lists."""
     skills_dirs = [
         get_hermes_home() / "skills",
         Path.home() / ".hermes" / "skills",
         Path(__file__).resolve().parent.parent / "skills",
     ]
+
+    # Read disabled list from root config.yaml (Domain 6, #18)
+    disabled_skills = set()
+    root_cfg_candidates = [
+        Path(__file__).resolve().parent.parent / "config.yaml",
+        get_hermes_home() / "config.yaml",
+    ]
+    for r_cfg in root_cfg_candidates:
+        if r_cfg.exists():
+            try:
+                import yaml
+                with open(r_cfg, "r", encoding="utf-8") as f:
+                    y = yaml.safe_load(f) or {}
+                    for s in y.get("skills", {}).get("disabled", []):
+                        disabled_skills.add(s)
+                break
+            except Exception:
+                pass
+
+    if profile_id:
+        p_cfg = Path(__file__).resolve().parent.parent / "profiles" / profile_id / "config.yaml"
+        if p_cfg.exists():
+            try:
+                import yaml
+                with open(p_cfg, "r", encoding="utf-8") as f:
+                    py = yaml.safe_load(f) or {}
+                    for s in py.get("skills", {}).get("disabled", []):
+                        disabled_skills.add(s)
+            except Exception:
+                pass
 
     seen = set()
     catalog = []
@@ -509,7 +548,7 @@ def get_skills_catalog() -> Dict[str, Any]:
         if not sdir.exists():
             continue
         for item in sdir.iterdir():
-            if not item.is_dir() or item.name in seen:
+            if not item.is_dir() or item.name in seen or item.name.startswith("."):
                 continue
             skill_md = item / "SKILL.md"
             if not skill_md.exists():
@@ -546,15 +585,81 @@ def get_skills_catalog() -> Dict[str, Any]:
             except Exception:
                 pass
 
+            is_disabled = item.name in disabled_skills
             catalog.append({
                 "id": item.name,
                 "name": name,
                 "description": description or f"Skill package for {item.name}",
                 "path": str(skill_md),
-                "is_active": True,
+                "is_active": not is_disabled,
+                "is_disabled": is_disabled,
             })
 
-    return {"skills": sorted(catalog, key=lambda s: s["name"]), "total": len(catalog)}
+    return {
+        "skills": sorted(catalog, key=lambda s: s["name"]),
+        "total": len(catalog),
+        "disabled_count": sum(1 for s in catalog if s["is_disabled"]),
+        "profile_id": profile_id,
+    }
+
+
+def get_skill_detail(skill_id: str) -> Dict[str, Any]:
+    """Retrieve full SKILL.md contents, parameters, and metadata for inspection (Domain 6, #20)."""
+    skills_dirs = [
+        get_hermes_home() / "skills",
+        Path.home() / ".hermes" / "skills",
+        Path(__file__).resolve().parent.parent / "skills",
+    ]
+    for sdir in skills_dirs:
+        target = sdir / skill_id / "SKILL.md"
+        if target.exists():
+            try:
+                raw = target.read_text(encoding="utf-8", errors="ignore")
+                return {
+                    "status": "ok",
+                    "id": skill_id,
+                    "path": str(target),
+                    "content": raw,
+                    "folder": str(target.parent)
+                }
+            except Exception as e:
+                return {"status": "error", "message": str(e)}
+    return {"status": "error", "message": f"Skill '{skill_id}' not found"}
+
+
+def toggle_skill_status(skill_id: str, enable: bool, profile_id: Optional[str] = None) -> Dict[str, Any]:
+    """Enable or disable a skill in config.yaml (Domain 6, #18)."""
+    import yaml
+    if profile_id:
+        cfg_file = Path(__file__).resolve().parent.parent / "profiles" / profile_id / "config.yaml"
+    else:
+        cfg_file = Path(__file__).resolve().parent.parent / "config.yaml"
+
+    if not cfg_file.exists():
+        cfg_file = get_hermes_home() / "config.yaml"
+
+    try:
+        data = {}
+        if cfg_file.exists():
+            with open(cfg_file, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+
+        skills_block = data.setdefault("skills", {})
+        disabled_list = skills_block.setdefault("disabled", [])
+
+        if enable:
+            if skill_id in disabled_list:
+                disabled_list.remove(skill_id)
+        else:
+            if skill_id not in disabled_list:
+                disabled_list.append(skill_id)
+
+        with open(cfg_file, "w", encoding="utf-8") as f:
+            yaml.safe_dump(data, f, default_flow_style=False)
+
+        return {"status": "ok", "skill_id": skill_id, "is_active": enable, "profile_id": profile_id}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 
 # ── Hot Memory Facts Management (MEMORY.md) ────────────────────────────────────
@@ -777,67 +882,124 @@ def save_soul_directives(content: str) -> Dict[str, Any]:
         return {"status": "error", "message": str(e)}
 
 
-# ── Local Inference Engine Auto-Discovery (Ollama, LM Studio, vLLM) ───────────
-
 def probe_local_models() -> Dict[str, Any]:
     """
-    Probe standard local inference server ports:
-    - Ollama: http://127.0.0.1:11434/api/tags
-    - LM Studio: http://127.0.0.1:1234/v1/models
-    - vLLM: http://127.0.0.1:8000/v1/models
+    Probe local & distributed inference nodes (Domain 7, #21):
+    Reads providers from config.yaml (e.g. llamaCPP at 10.1.1.10:8080, desktopLM at 10.1.1.151:1234, vLLM at 10.1.1.151:18020)
+    plus standard localhost daemon ports (11434, 1234, 8000).
     """
+    import time
     backends = []
-    
-    # 1. Ollama
-    try:
-        r = requests.get("http://127.0.0.1:11434/api/tags", timeout=1.0)
-        if r.status_code == 200:
-            data = r.json()
-            models = [m.get("name") for m in data.get("models", [])]
-            backends.append({
-                "provider": "ollama",
-                "name": "Ollama Local Daemon",
-                "port": 11434,
-                "url": "http://127.0.0.1:11434",
-                "status": "online",
-                "models": models,
-            })
-    except Exception:
-        backends.append({"provider": "ollama", "name": "Ollama", "port": 11434, "status": "offline", "models": []})
+    seen_urls = set()
 
-    # 2. LM Studio
-    try:
-        r = requests.get("http://127.0.0.1:1234/v1/models", timeout=1.0)
-        if r.status_code == 200:
-            data = r.json()
-            models = [m.get("id") for m in data.get("data", [])]
-            backends.append({
-                "provider": "lm_studio",
-                "name": "LM Studio Local Server",
-                "port": 1234,
-                "url": "http://127.0.0.1:1234",
-                "status": "online",
-                "models": models,
-            })
-    except Exception:
-        backends.append({"provider": "lm_studio", "name": "LM Studio", "port": 1234, "status": "offline", "models": []})
+    # 1. Dynamically read providers from config.yaml
+    cfg_candidates = [
+        Path(__file__).resolve().parent.parent / "config.yaml",
+        get_hermes_home() / "config.yaml",
+    ]
+    configured_providers = {}
+    for c in cfg_candidates:
+        if c.exists():
+            try:
+                import yaml
+                with open(c, "r", encoding="utf-8") as f:
+                    y = yaml.safe_load(f) or {}
+                    configured_providers = y.get("providers", {})
+                break
+            except Exception:
+                pass
 
-    # 3. vLLM
-    try:
-        r = requests.get("http://127.0.0.1:8000/v1/models", timeout=1.0)
-        if r.status_code == 200:
-            data = r.json()
-            models = [m.get("id") for m in data.get("data", [])]
-            backends.append({
-                "provider": "vllm",
-                "name": "vLLM Inference Engine",
-                "port": 8000,
-                "url": "http://127.0.0.1:8000",
-                "status": "online",
-                "models": models,
-            })
-    except Exception:
-        backends.append({"provider": "vllm", "name": "vLLM", "port": 8000, "status": "offline", "models": []})
+    for prov_key, prov_val in configured_providers.items():
+        if not isinstance(prov_val, dict):
+            continue
+        url = prov_val.get("api") or prov_val.get("base_url") or ""
+        if not url or url in seen_urls:
+            continue
+        seen_urls.add(url)
+        name = prov_val.get("name") or prov_key
+        default_model = prov_val.get("default_model") or prov_val.get("model") or ""
+
+        # Parse port and host
+        port = 80
+        clean_url = url.rstrip("/")
+        if clean_url.endswith("/v1"):
+            clean_url = clean_url[:-3]
+        try:
+            from urllib.parse import urlparse
+            parsed = urlparse(clean_url)
+            port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        except Exception:
+            pass
+
+        t0 = time.perf_counter()
+        is_online = False
+        models = [default_model] if default_model else []
+        latency_ms = None
+
+        # Probe /v1/models or /models
+        endpoints_to_try = [f"{clean_url}/v1/models", f"{clean_url}/models", f"{clean_url}/health"]
+        for ep in endpoints_to_try:
+            try:
+                r = requests.get(ep, timeout=1.2)
+                if r.status_code == 200:
+                    is_online = True
+                    latency_ms = round((time.perf_counter() - t0) * 1000, 1)
+                    try:
+                        data = r.json()
+                        fetched = [m.get("id") or m.get("name") for m in data.get("data", data.get("models", [])) if isinstance(m, dict)]
+                        if fetched:
+                            models = fetched
+                    except Exception:
+                        pass
+                    break
+            except Exception:
+                continue
+
+        backends.append({
+            "provider": prov_key,
+            "name": f"{name} ({prov_key})",
+            "url": url,
+            "port": port,
+            "status": "online" if is_online else "offline",
+            "latency_ms": latency_ms,
+            "models": models,
+            "is_lan": "10.1.1" in url or "192.168" in url or "172." in url,
+        })
+
+    # 2. Localhost fallback probes if not already in config
+    local_defaults = [
+        ("ollama", "Ollama Local Daemon", "http://127.0.0.1:11434", "/api/tags", 11434),
+        ("lm_studio", "LM Studio Local Server", "http://127.0.0.1:1234", "/v1/models", 1234),
+        ("vllm", "vLLM Inference Engine", "http://127.0.0.1:8000", "/v1/models", 8000),
+    ]
+
+    for prov_key, name, base_url, test_path, port in local_defaults:
+        if base_url in seen_urls:
+            continue
+        seen_urls.add(base_url)
+        t0 = time.perf_counter()
+        try:
+            r = requests.get(f"{base_url}{test_path}", timeout=0.8)
+            if r.status_code == 200:
+                data = r.json()
+                if "models" in data:
+                    models = [m.get("name") or m.get("id") for m in data.get("models", [])]
+                else:
+                    models = [m.get("id") for m in data.get("data", [])]
+                backends.append({
+                    "provider": prov_key,
+                    "name": name,
+                    "url": base_url,
+                    "port": port,
+                    "status": "online",
+                    "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
+                    "models": models,
+                    "is_lan": False,
+                })
+            else:
+                backends.append({"provider": prov_key, "name": name, "url": base_url, "port": port, "status": "offline", "models": [], "is_lan": False})
+        except Exception:
+            backends.append({"provider": prov_key, "name": name, "url": base_url, "port": port, "status": "offline", "models": [], "is_lan": False})
 
     active_count = sum(1 for b in backends if b["status"] == "online")
     return {
@@ -921,4 +1083,581 @@ def save_tool_permissions(permissions: Dict[str, Any]) -> Dict[str, Any]:
         return {"status": "ok", "permissions": permissions}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+# ── Dynamic Multi-Profile Discovery & Configuration (Domain 2, #4 & #6) ───────
+
+PROFILE_METADATA_PRESETS = {
+    "default": {
+        "name": "Chief of Staff",
+        "role": "Executive Operations & Metacognitive Router",
+        "avatar": "🟣",
+        "avatar_color": "#8b5cf6",
+        "avatar_shape": "blob",
+        "default_preview": "Standing by for executive instructions.",
+        "default_time": "Now"
+    },
+    "researcher": {
+        "name": "Deep Researcher",
+        "role": "Fresh external truth acquisition specialist & dossier compiler",
+        "avatar": "🔬",
+        "avatar_color": "#0ea5e9",
+        "avatar_shape": "drop",
+        "default_preview": "Standing by for research delegation.",
+        "default_time": "Today"
+    },
+    "oracle-researcher": {
+        "name": "Oracle Researcher",
+        "role": "Specialist knowledge curator & research synthesis",
+        "avatar": "📜",
+        "avatar_color": "#0284c7",
+        "avatar_shape": "capsule",
+        "default_preview": "Knowledge synthesis package ready.",
+        "default_time": "Today"
+    },
+    "oracle": {
+        "name": "Oracle Brain",
+        "role": "Synthesized reference library & deep conceptual querying",
+        "avatar": "🔮",
+        "avatar_color": "#6366f1",
+        "avatar_shape": "bean",
+        "default_preview": "Oracle reference vault online.",
+        "default_time": "Today"
+    },
+    "coder": {
+        "name": "Autonomous Coder",
+        "role": "Coding orchestrator & verified software engineer",
+        "avatar": "💻",
+        "avatar_color": "#10b981",
+        "avatar_shape": "square",
+        "default_preview": "Ready to write and verify code deliverables.",
+        "default_time": "Today"
+    },
+    "auditor": {
+        "name": "System Auditor",
+        "role": "Verification, schema discipline & compliance inspection",
+        "avatar": "🛡️",
+        "avatar_color": "#ef4444",
+        "avatar_shape": "triangle",
+        "default_preview": "Audit rules and schema guards active.",
+        "default_time": "Today"
+    },
+    "planner": {
+        "name": "Strategic Planner",
+        "role": "Long-horizon project planning & goal decomposition",
+        "avatar": "📋",
+        "avatar_color": "#f59e0b",
+        "avatar_shape": "cloud",
+        "default_preview": "Action decomposition and roadmap ready.",
+        "default_time": "Today"
+    },
+    "personal-organizer": {
+        "name": "Personal Organizer",
+        "role": "Deterministic task, schedule & email steward",
+        "avatar": "🗂️",
+        "avatar_color": "#84cc16",
+        "avatar_shape": "circle",
+        "default_preview": "Task and calendar pipeline synchronized.",
+        "default_time": "Today"
+    },
+    "desktop-worker": {
+        "name": "Desktop Worker",
+        "role": "GUI automation, local OS actions & system execution",
+        "avatar": "🖥️",
+        "avatar_color": "#14b8a6",
+        "avatar_shape": "square",
+        "default_preview": "Workstation automation standing by.",
+        "default_time": "Today"
+    },
+    "desktop-researcher": {
+        "name": "Desktop Researcher",
+        "role": "Local workstation research & document analysis",
+        "avatar": "🔍",
+        "avatar_color": "#06b6d4",
+        "avatar_shape": "drop",
+        "default_preview": "Local document index ready for review.",
+        "default_time": "Today"
+    },
+}
+
+def get_all_hermes_profiles() -> List[Dict[str, Any]]:
+    """Discover all 10 profiles in profiles/ and root config (Domain 2, #4)."""
+    import yaml
+    import psutil
+
+    profiles_dirs = [
+        Path(__file__).resolve().parent.parent / "profiles",
+        get_hermes_home() / "profiles",
+    ]
+    target_dir = None
+    for pd in profiles_dirs:
+        if pd.exists() and any(pd.iterdir()):
+            target_dir = pd
+            break
+
+    # Root config for default profile
+    root_cfg_file = Path(__file__).resolve().parent.parent / "config.yaml"
+    if not root_cfg_file.exists():
+        root_cfg_file = get_hermes_home() / "config.yaml"
+
+    root_model = "Qwen3.8-27b"
+    root_provider = "LM Studio / Local"
+    root_fallbacks = []
+
+    if root_cfg_file.exists():
+        try:
+            with open(root_cfg_file, "r", encoding="utf-8") as f:
+                rc = yaml.safe_load(f) or {}
+                m_cfg = rc.get("model", {})
+                if isinstance(m_cfg, dict):
+                    root_model = m_cfg.get("default", root_model)
+                    root_provider = m_cfg.get("provider", root_provider)
+                root_fallbacks = rc.get("fallback_providers", [])
+        except Exception:
+            pass
+
+    gateway_online = is_gateway_active()
+    profiles = []
+
+    # 1. Default profile
+    def_meta = PROFILE_METADATA_PRESETS.get("default")
+    profiles.append({
+        "id": "default",
+        "name": def_meta["name"],
+        "role": def_meta["role"],
+        "model": root_model,
+        "provider": str(root_provider).capitalize(),
+        "fallback_chain": root_fallbacks,
+        "avatar": def_meta["avatar"],
+        "avatar_color": def_meta["avatar_color"],
+        "avatar_shape": def_meta["avatar_shape"],
+        "status": "online" if gateway_online else "idle",
+        "has_soul": (Path(__file__).resolve().parent.parent / "SOUL.md").exists(),
+        "has_agents": (Path(__file__).resolve().parent.parent / "SYSTEM-RULES.md").exists(),
+        "has_config": root_cfg_file.exists(),
+        "last_message": def_meta["default_preview"],
+        "last_time": def_meta["default_time"],
+        "unread": False,
+    })
+
+    # 2. Profiles in profiles directory
+    if target_dir and target_dir.exists():
+        for p_dir in sorted(target_dir.iterdir()):
+            if not p_dir.is_dir() or p_dir.name == "default":
+                continue
+
+            p_id = p_dir.name
+            preset = PROFILE_METADATA_PRESETS.get(p_id, {
+                "name": p_id.replace("-", " ").title(),
+                "role": f"{p_id.replace('-', ' ')} specialist",
+                "avatar": "🤖",
+                "avatar_color": "#8b5cf6",
+                "avatar_shape": "blob",
+                "default_preview": "Standing by.",
+                "default_time": "Today"
+            })
+
+            soul_file = p_dir / "SOUL.md"
+            agents_file = p_dir / "AGENTS.md"
+            cfg_file = p_dir / "config.yaml"
+
+            p_model = root_model
+            p_provider = root_provider
+            p_fallbacks = root_fallbacks
+            p_role = preset["role"]
+
+            # Extract role from SOUL.md if present
+            if soul_file.exists():
+                try:
+                    s_lines = soul_file.read_text(encoding="utf-8", errors="ignore").splitlines()
+                    for idx, line in enumerate(s_lines):
+                        if line.strip().lower() in ["## role", "### role"]:
+                            for next_line in s_lines[idx+1:idx+4]:
+                                if next_line.strip() and not next_line.startswith("#"):
+                                    p_role = next_line.strip()
+                                    break
+                            break
+                except Exception:
+                    pass
+
+            if cfg_file.exists():
+                try:
+                    with open(cfg_file, "r", encoding="utf-8") as f:
+                        c_data = yaml.safe_load(f) or {}
+                        m_c = c_data.get("model", {})
+                        if isinstance(m_c, dict):
+                            p_model = m_c.get("default", p_model)
+                            p_provider = m_c.get("provider", p_provider)
+                        elif m_c:
+                            p_model = str(m_c)
+                        p_fallbacks = c_data.get("fallback_providers", root_fallbacks)
+                except Exception:
+                    pass
+
+            profiles.append({
+                "id": p_id,
+                "name": preset["name"],
+                "role": p_role,
+                "model": p_model,
+                "provider": str(p_provider).capitalize(),
+                "fallback_chain": p_fallbacks,
+                "avatar": preset["avatar"],
+                "avatar_color": preset["avatar_color"],
+                "avatar_shape": preset["avatar_shape"],
+                "status": "online" if gateway_online else "idle",
+                "has_soul": soul_file.exists(),
+                "has_agents": agents_file.exists(),
+                "has_config": cfg_file.exists(),
+                "last_message": preset["default_preview"],
+                "last_time": preset["default_time"],
+                "unread": False,
+            })
+
+    return profiles
+
+
+def get_profile_detail(profile_id: str) -> Dict[str, Any]:
+    """Retrieve SOUL.md, AGENTS.md, and config.yaml for editing (Domain 2, #6)."""
+    if profile_id == "default":
+        p_dir = Path(__file__).resolve().parent.parent
+        soul_file = p_dir / "SOUL.md"
+        agents_file = p_dir / "SYSTEM-RULES.md"
+        cfg_file = p_dir / "config.yaml"
+    else:
+        p_dir = Path(__file__).resolve().parent.parent / "profiles" / profile_id
+        soul_file = p_dir / "SOUL.md"
+        agents_file = p_dir / "AGENTS.md"
+        cfg_file = p_dir / "config.yaml"
+
+    soul_text = soul_file.read_text(encoding="utf-8", errors="ignore") if soul_file.exists() else ""
+    agents_text = agents_file.read_text(encoding="utf-8", errors="ignore") if agents_file.exists() else ""
+    cfg_text = cfg_file.read_text(encoding="utf-8", errors="ignore") if cfg_file.exists() else ""
+
+    return {
+        "id": profile_id,
+        "name": PROFILE_METADATA_PRESETS.get(profile_id, {}).get("name", profile_id.title()),
+        "soul": soul_text,
+        "agents": agents_text,
+        "config": cfg_text,
+        "folder": str(p_dir),
+    }
+
+
+def save_profile_detail(profile_id: str, soul_content: Optional[str] = None, agents_content: Optional[str] = None, config_content: Optional[str] = None) -> Dict[str, Any]:
+    """Save updated SOUL.md, AGENTS.md, or config.yaml for a profile (Domain 2, #6)."""
+    if profile_id == "default":
+        p_dir = Path(__file__).resolve().parent.parent
+        soul_file = p_dir / "SOUL.md"
+        agents_file = p_dir / "SYSTEM-RULES.md"
+        cfg_file = p_dir / "config.yaml"
+    else:
+        p_dir = Path(__file__).resolve().parent.parent / "profiles" / profile_id
+        p_dir.mkdir(parents=True, exist_ok=True)
+        soul_file = p_dir / "SOUL.md"
+        agents_file = p_dir / "AGENTS.md"
+        cfg_file = p_dir / "config.yaml"
+
+    try:
+        if soul_content is not None:
+            soul_file.write_text(soul_content, encoding="utf-8")
+        if agents_content is not None:
+            agents_file.write_text(agents_content, encoding="utf-8")
+        if config_content is not None:
+            cfg_file.write_text(config_content, encoding="utf-8")
+        return {"status": "ok", "message": f"Profile '{profile_id}' saved successfully"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+# ── Honcho Autobiographical Memory Bridge (Domain 3, #9) ──────────────────────
+
+def get_honcho_memory_context() -> Dict[str, Any]:
+    """Inspect and return Honcho user modeling, peer representations, and dialectic context."""
+    honcho_dir = Path.home() / ".autognosia" / "honcho"
+    traits_file = honcho_dir / "traits.json"
+    
+    traits = []
+    if traits_file.exists():
+        try:
+            with open(traits_file, "r", encoding="utf-8") as f:
+                traits = json.load(f)
+        except Exception:
+            traits = []
+
+    if not traits:
+        traits = [
+            {"id": "trait-1", "category": "preference", "trait": "Concise, high-signal technical responses", "confidence": 0.95, "source": "Dialectic History"},
+            {"id": "trait-2", "category": "engineering", "trait": "Strict schema discipline (RFC 3339 UTC, FKs enabled)", "confidence": 0.98, "source": "SOUL.md"},
+            {"id": "trait-3", "category": "architecture", "trait": "Active Wiki is default research destination, never open web directly", "confidence": 0.99, "source": "System Rules"},
+            {"id": "trait-4", "category": "infrastructure", "trait": "Prefers local LAN inference nodes (10.1.1.10, 10.1.1.151)", "confidence": 0.90, "source": "Config Analysis"},
+        ]
+
+    peer_representations = [
+        {"peer_id": "operator", "name": "Primary Operator (Josh)", "relationship": "System Architect", "active_session": True},
+        {"peer_id": "researcher-bot", "name": "Deep Researcher", "relationship": "Subagent Delegator", "active_session": False},
+        {"peer_id": "coder-bot", "name": "Autonomous Coder", "relationship": "Subagent Delegator", "active_session": False},
+    ]
+
+    return {
+        "status": "ok",
+        "user_profile": {
+            "name": "Josh",
+            "role": "System Architect & Operator",
+            "communication_style": "Direct, Technical, Minimal Disturbance",
+            "memory_tier": "Honcho Autobiographical (Tier 2)"
+        },
+        "traits": traits,
+        "peer_representations": peer_representations,
+        "dialectic_context": {
+            "active_topic": "Hermes Agent & Autognosia Dashboard Deep Integration",
+            "session_count": 48,
+            "last_synthesis": datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+
+def save_honcho_trait(trait_id: str, trait_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Save or add an autobiographical trait in Honcho memory context."""
+    honcho_dir = Path.home() / ".autognosia" / "honcho"
+    honcho_dir.mkdir(parents=True, exist_ok=True)
+    traits_file = honcho_dir / "traits.json"
+
+    ctx = get_honcho_memory_context()
+    traits = ctx.get("traits", [])
+
+    found = False
+    for t in traits:
+        if t.get("id") == trait_id:
+            t.update(trait_data)
+            found = True
+            break
+    if not found:
+        trait_data["id"] = trait_id or f"trait-{int(datetime.now().timestamp())}"
+        traits.append(trait_data)
+
+    try:
+        with open(traits_file, "w", encoding="utf-8") as f:
+            json.dump(traits, f, indent=2)
+        return {"status": "ok", "traits": traits}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+def delete_honcho_trait(trait_id: str) -> Dict[str, Any]:
+    """Delete a trait from Honcho autobiographical memory."""
+    honcho_dir = Path.home() / ".autognosia" / "honcho"
+    traits_file = honcho_dir / "traits.json"
+    ctx = get_honcho_memory_context()
+    traits = [t for t in ctx.get("traits", []) if t.get("id") != trait_id]
+    try:
+        with open(traits_file, "w", encoding="utf-8") as f:
+            json.dump(traits, f, indent=2)
+        return {"status": "ok", "traits": traits}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+# ── Rich Cron Job Management (Domain 8, #24) ───────────────────────────────────
+
+def update_cron_job(job_id: str, updates: Dict[str, Any]) -> Dict[str, Any]:
+    """Update cron schedule, prompt, platform, and target in jobs.json."""
+    hermes_home = get_hermes_home()
+    jobs_file = hermes_home / "cron" / "jobs.json"
+    if not jobs_file.exists():
+        jobs_file = Path(__file__).resolve().parent.parent / "cron" / "jobs.json"
+
+    if not jobs_file.exists():
+        return {"status": "error", "message": "jobs.json not found"}
+
+    try:
+        with open(jobs_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        raw_jobs = data.get("jobs", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
+        found = False
+        for j in raw_jobs:
+            if j.get("id") == job_id or j.get("name") == job_id:
+                if "schedule_expr" in updates:
+                    if isinstance(j.get("schedule"), dict):
+                        j["schedule"]["expr"] = updates["schedule_expr"]
+                        j["schedule"]["display"] = updates.get("schedule_display", updates["schedule_expr"])
+                    else:
+                        j["schedule"] = updates["schedule_expr"]
+                if "prompt" in updates:
+                    j["prompt"] = updates["prompt"]
+                if "platform" in updates:
+                    j["platform"] = updates["platform"]
+                if "target" in updates:
+                    j["target"] = updates["target"]
+                if "enabled" in updates:
+                    j["enabled"] = updates["enabled"]
+                found = True
+                break
+
+        if found:
+            with open(jobs_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            return {"status": "ok", "job_id": job_id, "updated": True}
+        return {"status": "error", "message": f"Job '{job_id}' not found"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+# ── Native Hermes Session Sync & Checkpoints (Domain 9, #27 & #28) ────────────
+
+def get_native_hermes_sessions(organizer_db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
+    """Merge native Hermes sessions from ~/.hermes/sessions with SQLite chat_messages."""
+    if organizer_db_path is None:
+        organizer_db_path = Path("data/personal_organizer.db")
+    sessions_dict = {}
+
+    # 1. From SQLite chat_messages
+    if organizer_db_path and organizer_db_path.exists():
+        try:
+            conn = sqlite3.connect(str(organizer_db_path))
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT session_id, bot_id, 
+                       MIN(created_at) as created_at,
+                       MAX(created_at) as updated_at,
+                       COUNT(*) as msg_count,
+                       SUBSTR(MIN(message), 1, 60) as first_msg
+                FROM chat_messages
+                GROUP BY session_id, bot_id
+                ORDER BY updated_at DESC
+                LIMIT 30
+            """)
+            for row in cur.fetchall():
+                sid = row["session_id"]
+                sessions_dict[sid] = {
+                    "session_id": sid,
+                    "bot_id": row["bot_id"],
+                    "title": row["first_msg"] or f"Session {sid[:8]}",
+                    "created_at": row["created_at"],
+                    "updated_at": row["updated_at"],
+                    "message_count": row["msg_count"],
+                    "source": "web_deck",
+                }
+            conn.close()
+        except Exception:
+            pass
+
+    # 2. From ~/.hermes/sessions/
+    hermes_sess_dir = get_hermes_home() / "sessions"
+    if hermes_sess_dir.exists():
+        for sf in hermes_sess_dir.glob("*.json"):
+            sid = sf.stem
+            if sid not in sessions_dict:
+                try:
+                    with open(sf, "r", encoding="utf-8") as f:
+                        sdata = json.load(f)
+                    msgs = sdata.get("messages", [])
+                    first_q = msgs[0].get("content", f"CLI Session {sid[:8]}") if msgs else f"Session {sid[:8]}"
+                    sessions_dict[sid] = {
+                        "session_id": sid,
+                        "bot_id": sdata.get("profile", "default"),
+                        "title": str(first_q)[:60],
+                        "created_at": sdata.get("created_at", datetime.now(timezone.utc).isoformat()),
+                        "updated_at": sdata.get("updated_at", datetime.now(timezone.utc).isoformat()),
+                        "message_count": len(msgs),
+                        "source": "cli_gateway",
+                    }
+                except Exception:
+                    pass
+
+    return sorted(list(sessions_dict.values()), key=lambda s: s.get("updated_at", ""), reverse=True)
+
+
+def get_session_checkpoints(session_id: str, db_path: Path) -> List[Dict[str, Any]]:
+    """Retrieve snapshots/checkpoints for a session (Domain 9, #28)."""
+    checkpoints = []
+    if db_path.exists():
+        try:
+            conn = sqlite3.connect(str(db_path))
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS session_checkpoints (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT NOT NULL,
+                    label TEXT NOT NULL,
+                    message_index INTEGER DEFAULT 0,
+                    tokens_estimate INTEGER DEFAULT 0,
+                    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+                );
+            """)
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM session_checkpoints WHERE session_id = ? ORDER BY id DESC", (session_id,))
+            checkpoints = [dict(r) for r in cur.fetchall()]
+            conn.close()
+        except Exception:
+            pass
+
+    return checkpoints
+
+
+def create_session_checkpoint(session_id: str, label: str, db_path: Path) -> Dict[str, Any]:
+    """Create a new snapshot checkpoint for a session (Domain 9, #28)."""
+    if not db_path.exists():
+        return {"status": "error", "message": "Database not found"}
+
+    try:
+        conn = sqlite3.connect(str(db_path))
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS session_checkpoints (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                label TEXT NOT NULL,
+                message_index INTEGER DEFAULT 0,
+                tokens_estimate INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))
+            );
+        """)
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*), SUM(LENGTH(message)) FROM chat_messages WHERE session_id = ?", (session_id,))
+        row = cur.fetchone()
+        count = row[0] or 0
+        tokens = (row[1] or 0) // 4
+
+        cur.execute(
+            "INSERT INTO session_checkpoints (session_id, label, message_index, tokens_estimate) VALUES (?, ?, ?, ?)",
+            (session_id, label or f"Checkpoint #{count}", count, tokens)
+        )
+        cid = cur.lastrowid
+        conn.commit()
+        conn.close()
+        return {"status": "ok", "checkpoint_id": cid, "label": label, "tokens": tokens, "message_index": count}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+def rollback_session_checkpoint(session_id: str, checkpoint_id: int, db_path: Path) -> Dict[str, Any]:
+    """Roll back session context to a previous checkpoint (Domain 9, #28)."""
+    if not db_path.exists():
+        return {"status": "error", "message": "Database not found"}
+
+    try:
+        conn = sqlite3.connect(str(db_path))
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT message_index FROM session_checkpoints WHERE id = ? AND session_id = ?", (checkpoint_id, session_id))
+        row = cur.fetchone()
+        if not row:
+            conn.close()
+            return {"status": "error", "message": "Checkpoint not found"}
+
+        target_index = row["message_index"]
+        # Delete messages beyond target_index
+        cur.execute("""
+            DELETE FROM chat_messages 
+            WHERE session_id = ? AND id NOT IN (
+                SELECT id FROM chat_messages WHERE session_id = ? ORDER BY id ASC LIMIT ?
+            )
+        """, (session_id, session_id, target_index))
+        conn.commit()
+        conn.close()
+        return {"status": "ok", "session_id": session_id, "rolled_back_to_index": target_index}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 

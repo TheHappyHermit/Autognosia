@@ -515,6 +515,14 @@
                   </span>
                 </button>
 
+                <!-- Profile Configuration & SOUL Editor Button -->
+                <button id="btn-edit-agent-profile" class="header-action-pill-btn" title="Edit Agent SOUL, Directives & Config">
+                  <span style="display:flex; align-items:center; gap:4px;">
+                    <span>🎭</span>
+                    <span style="font-size:0.75rem; font-weight:600;">Profile</span>
+                  </span>
+                </button>
+
                 <!-- Skills Dropdown Button -->
                 <button id="btn-agent-skills-dropdown" class="btn-skills-dropdown" title="View agent skills & tools">
                   <span style="display:flex; align-items:center; gap:6px;">
@@ -580,6 +588,9 @@
                     <line x1="12" y1="19" x2="12" y2="23"/>
                     <line x1="8" y1="23" x2="16" y2="23"/>
                   </svg>
+                </button>
+                <button class="bots-voice-mode-btn" id="btn-voice-mode-toggle" title="Toggle Auto-Voice Conversation Mode (Speaks responses aloud)" style="background:none; border:none; padding:4px 6px; cursor:pointer; font-size:1.1rem; opacity:0.6; transition:all 0.2s;">
+                  <span>🗣️</span>
                 </button>
                 <button class="bots-chat-send" id="bot-chat-send" title="Send Message">
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1360,6 +1371,56 @@
               </div>
               <div class="setting-status-msg" id="msg-elevenlabs"></div>
             </div>
+
+            <!-- OpenAI-Compatible Local Voice Gateway Card -->
+            <div class="system-setting-card">
+              <div class="system-setting-card-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.2rem;">🎙️</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem;">Local Voice Gateway (STT / TTS)</h4>
+                    <span style="font-size:0.75rem; color:var(--text-3);">OpenAI-Compatible / Speech-to-Speech</span>
+                  </div>
+                </div>
+                <span class="badge" id="setting-badge-voice">Checking...</span>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-3); margin:8px 0 12px;">Local server speech-to-text (Whisper/Speech-to-Speech) and text-to-speech gateway for in-browser voice conversations.</p>
+              
+              <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px; margin-bottom:8px;">
+                <div class="setting-field-group" style="margin:0;">
+                  <label class="setting-field-label">Gateway Host URL</label>
+                  <input type="text" id="input-url-voice" class="setting-key-input" placeholder="http://10.1.1.151" autocomplete="off" />
+                </div>
+                <div class="setting-field-group" style="margin:0;">
+                  <label class="setting-field-label">Port</label>
+                  <input type="text" id="input-port-voice" class="setting-key-input" placeholder="8000" autocomplete="off" />
+                </div>
+              </div>
+
+              <div class="setting-field-group" style="margin-bottom:8px;">
+                <label class="setting-field-label">Active Voice Engine Provider</label>
+                <select id="select-voice-provider" class="setting-key-input" style="background:var(--bg-tertiary); color:var(--text-1);">
+                  <option value="openai_gateway">Local OpenAI Gateway (Speech-to-Speech / Whisper)</option>
+                  <option value="elevenlabs">ElevenLabs Neural Voice</option>
+                </select>
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:12px;">
+                <div class="setting-field-group" style="margin:0;">
+                  <label class="setting-field-label">Model Name</label>
+                  <input type="text" id="input-model-voice" class="setting-key-input" placeholder="whisper-1 / tts-1" autocomplete="off" />
+                </div>
+                <div class="setting-field-group" style="margin:0;">
+                  <label class="setting-field-label">Default TTS Voice</label>
+                  <input type="text" id="input-voice-tts-voice" class="setting-key-input" placeholder="alloy / echo / shimmer" autocomplete="off" />
+                </div>
+              </div>
+
+              <div class="setting-input-row">
+                <button type="button" class="btn btn--secondary btn--sm btn-test-connection" data-provider="voice" style="width:100%;">Test Voice Gateway Ping</button>
+              </div>
+              <div class="setting-status-msg" id="msg-voice"></div>
+            </div>
           </div>
 
           <!-- Section 2: External Navbar Links (Direct New-Tab Quick Access) -->
@@ -2133,6 +2194,28 @@
           <div class="agent-loading">Loading Oracle Brain research pipeline...</div>
         </div>
       </section>
+
+      <!-- Dedicated Decision Ledger Panel (Domain 4, #12) -->
+      <section class="panel" id="vault-decision-ledger" aria-label="Agent Decision Ledger" style="margin-top: var(--space-4);">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div class="panel-title" style="display:flex; align-items:center; gap:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Dedicated Decision Ledger (PostgreSQL &amp; decision_logger)
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <div class="filter-chips-group" id="decision-filter-group" style="display:flex; gap:4px;">
+              <button class="filter-chip active" data-decision-filter="all">All</button>
+              <button class="filter-chip" data-decision-filter="approved">Approved</button>
+              <button class="filter-chip" data-decision-filter="pending">Pending</button>
+              <button class="filter-chip" data-decision-filter="rejected">Rejected</button>
+            </div>
+            <button id="btn-refresh-decisions" class="btn btn--ghost btn--sm" style="font-size:0.75rem; padding:2px 8px;">↻ Refresh</button>
+          </div>
+        </div>
+        <div class="panel-body" id="decision-ledger-stage" style="padding:16px;">
+          <div class="agent-loading">Loading decision ledger records...</div>
+        </div>
+      </section>
     </div>
 
     <!-- Financial Markets View -->
@@ -2587,6 +2670,174 @@
       </div>
       <div class="terminal-body" id="container-logs-content">
         Loading container logs...
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Configuration & SOUL Editor Modal (Domain 2, #6) -->
+  <div class="agent-skills-modal-backdrop" id="modal-profile-editor" style="display: none;">
+    <div class="agent-skills-modal-dialog" style="max-width: 800px; width: 92vw; height: 85vh; display: flex; flex-direction: column;">
+      <div class="agent-skills-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.4rem;">🎭</span>
+          <div>
+            <div style="font-weight:700; font-size:1.05rem; color:var(--text-1);" id="profile-editor-title">Profile Configuration &amp; Directives</div>
+            <div style="font-size:0.75rem; color:var(--text-3);">Edit SOUL.md, AGENTS.md, and config.yaml for Hermes agent profiles</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <select id="profile-editor-select" style="padding:4px 8px; font-size:0.75rem; background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1);"></select>
+          <button class="btn-skills-modal-close" id="btn-close-profile-editor" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="agent-skills-modal-tabs">
+        <button class="skills-tab-btn active" id="tab-profile-soul" data-ptab="soul">✨ SOUL.md</button>
+        <button class="skills-tab-btn" id="tab-profile-agents" data-ptab="agents">📋 AGENTS.md</button>
+        <button class="skills-tab-btn" id="tab-profile-config" data-ptab="config">⚙️ config.yaml</button>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; padding:12px; min-height:0;">
+        <textarea id="profile-editor-content" style="flex:1; width:100%; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; color:var(--text-1); font-family:var(--font-mono, monospace); font-size:0.85rem; resize:none;"></textarea>
+      </div>
+      <div style="padding:12px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+        <span id="profile-editor-status" style="font-size:0.75rem; color:var(--text-3);">Ready</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn--ghost btn--sm" id="btn-cancel-profile-editor">Cancel</button>
+          <button type="button" class="btn btn--primary btn--sm" id="btn-save-profile-editor">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Skill Inspector & Test Playground Modal (Domain 6, #20) -->
+  <div class="agent-skills-modal-backdrop" id="modal-skill-inspector" style="display: none;">
+    <div class="agent-skills-modal-dialog" style="max-width: 820px; width: 92vw; height: 85vh; display: flex; flex-direction: column;">
+      <div class="agent-skills-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.4rem;">🧩</span>
+          <div>
+            <div style="font-weight:700; font-size:1.05rem; color:var(--text-1);" id="skill-inspector-name">Skill Inspector</div>
+            <div style="font-size:0.75rem; color:var(--text-3);" id="skill-inspector-path">Path: ~/.hermes/skills/...</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="display:flex; align-items:center; gap:6px; font-size:0.75rem; color:var(--text-2); cursor:pointer;">
+            <input type="checkbox" id="skill-inspector-toggle-enabled" />
+            <span>Active for current profile</span>
+          </label>
+          <button class="btn-skills-modal-close" id="btn-close-skill-inspector" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="agent-skills-modal-tabs">
+        <button class="skills-tab-btn active" id="tab-skill-doc" data-stab="doc">📖 SKILL.md Document</button>
+        <button class="skills-tab-btn" id="tab-skill-test" data-stab="test">⚡ Test Playground</button>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; padding:12px; min-height:0; overflow-y:auto;" id="skill-tab-pane-doc">
+        <pre id="skill-inspector-content" style="flex:1; width:100%; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; color:var(--text-2); font-family:var(--font-mono, monospace); font-size:0.8rem; overflow:auto; white-space:pre-wrap;"></pre>
+      </div>
+      <div style="display:none; flex:1; flex-direction:column; padding:12px; gap:10px; min-height:0;" id="skill-tab-pane-test">
+        <div>
+          <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Test Input / Arguments (JSON or plain text):</label>
+          <input type="text" id="skill-test-input" placeholder='e.g. {"query": "test"} or search term' style="width:100%; padding:8px 10px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem;" />
+        </div>
+        <div style="display:flex; justify-content:flex-end;">
+          <button type="button" class="btn btn--primary btn--sm" id="btn-run-skill-test">⚡ Execute Test</button>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; min-height:0;">
+          <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Execution Result:</label>
+          <pre id="skill-test-result" style="flex:1; width:100%; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px; color:var(--text-1); font-family:var(--font-mono, monospace); font-size:0.8rem; overflow:auto; white-space:pre-wrap;">Ready to test.</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rich Cron Job Editor Modal (Domain 8, #24) -->
+  <div class="agent-skills-modal-backdrop" id="modal-cron-editor" style="display: none;">
+    <div class="agent-skills-modal-dialog" style="max-width: 600px; width: 92vw;">
+      <div class="agent-skills-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.4rem;">⏰</span>
+          <div>
+            <div style="font-weight:700; font-size:1.05rem; color:var(--text-1);" id="cron-editor-title">Cron Job Editor</div>
+            <div style="font-size:0.75rem; color:var(--text-3);">Modify schedule expression, prompt, and execution platform</div>
+          </div>
+        </div>
+        <button class="btn-skills-modal-close" id="btn-close-cron-editor" title="Close">✕</button>
+      </div>
+      <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="cron-editor-job-name" />
+        <div class="form-field">
+          <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Schedule Expression (Cron)</label>
+          <input type="text" id="cron-editor-schedule" placeholder="0 9 * * * or @daily" style="width:100%; padding:8px 10px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem;" />
+        </div>
+        <div class="form-field">
+          <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Execution Platform</label>
+          <select id="cron-editor-platform" style="width:100%; padding:8px 10px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem;">
+            <option value="dashboard">Dashboard (Local)</option>
+            <option value="telegram">Telegram</option>
+            <option value="discord">Discord</option>
+            <option value="email">Email</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Prompt Instruction</label>
+          <textarea id="cron-editor-prompt" placeholder="Prompt executed by Hermes on schedule..." style="width:100%; min-height:100px; padding:8px 10px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem; resize:vertical;"></textarea>
+        </div>
+        <div style="border-top:1px solid var(--border-subtle); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" class="btn btn--secondary btn--sm" id="btn-cron-run-override" title="Run immediately with the prompt above">⚡ Run Now</button>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn--ghost btn--sm" id="btn-cancel-cron-editor">Cancel</button>
+            <button type="button" class="btn btn--primary btn--sm" id="btn-save-cron-editor">Save Job</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decision Detail & Resolution Modal (Domain 4, #12) -->
+  <div class="agent-skills-modal-backdrop" id="modal-decision-detail" style="display: none;">
+    <div class="agent-skills-modal-dialog" style="max-width: 600px; width: 92vw;">
+      <div class="agent-skills-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.4rem;">⚖️</span>
+          <div>
+            <div style="font-weight:700; font-size:1.05rem; color:var(--text-1);" id="decision-detail-title">Decision Details</div>
+            <div style="font-size:0.75rem; color:var(--text-3);" id="decision-detail-meta">Logged by Agent</div>
+          </div>
+        </div>
+        <button class="btn-skills-modal-close" id="btn-close-decision-detail" title="Close">✕</button>
+      </div>
+      <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="decision-detail-id" />
+        <div>
+          <label style="font-size:0.75rem; color:var(--text-3); text-transform:uppercase;">Decision</label>
+          <div id="decision-detail-decision" style="font-weight:600; font-size:0.95rem; color:var(--text-1); margin-top:2px;"></div>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:var(--text-3); text-transform:uppercase;">Rationale</label>
+          <div id="decision-detail-rationale" style="font-size:0.85rem; color:var(--text-2); margin-top:2px;"></div>
+        </div>
+        <div>
+          <label style="font-size:0.75rem; color:var(--text-3); text-transform:uppercase;">Alternatives Considered</label>
+          <div id="decision-detail-alternatives" style="font-size:0.85rem; color:var(--text-2); margin-top:2px;"></div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div class="form-field">
+            <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Status</label>
+            <select id="decision-detail-status" style="width:100%; padding:6px 8px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem;">
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label style="font-size:0.8rem; font-weight:600; color:var(--text-2); display:block; margin-bottom:4px;">Outcome</label>
+            <input type="text" id="decision-detail-outcome" placeholder="e.g. Completed, Verified" style="width:100%; padding:6px 8px; background:var(--bg-primary); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-1); font-size:0.85rem;" />
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border-subtle); padding-top:12px; display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn--ghost btn--sm" id="btn-cancel-decision-detail">Cancel</button>
+          <button type="button" class="btn btn--primary btn--sm" id="btn-save-decision-detail">Update Decision</button>
+        </div>
       </div>
     </div>
   </div>
